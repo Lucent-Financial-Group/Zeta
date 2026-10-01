@@ -66,10 +66,12 @@ spec:
   # produces a partition coarser than the tree warrants.
   #
   # WHY A MAP AND NOT A GREP. The citations already say which edges are intent,
-  # in prose. Matching that prose is wrong in a way this very file demonstrates:
-  # `temporal -> cockroachdb`'s citation reads "was a DECLARED INTENT until
-  # 2026-08-22 ... and is now a live connection", so a substring match convicts
-  # an edge that has since become real. So the phrase ENUMERATES candidates and
+  # in prose. Matching that prose is wrong in a way this very file demonstrated:
+  # the former `temporal -> cockroachdb` citation read "was a DECLARED INTENT until
+  # 2026-08-22 ... and is now a live connection", so a substring match convicted
+  # an edge that had become real. (That edge is gone since 2026-09-27 — temporal
+  # moved to `temporal-postgres` — and its map entry went with it, exactly as the
+  # join below requires.) So the phrase ENUMERATES candidates and
   # this map ANSWERS them. `lane-partition.ts` derives the candidate set from
   # the citations on every run and REFUSES on any candidate this map does not
   # answer — so an edge cannot be added with intent-language and quietly left
@@ -107,16 +109,6 @@ spec:
         environment wiring is COMMENTED in
         applications/hindsight/Application.yaml and the bundled PostgreSQL is
         the default. hindsight brings up without CockroachDB today.
-    temporal -> cockroachdb:
-      class: observed
-      reason: >-
-        Adjudicated OBSERVED even though its citation contains the phrase, and
-        this is the case the map exists for. The citation says the edge "was a
-        DECLARED INTENT until 2026-08-22" and "is now a live connection in a
-        manifest that renders": both persistence stores set
-        `host: cockroachdb-public.cockroachdb.svc.cluster.local` with
-        `driver: postgres12`, and temporal holds no local durable state. A
-        pattern match on the prose would have got this one backwards.
 
   dependsOn:
     # ── Layer 0: the reconciler itself ───────────────────────────────────────
@@ -259,11 +251,14 @@ spec:
     - chart: longhorn
       dependsOn: []
       citations: {}
-      # The `longhorn` StorageClass provider. Every `storageClassName: longhorn`
-      # PVC below is an edge INTO its consumers, not out of it. (The other
-      # StorageClass in use, `zeta-local-path`, is a bootstrap manifest —
-      # full-ai-cluster/dev-cluster/manifests/zeta-local-path.yaml — not an
-      # Application, so it produces no edge.)
+      # The provisioner behind the `zeta-block-replicated` and `zeta-shared`
+      # storage CAPABILITIES on metal (full-ai-cluster/nixos/modules/local-storage.nix
+      # binds them to driver.longhorn.io). Charts name the capability, never
+      # `longhorn` (since 2026-09-23; storage-capabilities.ts), but the edge is
+      # unchanged: every `storageClassName: zeta-block-replicated` PVC below
+      # still pends until this Application runs. (`zeta-block-local`, the
+      # default, is bound to local-path by that same k3s bootstrap manifest --
+      # not an Application, so it produces no edge.)
 
     - chart: arc-controller
       dependsOn: []
@@ -286,7 +281,7 @@ spec:
       dependsOn: []
       citations: {}
       # full-ai-cluster/k8s/applications/seaweedfs/Application.yaml:42 uses
-      # `storageClass: zeta-local-path` — bootstrap, not an Application.
+      # `storageClass: zeta-block-local` — bootstrap, not an Application.
 
     - chart: headlamp
       dependsOn: []
@@ -343,8 +338,8 @@ spec:
       dependsOn: []
       citations: {}
       # full-ai-cluster/k8s/applications/forgejo/Application.yaml:38 pins
-      # `storageClass: zeta-local-path` (bootstrap). The trailing comment "or
-      # longhorn for HA" is an option, not a declaration.
+      # `storageClass: zeta-block-local` (bootstrap). The trailing comment "or
+      # zeta-block-replicated" is an option, not a declaration.
 
     - chart: gitlab
       dependsOn: []
@@ -371,10 +366,12 @@ spec:
       dependsOn: [cilium]
       citations:
         cilium: >-
-          full-ai-cluster/k8s/applications/cilium-lb-ipam/ip-pool.yaml declares
-          `kind: CiliumLoadBalancerIPPool` and l2-policy.yaml declares
-          `kind: CiliumL2AnnouncementPolicy` — both CRDs are registered by the
-          cilium Application. CRD provider before CRD consumer.
+          full-ai-cluster/k8s/applications/cilium-lb-ipam/l2-policy.yaml declares
+          `kind: CiliumL2AnnouncementPolicy` (the address pool,
+          `kind: CiliumLoadBalancerIPPool`, is install-time config applied by the
+          separate `cilium-lb-ipam-pool` Application from k8s/lb-ipam/) — both CRDs
+          are registered by the cilium Application. CRD provider before CRD
+          consumer.
 
     # ── Layer 4: Gatekeeper policy consumers ─────────────────────────────────
     - chart: hat-system
@@ -390,24 +387,28 @@ spec:
 
     # ── Layer 5: the platform control plane ──────────────────────────────────
     - chart: platform
-      dependsOn: [cert-manager, cilium, cilium-lb-ipam, longhorn, kube-prometheus-stack]
+      # NO cert-manager edge, and its absence is the fix (081M3JG74G0087G0R001XJC837).
+      # platform used to apply clusterissuer.yaml (ClusterIssuer, a cert-manager
+      # CRD) with `email: you@example.com`; on a real node the issuers never went
+      # Ready and ArgoCD's wave -1 health wait on them blocked every later platform
+      # object. The ACME issuers now live in the install-time `platform-public-tls`
+      # Application (k8s/public-tls/, rendered by nixos/modules/injected-public-tls.nix
+      # only when an ACME email + domain were supplied). It is not in the
+      # app-of-apps roster, so it is not a node here, and it is not ordered
+      # against platform: it retries until cert-manager's CRDs exist and waits on
+      # nothing platform needs.
+      dependsOn: [cilium, cilium-lb-ipam, longhorn, kube-prometheus-stack]
       citations:
         kube-prometheus-stack: >-
           full-ai-cluster/k8s/applications/platform/monitoring.yaml ships a
           `monitoring.coreos.com/v1` ServiceMonitor (line 29) and PrometheusRule
-          (line 50), and `monitoring` is one of the 15 names in this Application's
+          (line 50), and `monitoring` is one of the 14 names in this Application's
           own directory.include glob, so BOTH are applied. Those CRDs are installed
           by kube-prometheus-stack. Derived mechanically 2026-09-03 by scanning
           in-repo manifests for non-core apiVersions and mapping each custom kind to
           its installing Application -- the CRD evidence class, which service-DNS
           derivation cannot see. This edge was MISSING, and it is the only one that
           class found across all 47 Applications.
-        cert-manager: >-
-          full-ai-cluster/k8s/applications/platform/clusterissuer.yaml:17,38
-          declare `apiVersion: cert-manager.io/v1`, `kind: ClusterIssuer` — a
-          cert-manager CRD. :14 states the prereq explicitly: "cert-manager runs
-          with enableGatewayAPI=true so the http01.gatewayHTTPRoute solver is
-          available."
         cilium: >-
           full-ai-cluster/k8s/applications/platform/gateway.yaml:1 — "the shared
           Cilium Gateway the portal (and any WebApp HTTPRoute) publishes on."
@@ -420,7 +421,7 @@ spec:
         longhorn: >-
           full-ai-cluster/k8s/applications/platform/portal.yaml:123-129 — the
           portal StatefulSet's volumeClaimTemplate renders
-          `storageClassName: longhorn`, annotated "THIS is the StatefulSet PVC
+          `storageClassName: zeta-block-replicated`, annotated "THIS is the StatefulSet PVC
           -> storageClass the design needs." Identical in shape to fact #6 in
           full-ai-cluster/k8s/applications/vault/TOPOLOGY.md, which MEASURED the
           same inversion for vault ("Vault syncs at wave -60; longhorn installs
@@ -432,64 +433,64 @@ spec:
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/game-hosting/gmod/statefulset.yaml:93
-          renders `storageClassName: longhorn`.
+          renders `storageClassName: zeta-block-replicated`.
 
-    # ── Layer 6: storage consumers (`storageClassName: longhorn`) ────────────
+    # ── Layer 6: storage consumers (`storageClassName: zeta-block-replicated`) ────────────
     - chart: agent-memory
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/agent-memory/statefulset.yaml:72
-          renders `storageClassName: longhorn`.
+          renders `storageClassName: zeta-block-replicated`.
 
     - chart: cockroachdb
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/cockroachdb/Application.yaml:44 sets
-          `storageClass: longhorn`.
+          `storageClass: zeta-block-replicated`.
 
     - chart: nats
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/nats/Application.yaml:43 sets
-          `storageClassName: longhorn`.
+          `storageClassName: zeta-block-replicated`.
 
     - chart: redis
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/redis/Application.yaml:28,40 set
-          `storageClass: longhorn`.
+          `storageClass: zeta-block-replicated`.
 
     - chart: tempo
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/tempo/Application.yaml:28 sets
-          `storageClassName: longhorn`.
+          `storageClassName: zeta-block-replicated`.
 
     - chart: kube-prometheus-stack
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/kube-prometheus-stack/Application.yaml:46,70,131
-          set `storageClassName: longhorn`.
+          set `storageClassName: zeta-block-replicated`.
 
     - chart: headscale
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/headscale/Application.yaml:40 sets
-          `storageClass: longhorn`.
+          `storageClass: zeta-block-replicated`.
 
     - chart: openziti-controller
       dependsOn: [longhorn, cert-manager, trust-manager]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/oz/Application.yaml:33 sets
-          `storageClass: longhorn`.
+          `storageClass: zeta-block-replicated`.
         cert-manager: >-
           ziti-controller 3.1.1 renders 8 `cert-manager.io/v1` Certificates and
           5 Issuers (measured by `helm template` against this Application's own
@@ -516,7 +517,7 @@ spec:
           provider before CRD consumer.
         longhorn: >-
           full-ai-cluster/k8s/applications/arc-runner-set/model-cache-pvc.yaml:12
-          renders `storageClassName: longhorn`, and the runner pod template
+          renders `storageClassName: zeta-block-replicated`, and the runner pod template
           mounts it as `claimName: arc-model-cache`.
 
     # ── Layer 7: object-store consumers ──────────────────────────────────────
@@ -543,7 +544,7 @@ spec:
           Repointed from minio on 2026-09-01.
         longhorn: >-
           full-ai-cluster/k8s/applications/mimir/Application.yaml:82,86,90 set
-          `storageClass: longhorn`.
+          `storageClass: zeta-block-replicated`.
 
     # ── Layer 8: telemetry shippers (write INTO the data planes) ─────────────
     - chart: alloy
@@ -560,32 +561,105 @@ spec:
           `url = "http://mimir-distributor.mimir.svc.cluster.local:8080/api/v1/push"`.
 
     # ── Layer 9: database consumers ──────────────────────────────────────────
-    - chart: temporal
-      dependsOn: [cockroachdb]
+    - chart: cnpg-barman-cloud
+      dependsOn: [cloudnativepg, cert-manager]
       citations:
-        cockroachdb: >-
-          full-ai-cluster/k8s/applications/temporal/Application.yaml:145,161 —
-          BOTH persistence stores set
-          `host: cockroachdb-public.cockroachdb.svc.cluster.local` with
-          `driver: postgres12` on port 26257 (`default` -> database `temporal`,
-          `visibility` -> database `temporal_visibility`). This edge was a
-          DECLARED INTENT until 2026-08-22 — the wiring was a YAML comment and
-          the chart would not even template — and is now a live connection in a
-          manifest that renders. Temporal holds no local durable state (0 PVCs,
-          0 StatefulSets in the render), so this is a total dependency, not a
-          cache.
+        cloudnativepg: >-
+          full-ai-cluster/k8s/applications/cnpg-barman-cloud/Application.yaml is the
+          CNPG-I backup plugin for the operator Application `cloudnativepg` installs:
+          the plugin's Service is discovered BY THE OPERATOR through its
+          `cnpg.io/pluginName` label and must live in the operator's namespace
+          (`cnpg-system`, which the cloudnativepg Application creates). The plugin
+          requires CloudNativePG >= 1.26 (pinned 1.30.0).
+        cert-manager: >-
+          The plugin chart (0.8.1, `helm template`, measured 2026-10-01) renders a
+          cert-manager `Issuer` and two `Certificate`s (barman-cloud-client,
+          barman-cloud-server) for the mTLS link between operator and plugin, and the
+          plugin's own install doc lists cert-manager as a hard requirement. Applied
+          before cert-manager's CRDs and webhook exist, those objects are refused.
+
+    - chart: temporal-postgres
+      dependsOn: [cloudnativepg, cnpg-barman-cloud, seaweedfs]
+      citations:
+        cloudnativepg: >-
+          full-ai-cluster/k8s/applications/temporal/postgres/cluster.yaml and
+          database.yaml are `postgresql.cnpg.io/v1` `Cluster` and `Database` CRs.
+          Their CRDs and the admission webhook that defaults/validates them ship
+          with the cloudnativepg Application; applied first, the CRs are refused
+          as an unknown kind.
+        cnpg-barman-cloud: >-
+          full-ai-cluster/k8s/applications/temporal/postgres/objectstore.yaml is a
+          `barmancloud.cnpg.io/v1` `ObjectStore` (a CRD only the plugin Application
+          ships), and cluster.yaml's `spec.plugins` names `barman-cloud.cloudnative-pg.io`:
+          a Cluster naming a plugin the operator cannot find is reported as
+          "Cluster cannot proceed to reconciliation due to an unknown plugin being
+          required" and stays Suspended.
+        seaweedfs: >-
+          objectstore.yaml's `endpointURL` is
+          `http://blob-store-seaweedfs-all-in-one.object-store.svc:8333` and its
+          destination is `s3://zeta-backups/postgres`; the SeaweedFS Application's
+          `createBuckets` job makes `zeta-backups` and its gateway serves the
+          endpoint. WAL archiving that starts before the bucket exists fails and
+          the archiver retries while WAL accumulates on the data volume.
+      # NO longhorn edge: the volume is `zeta-block-local` (rancher.io/local-path,
+      # a bootstrap StorageClass, not an Application), per CNPG's local-storage
+      # guidance -- see cluster.yaml. An edge that does not exist is as wrong to
+      # declare as a real one is to omit.
+
+    - chart: postgres-shared
+      dependsOn: [cloudnativepg, cnpg-barman-cloud, seaweedfs, kube-prometheus-stack]
+      citations:
+        cloudnativepg: >-
+          full-ai-cluster/k8s/applications/postgres-shared/cluster.yaml and
+          scheduledbackup.yaml are `postgresql.cnpg.io/v1` `Cluster` and
+          `ScheduledBackup` CRs; their CRDs and admission webhook ship with the
+          cloudnativepg Application.
+        cnpg-barman-cloud: >-
+          objectstore.yaml is a `barmancloud.cnpg.io/v1` `ObjectStore` (the CRD only
+          the plugin Application ships), cluster.yaml's `spec.plugins` and
+          scheduledbackup.yaml's `pluginConfiguration` both name
+          `barman-cloud.cloudnative-pg.io`, which the operator can resolve only once
+          the plugin's Service exists.
+        seaweedfs: >-
+          objectstore.yaml's `endpointURL` is
+          `http://blob-store-seaweedfs-all-in-one.object-store.svc:8333` and its
+          destination `s3://zeta-backups/postgres`; the SeaweedFS Application's
+          `createBuckets` job makes the bucket. The credential Secret
+          `postgres-backup-s3` is seeded at first boot by
+          bootstrap/internal-secret-seeding.yaml, before ArgoCD, so it needs no edge.
+        kube-prometheus-stack: >-
+          podmonitor.yaml is a `monitoring.coreos.com/v1` `PodMonitor`; that CRD is
+          installed by kube-prometheus-stack (wave 0). Declared so the monitoring
+          object is ordered after its CRD rather than relying on
+          SkipDryRunOnMissingResource alone.
+      # NO longhorn edge: `zeta-block-local`, as temporal-postgres above.
+
+    - chart: temporal
+      dependsOn: [temporal-postgres]
+      citations:
+        temporal-postgres: >-
+          full-ai-cluster/k8s/applications/temporal/Application.yaml — BOTH
+          persistence stores set `host: temporal-postgres-rw.temporal.svc`, port
+          5432, `driver: postgres12`, and `existingSecret: temporal-postgres-app`,
+          all three produced by the CNPG Cluster that Application declares.
+          Temporal holds no local durable state (0 PVCs, 0 StatefulSets in the
+          render), so this is a total dependency, not a cache. Replaced the
+          `temporal -> cockroachdb` edge on 2026-09-27: temporal's SQL visibility
+          schema cannot apply to CockroachDB (btree_gin, UDFs in generated
+          columns), so that connection could never converge.
 
     - chart: hindsight
       dependsOn: [longhorn, cockroachdb]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/hindsight/Application.yaml:34 sets
-          `storageClass: longhorn`.
+          `storageClass: zeta-block-replicated`.
         cockroachdb: >-
           full-ai-cluster/k8s/applications/hindsight/Application.yaml:62 —
           `postgresql://hindsight:$(PG_PASSWORD)@cockroachdb-public.cockroachdb.svc.cluster.local:26257/hindsight`.
           Commented today (the bundled PostgreSQL is the default), so this is a
-          declared intent like temporal's above.
+          declared intent, as temporal's former CockroachDB edge was until
+          2026-08-22.
 
     # ── Layer 10: GPU model servers ──────────────────────────────────────────
     - chart: ollama
@@ -593,14 +667,14 @@ spec:
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/ollama/Application.yaml:53 sets
-          `storageClass: longhorn`.
+          `storageClass: zeta-block-replicated`.
 
     - chart: vllm
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/vllm/deployment.yaml:56 sets
-          `storageClassName: longhorn`.
+          `storageClassName: zeta-block-replicated`.
 
     - chart: deepseek-coder
       dependsOn: [ollama]
@@ -624,7 +698,7 @@ spec:
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/weaviate/Application.yaml:33 sets
-          `storageClassName: longhorn`.
+          `storageClassName: zeta-block-replicated`.
         ollama: >-
           full-ai-cluster/k8s/applications/weaviate/Application.yaml:40,44 —
           both `text2vec-ollama` and `generative-ollama` modules are `enabled:

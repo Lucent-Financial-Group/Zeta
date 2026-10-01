@@ -89,9 +89,10 @@
 import { readFileSync, readdirSync, mkdirSync, writeFileSync, renameSync, rmSync, type Dirent } from "node:fs";
 import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { parse as parseYaml } from "yaml";
+import { parse as parseYaml, parseAllDocuments } from "yaml";
 import { stringCompare } from "../collation/collation.ts";
-import { discoverApplications, type ApplicationSource } from "./rendered-storage-claims.ts";
+import { bootstrapDirs } from "./declared-cluster-trees.ts";
+import { defaultRunHelm, discoverApplications, type ApplicationSource } from "./rendered-storage-claims.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -236,7 +237,7 @@ export function valuesTreePaths(values: unknown, prefix = ""): { literal: string
  * `.Values.clientApi.advertisedHost` has `clientApi`, and a manifest that sets
  * the parent map is not declaring a key the chart lacks.
  *
- * OPEN — the chart consumes a node wholesale. Four forms, all measured in this
+ * OPEN — the chart consumes a node wholesale. Five forms, all measured in this
  * tree's charts rather than imagined:
  *
  *   `range $k, $v := .Values.persistence`   bjw-s common, keyed by item name
@@ -245,6 +246,34 @@ export function valuesTreePaths(values: unknown, prefix = ""): { literal: string
  *                                           this form out flagged
  *                                           node-feature-discovery's whole
  *                                           worker configuration as inert
+ *   `$config := omit .Values.configs.cm "create" ...`
+ *                                           bound through a FILTER FUNCTION,
+ *                                           not a bare assignment — rule 4
+ *                                           below only matches `$x := .Values.y`
+ *                                           with nothing between `:=` and
+ *                                           `.Values`, so it missed this.
+ *                                           MEASURED 2026-09-22: argo-cd
+ *                                           10.8.0's `argo-cd.config.cm`
+ *                                           (_helpers.tpl:219) reads
+ *                                           `omit .Values.configs.cm "create"
+ *                                           "annotations"
+ *                                           "resourceExclusionsAdditional"`
+ *                                           into `$config`, merges it into
+ *                                           `$merged`, then `range $key, $value
+ *                                           := $merged` — three hops from
+ *                                           `.Values.configs.cm` to the
+ *                                           `range` this guard already
+ *                                           recognizes, and the guard flagged
+ *                                           `configs.cm.resource.customizations
+ *                                           .health.argoproj.io_Application`
+ *                                           inert despite a direct `helm
+ *                                           template` render proving the key
+ *                                           lands verbatim in argocd-cm's
+ *                                           `data`. `omit`/`pick` both return
+ *                                           a FILTERED COPY of the same map —
+ *                                           wholesale in the same sense
+ *                                           `toYaml` is, just with named keys
+ *                                           removed or kept rather than none.
  *   `$values := .Values.env`                bound, then ranged elsewhere —
  *                                           bjw-s `_env_vars.tpl` does exactly
  *                                           this, and a rule that only saw the
@@ -287,6 +316,14 @@ export function templateValuesRefs(text: string): { literal: string[]; open: str
     // at least as often as the prefix form; both are the same act.
     /\.Values\.([A-Za-z_][A-Za-z0-9_.-]*)\s*\|\s*(?:toYaml|toJson|toPrettyJson|tpl|nindent|indent)/g,
     /\$[A-Za-z_][A-Za-z0-9_]*\s*:?=\s*\.Values\.([A-Za-z_][A-Za-z0-9_.-]*)/g,
+    // BOUND THROUGH A FILTER FUNCTION -- `$x := omit .Values.y "a" "b"` (also
+    // `pick`, the same shape the other direction). MEASURED 2026-09-22 on
+    // argo-cd 10.8.0 (`argo-cd.config.cm`, _helpers.tpl:219): see the doc
+    // comment above. `omit`/`pick` return a filtered COPY of the map they are
+    // given, so a `.Values.X` fed to either is consumed wholesale in the same
+    // sense a bare `range`/`toYaml` is -- named keys are removed or kept, but
+    // nothing about the SHAPE of the reach changes.
+    /\$[A-Za-z_][A-Za-z0-9_]*\s*:?=\s*(?:omit|pick)\s+\.Values\.([A-Za-z_][A-Za-z0-9_.-]*)/g,
   ];
   for (const form of openForms) {
     for (const match of text.matchAll(form)) {
@@ -604,24 +641,16 @@ export interface FetchOptions {
   readonly runHelm?: (args: readonly string[], cwd: string) => { status: number; stdout: string; stderr: string };
 }
 
-function defaultRunHelm(
-  helmBin: string,
-  timeoutMs: number,
-): (args: readonly string[], cwd: string) => { status: number; stdout: string; stderr: string } {
-  return (args, cwd) => {
-    const result = spawnSync(helmBin, [...args], {
-      cwd,
-      encoding: "utf8",
-      timeout: timeoutMs,
-      env: { ...process.env, HELM_EXPERIMENTAL_OCI: "1" },
-    });
-    return {
-      status: result.status ?? 1,
-      stdout: result.stdout ?? "",
-      stderr: result.stderr ?? (result.error === undefined ? "" : String(result.error.message)),
-    };
-  };
-}
+// The helm runner lives in ONE place now: `defaultRunHelm`, imported above.
+//
+// This file used to carry a BYTE-IDENTICAL copy of it, and that copy is why
+// this defect class recurred. When #17622 fixed the 1 MiB `spawnSync`
+// maxBuffer here-in-original, the clone kept it -- so every run of THIS audit
+// silently dropped the six largest charts (arc-controller, argo-rollouts,
+// argocd, cloudnativepg, external-secrets, kube-prometheus-stack) with an
+// ENOBUFS whose reason was swallowed by the same `stderr ?? ...` shape. A
+// "no new findings" verdict from a renderer that cannot render six of the
+// inputs is not a measurement.
 
 function safeName(value: string): string {
   return value.replace(/[^A-Za-z0-9._-]/g, "_");
@@ -1244,9 +1273,88 @@ export function historicalFixtureSources(repoRoot = REPO_ROOT): readonly Applica
   return out;
 }
 
+/**
+ * Every `helm.cattle.io/v1` HelmChart under each declared tree's `k8s/bootstrap/`,
+ * as an audit source whose `valuesObject` is the parsed `spec.valuesContent`.
+ *
+ * 081M3BTKNNB087G0R000EPCNJ1 — WHY THE BOOTSTRAP TREE IS IN SCOPE. These are the
+ * manifests K3s applies at FIRST BOOT, before ArgoCD exists to correct anything, and
+ * until this function they were the one surface nothing scanned: their values live in
+ * `spec.valuesContent`, a YAML document embedded as a STRING, in a file that is not an
+ * Application, so `discoverApplications` never saw them. Measured on 2026-09-25:
+ * `argocd-install.yaml` carried `applicationSet.enabled: true`, a key argo-cd 10.8.0
+ * does not have (orphaned by the 7.7.10 -> 10.6.0 bump), and it surfaced only by
+ * accident, when a parity change copied it into an Application.
+ *
+ * Same parse as `parseHelmChartValues` in `audit-argocd-pin-parity.ts`, applied per
+ * DOCUMENT rather than per file, because `spire-install.yaml` carries two HelmCharts
+ * in one file and a first-document parse would silently skip the second.
+ *
+ * `appId` is `<tree>/bootstrap/<metadata.name>` so a bootstrap chart and the
+ * Application of the same name never share a baseline key.
+ *
+ * A `valuesContent` that is not valid YAML THROWS: an unparseable document is one no
+ * key of which was checked, and the only honest outcome for that is loud.
+ */
+export function discoverBootstrapHelmCharts(repoRoot = REPO_ROOT): readonly ApplicationSource[] {
+  const out: ApplicationSource[] = [];
+  for (const dir of bootstrapDirs(repoRoot)) {
+    const tree = dir.replace(/\/k8s\/bootstrap$/, "");
+    const files = (readdirIfPresent(resolve(repoRoot, dir)) ?? [])
+      .filter((entry) => entry.isFile() && /\.ya?ml$/.test(entry.name))
+      .map((entry) => entry.name)
+      .sort((a, b) => stringCompare(a, b));
+    for (const file of files) {
+      const manifestPath = `${dir}/${file}`;
+      const text = readIfPresent(resolve(repoRoot, manifestPath));
+      if (text === null) continue;
+      for (const doc of parseAllDocuments(text)) {
+        const obj = doc.toJS() as Record<string, unknown> | null;
+        if (obj === null || obj["kind"] !== "HelmChart") continue;
+        const apiVersion = obj["apiVersion"];
+        if (typeof apiVersion !== "string" || !apiVersion.startsWith("helm.cattle.io/")) continue;
+        const spec = (obj["spec"] ?? {}) as Record<string, unknown>;
+        const metadata = (obj["metadata"] ?? {}) as Record<string, unknown>;
+        const name = typeof metadata["name"] === "string" ? metadata["name"] : file;
+        const valuesContent = spec["valuesContent"];
+        let valuesObject: unknown = {};
+        if (typeof valuesContent === "string") {
+          try {
+            valuesObject = (parseYaml(valuesContent) as unknown) ?? {};
+          } catch (error) {
+            throw new Error(
+              `${manifestPath}: HelmChart ${name} has a spec.valuesContent that is not valid YAML, so none of its ` +
+                `keys can be checked: ${(error as Error).message}`,
+            );
+          }
+        }
+        out.push({
+          appId: `${tree}/bootstrap/${name}`,
+          manifestPath,
+          kind: "helm-remote",
+          repoURL: typeof spec["repo"] === "string" ? spec["repo"] : "",
+          chart: typeof spec["chart"] === "string" ? spec["chart"] : "",
+          targetRevision: typeof spec["version"] === "string" ? spec["version"] : "",
+          releaseName: name,
+          namespace: typeof spec["targetNamespace"] === "string" ? spec["targetNamespace"] : "kube-system",
+          valuesObject,
+          gitPath: "",
+          includeGlob: "",
+        });
+      }
+    }
+  }
+  return out;
+}
+
+/** Everything the audit compares: every Application source, then every bootstrap HelmChart. */
+export function discoverAuditSources(repoRoot = REPO_ROOT): readonly ApplicationSource[] {
+  return [...discoverApplications(repoRoot), ...discoverBootstrapHelmCharts(repoRoot)];
+}
+
 export function measureSchemaSnapshot(options: FetchOptions & { repoRoot?: string | undefined } = {}): SchemaSnapshot {
   const repoRoot = options.repoRoot ?? REPO_ROOT;
-  const sources = discoverApplications(repoRoot);
+  const sources = discoverAuditSources(repoRoot);
   // Fixture pins are measured too, so the historical proofs survive a chart bump.
   // They contribute CHART SCHEMAS only, never `entries` -- see historicalFixtureSources.
   const fixturePins = historicalFixtureSources(repoRoot);
@@ -1392,7 +1500,7 @@ export function auditAgainstSnapshot(
     snapshot.entries.map((entry) => [`${entry.appId} ${entry.chart}@${entry.targetRevision}`, entry] as const),
   );
   return auditFrom(
-    discoverApplications(repoRoot),
+    discoverAuditSources(repoRoot),
     (source) => {
       const entry = byKey.get(`${source.appId} ${source.chart}@${source.targetRevision}`);
       if (entry === undefined) return null;
@@ -1406,7 +1514,7 @@ export function auditAgainstSnapshot(
 export function auditLive(options: FetchOptions & { baselinePath?: string | undefined } = {}): AuditResult {
   const repoRoot = options.repoRoot ?? REPO_ROOT;
   return auditFrom(
-    discoverApplications(repoRoot),
+    discoverAuditSources(repoRoot),
     (source) => chartSchemaFor(source, { ...options, repoRoot }),
     loadBaseline(options.baselinePath, repoRoot),
   );

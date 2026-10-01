@@ -40,12 +40,21 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { parseAllDocuments } from "yaml";
+import { parse as parseYaml, parseAllDocuments } from "yaml";
 
 import { parseFieldPath } from "./storage-profiles.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
-export const DEFAULT_OVERRIDES_PATH = "full-ai-cluster/k8s/rung-overrides.json";
+export const DEFAULT_OVERRIDES_PATH = "full-ai-cluster/k8s/rung-overrides.yaml";
+
+/**
+ * The roster's own `apiVersion`/`kind`. The file lives under a manifest root
+ * kubeconform walks, so it carries a kind (an unknown one is skipped; a missing
+ * one is an error) -- and the loader REFUSES any other pair, so a stray
+ * Kubernetes manifest at this path cannot be read as an override roster.
+ */
+export const OVERRIDES_API_VERSION = "cluster.zeta.io/v1";
+export const OVERRIDES_KIND = "RungOverrides";
 
 export interface RungOverride {
   readonly id: string;
@@ -61,6 +70,42 @@ export interface RungOverride {
   readonly set: Readonly<Record<string, unknown>>;
   /** Dotted field paths to remove entirely. */
   readonly remove: readonly string[];
+  /**
+   * The RENDERED PersistentVolumeClaims this override resizes, as
+   * `"<appId> <rendered PVC name>"` (the keys rendered-storage-claims.snapshot.json
+   * uses) with the size it sets. Optional; present on disk-size overrides so the
+   * dev-lane storage audit can price the claim at its dev size. The loader
+   * REFUSES a `size` that no `set` value carries -- a resize the override does
+   * not actually write would let the audit count disk the lane never gets.
+   */
+  readonly resizes: readonly RungOverrideResize[];
+  /**
+   * PER-CLUSTER CONDITIONS beyond the rung (2026-09-23), e.g. `{gpuVendor: amd}`.
+   * Empty for most overrides. A non-empty `when` fires ONLY when the tree is
+   * built for a cluster that selected exactly those values; the committed tree
+   * already carries each dimension's `committed` value, so an override
+   * conditioned on that value is refused at load (it could only ever be a no-op).
+   */
+  readonly when: Readonly<Record<string, string>>;
+}
+
+/**
+ * A cluster property that is NOT a rung. The rung says how big a cluster is; a
+ * dimension says what it physically HAS -- today which GPU vendor. `committed`
+ * is the value the checked-in tree already expresses (NVIDIA), so an override
+ * only ever describes a DEPARTURE from it.
+ */
+export interface OverrideDimension {
+  readonly committed: string;
+  readonly values: readonly string[];
+}
+
+/** What a cluster selected for each dimension. Missing keys mean `committed`. */
+export type ClusterSelection = Readonly<Record<string, string>>;
+
+export interface RungOverrideResize {
+  readonly claim: string;
+  readonly size: string;
 }
 
 export interface OverrideEdit {
@@ -78,14 +123,122 @@ function requireString(value: unknown, label: string): string {
   return value;
 }
 
+function parseResizes(raw: unknown, set: Readonly<Record<string, unknown>>, label: string): readonly RungOverrideResize[] {
+  if (raw === undefined) return [];
+  if (!Array.isArray(raw)) throw new Error(`${label}.resizes must be a list`);
+  const written = new Set(Object.values(set).filter((value): value is string => typeof value === "string"));
+  return raw.map((entry, index) => {
+    const record = (entry ?? {}) as Record<string, unknown>;
+    const claim = requireString(record.claim, `${label}.resizes[${String(index)}].claim`);
+    const size = requireString(record.size, `${label}.resizes[${String(index)}].size`);
+    if (claim.split(" ").length !== 2) {
+      throw new Error(`${label}.resizes[${String(index)}].claim must be "<appId> <rendered PVC name>", got "${claim}"`);
+    }
+    if (!written.has(size)) {
+      throw new Error(
+        `${label}.resizes[${String(index)}] declares size ${size}, which no \`set\` value writes -- the audit ` +
+          "would price a disk the lane never gets",
+      );
+    }
+    return { claim, size };
+  });
+}
+
+function parseDimensions(raw: unknown, path: string): ReadonlyMap<string, OverrideDimension> {
+  const dimensions = new Map<string, OverrideDimension>();
+  if (raw === undefined) return dimensions;
+  if (typeof raw !== "object" || raw === null || Array.isArray(raw)) {
+    throw new Error(`${path}: "dimensions" must be a mapping of name -> { committed, values }`);
+  }
+  for (const [name, spec] of Object.entries(raw as Record<string, unknown>)) {
+    const record = (spec ?? {}) as { committed?: unknown; values?: unknown };
+    const committed = requireString(record.committed, `${path}: dimensions.${name}.committed`);
+    if (!Array.isArray(record.values) || record.values.length < 2) {
+      throw new Error(`${path}: dimensions.${name}.values must list at least two values -- one is not a dimension`);
+    }
+    const values = record.values.map((value, index) => requireString(value, `${path}: dimensions.${name}.values[${String(index)}]`));
+    if (!values.includes(committed)) {
+      throw new Error(`${path}: dimensions.${name}.committed "${committed}" is not one of its values`);
+    }
+    dimensions.set(name, { committed, values });
+  }
+  return dimensions;
+}
+
+function parseWhen(
+  raw: unknown,
+  dimensions: ReadonlyMap<string, OverrideDimension>,
+  label: string,
+): Readonly<Record<string, string>> {
+  if (raw === undefined) return {};
+  if (typeof raw !== "object" || raw === null || Array.isArray(raw)) throw new Error(`${label}.when must be a mapping`);
+  const when: Record<string, string> = {};
+  for (const [name, value] of Object.entries(raw as Record<string, unknown>)) {
+    const dimension = dimensions.get(name);
+    if (dimension === undefined) {
+      throw new Error(`${label}.when names dimension "${name}", which "dimensions" does not declare -- it could never be selected`);
+    }
+    const chosen = requireString(value, `${label}.when.${name}`);
+    if (!dimension.values.includes(chosen)) {
+      throw new Error(`${label}.when.${name} = "${chosen}" is not one of ${dimension.values.join(", ")}`);
+    }
+    if (chosen === dimension.committed) {
+      throw new Error(
+        `${label}.when.${name} = "${chosen}" is the COMMITTED value -- the checked-in tree already is that, so the ` +
+          "override could only restate it. An override describes a departure from the committed tree.",
+      );
+    }
+    when[name] = chosen;
+  }
+  return when;
+}
+
+/** The dimensions the roster declares -- what a cluster may select beyond its rung. */
+export function loadOverrideDimensions(
+  repoRoot = REPO_ROOT,
+  path = DEFAULT_OVERRIDES_PATH,
+): ReadonlyMap<string, OverrideDimension> {
+  const raw = parseYaml(readFileSync(join(repoRoot, path), "utf8")) as { dimensions?: unknown } | null;
+  return parseDimensions(raw?.dimensions, path);
+}
+
+/**
+ * Refuses a selection naming an undeclared dimension or value -- a typo'd
+ * `--gpu-vendor amdd` must not build the committed (NVIDIA) tree and call it AMD.
+ */
+export function validateSelection(
+  selection: ClusterSelection,
+  dimensions: ReadonlyMap<string, OverrideDimension>,
+): void {
+  for (const [name, value] of Object.entries(selection)) {
+    const dimension = dimensions.get(name);
+    if (dimension === undefined) throw new Error(`unknown cluster dimension "${name}"; known: ${[...dimensions.keys()].join(", ")}`);
+    if (!dimension.values.includes(value)) {
+      throw new Error(`cluster dimension ${name}="${value}" is not one of ${dimension.values.join(", ")}`);
+    }
+  }
+}
+
 export function loadRungOverrides(
   knownRungs: readonly string[],
   repoRoot = REPO_ROOT,
   path = DEFAULT_OVERRIDES_PATH,
 ): readonly RungOverride[] {
-  const raw: unknown = JSON.parse(readFileSync(join(repoRoot, path), "utf8"));
+  // YAML since 2026-09-23 (was JSON): the file is hand-edited and its reasons
+  // are long prose. `parse` THROWS on a multi-document file rather than quietly
+  // reading the first document, which is the fail-closed direction.
+  const raw: unknown = parseYaml(readFileSync(join(repoRoot, path), "utf8"));
+  if (typeof raw !== "object" || raw === null) throw new Error(`${path}: expected a mapping`);
+  const header = raw as { apiVersion?: unknown; kind?: unknown };
+  if (header.apiVersion !== OVERRIDES_API_VERSION || header.kind !== OVERRIDES_KIND) {
+    throw new Error(
+      `${path}: expected apiVersion ${OVERRIDES_API_VERSION} / kind ${OVERRIDES_KIND}, ` +
+        `found ${String(header.apiVersion)} / ${String(header.kind)}`,
+    );
+  }
   const list = (raw as { overrides?: unknown }).overrides;
   if (!Array.isArray(list)) throw new Error(`${path}: "overrides" must be an array`);
+  const dimensions = parseDimensions((raw as { dimensions?: unknown }).dimensions, path);
 
   const seen = new Set<string>();
   return list.map((entry) => {
@@ -112,8 +265,12 @@ export function loadRungOverrides(
     if (Object.keys(set).length === 0 && remove.length === 0) {
       throw new Error(`${path}: ${id} sets nothing and removes nothing`);
     }
+    const resizes = parseResizes(o.resizes, set, `${path}: ${id}`);
+    const when = parseWhen(o.when, dimensions, `${path}: ${id}`);
     return {
       id,
+      resizes,
+      when,
       path: requireString(o.path, `${path}: ${id}.path`),
       docIndex: typeof o.docIndex === "number" ? o.docIndex : 0,
       rung,
@@ -137,11 +294,19 @@ export function applyRungOverrides(
   profile: string,
   repoRoot = REPO_ROOT,
   write = true,
+  /**
+   * The cluster's non-rung selections, e.g. `{gpuVendor: "amd"}`. Empty (the
+   * default) means every dimension at its committed value, so a conditioned
+   * override never fires -- which is what keeps every existing caller building
+   * exactly the tree it built before dimensions existed.
+   */
+  selection: ClusterSelection = {},
 ): readonly OverrideEdit[] {
   const edits: OverrideEdit[] = [];
 
   for (const override of overrides) {
     if (override.rung !== profile) continue;
+    if (!Object.entries(override.when).every(([name, value]) => selection[name] === value)) continue;
 
     const abs = resolve(repoRoot, override.path);
     const source = readFileSync(abs, "utf8");

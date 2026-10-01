@@ -27,7 +27,7 @@ import {
   buildPlan,
   classifyApplications,
   classifySmokeApplications,
-  devLonghornStorageClassAliasDeclared,
+  devBoundStorageCapabilities,
   discoverExpectedApplications,
   DEV_EXCLUDED_REASONS,
   auditDevExclusionReasons,
@@ -39,10 +39,33 @@ import {
   mergeArgoCdTimeoutDiagnostics,
   restartingContainersFromPodsJson,
   parseApplicationList,
+  parseUnhealthyResources,
   formatHealthWaitProgress,
   confirmedDegradedTerminalFailure,
   degradedApplicationNames,
   degradedHealthTerminalFailure,
+  podsFromPodsJson,
+  podsBelongingToApplication,
+  podBlockingReason,
+  podStillProvisioning,
+  degradedApplicationTerminalEvidence,
+  evidenceBasedDegradedTerminalFailure,
+  CRASHLOOP_RESTART_TERMINAL_THRESHOLD,
+  DEGRADED_CEILING_SECONDS,
+  STILL_STARTING_GRACE_SECONDS,
+  type PodSnapshot,
+  type DegradedAppEvidence,
+  podRestartBaseline,
+  soakRestartRegressions,
+  soakApplicationInstabilityStep,
+  soakRegressionFailure,
+  startupRestartEntries,
+  classifyStartupRestartEntry,
+  classifyStartupRestarts,
+  startupRestartFailure,
+  STARTUP_RESTART_HARD_FAIL_THRESHOLD,
+  STARTUP_RESTART_STALE_DAYS,
+  type StartupRestartBaselineEntry,
   isGitHubHostUnresolvableText,
   isTerminalFailure,
   REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS,
@@ -58,6 +81,8 @@ import {
   preflightFailure,
   rootDevCatalogExcludedDirs,
   runHarness,
+  renderedClaimsRequestReadWriteMany,
+  appsTheRenderIsSilentAbout,
 } from "./argocd-health-test.ts";
 
 const SMOKE_APPLICATION_LIST = JSON.stringify({
@@ -462,11 +487,13 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     }
   });
 
-  // Title qualified on this branch: dev now applies a StorageClass NAMED
-  // longhorn, so the rule this test pins is the one that still holds when no
-  // such class exists. Both halves matter and neither replaces the other.
-  test("isExcludedFromIncludedProof catches Longhorn in child manifests when dev has no such class", () => {
-    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-longhorn-"));
+  // The storage rule, since 2026-09-23: charts name a CAPABILITY, dev binds some
+  // of them, and an Application requesting one dev does not bind is excluded.
+  const NONE: ReadonlySet<string> = new Set();
+  const DEV_RWO: ReadonlySet<string> = new Set(["zeta-block-replicated", "zeta-block-local"]);
+
+  test("isExcludedFromIncludedProof catches a class in child manifests that dev does not bind", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-class-"));
     try {
       const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/demo");
       mkdirSync(appDir, { recursive: true });
@@ -476,34 +503,57 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
       );
       writeFileSync(
         join(appDir, "statefulset.yaml"),
-        "spec:\n  volumeClaimTemplates:\n    - spec:\n        storageClassName: longhorn\n",
+        "spec:\n  volumeClaimTemplates:\n    - spec:\n        storageClassName: zeta-block-replicated\n",
       );
       const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
-      expect(isExcludedFromIncludedProof("demo", appText, appDir, false)).toBe(true);
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, NONE)).toBe(true);
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, DEV_RWO)).toBe(false);
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
   });
 
   /**
-   * 081M0JXF6MS087G0R001HC34TM — the longhorn rule is CONDITIONAL on substrate,
-   * not deleted. These four tests pin both branches plus the RWX carve-out;
-   * without the pair, "we made those apps testable" would be indistinguishable
-   * from "we stopped checking".
+   * 081M0JXF6MS087G0R001HC34TM, generalised — the storage rule is CONDITIONAL on
+   * substrate, not deleted. Both branches plus the RWX carve-out; without the
+   * pair, "we made those apps testable" would be indistinguishable from "we
+   * stopped checking".
    */
-  test("the longhorn rule stops applying once dev declares a StorageClass by that name", () => {
-    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-alias-on-"));
+  test("the storage rule follows the SET of bound capabilities, one name at a time", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-bound-"));
     try {
       const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/demo");
       mkdirSync(appDir, { recursive: true });
       writeFileSync(
         join(appDir, "Application.yaml"),
-        "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: demo\nspec:\n  source:\n    helm:\n      values: |\n        storageClass: longhorn\n",
+        "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: demo\nspec:\n  source:\n    helm:\n      valuesObject:\n        a:\n          storageClass: zeta-block-replicated\n        b:\n          storageClass: zeta-block-local\n",
       );
       const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
       // Same Application, same manifest text -- only the substrate answer moves.
-      expect(isExcludedFromIncludedProof("demo", appText, appDir, false)).toBe(true);
-      expect(isExcludedFromIncludedProof("demo", appText, appDir, true)).toBe(false);
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, NONE)).toBe(true);
+      // ONE of the two bound is not enough: the unbound claim would still pend.
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, new Set(["zeta-block-local"]))).toBe(true);
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, DEV_RWO)).toBe(false);
+    } finally {
+      rmSync(repoRoot, { recursive: true, force: true });
+    }
+  });
+
+  test("a PROVIDER-named class is never bound in dev, so it stays excluded even with every capability bound", () => {
+    // The old alias made `longhorn` bindable in dev. That door is closed: dev
+    // binds capability names only, so a manifest regressing to a provider name
+    // drops out of the proof (and storage-capabilities.ts refuses it outright).
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-provider-"));
+    try {
+      const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/demo");
+      mkdirSync(appDir, { recursive: true });
+      writeFileSync(
+        join(appDir, "Application.yaml"),
+        "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: demo\nspec: {}\n",
+      );
+      writeFileSync(join(appDir, "pvc.yaml"), "kind: PersistentVolumeClaim\nspec:\n  storageClassName: longhorn\n");
+      const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, DEV_RWO)).toBe(true);
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
@@ -512,14 +562,13 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
   test("a ReadWriteMany claim stays excluded regardless of which class it names", () => {
     // The access mode is the hazard, not the class name: EVERY dev class is
     // rancher.io/local-path, which is RWO-only. So the RWX rule must gate on its
-    // own, not nested inside the longhorn branch -- otherwise an RWX claim
-    // against zeta-local-path, against kind's default, or against no class at
-    // all sails through and hangs.
+    // own, not nested inside the class rule -- otherwise an RWX claim against a
+    // bound capability, or against no class at all, sails through and hangs.
     const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-rwx-"));
     try {
       const claims = [
-        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: longhorn\n",
-        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: zeta-local-path\n",
+        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: zeta-block-replicated\n",
+        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: zeta-block-local\n",
         "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n",
       ];
       for (const [index, claim] of claims.entries()) {
@@ -531,76 +580,64 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
         );
         writeFileSync(join(appDir, "cache-pvc.yaml"), claim);
         const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
-        expect(isExcludedFromIncludedProof("demo", appText, appDir, true), claim).toBe(true);
+        expect(isExcludedFromIncludedProof("demo", appText, appDir, DEV_RWO), claim).toBe(true);
       }
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
   });
 
-  test("devLonghornStorageClassAliasDeclared fails CLOSED on absent, wrong-kind and wrong-name manifests", () => {
-    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-alias-parse-"));
+  test("devBoundStorageCapabilities fails CLOSED per file: absent, wrong kind, wrong name, provider-bound", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-bind-parse-"));
     const manifestDir = join(repoRoot, "full-ai-cluster/dev-cluster/manifests");
-    const manifest = join(manifestDir, "longhorn.yaml");
+    const replicated = join(manifestDir, "zeta-block-replicated.yaml");
+    const local = join(manifestDir, "zeta-block-local.yaml");
+    const sc = (name: string, provisioner: string) =>
+      `apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: ${name}\nprovisioner: ${provisioner}\n`;
     try {
       mkdirSync(manifestDir, { recursive: true });
       // Absent.
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      expect([...devBoundStorageCapabilities(repoRoot)]).toEqual([]);
       // Present but not a StorageClass.
-      writeFileSync(manifest, "kind: ConfigMap\nmetadata:\n  name: longhorn\n");
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // A StorageClass under a different name -- claims nothing about `longhorn`.
-      writeFileSync(
-        manifest,
-        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: not-longhorn\nprovisioner: rancher.io/local-path\n",
-      );
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // A StorageClass with no provisioner binds to nothing.
-      writeFileSync(manifest, "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\n");
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      writeFileSync(replicated, "kind: ConfigMap\nmetadata:\n  name: zeta-block-replicated\n");
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
+      // A StorageClass under a name other than the file's capability binds nothing charts ask for.
+      writeFileSync(replicated, sc("longhorn", "rancher.io/local-path"));
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
+      expect(devBoundStorageCapabilities(repoRoot).has("longhorn")).toBe(false);
+      // No provisioner binds to nothing.
+      writeFileSync(replicated, "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: zeta-block-replicated\n");
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
       // THE FAIL-OPEN THAT WOULD OTHERWISE BITE: right name, right kind, but
-      // bound to the real Longhorn driver, which a kind node cannot run. An edit
-      // "restoring parity" this way would unlock ten Applications onto a class
-      // that provisions nothing, and every PVC would pend.
-      writeFileSync(
-        manifest,
-        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\nprovisioner: driver.longhorn.io\n",
-      );
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // Unparseable.
-      writeFileSync(manifest, "kind: StorageClass\n\tname: longhorn\n  : :\n");
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // Multi-document: `parseYaml` throws on `---` separators rather than
-      // silently taking the first document, so this lands in the catch.
-      writeFileSync(
-        manifest,
-        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\nprovisioner: rancher.io/local-path\n---\nkind: ConfigMap\n",
-      );
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // The real shape.
-      writeFileSync(
-        manifest,
-        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\nprovisioner: rancher.io/local-path\n",
-      );
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(true);
+      // bound to the real Longhorn driver, which a kind node cannot run.
+      writeFileSync(replicated, sc("zeta-block-replicated", "driver.longhorn.io"));
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
+      // Multi-document: `parseYaml` throws on `---` rather than taking the first.
+      writeFileSync(replicated, `${sc("zeta-block-replicated", "rancher.io/local-path")}---\nkind: ConfigMap\n`);
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
+      // The real shape -- and each file answers only for its own capability.
+      writeFileSync(replicated, sc("zeta-block-replicated", "rancher.io/local-path"));
+      expect([...devBoundStorageCapabilities(repoRoot)]).toEqual(["zeta-block-replicated"]);
+      writeFileSync(local, sc("zeta-block-local", "rancher.io/local-path"));
+      expect([...devBoundStorageCapabilities(repoRoot)].sort()).toEqual(["zeta-block-local", "zeta-block-replicated"]);
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
   });
 
-  test("the shipped tree declares the dev longhorn alias — the assertions above rest on it", () => {
-    // Not decoration. Every one of the ten newly-asserted Applications is
-    // asserted BECAUSE this returns true against the real repo. If the manifest
-    // is deleted or renamed, this goes red here rather than silently reverting
-    // ten Applications to unasserted, which `auditAppliedButUnasserted` would
-    // then report as unexplained drift instead of as the intended state.
-    expect(devLonghornStorageClassAliasDeclared()).toBe(true);
+  test("the shipped tree binds both RWO capabilities in dev, and never zeta-shared", () => {
+    // Not decoration. Every storage-backed Application is asserted BECAUSE this
+    // holds against the real repo. If a binding file is deleted or renamed, this
+    // goes red here rather than silently reverting those Applications to
+    // unasserted.
+    expect([...devBoundStorageCapabilities()].sort()).toEqual(["zeta-block-local", "zeta-block-replicated"]);
   });
 
-  test("longhorn stays glob-excluded from the dev catalog, so the alias cannot collide", () => {
-    // The alias is a cluster-scoped object named `longhorn`. If the Longhorn
-    // chart were ever admitted to the dev catalog it would create a second
-    // object of that name and the two would fight. This is the guard.
+  test("longhorn stays glob-excluded from the dev catalog -- the chart itself needs block devices", () => {
+    // Until 2026-09-23 this guarded a NAME collision: dev's `longhorn` alias vs
+    // the chart's own `longhorn` class. The alias is gone (dev binds capability
+    // names), so no collision is possible; what keeps the chart out is that it
+    // needs real block devices + open-iscsi, which the QEMU test covers.
     expect(rootDevCatalogExcludedDirs().has("longhorn")).toBe(true);
   });
 
@@ -648,6 +685,11 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
         "platform",
         "temporal",
         "vllm",
+        // 2026-10-01: the shared Postgres and the Barman Cloud plugin it archives through,
+        // deferred with temporal (ghcr.io pulls, an unproven operator<->plugin mTLS, and a
+        // first-boot credential the dev bring-up does not mint). Reasons: DEV_EXCLUDED_REASONS.
+        "postgres-shared",
+        "cnpg-barman-cloud",
       ]),
     );
   });
@@ -704,7 +746,12 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
    * This test stays as the cheap structural pin; the reach-vs-roster
    * comparison and its registry live in `app-of-apps-discovery.ts`.
    */
-  test("the depth-1 discovery gap stays exactly one known Application", () => {
+  // WAS "the depth-1 discovery gap stays exactly one known Application", which
+  // pinned gmod as INVISIBLE to the harness. Discovery walks depth 2 now
+  // (`application-dirs.ts`), so the pin flips: gmod is visible, and it is held
+  // out of the proof by its written DEV_EXCLUDED_REASONS entry rather than by
+  // the harness never looking.
+  test("the one depth-2 Application is visible to the harness and held out by its reason", () => {
     const appsDir = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/applications");
     const nested = readdirSync(appsDir, { withFileTypes: true })
       .filter((entry) => entry.isDirectory())
@@ -717,9 +764,17 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
       )
       .sort();
 
-    expect(nested).toEqual(["game-hosting/gmod"]);
-    // And it is genuinely invisible to the harness today.
-    expect(discoverExpectedApplications().some((app) => app.name === "gmod")).toBe(false);
+    // `temporal/postgres` joined 2026-09-27: temporal's CNPG database, nested so the
+    // `temporal/**` exclude defers it with its only consumer. Held out by INHERITING
+    // temporal's reason (the parent-directory rule in isExcludedFromIncludedProof),
+    // not by a second entry that could drift from the first.
+    expect(nested).toEqual(["game-hosting/gmod", "temporal/postgres"]);
+    const gmod = discoverExpectedApplications().find((app) => app.name === "gmod");
+    expect(gmod?.dir).toBe("game-hosting/gmod");
+    expect(gmod?.excludedFromDev).toBe(true);
+    const pg = discoverExpectedApplications().find((app) => app.name === "temporal-postgres");
+    expect(pg?.dir).toBe("temporal/postgres");
+    expect(pg?.excludedFromDev).toBe(true);
   });
 
   test("metadata.name is read by a YAML parser, not by first-name-wins line scanning", () => {
@@ -829,6 +884,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test Application verdicts", (
         items: [
           {
             metadata: { name: "argocd" },
+            spec: { destination: { namespace: "argocd" } },
             status: {
               sync: { status: "Synced", revision: "7.7.10" },
               health: { status: "Healthy", message: "" },
@@ -844,6 +900,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test Application verdicts", (
         syncStatus: "Synced",
         healthStatus: "Healthy",
         message: "",
+        namespace: "argocd",
         operationPhase: "Succeeded",
         syncRevision: "7.7.10",
       },
@@ -1016,10 +1073,14 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     // second call site is removed, which is the whole job.
     const source = readFileSync(join(import.meta.dir, "argocd-health-test.ts"), "utf-8");
     const callSites = source.match(/attachClusterDiagnostics\(/g) ?? [];
-    // Two calls plus the declaration.
-    expect(callSites.length).toBe(3);
+    // Three calls plus the declaration -- the soak phase (Task B,
+    // 081KSXN940008QG0R000SCP2H1) added a third real call site, so a
+    // regression that detaches ANY of the three (including the new one)
+    // still goes red here rather than only on a live cluster.
+    expect(callSites.length).toBe(4);
     expect(source).toContain('attachClusterDiagnostics(childFailure, "repo-backed child wait timed out")');
     expect(source).toContain('attachClusterDiagnostics(failure, "ArgoCD health wait gave up")');
+    expect(source).toContain('attachClusterDiagnostics(regressionFailure, "soak phase detected instability")');
   });
 
   test("the roster can answer WHY a pod is not running, not just that ArgoCD is unhappy", () => {
@@ -1251,17 +1312,21 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     ).toBeNull();
   });
 
-  test("the health wait calls the Degraded abort, not only defines it", () => {
+  test("the health wait calls the evidence-based Degraded abort, not only defines it", () => {
     const source = readFileSync(new URL("./argocd-health-test.ts", import.meta.url), "utf8");
     const waitBody = source.slice(
       source.indexOf("async function waitForApplications"),
       source.indexOf("async function runDriftRepairCheck"),
     );
-    // The CALL, not the identifier. It now takes two polls, and a guard that
-    // still matched the one-poll spelling would pass over the regression it
-    // exists to catch (081M23CWG35087G0R003HXVV5Y).
-    expect(waitBody).toContain("confirmedDegradedTerminalFailure(previousVerdicts, lastVerdicts)");
-    expect(waitBody).toContain("previousVerdicts = lastVerdicts;");
+    // The CALL, not the identifier. `confirmedDegradedTerminalFailure`'s
+    // two-consecutive-poll rule aborted on an ordinary rollout Degraded blip
+    // (081KSXN940008QG0R000SCP2H1, run 35628762464: kube-prometheus-stack was
+    // merely PodInitializing) -- replaced by the evidence-based pipeline
+    // below. A guard that still matched the sample-count spelling would pass
+    // over that regression re-appearing.
+    expect(waitBody).toContain("evidenceBasedDegradedTerminalFailure(evidences, now)");
+    expect(waitBody).toContain("podsBelongingToApplication(app, allApplications, pods)");
+    expect(waitBody).not.toContain("confirmedDegradedTerminalFailure(previousVerdicts, lastVerdicts)");
     expect(waitBody).toContain("rootCatalogRefsFailure(snapshots)");
   });
 
@@ -1695,11 +1760,16 @@ describe("DEV_EXCLUDED_REASONS", () => {
     expect(reason).not.toContain("Please specify cassandra port");
   });
 
-  test("the temporal reason names both live blockers, not the retired one", () => {
+  test("the temporal reason records the CockroachDB blockers as RETIRED, and by what", () => {
     const reason = DEV_EXCLUDED_REASONS.get("temporal") ?? "";
-    // (1) visibility schema, (2) TLS-only CockroachDB with no material here.
+    // 2026-09-27: (1) visibility schema and (2) TLS-only CockroachDB were live
+    // blockers; both stores moved to a CNPG PostgreSQL. The history stays named,
+    // and the reason must say they are retired rather than still claim them.
     expect(reason).toContain("btree_gin");
     expect(reason).toContain("`tls.enabled: true` with the selfSigner");
+    expect(reason).toContain("ARE RETIRED");
+    expect(reason).toContain("temporal-postgres");
+    expect(reason).not.toContain("LIFTS WHEN: the CRDB CA is distributed");
   });
 
   test("the correction records that it was the author's own stale reason", () => {
@@ -1845,8 +1915,17 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
       // (1000m at metal, 250m at dev). The citations move with the ladder because
       // that is what they are for -- prose that did not follow is the drift
       // `reason-truth.ts` catches, and it caught exactly this pair today.
-      "[cite: lane-cpu metal 7390 over]",
-      "[cite: lane-cpu dev 1715 fits]",
+      // 7390 -> 8140 and 1715 -> 1990 on 2026-09-25: the ArgoCD control plane was
+      // PRICED (081M3BQ5GX6087G0R003N44WMZ). All five of its components had
+      // declared nothing at any rung, so the lane totals had never included the
+      // GitOps engine that drives the lane. Same discipline as the pair above --
+      // the citations move with the ladder, and `reason-truth.ts` caught this one
+      // too, which is the third time that mechanism has found the drift first.
+      // 8140 -> 8190 and 1990 -> 2040 on 2026-09-30: the oz (OpenZiti) controller was
+      // PRICED at 50m/128Mi. It had rendered `resources: {}` -- BestEffort -- so the
+      // lane totals had never included it. Same discipline again.
+      "[cite: lane-cpu metal 8647 over]",
+      "[cite: lane-cpu dev 2427 fits]",
     ]) {
       expect(reason).toContain(cited);
     }
@@ -2039,6 +2118,92 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     // the cluster credential for no reason.
     expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("RespectIgnoreDifferences=true");
   });
+
+  /**
+   * CILIUM (WP26, 081M38GCTFX087G0R003MMTXJE). Same drift class as weaviate
+   * above -- the chart self-signs `cilium-ca` / `hubble-relay-client-certs` /
+   * `hubble-server-certs` fresh on every `helm template` render, which kept
+   * the Application Progressing on a self-heal loop (MEASURED offline via a
+   * two-render diff, and live via the application-controller's own log on
+   * run 35965954133 -- see the Application's comment). The ignore rule must
+   * stay scoped to exactly these three Secrets' data keys: widening it to
+   * `data` as a whole or dropping a Secret name would hide real drift on
+   * objects this same chart also renders (ConfigMaps, RBAC, the DaemonSet/
+   * Deployment specs) that must keep being compared.
+   */
+  test("cilium's ignore rule is KEPT and stays scoped to its three self-signed TLS Secrets", () => {
+    const document = parseYaml(readApp("cilium")) as {
+      spec?: {
+        ignoreDifferences?: readonly {
+          group?: string;
+          kind?: string;
+          name?: string;
+          jsonPointers?: readonly string[];
+          jqPathExpressions?: readonly string[];
+          managedFieldsManagers?: readonly string[];
+        }[];
+        syncPolicy?: { syncOptions?: readonly string[] };
+      };
+    };
+    const rules = document.spec?.ignoreDifferences ?? [];
+    expect(rules.length).toBe(3);
+    const byName = new Map(rules.map((r) => [r.name, r]));
+    expect(byName.get("cilium-ca")?.kind).toBe("Secret");
+    expect(byName.get("cilium-ca")?.jsonPointers).toEqual(["/data/ca.crt", "/data/ca.key"]);
+    expect(byName.get("hubble-relay-client-certs")?.jsonPointers).toEqual(["/data/ca.crt", "/data/tls.crt", "/data/tls.key"]);
+    expect(byName.get("hubble-server-certs")?.jsonPointers).toEqual(["/data/ca.crt", "/data/tls.crt", "/data/tls.key"]);
+    // No escape hatches, same discipline as weaviate's rule.
+    for (const rule of rules) {
+      expect(rule.jqPathExpressions).toBeUndefined();
+      expect(rule.managedFieldsManagers).toBeUndefined();
+    }
+    expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("RespectIgnoreDifferences=true");
+    // Cilium's own reasons for ServerSideApply (multiple field managers on
+    // the CNI's shared resources) are unrelated to this fix -- it must stay.
+    expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("ServerSideApply=true");
+  });
+
+  /**
+   * SEAWEEDFS (081M39EMBRW087G0R001RHMEDJ). Third instance of the same
+   * class: `templates/sftp/sftp-secret.yaml` mints fresh SFTP credentials +
+   * an ed25519 private key on every render (MEASURED offline, two-render
+   * diff). The release name is `blob-store-seaweedfs` (set explicitly in
+   * this Application's `helm.releaseName`), so the rendered Secret's name
+   * carries that prefix -- pinned here so a release-name rename does not
+   * silently leave the ignore rule pointed at a Secret that no longer
+   * exists (which would read as Synced/Healthy while quietly no longer
+   * protecting anything).
+   */
+  test("seaweedfs's ignore rule is KEPT and stays scoped to its SFTP credential Secret", () => {
+    const document = parseYaml(readApp("seaweedfs")) as {
+      spec?: {
+        ignoreDifferences?: readonly {
+          group?: string;
+          kind?: string;
+          name?: string;
+          jsonPointers?: readonly string[];
+          jqPathExpressions?: readonly string[];
+          managedFieldsManagers?: readonly string[];
+        }[];
+        syncPolicy?: { syncOptions?: readonly string[] };
+      };
+    };
+    const rules = document.spec?.ignoreDifferences ?? [];
+    expect(rules.length).toBe(1);
+    const rule = rules[0]!;
+    expect(rule.kind).toBe("Secret");
+    expect(rule.name).toBe("blob-store-seaweedfs-sftp-secret");
+    expect(rule.jsonPointers).toEqual([
+      "/data/admin_password",
+      "/data/readonly_password",
+      "/data/public_user_password",
+      "/data/seaweedfs_sftp_config",
+      "/data/seaweedfs_sftp_ssh_private_key",
+    ]);
+    expect(rule.jqPathExpressions).toBeUndefined();
+    expect(rule.managedFieldsManagers).toBeUndefined();
+    expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("RespectIgnoreDifferences=true");
+  });
 });
 
 describe("crash-loop containers are found, not guessed", () => {
@@ -2108,6 +2273,717 @@ describe("crash-loop containers are found, not guessed", () => {
     expect(restartingContainersFromPodsJson("not json")).toEqual([]);
     expect(restartingContainersFromPodsJson("{}")).toEqual([]);
     expect(restartingContainersFromPodsJson(JSON.stringify({ items: "nope" }))).toEqual([]);
+  });
+});
+
+describe("081KSXN940008QG0R000SCP2H1 evidence-based terminal Degraded (run 35628762464)", () => {
+  const podsJson = (items: unknown[]): string => JSON.stringify({ items });
+
+  // MEASURED shape from run 35628762464: kube-prometheus-stack's Prometheus
+  // StatefulSet pod, still pulling images / waiting on its Longhorn PVC. No
+  // hard failure reason anywhere -- this is what the two-poll rule could not
+  // tell apart from a dead workload.
+  const kubePrometheusStackPodInitializing = {
+    metadata: {
+      namespace: "monitoring",
+      name: "prometheus-kube-prometheus-stack-kube-prom-prometheus-0",
+      labels: { "app.kubernetes.io/instance": "kube-prometheus-stack" },
+      creationTimestamp: "2026-09-19T16:53:10Z",
+    },
+    status: {
+      phase: "Pending",
+      conditions: [{ type: "PodScheduled", status: "True" }],
+      initContainerStatuses: [
+        { name: "init-config-reloader", restartCount: 0, ready: false, state: { running: {} } },
+      ],
+      containerStatuses: [
+        { name: "prometheus", restartCount: 0, ready: false, state: { waiting: { reason: "PodInitializing" } } },
+      ],
+    },
+  };
+
+  // MEASURED shape from run 33830308187: openziti-controller's pod, one init
+  // container of one still running.
+  const ozitiInitZeroOfOne = {
+    metadata: {
+      namespace: "openziti",
+      name: "openziti-controller-0",
+      labels: { "app.kubernetes.io/instance": "openziti-controller" },
+      creationTimestamp: "2026-09-19T16:53:20Z",
+    },
+    status: {
+      phase: "Pending",
+      initContainerStatuses: [{ name: "init-pki", restartCount: 0, ready: false, state: { running: {} } }],
+      containerStatuses: [{ name: "ziti-controller", restartCount: 0, ready: false, state: { waiting: { reason: "PodInitializing" } } }],
+    },
+  };
+
+  const crashLoopingPod = {
+    metadata: { namespace: "mimir", name: "mimir-ingester-0", labels: { "app.kubernetes.io/instance": "mimir" } },
+    status: {
+      phase: "Running",
+      containerStatuses: [
+        { name: "ingester", restartCount: 6, ready: false, state: { waiting: { reason: "CrashLoopBackOff" } } },
+      ],
+    },
+  };
+
+  const imagePullBackOffPod = {
+    metadata: { namespace: "headscale", name: "headscale-0", labels: { "app.kubernetes.io/instance": "headscale" } },
+    status: {
+      phase: "Pending",
+      containerStatuses: [
+        {
+          name: "headscale",
+          restartCount: 0,
+          ready: false,
+          state: { waiting: { reason: "ImagePullBackOff", message: 'Back-off pulling image "ghcr.io/juanfont/headscale:bad-tag"' } },
+        },
+      ],
+    },
+  };
+
+  const createContainerConfigErrorPod = {
+    metadata: { namespace: "gitlab", name: "gitlab-webservice-0", labels: { "app.kubernetes.io/instance": "gitlab" } },
+    status: {
+      phase: "Pending",
+      containerStatuses: [
+        {
+          name: "webservice",
+          restartCount: 0,
+          ready: false,
+          state: {
+            waiting: {
+              reason: "CreateContainerConfigError",
+              message: 'secret "gitlab-initial-root-password" not found',
+            },
+          },
+        },
+      ],
+    },
+  };
+
+  const failedSchedulingInsufficientCpuPod = {
+    metadata: { namespace: "hindsight", name: "hindsight-postgresql-0" },
+    status: {
+      phase: "Pending",
+      conditions: [
+        { type: "PodScheduled", status: "False", reason: "Unschedulable", message: "0/1 nodes are available: 1 Insufficient cpu." },
+      ],
+      containerStatuses: [],
+    },
+  };
+
+  describe("podsFromPodsJson", () => {
+    test("parses phase, instance label, scheduling condition, init/main container state", () => {
+      const [pod] = podsFromPodsJson(podsJson([kubePrometheusStackPodInitializing]));
+      expect(pod?.namespace).toBe("monitoring");
+      expect(pod?.name).toBe("prometheus-kube-prometheus-stack-kube-prom-prometheus-0");
+      expect(pod?.instanceLabel).toBe("kube-prometheus-stack");
+      expect(pod?.phase).toBe("Pending");
+      expect(pod?.scheduledFailureReason).toBe("");
+      expect(pod?.initContainers[0]?.terminatedReason).toBe("");
+      expect(pod?.containers[0]?.waitingReason).toBe("PodInitializing");
+    });
+
+    test("captures a scheduling failure condition and a hard waiting reason with its message", () => {
+      const [scheduling] = podsFromPodsJson(podsJson([failedSchedulingInsufficientCpuPod]));
+      expect(scheduling?.scheduledFailureReason).toBe("Unschedulable");
+      expect(scheduling?.scheduledFailureMessage).toContain("Insufficient cpu");
+
+      const [configError] = podsFromPodsJson(podsJson([createContainerConfigErrorPod]));
+      expect(configError?.containers[0]?.waitingReason).toBe("CreateContainerConfigError");
+      expect(configError?.containers[0]?.waitingMessage).toContain("gitlab-initial-root-password");
+    });
+
+    test("returns empty rather than throwing on malformed kubectl output", () => {
+      expect(podsFromPodsJson("not json")).toEqual([]);
+      expect(podsFromPodsJson("{}")).toEqual([]);
+      expect(podsFromPodsJson(JSON.stringify({ items: "nope" }))).toEqual([]);
+    });
+  });
+
+  describe("podsBelongingToApplication (namespace primary, instance label disambiguates shared namespaces)", () => {
+    const pods = podsFromPodsJson(
+      podsJson([
+        kubePrometheusStackPodInitializing, // monitoring, exclusive to kube-prometheus-stack
+        { metadata: { namespace: "cert-manager", name: "cert-manager-0", labels: { "app.kubernetes.io/instance": "cert-manager" } }, status: {} },
+        { metadata: { namespace: "cert-manager", name: "trust-manager-0", labels: { "app.kubernetes.io/instance": "trust-manager" } }, status: {} },
+        { metadata: { namespace: "cert-manager", name: "unlabelled-0" }, status: {} },
+      ]),
+    );
+    const allApplications = [
+      { name: "kube-prometheus-stack", namespace: "monitoring" },
+      { name: "cert-manager", namespace: "cert-manager" },
+      { name: "trust-manager", namespace: "cert-manager" },
+    ];
+
+    test("an app with an exclusive namespace gets every pod in it, label or not", () => {
+      const owned = podsBelongingToApplication({ name: "kube-prometheus-stack", namespace: "monitoring" }, allApplications, pods);
+      expect(owned.map((p) => p.name)).toEqual(["prometheus-kube-prometheus-stack-kube-prom-prometheus-0"]);
+    });
+
+    test("a SHARED namespace is disambiguated by the instance label", () => {
+      const certManagerPods = podsBelongingToApplication({ name: "cert-manager", namespace: "cert-manager" }, allApplications, pods);
+      expect(certManagerPods.map((p) => p.name)).toEqual(["cert-manager-0"]);
+      const trustManagerPods = podsBelongingToApplication({ name: "trust-manager", namespace: "cert-manager" }, allApplications, pods);
+      expect(trustManagerPods.map((p) => p.name)).toEqual(["trust-manager-0"]);
+    });
+
+    test("an unlabelled pod in a shared namespace is attributed to NEITHER app -- never guessed", () => {
+      const certManagerPods = podsBelongingToApplication({ name: "cert-manager", namespace: "cert-manager" }, allApplications, pods);
+      const trustManagerPods = podsBelongingToApplication({ name: "trust-manager", namespace: "cert-manager" }, allApplications, pods);
+      expect(certManagerPods.some((p) => p.name === "unlabelled-0")).toBe(false);
+      expect(trustManagerPods.some((p) => p.name === "unlabelled-0")).toBe(false);
+    });
+
+    test("no destination namespace means no pods (fail closed, not a wildcard match)", () => {
+      expect(podsBelongingToApplication({ name: "cluster-scoped" }, allApplications, pods)).toEqual([]);
+    });
+  });
+
+  describe("podBlockingReason -- hard evidence waiting cannot fix", () => {
+    test("CrashLoopBackOff terminal at/above the restart threshold", () => {
+      const [pod] = podsFromPodsJson(podsJson([crashLoopingPod]));
+      expect(pod?.containers[0]?.restartCount).toBe(6);
+      expect(podBlockingReason(pod as PodSnapshot)).toContain("CrashLoopBackOff");
+      // MUTATION-SANITY: below the threshold, the same reason is NOT terminal.
+      const belowThreshold: PodSnapshot = {
+        ...(pod as PodSnapshot),
+        containers: [{ ...(pod as PodSnapshot).containers[0]!, restartCount: CRASHLOOP_RESTART_TERMINAL_THRESHOLD - 1 }],
+      };
+      expect(podBlockingReason(belowThreshold)).toBeNull();
+    });
+
+    test("ImagePullBackOff / ErrImagePull are terminal with no restart floor", () => {
+      const [pod] = podsFromPodsJson(podsJson([imagePullBackOffPod]));
+      expect(podBlockingReason(pod as PodSnapshot)).toContain("ImagePullBackOff");
+      const errImagePull: PodSnapshot = {
+        ...(pod as PodSnapshot),
+        containers: [{ ...(pod as PodSnapshot).containers[0]!, waitingReason: "ErrImagePull" }],
+      };
+      expect(podBlockingReason(errImagePull)).toContain("ErrImagePull");
+    });
+
+    test("CreateContainerConfigError (missing Secret) is terminal", () => {
+      const [pod] = podsFromPodsJson(podsJson([createContainerConfigErrorPod]));
+      const reason = podBlockingReason(pod as PodSnapshot);
+      expect(reason).toContain("CreateContainerConfigError");
+      expect(reason).toContain("gitlab-initial-root-password");
+    });
+
+    test("FailedScheduling on insufficient resources is terminal; other Unschedulable reasons are not", () => {
+      const [pod] = podsFromPodsJson(podsJson([failedSchedulingInsufficientCpuPod]));
+      expect(podBlockingReason(pod as PodSnapshot)).toContain("FailedScheduling");
+      // MUTATION-SANITY: a different Unschedulable reason (e.g. a taint on a
+      // still-joining node) must NOT be treated as terminal by this rule --
+      // only the insufficient-resources case is a dead end.
+      const taintNotYetTolerated: PodSnapshot = {
+        ...(pod as PodSnapshot),
+        scheduledFailureMessage: "0/1 nodes are available: 1 node(s) had untolerated taint.",
+      };
+      expect(podBlockingReason(taintNotYetTolerated)).toBeNull();
+    });
+
+    test("ordinary rollout states carry no hard evidence", () => {
+      const [initializing] = podsFromPodsJson(podsJson([kubePrometheusStackPodInitializing]));
+      const [ozitiInit] = podsFromPodsJson(podsJson([ozitiInitZeroOfOne]));
+      expect(podBlockingReason(initializing as PodSnapshot)).toBeNull();
+      expect(podBlockingReason(ozitiInit as PodSnapshot)).toBeNull();
+    });
+  });
+
+  describe("podStillProvisioning -- exactly the task's NOT-terminal roster", () => {
+    const now = Date.parse("2026-09-19T16:54:00Z");
+
+    test("kube-prometheus-stack PodInitializing is NOT terminal (the run 35628762464 false positive)", () => {
+      const [pod] = podsFromPodsJson(podsJson([kubePrometheusStackPodInitializing]));
+      expect(podStillProvisioning(pod as PodSnapshot, now)).toBe(true);
+    });
+
+    test("openziti Init:0/1 is NOT terminal (the run 33830308187 false positive)", () => {
+      const [pod] = podsFromPodsJson(podsJson([ozitiInitZeroOfOne]));
+      expect(podStillProvisioning(pod as PodSnapshot, now)).toBe(true);
+    });
+
+    test("Running but not yet Ready, still within the startup grace window, is NOT terminal", () => {
+      const youngPod = {
+        metadata: { namespace: "vllm", name: "vllm-0", creationTimestamp: "2026-09-19T16:53:50Z" },
+        status: { phase: "Running", containerStatuses: [{ name: "vllm", restartCount: 0, ready: false, state: { running: {} } }] },
+      };
+      const [pod] = podsFromPodsJson(podsJson([youngPod]));
+      expect(podStillProvisioning(pod as PodSnapshot, now)).toBe(true);
+      // MUTATION-SANITY: the SAME state, once it has aged past the grace
+      // window, is no longer "still provisioning".
+      const pastGrace = now + (STILL_STARTING_GRACE_SECONDS + 1) * 1000;
+      expect(podStillProvisioning(pod as PodSnapshot, pastGrace)).toBe(false);
+    });
+
+    test("hard evidence always wins over still-provisioning", () => {
+      const [pod] = podsFromPodsJson(podsJson([crashLoopingPod]));
+      expect(podStillProvisioning(pod as PodSnapshot, now)).toBe(false);
+    });
+  });
+
+  describe("degradedApplicationTerminalEvidence -- the pure per-Application decision", () => {
+    const now = Date.parse("2026-09-19T16:54:00Z");
+    function evidence(name: string, pods: readonly PodSnapshot[], degradedForSec = 30): DegradedAppEvidence {
+      return { name, syncStatus: "Synced", healthStatus: "Degraded", degradedForSec, pods };
+    }
+
+    test("kube-prometheus-stack Degraded while PodInitializing: NOT terminal, at any degradedForSec below the ceiling", () => {
+      const [pod] = podsFromPodsJson(podsJson([kubePrometheusStackPodInitializing]));
+      expect(degradedApplicationTerminalEvidence(evidence("kube-prometheus-stack", [pod as PodSnapshot], 30), now)).toBeNull();
+      expect(degradedApplicationTerminalEvidence(evidence("kube-prometheus-stack", [pod as PodSnapshot], 599), now)).toBeNull();
+    });
+
+    test("openziti-controller Degraded while Init:0/1: NOT terminal", () => {
+      const [pod] = podsFromPodsJson(podsJson([ozitiInitZeroOfOne]));
+      expect(degradedApplicationTerminalEvidence(evidence("openziti-controller", [pod as PodSnapshot], 30), now)).toBeNull();
+    });
+
+    test("CrashLoopBackOff restart=6 is terminal on the FIRST poll (more fail-fast than the old two-poll rule)", () => {
+      const [pod] = podsFromPodsJson(podsJson([crashLoopingPod]));
+      const hit = degradedApplicationTerminalEvidence(evidence("mimir", [pod as PodSnapshot], 15), now);
+      expect(hit).not.toBeNull();
+      expect(hit?.reason).toContain("CrashLoopBackOff");
+    });
+
+    test("ImagePullBackOff is terminal on the first poll", () => {
+      const [pod] = podsFromPodsJson(podsJson([imagePullBackOffPod]));
+      const hit = degradedApplicationTerminalEvidence(evidence("headscale", [pod as PodSnapshot], 15), now);
+      expect(hit).not.toBeNull();
+      expect(hit?.reason).toContain("ImagePullBackOff");
+    });
+
+    test("CreateContainerConfigError (missing Secret) is terminal on the first poll", () => {
+      const [pod] = podsFromPodsJson(podsJson([createContainerConfigErrorPod]));
+      const hit = degradedApplicationTerminalEvidence(evidence("gitlab", [pod as PodSnapshot], 15), now);
+      expect(hit).not.toBeNull();
+      expect(hit?.reason).toContain("CreateContainerConfigError");
+    });
+
+    test("no hard evidence, past the ceiling, with no pod making progress -> terminal", () => {
+      const stuckNoOpinion = {
+        metadata: { namespace: "loki", name: "loki-0", creationTimestamp: "2026-09-19T16:00:00Z" },
+        status: { phase: "Running", containerStatuses: [{ name: "loki", restartCount: 0, ready: false, state: { running: {} } }] },
+      };
+      const [pod] = podsFromPodsJson(podsJson([stuckNoOpinion]));
+      const farPast = now + (DEGRADED_CEILING_SECONDS + 3600) * 1000; // container is long past its startup grace too
+      const hit = degradedApplicationTerminalEvidence(evidence("loki", [pod as PodSnapshot], DEGRADED_CEILING_SECONDS), farPast);
+      expect(hit).not.toBeNull();
+      expect(hit?.reason).toContain("ceiling");
+      // MUTATION-SANITY: one second short of the ceiling, the same pod is NOT terminal.
+      expect(degradedApplicationTerminalEvidence(evidence("loki", [pod as PodSnapshot], DEGRADED_CEILING_SECONDS - 1), farPast)).toBeNull();
+    });
+
+    test("not Synced/Degraded at all -> null regardless of pods", () => {
+      expect(
+        degradedApplicationTerminalEvidence(
+          { name: "mimir", syncStatus: "OutOfSync", healthStatus: "Degraded", degradedForSec: 9999, pods: [] },
+          now,
+        ),
+      ).toBeNull();
+    });
+  });
+
+  describe("evidenceBasedDegradedTerminalFailure -- orchestrates across every currently-Degraded app", () => {
+    const now = Date.parse("2026-09-19T16:54:00Z");
+
+    test("one dead app among several benign-rollout ones still fails, terminally, naming only the dead one", () => {
+      const [initializingPod] = podsFromPodsJson(podsJson([kubePrometheusStackPodInitializing]));
+      const [crashPod] = podsFromPodsJson(podsJson([crashLoopingPod]));
+      const failure = evidenceBasedDegradedTerminalFailure(
+        [
+          { name: "kube-prometheus-stack", syncStatus: "Synced", healthStatus: "Degraded", degradedForSec: 30, pods: [initializingPod as PodSnapshot] },
+          { name: "mimir", syncStatus: "Synced", healthStatus: "Degraded", degradedForSec: 15, pods: [crashPod as PodSnapshot] },
+        ],
+        now,
+      );
+      expect(failure).not.toBeNull();
+      expect(failure?.terminal).toBe(true);
+      expect(failure?.message).toContain("mimir");
+      expect(failure?.message).not.toContain("kube-prometheus-stack:");
+    });
+
+    test("every Degraded app still merely rolling out -> null, the wait keeps waiting", () => {
+      const [initializingPod] = podsFromPodsJson(podsJson([kubePrometheusStackPodInitializing]));
+      const [ozitiPod] = podsFromPodsJson(podsJson([ozitiInitZeroOfOne]));
+      expect(
+        evidenceBasedDegradedTerminalFailure(
+          [
+            { name: "kube-prometheus-stack", syncStatus: "Synced", healthStatus: "Degraded", degradedForSec: 30, pods: [initializingPod as PodSnapshot] },
+            { name: "openziti-controller", syncStatus: "Synced", healthStatus: "Degraded", degradedForSec: 30, pods: [ozitiPod as PodSnapshot] },
+          ],
+          now,
+        ),
+      ).toBeNull();
+    });
+
+    test("no Degraded apps at all -> null", () => {
+      expect(evidenceBasedDegradedTerminalFailure([], now)).toBeNull();
+    });
+  });
+});
+
+describe("081KSXN940008QG0R000SCP2H1 soak phase -- does it crash-loop after the all-Healthy verdict", () => {
+  const podsJson = (items: unknown[]): string => JSON.stringify({ items });
+  const stablePod = {
+    metadata: { namespace: "mimir", name: "mimir-ingester-0", labels: { "app.kubernetes.io/instance": "mimir" } },
+    status: {
+      phase: "Running",
+      containerStatuses: [{ name: "ingester", restartCount: 2, ready: true, state: { running: {} } }],
+    },
+  };
+
+  describe("podRestartBaseline / soakRestartRegressions", () => {
+    test("no regression when nothing's restartCount moved", () => {
+      const pods = podsFromPodsJson(podsJson([stablePod]));
+      const baseline = podRestartBaseline(pods);
+      expect(baseline.get("mimir/mimir-ingester-0/ingester")).toBe(2);
+      expect(soakRestartRegressions(baseline, pods)).toEqual([]);
+    });
+
+    test("flags a container whose restartCount rose during the soak, with the last termination reason/exit code", () => {
+      const pods = podsFromPodsJson(podsJson([stablePod]));
+      const baseline = podRestartBaseline(pods);
+      const terminatedBetweenRestarts = {
+        ...stablePod,
+        status: {
+          phase: "Running",
+          containerStatuses: [
+            { name: "ingester", restartCount: 3, ready: false, state: { terminated: { reason: "Error", exitCode: 1 } } },
+          ],
+        },
+      };
+      const regressions = soakRestartRegressions(baseline, podsFromPodsJson(podsJson([terminatedBetweenRestarts])));
+      expect(regressions).toEqual([
+        {
+          namespace: "mimir",
+          pod: "mimir-ingester-0",
+          container: "ingester",
+          baselineRestartCount: 2,
+          currentRestartCount: 3,
+          terminatedReason: "Error",
+          terminatedExitCode: 1,
+        },
+      ]);
+
+      // Also detected while the container is currently mid-CrashLoopBackOff
+      // (waiting, no `terminated` block visible at this exact poll).
+      const stillWaiting = {
+        ...stablePod,
+        status: {
+          phase: "Running",
+          containerStatuses: [{ name: "ingester", restartCount: 3, ready: false, state: { waiting: { reason: "CrashLoopBackOff" } } }],
+        },
+      };
+      expect(soakRestartRegressions(baseline, podsFromPodsJson(podsJson([stillWaiting])))).toHaveLength(1);
+    });
+
+    test("MUTATION-SANITY: a restartCount that only matches the baseline is NOT a regression", () => {
+      const pods = podsFromPodsJson(podsJson([stablePod]));
+      const baseline = podRestartBaseline(pods);
+      expect(soakRestartRegressions(baseline, pods)).toEqual([]);
+    });
+
+    test("a pod absent from the baseline (never seen before) is ignored, not a false regression", () => {
+      const baseline = podRestartBaseline([]);
+      const pods = podsFromPodsJson(podsJson([stablePod]));
+      expect(soakRestartRegressions(baseline, pods)).toEqual([]);
+    });
+  });
+
+  describe("soakApplicationInstabilityStep -- a single blip is tolerated, TWO consecutive polls is not", () => {
+    const baselineOkNames = new Set(["mimir", "nats"]);
+
+    test("one not-ok poll does not report; the second consecutive one does, exactly once", () => {
+      const verdict = { name: "mimir", ok: false, syncStatus: "Synced", healthStatus: "Degraded" };
+      const first = soakApplicationInstabilityStep(new Map(), baselineOkNames, [verdict]);
+      expect(first.newlyUnstable).toEqual([]);
+      const second = soakApplicationInstabilityStep(first.streak, baselineOkNames, [verdict]);
+      expect(second.newlyUnstable).toEqual([verdict]);
+      // A third consecutive not-ok poll does NOT re-report -- already caught.
+      const third = soakApplicationInstabilityStep(second.streak, baselineOkNames, [verdict]);
+      expect(third.newlyUnstable).toEqual([]);
+    });
+
+    test("recovering resets the streak, so a later blip needs two polls again", () => {
+      const verdict = { name: "mimir", ok: false, syncStatus: "Synced", healthStatus: "Degraded" };
+      const healthy = { name: "mimir", ok: true, syncStatus: "Synced", healthStatus: "Healthy" };
+      const afterOnePoll = soakApplicationInstabilityStep(new Map(), baselineOkNames, [verdict]);
+      const recovered = soakApplicationInstabilityStep(afterOnePoll.streak, baselineOkNames, [healthy]);
+      expect(recovered.streak.has("mimir")).toBe(false);
+      const blipAgain = soakApplicationInstabilityStep(recovered.streak, baselineOkNames, [verdict]);
+      expect(blipAgain.newlyUnstable).toEqual([]); // needs a second poll again
+    });
+
+    test("an Application that was NOT ok at the soak baseline is never tracked", () => {
+      const wasAlreadyBad = { name: "gitlab", ok: false, syncStatus: "Synced", healthStatus: "Degraded" };
+      const first = soakApplicationInstabilityStep(new Map(), baselineOkNames, [wasAlreadyBad]);
+      const second = soakApplicationInstabilityStep(first.streak, baselineOkNames, [wasAlreadyBad]);
+      expect(second.newlyUnstable).toEqual([]);
+    });
+  });
+
+  describe("soakRegressionFailure -- names the pod, container, and last termination reason/exit code", () => {
+    test("null when neither kind of regression fired", () => {
+      expect(soakRegressionFailure([], [])).toBeNull();
+    });
+
+    test("names pod/container/restart-delta/termination for a restart regression", () => {
+      const failure = soakRegressionFailure(
+        [
+          {
+            namespace: "mimir",
+            pod: "mimir-ingester-0",
+            container: "ingester",
+            baselineRestartCount: 2,
+            currentRestartCount: 3,
+            terminatedReason: "OOMKilled",
+            terminatedExitCode: 137,
+          },
+        ],
+        [],
+      );
+      expect(failure).not.toBeNull();
+      expect(failure?.message).toContain("mimir/mimir-ingester-0");
+      expect(failure?.message).toContain("ingester");
+      expect(failure?.message).toContain("2 -> 3");
+      expect(failure?.message).toContain("OOMKilled");
+      expect(failure?.message).toContain("exit 137");
+    });
+
+    test("names an Application that left Healthy/Synced", () => {
+      const failure = soakRegressionFailure([], [{ name: "mimir", ok: false, syncStatus: "OutOfSync", healthStatus: "Degraded" }]);
+      expect(failure?.message).toContain("mimir");
+      expect(failure?.message).toContain("left Healthy/Synced");
+    });
+
+    // 081M34AW07F087G0R001KATSP6: run 35713533700's `##[error]` line named only
+    // "argo-workflows left Healthy/Synced (OutOfSync/Progressing)" -- the two
+    // drifting CRDs were legible only several thousand lines later, in a
+    // separate diagnostics dump. `outOfSyncResources` closes that gap in the
+    // primary failure message itself.
+    test("names the OutOfSync RESOURCE(S), not only the Application, when known", () => {
+      const failure = soakRegressionFailure(
+        [],
+        [
+          {
+            name: "argo-workflows",
+            ok: false,
+            syncStatus: "OutOfSync",
+            healthStatus: "Progressing",
+            outOfSyncResources: [
+              "CustomResourceDefinition/workfloweventbindings.argoproj.io",
+              "CustomResourceDefinition/workflowtasksets.argoproj.io",
+            ],
+          },
+        ],
+      );
+      expect(failure?.message).toContain(
+        "argo-workflows left Healthy/Synced (OutOfSync/Progressing) " +
+          "[CustomResourceDefinition/workfloweventbindings.argoproj.io, CustomResourceDefinition/workflowtasksets.argoproj.io]",
+      );
+    });
+
+    test("omits the bracketed resource list -- not '[]' -- when outOfSyncResources is absent", () => {
+      const failure = soakRegressionFailure([], [{ name: "mimir", ok: false, syncStatus: "OutOfSync", healthStatus: "Degraded" }]);
+      expect(failure?.message).not.toContain("[]");
+      expect(failure?.message).not.toContain("[");
+    });
+
+    test("omits the bracketed resource list when outOfSyncResources is present but empty", () => {
+      const failure = soakRegressionFailure(
+        [],
+        [{ name: "mimir", ok: false, syncStatus: "OutOfSync", healthStatus: "Degraded", outOfSyncResources: [] }],
+      );
+      expect(failure?.message).not.toContain("[");
+    });
+
+    // 2026-09-23: 12 of 18 `included` failures since the soak phase landed were
+    // Applications flipping during the soak, and the `Synced/Progressing` ones --
+    // argo-rollouts, the most frequent -- named NO resource, because nothing was
+    // out of sync. `status.resources[].health` carries the answer; this reads it.
+    test("names the UNHEALTHY resource for a Synced/Progressing flip that has nothing out of sync", () => {
+      const failure = soakRegressionFailure(
+        [],
+        [
+          {
+            name: "argo-rollouts",
+            ok: false,
+            syncStatus: "Synced",
+            healthStatus: "Progressing",
+            unhealthyResources: ["Deployment/argo-rollouts Progressing: Waiting for rollout to finish"],
+          },
+        ],
+      );
+      expect(failure?.message).toContain(
+        "argo-rollouts left Healthy/Synced (Synced/Progressing) {unhealthy: Deployment/argo-rollouts Progressing: Waiting for rollout to finish}",
+      );
+    });
+
+    test("omits the unhealthy block when unhealthyResources is absent or empty", () => {
+      for (const extra of [{}, { unhealthyResources: [] }]) {
+        const failure = soakRegressionFailure([], [{ name: "keda", ok: false, syncStatus: "Synced", healthStatus: "Progressing", ...extra }]);
+        expect(failure?.message).not.toContain("{unhealthy");
+      }
+    });
+  });
+
+  describe("startupRestartEntries -- attributed to an app, sorted, excludes healthy containers", () => {
+    test("only restarted containers appear, attributed via podsBelongingToApplication", () => {
+      const restartedInMonitoring = {
+        metadata: { namespace: "monitoring", name: "prometheus-0", labels: { "app.kubernetes.io/instance": "kube-prometheus-stack" } },
+        status: { phase: "Running", containerStatuses: [{ name: "prometheus", restartCount: 1, ready: true, state: { running: {} } }] },
+      };
+      const healthyElsewhere = {
+        metadata: { namespace: "redis", name: "redis-0" },
+        status: { phase: "Running", containerStatuses: [{ name: "redis", restartCount: 0, ready: true, state: { running: {} } }] },
+      };
+      const pods = podsFromPodsJson(podsJson([restartedInMonitoring, healthyElsewhere]));
+      const entries = startupRestartEntries(pods, [{ name: "kube-prometheus-stack", namespace: "monitoring" }]);
+      expect(entries).toEqual([
+        { app: "kube-prometheus-stack", namespace: "monitoring", pod: "prometheus-0", container: "prometheus", restartCount: 1 },
+      ]);
+    });
+
+    test("an unattributed pod (no matching Application) still reports, with app=\"\"", () => {
+      const orphan = {
+        metadata: { namespace: "mystery", name: "mystery-0" },
+        status: { phase: "Running", containerStatuses: [{ name: "c", restartCount: 4, ready: true, state: { running: {} } }] },
+      };
+      const entries = startupRestartEntries(podsFromPodsJson(podsJson([orphan])), []);
+      expect(entries).toEqual([{ app: "", namespace: "mystery", pod: "mystery-0", container: "c", restartCount: 4 }]);
+    });
+  });
+
+  describe("classifyStartupRestarts -- threshold policy, not a both-directions ratchet (081KSXN940008QG0R000SCP2H1: run 35695291413 flaked the old exact-match ratchet on an unrelated pair the very next push)", () => {
+    const now = Date.parse("2026-09-22T12:00:00Z");
+    const mimirEntry = (restartCount: number) => ({
+      app: "mimir",
+      namespace: "mimir",
+      pod: "mimir-ingester-zone-a-0",
+      container: "ingester",
+      restartCount,
+    });
+    const baselineWithMimir = (maxRestarts: number): readonly StartupRestartBaselineEntry[] => [
+      { app: "mimir", container: "ingester", maxRestarts, reason: "mimir-kafka not ready yet at first boot", lastSeen: "2026-09-22" },
+    ];
+
+    describe("classifyStartupRestartEntry -- the per-(app,container) verdict", () => {
+      test("covered by the baseline (observed <= maxRestarts): ok, however high the count", () => {
+        const byKey = new Map(baselineWithMimir(4).map((e) => [`${e.app}::${e.container}`, e]));
+        expect(classifyStartupRestartEntry(mimirEntry(4), byKey)).toBe("ok");
+        expect(classifyStartupRestartEntry(mimirEntry(1), byKey)).toBe("ok");
+      });
+
+      test("NOT covered and below the hard-fail threshold: warn, never fail", () => {
+        const byKey = new Map<string, StartupRestartBaselineEntry>();
+        expect(classifyStartupRestartEntry(mimirEntry(1), byKey)).toBe("warn");
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD - 1), byKey)).toBe("warn");
+      });
+
+      test("NOT covered and AT/ABOVE the hard-fail threshold: fail", () => {
+        const byKey = new Map<string, StartupRestartBaselineEntry>();
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD), byKey)).toBe("fail");
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD + 5), byKey)).toBe("fail");
+      });
+
+      test("MUTATION-SANITY: one restart below the threshold does not fail; the baseline exactly at the observed count covers it", () => {
+        const byKey = new Map<string, StartupRestartBaselineEntry>();
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD - 1), byKey)).not.toBe("fail");
+        const covered = new Map(baselineWithMimir(STARTUP_RESTART_HARD_FAIL_THRESHOLD).map((e) => [`${e.app}::${e.container}`, e]));
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD), covered)).toBe("ok");
+        // one restart OVER the covered ceiling is fail again, not silently absorbed
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD + 1), covered)).toBe("fail");
+      });
+
+      test("in the baseline but EXCEEDING maxRestarts is not covered", () => {
+        const byKey = new Map(baselineWithMimir(1).map((e) => [`${e.app}::${e.container}`, e]));
+        expect(classifyStartupRestartEntry(mimirEntry(2), byKey)).toBe("warn"); // 2 < threshold 3
+        expect(classifyStartupRestartEntry(mimirEntry(3), byKey)).toBe("fail"); // 3 >= threshold
+      });
+    });
+
+    describe("classifyStartupRestarts -- the whole-measurement orchestration", () => {
+      test("a crash loop (restartCount>=3, uncovered) is a failure; a 1-2 wait is a warning, not a failure", () => {
+        const measured = [
+          mimirEntry(3),
+          { app: "dapr", namespace: "dapr-system", pod: "dapr-operator-0", container: "dapr-operator", restartCount: 1 },
+        ];
+        const result = classifyStartupRestarts(measured, [], now);
+        expect(result.failures.map((f) => f.entry.container)).toEqual(["ingester"]);
+        expect(result.warnings.map((w) => w.container)).toEqual(["dapr-operator"]);
+      });
+
+      test("startupRestartFailure is null unless something actually crossed the threshold uncovered", () => {
+        const warnOnly = classifyStartupRestarts(
+          [{ app: "dapr", namespace: "dapr-system", pod: "p", container: "dapr-operator", restartCount: 1 }],
+          [],
+          now,
+        );
+        expect(startupRestartFailure(warnOnly)).toBeNull();
+        const failing = classifyStartupRestarts([mimirEntry(3)], [], now);
+        const failure = startupRestartFailure(failing);
+        expect(failure).not.toBeNull();
+        expect(failure?.message).toContain("mimir/ingester");
+        expect(failure?.message).toContain("not in the baseline");
+      });
+
+      test("a baseline entry not measured this run is ABSENT, never a failure by itself", () => {
+        const result = classifyStartupRestarts([], baselineWithMimir(3), now);
+        expect(result.failures).toEqual([]);
+        expect(startupRestartFailure(result)).toBeNull();
+        expect(result.absent).toHaveLength(1);
+        expect(result.absent[0]?.entry.container).toBe("ingester");
+      });
+
+      test("an absent entry seen recently is not stale; one older than the window is", () => {
+        const recentBaseline: readonly StartupRestartBaselineEntry[] = [
+          { app: "mimir", container: "ingester", maxRestarts: 3, reason: "x", lastSeen: "2026-09-20" }, // 2 days before `now`
+        ];
+        const recent = classifyStartupRestarts([], recentBaseline, now);
+        expect(recent.absent[0]?.stale).toBe(false);
+
+        const staleBaseline: readonly StartupRestartBaselineEntry[] = [
+          { app: "mimir", container: "ingester", maxRestarts: 3, reason: "x", lastSeen: "2026-09-01" }, // 21 days before `now`
+        ];
+        const stale = classifyStartupRestarts([], staleBaseline, now);
+        expect(stale.absent[0]?.stale).toBe(true);
+        expect(stale.absent[0]?.daysSinceLastSeen).toBeGreaterThan(STARTUP_RESTART_STALE_DAYS);
+      });
+
+      test("MUTATION-SANITY: exactly STARTUP_RESTART_STALE_DAYS is NOT stale; one day more IS", () => {
+        const msPerDay = 86_400_000;
+        const exactly: readonly StartupRestartBaselineEntry[] = [
+          {
+            app: "mimir",
+            container: "ingester",
+            maxRestarts: 3,
+            reason: "x",
+            lastSeen: new Date(now - STARTUP_RESTART_STALE_DAYS * msPerDay).toISOString(),
+          },
+        ];
+        expect(classifyStartupRestarts([], exactly, now).absent[0]?.stale).toBe(false);
+        const oneDayOlder: readonly StartupRestartBaselineEntry[] = [
+          {
+            app: "mimir",
+            container: "ingester",
+            maxRestarts: 3,
+            reason: "x",
+            lastSeen: new Date(now - (STARTUP_RESTART_STALE_DAYS + 1) * msPerDay).toISOString(),
+          },
+        ];
+        expect(classifyStartupRestarts([], oneDayOlder, now).absent[0]?.stale).toBe(true);
+      });
+
+      test("empty measurement against empty baseline: no failures, no warnings, nothing absent", () => {
+        const result = classifyStartupRestarts([], [], now);
+        expect(result).toEqual({ failures: [], warnings: [], absent: [] });
+        expect(startupRestartFailure(result)).toBeNull();
+      });
+    });
   });
 });
 
@@ -2262,5 +3138,229 @@ describe("081M23BCR90087G0R002GYP7TE a failed sync is never reconciled", () => {
     const verdicts = classifyApplications([autoSync], snapshots);
     expect(verdicts.map((verdict) => verdict.ok)).toEqual([false]);
     expect(verdicts[0]?.reason).toContain("retried 10 times");
+  });
+
+  // 081M34AW07F087G0R001KATSP6: `status.resources[]` is what
+  // `soakRegressionFailure` needs to name the drifting RESOURCE, not only the
+  // Application -- this is the parse+classify half; soakRegressionFailure's
+  // own tests cover the message it produces.
+  describe("status.resources[] -> outOfSyncResources, end to end through classifyApplications", () => {
+    test("OutOfSync resources survive parse and classify, formatted kind/name, ordinal-sorted", () => {
+      const snapshots = parseApplicationList(
+        JSON.stringify({
+          items: [
+            {
+              metadata: { name: "argo-workflows" },
+              status: {
+                sync: { status: "OutOfSync" },
+                health: { status: "Progressing" },
+                resources: [
+                  { kind: "CustomResourceDefinition", name: "workflowtasksets.argoproj.io", status: "OutOfSync" },
+                  { kind: "CustomResourceDefinition", name: "workfloweventbindings.argoproj.io", status: "OutOfSync" },
+                  { kind: "Deployment", name: "argo-workflows-workflow-controller", status: "Synced" },
+                ],
+              },
+            },
+          ],
+        }),
+      );
+      expect(snapshots[0]?.outOfSyncResources).toEqual([
+        "CustomResourceDefinition/workfloweventbindings.argoproj.io",
+        "CustomResourceDefinition/workflowtasksets.argoproj.io",
+      ]);
+      const verdicts = classifyApplications([{ ...autoSync, name: "argo-workflows", dir: "argo-workflows" }], snapshots);
+      expect(verdicts[0]?.outOfSyncResources).toEqual([
+        "CustomResourceDefinition/workfloweventbindings.argoproj.io",
+        "CustomResourceDefinition/workflowtasksets.argoproj.io",
+      ]);
+    });
+
+    // The carry step, pinned. Without this, classifyApplications could drop the
+    // field and every parser test would stay green while the soak message went
+    // back to naming no resource -- the very gap unhealthyResources closes.
+    test("unhealthyResources survives from the snapshot into the verdict", () => {
+      const snapshots = parseApplicationList(
+        JSON.stringify({
+          items: [
+            {
+              metadata: { name: "argo-rollouts" },
+              status: {
+                sync: { status: "Synced" },
+                health: { status: "Progressing" },
+                resources: [
+                  { kind: "Deployment", name: "argo-rollouts", health: { status: "Progressing", message: "rolling" } },
+                ],
+              },
+            },
+          ],
+        }),
+      );
+      const verdicts = classifyApplications([{ ...autoSync, name: "argo-rollouts", dir: "argo-rollouts" }], snapshots);
+      expect(verdicts[0]?.unhealthyResources).toEqual(["Deployment/argo-rollouts Progressing: rolling"]);
+    });
+
+    test("a Synced-only resource list produces NO outOfSyncResources field, not an empty array", () => {
+      const snapshots = parseApplicationList(
+        JSON.stringify({
+          items: [
+            {
+              metadata: { name: "loki" },
+              status: {
+                sync: { status: "Synced" },
+                health: { status: "Healthy" },
+                resources: [{ kind: "StatefulSet", name: "loki-write", status: "Synced" }],
+              },
+            },
+          ],
+        }),
+      );
+      expect(snapshots[0]?.outOfSyncResources).toBeUndefined();
+    });
+
+    test("no status.resources at all -> no outOfSyncResources field (old fixtures, absent field, unchanged)", () => {
+      const snapshots = parseApplicationList(
+        JSON.stringify({ items: [{ metadata: { name: "argocd" }, status: { sync: { status: "Synced" }, health: { status: "Healthy" } } }] }),
+      );
+      expect(snapshots[0]?.outOfSyncResources).toBeUndefined();
+    });
+  });
+});
+
+// --------------------------- RWX read from the RENDER, not just the tree ---
+// The checked-in scan reads files that, for most Applications, structurally
+// cannot hold the answer: they are `spec.source.chart` against an external
+// repoURL, so the PVC lives upstream. The render closes that from the other
+// side. Measured 2026-09-19: the render covers 23 apps / 38 claims with ZERO
+// RWX, while `arc-runner-set` -- absent from the render -- declares
+// `accessModes: [ ReadWriteMany ]` in its own committed manifest. Each
+// detector catches what the other cannot, which is why the guard asks both.
+
+function snapshotFixture(rendered: unknown): string {
+  const root = mkdtempSync(join(tmpdir(), "rwx-render-"));
+  mkdirSync(join(root, "src/Core.TypeScript/cluster"), { recursive: true });
+  writeFileSync(
+    join(root, "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"),
+    JSON.stringify({ rendered }),
+    "utf8",
+  );
+  return root;
+}
+
+describe("RWX detected from the rendered snapshot", () => {
+  test("an upstream chart rendering ReadWriteMany is caught", () => {
+    const root = snapshotFixture([
+      { appId: "full-ai-cluster/someapp", accessModes: ["ReadWriteMany"] },
+    ]);
+    expect(renderedClaimsRequestReadWriteMany("someapp", root)).toBe(true);
+  });
+
+  test("a chart rendering only ReadWriteOnce is not caught", () => {
+    const root = snapshotFixture([
+      { appId: "full-ai-cluster/someapp", accessModes: ["ReadWriteOnce"] },
+    ]);
+    expect(renderedClaimsRequestReadWriteMany("someapp", root)).toBe(false);
+  });
+
+  test("one RWX claim among several is enough", () => {
+    const root = snapshotFixture([
+      { appId: "full-ai-cluster/someapp", accessModes: ["ReadWriteOnce"] },
+      { appId: "full-ai-cluster/someapp", accessModes: ["ReadWriteMany"] },
+    ]);
+    expect(renderedClaimsRequestReadWriteMany("someapp", root)).toBe(true);
+  });
+
+  test("another app's RWX claim does not implicate this one", () => {
+    const root = snapshotFixture([
+      { appId: "full-ai-cluster/other", accessModes: ["ReadWriteMany"] },
+    ]);
+    expect(renderedClaimsRequestReadWriteMany("someapp", root)).toBe(false);
+  });
+
+  // The snapshot is a committed measurement and can be absent or corrupt. It
+  // must not flip verdicts in EITHER direction: not "everything is RWX" (which
+  // would empty the proof roster) and not a claim of safety (the checked-in
+  // scan still applies, and the gap is reported instead).
+  test("a missing snapshot answers false rather than throwing or excluding", () => {
+    const empty = mkdtempSync(join(tmpdir(), "rwx-none-"));
+    expect(renderedClaimsRequestReadWriteMany("someapp", empty)).toBe(false);
+  });
+
+  test("a corrupt snapshot answers false rather than throwing", () => {
+    const root = mkdtempSync(join(tmpdir(), "rwx-bad-"));
+    mkdirSync(join(root, "src/Core.TypeScript/cluster"), { recursive: true });
+    writeFileSync(join(root, "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"), "{not json", "utf8");
+    expect(renderedClaimsRequestReadWriteMany("someapp", root)).toBe(false);
+  });
+
+  // The cache is keyed by repoRoot. A single cached value would make the first
+  // caller's tree the answer for every later one.
+  test("two fixture roots give two different answers", () => {
+    const yes = snapshotFixture([{ appId: "full-ai-cluster/app", accessModes: ["ReadWriteMany"] }]);
+    const no = snapshotFixture([{ appId: "full-ai-cluster/app", accessModes: ["ReadWriteOnce"] }]);
+    expect(renderedClaimsRequestReadWriteMany("app", yes)).toBe(true);
+    expect(renderedClaimsRequestReadWriteMany("app", no)).toBe(false);
+  });
+
+  test("silence is reported, not read as clearance", () => {
+    const root = snapshotFixture([{ appId: "full-ai-cluster/covered", accessModes: ["ReadWriteOnce"] }]);
+    expect(appsTheRenderIsSilentAbout(["covered", "uncovered"], root)).toEqual(["uncovered"]);
+  });
+});
+
+describe("parseUnhealthyResources -- which resources are not Healthy, read from status.resources[].health", () => {
+  const status = (resources: unknown[]): Record<string, unknown> => ({ resources });
+
+  test("names a non-Healthy resource with its health message", () => {
+    expect(
+      parseUnhealthyResources(
+        status([{ kind: "Deployment", name: "argo-rollouts", health: { status: "Progressing", message: "Waiting for rollout to finish" } }]),
+      ),
+    ).toEqual(["Deployment/argo-rollouts Progressing: Waiting for rollout to finish"]);
+  });
+
+  test("Healthy resources, and resources ArgoCD assigns no health (CRDs), are not reported", () => {
+    expect(
+      parseUnhealthyResources(
+        status([
+          { kind: "Deployment", name: "ok", health: { status: "Healthy" } },
+          { kind: "CustomResourceDefinition", name: "rollouts.argoproj.io", status: "OutOfSync" },
+        ]),
+      ),
+    ).toEqual([]);
+  });
+
+  test("a health status with no message still names the resource", () => {
+    expect(parseUnhealthyResources(status([{ kind: "StatefulSet", name: "s", health: { status: "Degraded" } }]))).toEqual([
+      "StatefulSet/s Degraded",
+    ]);
+  });
+
+  test("ordinal-sorted and deterministic", () => {
+    expect(
+      parseUnhealthyResources(
+        status([
+          { kind: "Deployment", name: "b", health: { status: "Progressing" } },
+          { kind: "Deployment", name: "a", health: { status: "Progressing" } },
+        ]),
+      ),
+    ).toEqual(["Deployment/a Progressing", "Deployment/b Progressing"]);
+  });
+
+  test("parseApplicationList carries it onto the snapshot", () => {
+    const [snap] = parseApplicationList(
+      JSON.stringify({
+        items: [
+          {
+            metadata: { name: "argo-rollouts" },
+            status: {
+              sync: { status: "Synced" },
+              health: { status: "Progressing" },
+              resources: [{ kind: "Deployment", name: "argo-rollouts", health: { status: "Progressing", message: "rolling" } }],
+            },
+          },
+        ],
+      }),
+    );
+    expect(snap?.unhealthyResources).toEqual(["Deployment/argo-rollouts Progressing: rolling"]);
   });
 });

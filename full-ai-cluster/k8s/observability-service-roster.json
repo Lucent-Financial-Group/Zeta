@@ -17,14 +17,14 @@
     "",
     "Service names and ports only. No credential material."
   ],
-  "kubeVersion": "1.35.6",
+  "kubeVersion": "1.35.7",
   "apps": {
     "loki": {
       "namespace": "loki",
       "chart": "loki",
       "repoURL": "https://grafana-community.github.io/helm-charts",
       "version": "18.12.1",
-      "valuesHash": "sha256:2e4b9cad93d0b2bef87ea008f4e638a73363774d32f06167bb82536725a45326",
+      "valuesHash": "sha256:adc6f13175865ad3042a9fb1910d7195b4fecc5060bf6e55faab07e66825a327",
       "services": {
         "loki-query-scheduler-discovery": [
           3100,
@@ -79,7 +79,7 @@
       "chart": "mimir-distributed",
       "repoURL": "https://grafana.github.io/helm-charts",
       "version": "6.2.0",
-      "valuesHash": "sha256:3aa75772ba314dd0d4c44bf31db0ef6c2a88c4a8a4acda853e567b9eb39bf776",
+      "valuesHash": "sha256:deba4ba444b92e2dc024ff925d89700df0086661f0f6f063666912e5ad01c244",
       "services": {
         "mimir-rollout-operator": [
           443
@@ -181,7 +181,7 @@
       "chart": "tempo",
       "repoURL": "https://grafana-community.github.io/helm-charts",
       "version": "2.3.0",
-      "valuesHash": "sha256:9dfdbbb8489ede820dbbc762345e16f0a8848715e6d8d90c77fef57a35e786c0",
+      "valuesHash": "sha256:88a181aaeb244d0466097373544a08a515a2e8c2d26e8aa20ad033d40eda4427",
       "services": {
         "tempo": [
           6831,

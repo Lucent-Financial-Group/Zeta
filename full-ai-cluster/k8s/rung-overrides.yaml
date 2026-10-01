@@ -1,0 +1,314 @@
+# PER-RUNG FIELD OVERRIDES. The second override point between the committed
+# `metal` tree and what CI actually syncs; the first is the resource rung,
+# which can write only `<requestsField>.cpu` and `<requestsField>.memory`.
+#
+# Aaron 2026-09-04: 'metal is just for hardware and hopeuflly they just
+# diverge between dev and metal is disk, cpu, memory, etc... request maybe
+# replica counts but i'd love to try to test everyting in CI', and on the GPU
+# specifically 'yes on real metal we can add any gpu selectors'.
+#
+# So an entry here must encode a SUBSTRATE FACT -- something the CI runner
+# physically does not have and the hardware does -- never a preference and
+# never a convenience. A GitHub runner has no GPU; the 16-core box does.
+#
+# These are applied to a STAGED COPY by lane-tree-source and never to the
+# committed tree, so the hardware box keeps `metal` byte-for-byte.
+#
+# EVERY ENTRY MUST DO SOMETHING: `applyRungOverrides` THROWS when an override
+# produces zero edits, because a no-op override reads as coverage and buys
+# none. Every entry also carries a `reason` and a `liftsWhen`, and the loader
+# refuses an entry missing either, or naming a rung the catalogue lacks.
+#
+# WHY YAML (2026-09-23): this file is HAND-EDITED and its reasons are long
+# prose. As JSON every reason was one unbroken line and the header was an
+# array of strings; the maintainer wants hand-edited config human-readable.
+# Generated snapshots (lane-footprints.json, rendered-*.snapshot.json) stay
+# JSON -- nobody edits those by hand.
+#
+# `apiVersion`/`kind` are here for the same reason sync-wave-dependency-graph
+# carries them: this file lives under a manifest root that kubeconform walks,
+# and a document with no `kind` is an error there, while an unknown kind is
+# skipped by `-ignore-missing-schemas`. The loader refuses any other kind, so a
+# stray manifest cannot be read as an override roster.
+#
+# Dotted keys under `set:` are FIELD PATHS (parsed by `parseFieldPath`), not
+# nested YAML -- quote them so they read as one key.
+apiVersion: cluster.zeta.io/v1
+kind: RungOverrides
+# ── DIMENSIONS: what a cluster HAS, beyond how big it is (2026-09-23) ─────────
+# The rung says how big a cluster is; a dimension says what it physically has.
+# `gpuVendor` exists because nodeSelector cannot express OR and `nvidia.com/gpu`
+# vs `amd.com/gpu` are DIFFERENT extended resources -- one committed tree cannot
+# ask for "either". So the committed tree carries ONE vendor (`committed`,
+# NVIDIA: the maintainer's box) and an override with `when: {gpuVendor: amd}`
+# describes the departure for an AMD cluster, instead of a forked Application.
+# An override conditioned on the committed value is refused (it could only
+# restate the tree). Selected per cluster when the tree is built:
+# `applyServeTreeRung(rung, staged, {gpuVendor: "amd"})`. The node side already
+# speaks both vendors: nixos/modules/gpu-device-plugin.nix runs the ROCm device
+# plugin on nodes labelled `zeta.io/gpu: amd`.
+dimensions:
+  gpuVendor:
+    committed: nvidia
+    values: [nvidia, amd]
+overrides:
+  - id: ollama/cpu-only-dev
+    path: full-ai-cluster/k8s/applications/ollama/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      OLLAMA IS CPU-CAPABLE WITH THE SAME IMAGE; the GPU is opt-in. The
+      committed tree is `metal`, where `ollama.gpu.enabled: true`,
+      `nodeSelector: {zeta.io/gpu: nvidia}` and an `nvidia.com/gpu: 1` request
+      are all correct -- that box has the card. A GitHub-hosted runner does
+      not, which is a substrate fact rather than a preference, and it is the
+      whole of why this Application had no expressible dev form before this
+      file existed. Turning the GPU off, dropping the selector and replacing
+      the requests map (which is how the `nvidia.com/gpu` key is removed at all
+      -- its name contains dots, so no dotted path can address it) leaves an
+      ordinary CPU server. `replicaCount` goes 0 -> 1 because a zero-replica
+      Application reaches Healthy while scheduling nothing, which Aaron named
+      exactly: 'it's half a test of the chart but not the pod/continer'. The
+      dev sizing is 250m/512Mi, not the metal 2/8Gi: the model pull and run
+      lists are EMPTY, so what starts is an idle server process, and 2000m
+      would take a third of the lane's whole CPU budget for a process doing
+      nothing.
+    liftsWhen: >-
+      a GPU-bearing self-hosted runner serves this lane, at which point dev and
+      metal want the same values and this entry is deleted rather than edited.
+    set:
+      "spec.source.helm.valuesObject.replicaCount": 1
+      "spec.source.helm.valuesObject.ollama.gpu.enabled": false
+      "spec.source.helm.valuesObject.resources.requests":
+        cpu: 250m
+        memory: 512Mi
+      "spec.source.helm.valuesObject.resources.limits":
+        cpu: "1"
+        memory: 2Gi
+    remove:
+      - spec.source.helm.valuesObject.nodeSelector
+
+  # ── DEV DISK SIZES (2026-09-23) ─────────────────────────────────────────────
+  # The storage-profile ladder resizes the Longhorn-pool claims it governs (the
+  # `ci` rung, via storageProfileForResourceRung). These are the claims it does
+  # NOT govern -- every one on `zeta-block-local` or on a chart default with no
+  # class -- priced one Application each, so each carries its own exit.
+  #
+  # THE SUBSTRATE FACT, the same for all of them: a hosted runner has 70 GiB free
+  # (storage-profiles.json runnerEnvelope, measured, maintainer-authorised), and
+  # the dev lane's images take ~34 GiB of it (image-footprint.ts, applied
+  # cohort). local-path is thin -- a directory, no quota -- so a metal-sized
+  # declaration is not bytes on the runner, but it IS a capacity the runner
+  # cannot honour, and dev-lane-storage.ts refuses a lane whose declared claims
+  # do not fit beside its images. Metal keeps every committed size.
+  - id: dapr/scheduler-disk-dev
+    path: full-ai-cluster/k8s/applications/dapr/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      The dapr scheduler's etcd claim is a CHART DEFAULT (16Gi x 3 replicas, no
+      class, so the cluster default zeta-block-local) -- 48 GiB of declaration on
+      a runner with 70 GiB free and ~34 GiB of images, for a scheduler holding no
+      jobs in a smoke test. 1Gi per replica is ample for an idle etcd.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.dapr_scheduler.cluster.storageSize": 1Gi
+    resizes:
+      - claim: full-ai-cluster/dapr dapr-scheduler-data-dir/dapr-scheduler-server
+        size: 1Gi
+  - id: forgejo/disk-dev
+    path: full-ai-cluster/k8s/applications/forgejo/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      20Gi of git storage declared on zeta-block-local, on a runner with 70 GiB
+      free and ~34 GiB of images; the smoke test creates no repositories, so the
+      volume holds forgejo's own bootstrap data and nothing else.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.persistence.size": 1Gi
+    resizes:
+      - claim: full-ai-cluster/forgejo gitea-shared-storage
+        size: 1Gi
+  - id: loki/disk-dev
+    path: full-ai-cluster/k8s/applications/loki/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      Two CHART-DEFAULT claims (backend and write, 10Gi each, no class) on a
+      runner with 70 GiB free and ~34 GiB of images. Loki ships chunks to the
+      SeaweedFS object store; these volumes hold the WAL and index cache, which a
+      smoke test fills with minutes of cluster logs.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.backend.persistence.size": 1Gi
+      "spec.source.helm.valuesObject.write.persistence.size": 1Gi
+    resizes:
+      - claim: full-ai-cluster/loki data/loki-backend
+        size: 1Gi
+      - claim: full-ai-cluster/loki data/loki-write
+        size: 1Gi
+  - id: mimir/kafka-and-alertmanager-disk-dev
+    path: full-ai-cluster/k8s/applications/mimir/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      The bundled Kafka (5Gi) and the alertmanager (1Gi) are CHART DEFAULTS with
+      no class, outside the storage ladder, on a runner with 70 GiB free and ~34
+      GiB of images. The ingest topic of an idle smoke test is a few MiB.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.kafka.persistence.size": 1Gi
+      "spec.source.helm.valuesObject.alertmanager.persistentVolume.size": 256Mi
+    resizes:
+      - claim: full-ai-cluster/mimir kafka-data/mimir-kafka
+        size: 1Gi
+      - claim: full-ai-cluster/mimir storage/mimir-alertmanager
+        size: 256Mi
+  - id: openbao/disk-dev
+    path: full-ai-cluster/k8s/applications/openbao/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      10Gi raft data plus 5Gi audit on zeta-block-local, on a runner with 70 GiB
+      free and ~34 GiB of images; the ephemeral dev ceremony writes a handful of
+      keys and an audit trail of minutes.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.server.dataStorage.size": 1Gi
+      "spec.source.helm.valuesObject.server.auditStorage.size": 512Mi
+    resizes:
+      - claim: full-ai-cluster/openbao data/openbao
+        size: 1Gi
+      - claim: full-ai-cluster/openbao audit/openbao
+        size: 512Mi
+  - id: opensearch/disk-dev
+    path: full-ai-cluster/k8s/applications/opensearch/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      20Gi on zeta-block-local on a runner with 70 GiB free and ~34 GiB of
+      images; a single-node smoke-test cluster holds OpenSearch's own system
+      indices and nothing else. Disk watermarks are percentages of the node
+      filesystem, which local-path does not partition, so the size changes no
+      watermark behaviour.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.persistence.size": 1Gi
+    resizes:
+      - claim: full-ai-cluster/opensearch opensearch-cluster-master/opensearch-cluster-master
+        size: 1Gi
+  - id: seaweedfs/disk-dev
+    path: full-ai-cluster/k8s/applications/seaweedfs/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      The cluster blob store (loki, mimir, tempo buckets) declares 20Gi on
+      zeta-block-local, on a runner with 70 GiB free and ~34 GiB of images.
+      2Gi holds the buckets' contents for a smoke run's duration.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.allInOne.data.size": 2Gi
+    resizes:
+      - claim: full-ai-cluster/seaweedfs blob-store-seaweedfs-all-in-one-data
+        size: 2Gi
+  # NOT APPLIED ON THE FIRST-BOOT REPLICA (081M3HYPQCR087G0R003C2VPRS). That lane also
+  # runs k3s's bootstrap roster, whose spire-install.yaml installs this same release at
+  # the committed 5Gi -- and a StatefulSet's volumeClaimTemplates are immutable, so the
+  # Application at 512Mi could never sync there ("spec: Forbidden", dispatch
+  # 36333824468). The replica skips every override on an Application that adopts a
+  # bootstrap HelmChart; adoption-immutable-fields.ts renders both sides to check it.
+  # The kind/k3d lanes install no bootstrap charts, so the resize still holds there.
+  - id: spire/disk-dev
+    path: full-ai-cluster/k8s/applications/spire/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      The spire-server datastore declares 5Gi on zeta-block-local, on a runner
+      with 70 GiB free and ~34 GiB of images; a smoke-test trust domain holds a
+      handful of registration entries in SQLite.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.spire-server.persistence.size": 512Mi
+    resizes:
+      - claim: full-ai-cluster/spire spire-data/spire-server
+        size: 512Mi
+
+  # ── AMD GPU FORMS (2026-09-23) ──────────────────────────────────────────────
+  # Metal clusters whose GPU is AMD. The committed tree stays NVIDIA; these fire
+  # only for a tree built with `gpuVendor: amd`.
+  - id: ollama/amd-gpu-metal
+    path: full-ai-cluster/k8s/applications/ollama/Application.yaml
+    docIndex: 0
+    rung: metal
+    when:
+      gpuVendor: amd
+    reason: >-
+      An AMD GPU node advertises `amd.com/gpu` (ROCm device plugin) and is
+      labelled `zeta.io/gpu: amd`; the committed tree requests `nvidia.com/gpu`
+      and selects `zeta.io/gpu: nvidia`, so on AMD hardware the pod could never
+      schedule. `ollama.gpu.type: amd` makes the pinned otwld chart (1.79.0) pull
+      its ROCm image -- `ollama/ollama:<appVersion>-rocm`, the pinned form of
+      `ollama/ollama:rocm` -- and add `amd.com/gpu` to the limits; the requests
+      and limits maps are REPLACED because the chart merges our map over its own
+      and the committed map still names `nvidia.com/gpu` (a key with dots, which
+      no dotted path can remove on its own). Sizing is metal's, unchanged.
+    liftsWhen: >-
+      never on an AMD cluster -- this is the AMD form, not a workaround; it is
+      deleted only if the committed tree stops being vendor-specific.
+    set:
+      "spec.source.helm.valuesObject.ollama.gpu.type": amd
+      "spec.source.helm.valuesObject.nodeSelector":
+        zeta.io/gpu: amd
+      "spec.source.helm.valuesObject.resources.requests":
+        cpu: "2"
+        memory: 8Gi
+        amd.com/gpu: 1
+      "spec.source.helm.valuesObject.resources.limits":
+        cpu: "8"
+        memory: 32Gi
+        amd.com/gpu: 1
+  - id: vllm/amd-gpu-metal
+    path: full-ai-cluster/k8s/applications/vllm/deployment.yaml
+    docIndex: 1
+    rung: metal
+    when:
+      gpuVendor: amd
+    reason: >-
+      Same substrate fact as ollama: an AMD node offers `amd.com/gpu` under
+      `zeta.io/gpu: amd`, and the committed Deployment asks for `nvidia.com/gpu`
+      under `zeta.io/gpu: nvidia` from the CUDA-only `vllm/vllm-openai` image.
+      vLLM's ROCm build is a different image (`rocm/vllm`, published by AMD), so
+      the image, the selector and both resource maps change together; args,
+      replicas (0) and the cache claim do not.
+    liftsWhen: >-
+      never on an AMD cluster -- this is the AMD form, not a workaround; it is
+      deleted only if the committed tree stops being vendor-specific.
+    set:
+      "spec.template.spec.nodeSelector":
+        zeta.io/gpu: amd
+      "spec.template.spec.containers[0].image": rocm/vllm:latest
+      "spec.template.spec.containers[0].resources.requests":
+        cpu: "4"
+        memory: 16Gi
+        amd.com/gpu: 1
+      "spec.template.spec.containers[0].resources.limits":
+        cpu: "8"
+        memory: 64Gi
+        amd.com/gpu: 1

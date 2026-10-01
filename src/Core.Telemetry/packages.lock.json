@@ -10,23 +10,23 @@
       },
       "OpenTelemetry": {
         "type": "Direct",
-        "requested": "[1.18.0, )",
-        "resolved": "1.18.0",
-        "contentHash": "13AKxycK+olOLe061MjliPTNBR/DUkjyRr0b9zwUhKyMjFS8lXS7G31R85rkbM55up2YFmdykWdAw2giBDJpiQ==",
+        "requested": "[1.19.1, )",
+        "resolved": "1.19.1",
+        "contentHash": "6ywhc3upf+dq8EsOohj7I7zS3l4yX9vfbtFkvyEC8xIUY4Z9iDIOVuke356eCAzIZaWtmwmmyl2UXYCp5n7I3Q==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.EnvironmentVariables": "10.0.0",
           "Microsoft.Extensions.Diagnostics.Abstractions": "10.0.0",
           "Microsoft.Extensions.Logging.Configuration": "10.0.0",
-          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.18.0"
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.19.1"
         }
       },
       "OpenTelemetry.Exporter.OpenTelemetryProtocol": {
         "type": "Direct",
-        "requested": "[1.18.0, )",
-        "resolved": "1.18.0",
-        "contentHash": "Et3WAviooKGObZjUZN8d6eTsdJs1YM3ZoN+KlWSAHksTmHG1nyGi9XGo2wb0fkFMWK0g80FOPdR1njg52Dm+aw==",
+        "requested": "[1.19.1, )",
+        "resolved": "1.19.1",
+        "contentHash": "vsYYOBf/KxNubnuoja8pjJ9LG0zCC9HAYPay+R6N5ZKZMbhNdKWbaq6JZqJqTvK+55rudiqErJySekf9ql8okA==",
         "dependencies": {
-          "OpenTelemetry": "1.18.0"
+          "OpenTelemetry": "1.19.1"
         }
       },
       "Apache.Arrow.Scalars": {
@@ -55,13 +55,13 @@
       },
       "MessagePack.Annotations": {
         "type": "Transitive",
-        "resolved": "3.1.8",
-        "contentHash": "SitOtZ4tOlAZZPF7p52M7143F+Cuz7o/aU0MrtAXX0+ZkPXzDNroOFhzzE2ogMFThsoEW/E6akXVVcBFM9ZKaw=="
+        "resolved": "3.1.10",
+        "contentHash": "3XvSeRdiR9ujCcTuijFwn2DRO8+a2S4fkNvwMaMwnXvdUJRaWAVc37scCiFME0AYLXGtnWF+GHMZT/a+i5Vv7g=="
       },
       "MessagePackAnalyzer": {
         "type": "Transitive",
-        "resolved": "3.1.8",
-        "contentHash": "Vm4g0cR4YRKRchEOmMJ0uVFU6yxdg7cJa2KHv3SUAHEsdYKvMpHMF5A1hZfsix89ymD5cmuzRnw9a6dKMcvq+Q=="
+        "resolved": "3.1.10",
+        "contentHash": "t0sPByiRt2ipKUg64M1foAt5uDnJOiOGimE0rKXZ5CdiQw0Sf4TfELiWNjowcCHO0M6gRePrI90kXPc7rN2llw=="
       },
       "Microsoft.Extensions.Configuration": {
         "type": "Transitive",
@@ -173,16 +173,16 @@
       },
       "OpenTelemetry.Api": {
         "type": "Transitive",
-        "resolved": "1.18.0",
-        "contentHash": "Dhzm5oughIY9EWckt2J1yXcEbXpki5WCL2q7prJoYxzH6C7jdkfGtPMTkUVZZ4AhjJKzQnlC+kLSIlmIVwC4Vw=="
+        "resolved": "1.19.1",
+        "contentHash": "9JKIH+xrV0HNTFjQC8zrx9gZpDOMEljN5Htg/U0VE2IvO3N+7bKALCCsGy5tp09marX5dd8UkrgQFoLaulIBRw=="
       },
       "OpenTelemetry.Api.ProviderBuilderExtensions": {
         "type": "Transitive",
-        "resolved": "1.18.0",
-        "contentHash": "io6A6PJFp3vIObRGf6oPjdHsdglkinXt/0SpTDJHrVnsLxUtOzwh/QwTsnhBJ43wJ6QcGMkyNzsSSY8XEB1Q5Q==",
+        "resolved": "1.19.1",
+        "contentHash": "HtGe72B/IhzKqdU0a3fNE5osax/Cegwxd+p4u6lOFy20nsgmeaFuP2NRyFs1WvrOv/bpkII3IvvBkKoZXG8BLg==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0",
-          "OpenTelemetry.Api": "1.18.0"
+          "OpenTelemetry.Api": "1.19.1"
         }
       },
       "ZstdSharp.Port": {
@@ -197,7 +197,7 @@
           "Apache.Arrow.Compression": "[23.0.0, )",
           "FSharp.Core": "[10.1.401, )",
           "FsPickler": "[5.3.2, )",
-          "MessagePack": "[3.1.8, )",
+          "MessagePack": "[3.1.10, )",
           "System.IO.Hashing": "[10.0.12, )",
           "System.Numerics.Tensors": "[10.0.12, )",
           "System.Reactive": "[7.0.0, )",
@@ -246,12 +246,12 @@
       },
       "MessagePack": {
         "type": "CentralTransitive",
-        "requested": "[3.1.8, )",
-        "resolved": "3.1.8",
-        "contentHash": "Qk2q+9FVxnMSp+NQ9y3SLz3HqWe7Rg3KRMHhBX28FkKUoOeP9YIU86mA4pFOxDDjUIRA9e7Ssbxs/LwWUcAzPw==",
+        "requested": "[3.1.10, )",
+        "resolved": "3.1.10",
+        "contentHash": "IvYiuLIGLbklU8qZFp0krv1f+0d0kkWbyb+I4Qmk8p5o+JxQsKUp2L5SBHV4vVmBh+DAj3bWDukGAl+87GMwrQ==",
         "dependencies": {
-          "MessagePack.Annotations": "3.1.8",
-          "MessagePackAnalyzer": "3.1.8",
+          "MessagePack.Annotations": "3.1.10",
+          "MessagePackAnalyzer": "3.1.10",
           "Microsoft.NET.StringTools": "17.11.4"
         }
       },

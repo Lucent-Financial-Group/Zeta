@@ -32,7 +32,11 @@ import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { detectIsohybridEspOffsetBytes, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES } from "../lib.ts";
+import {
+  detectIsohybridEspOffset,
+  ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
+  type IsohybridEspOffset,
+} from "../lib.ts";
 import { runFileBackedZflashCli } from "../file-backed.ts";
 import { firstbootRoleFromFlags, type ZetaFirstbootRole } from "../firstboot-role.ts";
 import {
@@ -84,6 +88,26 @@ export interface PrepareBootImageInput {
   readonly qemuCredsPassphrase?: string;
   /** QEMU restore only: bake `/zeta-qemu-bake-test-cred` so picker writes ≥1 cred. */
   readonly qemuBakeTestCredMarker?: boolean;
+  /** WP11 QEMU-only: bake `/zeta-qemu-k3s-first-boot-verify` so the installed disk's first boot runs the k3s bring-up verdict unit. */
+  readonly qemuK3sFirstBootVerifyMarker?: boolean;
+  /**
+   * WP27 (081M392JR97087G0R003QAFH0Y): stage
+   * `ZETA_ALLOW_LONGHORN_UNDERSIZED='1'` on the ESP for this ONE image.
+   *
+   * Every QEMU install lane runs on a single virtual disk of 40 or 64 GiB,
+   * which is BY DESIGN -- these lanes test install mechanics, not capacity --
+   * and the #17611/#17614 pre-wipe Longhorn refusal correctly bails on it. The
+   * override travels with the flashed image, never with the ISO.
+   */
+  readonly allowLonghornUndersized?: boolean;
+  /**
+   * WP21 (081M35C7NJR087G0R002S4R654): full 40-hex commit sha to bake as
+   * `/zeta-repo-pin`, overriding the ISO-baked ZETA_ISO_COMMIT so
+   * zeta-install.sh checks out this exact commit after cloning. The QEMU
+   * full-install lane sets this to the workflow's own commit so a PR's
+   * NixOS-module changes are what actually gets installed.
+   */
+  readonly repoPinCommit?: string;
 }
 
 export interface PrepareBootImageResult {
@@ -93,18 +117,85 @@ export interface PrepareBootImageResult {
   readonly wifiCredentialsBaked: boolean;
   /** `undefined` means the image carries no role and installs a control plane. */
   readonly firstbootRoleBaked?: ZetaFirstbootRole["kind"];
+  /**
+   * 081M39CJP96087G0R001T4J2R3 (WP29) — THE OFFSET EVERY ESP WRITE USED, AND
+   * WHETHER ANYTHING CONFIRMED IT, REPORTED ON THE GOOD CASE TOO.
+   *
+   * Refusing the bad case is only half the discipline. The scan this replaces
+   * ended `if (guard) return fallback; return fallback;` — a check that could
+   * not disagree with the thing it checked — and part of why that survived is
+   * that a SUCCESSFUL bake never said which path it took. Making only the
+   * failure loud would leave the next reader where the last one was: unable to
+   * tell a measured offset from a constant by reading the log.
+   *
+   * Callers print these; they land in the CI job log, which outlives the
+   * runner and the image.
+   */
+  readonly espOffsetBytes: number;
+  readonly espOffsetSource: IsohybridEspOffset["source"];
+}
+
+/** One log line: what offset a bake used, and what backed it. */
+export function describeEspOffset(offset: IsohybridEspOffset): string {
+  const provenance =
+    offset.source === "mbr"
+      ? "an MBR 0xEF entry and a FAT boot sector at that offset agree"
+      : offset.source === "fallback-confirmed"
+        ? "no usable 0xEF entry; the LBA-276 fallback was CHECKED and a FAT boot sector is there"
+        : "UNCONFIRMED — nothing about this image verified the offset";
+  return `ESP offset ${offset.offsetBytes} bytes (LBA ${offset.offsetBytes / 512}) source=${offset.source} — ${provenance}`;
+}
+
+/**
+ * The ESP offset AND whether anything confirmed it — see {@link IsohybridEspOffset}.
+ *
+ * 081M39CJP96087G0R001T4J2R3 (WP29) — THE SCAN USED TO BE HANDED A BUFFER
+ * TRIMMED TO EXACTLY THE ANSWER IT WAS ALLOWED TO FIND. The old body was
+ *
+ *     const headSize = Math.max(512, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 512);
+ *     readFileSync(isoPath).subarray(0, headSize)
+ *
+ * i.e. 141_824 bytes: enough to check the LBA-276 fallback and nothing else.
+ * An MBR 0xEF entry pointing anywhere past LBA 276 then failed
+ * `isoHead.length >= partOffset + 512` inside the scan, the MBR branch was
+ * skipped in silence, and the constant came back for an image it does not
+ * describe. The measured ISO of run 36044770870 puts its ESP at LBA 268
+ * (offset 137_216, 3 MiB, FAT12) — inside the old bound by 4_608 bytes. One
+ * megabyte further in and it would not have been, with nothing saying so.
+ *
+ * The whole image is passed now. The scan indexes at computed offsets rather
+ * than walking, so a larger buffer costs nothing and removes the bound as a
+ * source of wrong answers.
+ *
+ * KNOWN LIMIT, deliberately left: `readFileSync` pulls the entire ISO into
+ * memory (1.67 GiB for the measured installer) and would throw outright past
+ * its ~2 GiB ceiling. The bounded `openSync`/`readSync` version that fixes
+ * both is a `js/insecure-temporary-file` CodeQL sink — every QEMU lane hands
+ * this function an ISO path under `os.tmpdir()`, and the query models
+ * `fs.openSync` as file creation regardless of the `"r"` flag. Changing it is
+ * a separate change with its own argument to make; it is not worth smuggling
+ * in behind an offset fix, and this is the pre-existing behaviour, not a
+ * regression.
+ */
+export function resolveEspOffsetForIso(isoPath: string): IsohybridEspOffset {
+  return detectIsohybridEspOffset(readFileSync(isoPath));
 }
 
 export function resolveEspOffsetBytesForIso(isoPath: string): number {
-  const headSize = Math.max(512, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 512);
-  const isoHead = readFileSync(isoPath).subarray(0, headSize);
-  return detectIsohybridEspOffsetBytes(isoHead);
+  return resolveEspOffsetForIso(isoPath).offsetBytes;
 }
 
 export function checkZflashToolchain(): string | null {
   for (const [bin, installHint, probeArgs] of [
     ["qemu-img", "qemu-utils", ["--version"] as const],
     ["mcopy", "mtools", ["-V"] as const],
+    // 081M39CJP96087G0R001T4J2R3 (WP29): the post-bake read-back in
+    // file-backed.ts runs `mdir` and `mtype`. `mdir` was already being used
+    // without ever being probed for — same package as `mcopy`, so in practice
+    // it is there, but "in practice it is there" is how a missing tool becomes
+    // a confusing mid-bake failure instead of a named precondition.
+    ["mdir", "mtools", ["-V"] as const],
+    ["mtype", "mtools", ["-V"] as const],
   ] as const) {
     try {
       const result = spawnSync(bin, [...probeArgs], { encoding: "utf8" });
@@ -137,11 +228,10 @@ export function writeTestCredentialBlob(outputPath: string): void {
 }
 
 export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImageResult | { readonly error: string } {
-  const toolchainError = checkZflashToolchain();
-  if (toolchainError !== null) {
-    return { error: toolchainError };
-  }
-
+  // Inputs are judged before the environment is: what was ASKED FOR can be
+  // wrong on any machine, so refusing it first makes the refusal reproducible
+  // rather than conditional on which binaries happen to be installed. The
+  // toolchain probe still runs below, before anything is executed.
   const absIso = resolve(input.isoPath);
   if (!existsSync(absIso)) {
     return { error: `installer ISO not found: ${absIso}` };
@@ -150,7 +240,35 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     return { error: `ssh pubkey not found: ${input.pubkeyPath}` };
   }
 
-  const espOffsetBytes = resolveEspOffsetBytesForIso(absIso);
+  // 081M39CJP96087G0R001T4J2R3 (WP29) — REFUSE AN OFFSET NOTHING CONFIRMED.
+  //
+  // Every ESP write, and the post-bake read-back that judges them, addresses
+  // this one number. When it is wrong they are wrong TOGETHER: `mcopy` writes
+  // at the bad offset and `mdir` reads its own writes back from the bad offset
+  // and reports success. The bake cannot detect its own miss by looking harder
+  // at the place it already looked, so the number has to be refused up front
+  // or not at all.
+  //
+  // `fallback-unconfirmed` means no 0xEF partition entry resolved AND no FAT
+  // boot sector was found at the fallback — the offset is a constant that
+  // nothing about this ISO agrees with.
+  const espOffset = resolveEspOffsetForIso(absIso);
+  if (espOffset.source === "fallback-unconfirmed") {
+    return {
+      error:
+        `ESP offset could not be confirmed for ${absIso}: no MBR 0xEF partition entry resolved to a ` +
+        `FAT boot sector, and there is no FAT boot sector at the LBA-276 fallback ` +
+        `(${ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES} bytes) either. Baking would write every injection to ` +
+        `an offset nothing verified, and the post-bake read-back reads from that same offset, so it ` +
+        `would confirm the writes and the guest would still find nothing. Refusing instead.`,
+    };
+  }
+  const espOffsetBytes = espOffset.offsetBytes;
+
+  const toolchainError = checkZflashToolchain();
+  if (toolchainError !== null) {
+    return { error: toolchainError };
+  }
 
   let credentialBlobPath: string | undefined;
   if (input.withCredentialBlob) {
@@ -178,7 +296,10 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     ...(input.joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath: input.joinTokenSourcePath }),
     ...(input.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
     ...(input.qemuBakeTestCredMarker === true ? { qemuBakeTestCredMarker: true } : {}),
+    ...(input.qemuK3sFirstBootVerifyMarker === true ? { qemuK3sFirstBootVerifyMarker: true } : {}),
+    ...(input.allowLonghornUndersized === true ? { allowLonghornUndersized: true } : {}),
     ...(input.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: input.qemuCredsPassphrase }),
+    ...(input.repoPinCommit === undefined ? {} : { repoPinCommit: input.repoPinCommit }),
   });
 
   if (!result.ok) {
@@ -187,6 +308,8 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
 
   return {
     outputImagePath: resolve(input.outputImagePath),
+    espOffsetBytes,
+    espOffsetSource: espOffset.source,
     ...(credentialBlobPath === undefined ? {} : { credentialBlobPath }),
     bootImageEnv: input.withCredentialBlob ? "ZFLASH_QEMU_RETENTION_BOOT_IMAGE" : "ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE",
     wifiCredentialsBaked: input.wifiCredentials !== undefined,

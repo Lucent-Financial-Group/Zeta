@@ -1,0 +1,77 @@
+# full-ai-cluster/k8s/public-tls/argocd-application.yaml.in
+#
+# A TEMPLATE, not a manifest: nothing applies this file as-is (the `.in` suffix
+# keeps it out of every *.yaml scan and out of kustomize). 081M3JG74G0087G0R001XJC837.
+#
+# nixos/modules/injected-public-tls.nix reads /etc/zeta/acme-email and
+# /etc/zeta/public-domain (written by zeta-install.sh from the ESP conf or the
+# start-of-install prompt), substitutes the two tokens below with
+# `builtins.replaceStrings` (this prose never spells a token: the module refuses to
+# render a document that still contains the token prefix, and cannot tell a comment
+# from a manifest), and hands the result to the k3s auto-deploy roster —
+# the same path `root-application.yaml` takes into the cluster. When either value
+# is absent, the module adds nothing and this Application never exists.
+#
+# The values reach the ACME objects ONLY as these JSON6902 patches; the kustomize
+# base (resources.yaml) carries neither. Both values are validated at install
+# time to a character set with no quote or backslash, so they are safe inside the
+# single-quoted JSON strings below. src/Core.TypeScript/cluster/public-tls.ts
+# mirrors this substitution and patch application for the tests.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-public-tls
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/public-tls
+    kustomize:
+      patches:
+        - target: { group: cert-manager.io, kind: ClusterIssuer, name: letsencrypt-staging }
+          patch: '[{"op":"add","path":"/spec/acme/email","value":"@ZETA_ACME_EMAIL@"}]'
+        - target: { group: cert-manager.io, kind: ClusterIssuer, name: letsencrypt-prod }
+          patch: '[{"op":"add","path":"/spec/acme/email","value":"@ZETA_ACME_EMAIL@"}]'
+        - target: { group: gateway.networking.k8s.io, kind: Gateway, name: zeta-public-gateway }
+          patch: '[{"op":"add","path":"/spec/listeners/1/hostname","value":"portal.@ZETA_PUBLIC_DOMAIN@"}]'
+        - target: { group: gateway.networking.k8s.io, kind: HTTPRoute, name: portal-public }
+          patch: '[{"op":"add","path":"/spec/hostnames","value":["portal.@ZETA_PUBLIC_DOMAIN@"]}]'
+        # GitLab (081M3K253BR087G0R001151P2A): its two public names, and the helm parameters
+        # that make GitLab's own external URL https://gitlab.<domain> -- applied to the git-owned
+        # gitlab Application by Job `gitlab-public-hosts` (see resources.yaml).
+        - target: { group: gateway.networking.k8s.io, kind: Gateway, name: zeta-public-gateway }
+          patch: '[{"op":"add","path":"/spec/listeners/2/hostname","value":"gitlab.@ZETA_PUBLIC_DOMAIN@"},{"op":"add","path":"/spec/listeners/3/hostname","value":"registry.@ZETA_PUBLIC_DOMAIN@"}]'
+        - target: { group: gateway.networking.k8s.io, kind: HTTPRoute, name: gitlab-public }
+          patch: '[{"op":"add","path":"/spec/hostnames","value":["gitlab.@ZETA_PUBLIC_DOMAIN@"]}]'
+        - target: { group: gateway.networking.k8s.io, kind: HTTPRoute, name: gitlab-registry-public }
+          patch: '[{"op":"add","path":"/spec/hostnames","value":["registry.@ZETA_PUBLIC_DOMAIN@"]}]'
+        - target: { version: v1, kind: ConfigMap, name: gitlab-public-hosts }
+          patch: '[{"op":"add","path":"/data/patch.json","value":"{\"spec\":{\"source\":{\"helm\":{\"parameters\":[{\"name\":\"global.hosts.domain\",\"value\":\"@ZETA_PUBLIC_DOMAIN@\"},{\"name\":\"global.hosts.https\",\"value\":\"true\"},{\"name\":\"global.hosts.gitlab.name\",\"value\":\"gitlab.@ZETA_PUBLIC_DOMAIN@\"},{\"name\":\"global.hosts.registry.name\",\"value\":\"registry.@ZETA_PUBLIC_DOMAIN@\"}]}}}}"}]'
+        # Forgejo (docs/ops/INSTALL-TIME-CONFIG.md row 28): git.<domain>, replacing the chart's own
+        # `git.example.com` default -- listener index 4, its route, and the helm parameters the
+        # Job `forgejo-public-hosts` merge-patches onto the forgejo Application.
+        - target: { group: gateway.networking.k8s.io, kind: Gateway, name: zeta-public-gateway }
+          patch: '[{"op":"add","path":"/spec/listeners/4/hostname","value":"git.@ZETA_PUBLIC_DOMAIN@"}]'
+        - target: { group: gateway.networking.k8s.io, kind: HTTPRoute, name: forgejo-public }
+          patch: '[{"op":"add","path":"/spec/hostnames","value":["git.@ZETA_PUBLIC_DOMAIN@"]}]'
+        - target: { version: v1, kind: ConfigMap, name: forgejo-public-hosts }
+          patch: '[{"op":"add","path":"/data/patch.json","value":"{\"spec\":{\"source\":{\"helm\":{\"parameters\":[{\"name\":\"gitea.config.server.DOMAIN\",\"value\":\"git.@ZETA_PUBLIC_DOMAIN@\"},{\"name\":\"gitea.config.server.ROOT_URL\",\"value\":\"https://git.@ZETA_PUBLIC_DOMAIN@/\"},{\"name\":\"gitea.config.server.SSH_DOMAIN\",\"value\":\"git.@ZETA_PUBLIC_DOMAIN@\"}]}}}}"}]'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: zeta-platform
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+    # Unbounded, for the same reason as `platform`: this Application consumes CRDs
+    # (cert-manager.io, gateway.networking.k8s.io) and a namespace it does not own,
+    # and a lost race must not be permanent. It can sit Progressing until DNS and
+    # port-forwarding exist; nothing else waits on it.
+    retry:
+      limit: -1
+      backoff: { duration: 30s, factor: 2, maxDuration: 5m }

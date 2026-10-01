@@ -23,13 +23,20 @@
  *   2 - usage error or named dependency/preflight failure
  */
 
-import { applyRungOverrides, loadRungOverrides } from "./rung-overrides.ts";
+import {
+  applyRungOverrides,
+  type ClusterSelection,
+  loadOverrideDimensions,
+  loadRungOverrides,
+  validateSelection,
+} from "./rung-overrides.ts";
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdtempSync, readdirSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
+import { listApplicationDirs, parseLaneDirs } from "./application-dirs.ts";
 import {
   DEV_BOOTSTRAP_SECRETS,
   DEV_SHARED_SECRETS,
@@ -37,14 +44,21 @@ import {
   DEV_CILIUM_LB_KIND_MANIFEST_RELPATH,
   DEV_CILIUM_LB_KIND_POOL_NAME,
   DEV_GHCR_PULL_SECRET,
-  DEV_LONGHORN_ALIAS_CLASS_NAME,
   DEV_SATISFIABLE_PROVISIONERS,
+  DEV_STORAGE_ALIAS_CLASS_NAMES,
   DEV_STORAGE_ALIAS_MANIFEST_RELPATHS,
   type DevBootstrapSecretSpec,
 } from "./dev-cluster/lib.ts";
 import { DEFAULT_ROOT_DEV_CATALOG, ciliumOwnsCniSlot, type KindCni } from "./ports.ts";
 import { buildLaneTreeBundle, laneTreeRepoUrl, SERVED_GIT_REF } from "./lane-tree-source.ts";
-import { applyResourceProfile, loadResourceCatalogue } from "./storage-profiles.ts";
+import {
+  applyProfile,
+  applyResourceProfile,
+  loadCatalogue,
+  loadResourceCatalogue,
+  storageProfileForResourceRung,
+} from "./storage-profiles.ts";
+import { storageClassValues } from "./storage-capabilities.ts";
 // Ordinal (code-point) ordering, per .claude/rules/culture-invariant-by-default.md.
 // NOT localeCompare: it is culture-SENSITIVE, so the same directory names sort
 // differently per machine locale. That matters here because this ordering is not
@@ -136,6 +150,22 @@ export interface CliOptions {
    * is for our real hardware, dev is for testing on our github runners."
    */
   readonly serveTreeProfile: string | null;
+  /**
+   * Scope the run to ONE lane: these Application directories are applied AND
+   * asserted, every other directory is excluded from the root catalogue. `null`
+   * -- the default -- is the whole roster, exactly as before this flag existed.
+   * Apply and assert both derive from this one list (`application-dirs.ts`).
+   */
+  readonly laneDirs: readonly string[] | null;
+  /**
+   * Seconds to keep watching AFTER the all-Healthy verdict for a container
+   * restartCount increase or an Application leaving Healthy/Synced -- "does
+   * it crash-loop?", which the all-Healthy verdict alone cannot answer
+   * (Task B, 081KSXN940008QG0R000SCP2H1). `0` -- the default -- disables the
+   * soak phase entirely, so every caller that does not pass `--soak-sec` sees
+   * no behaviour change.
+   */
+  readonly soakSeconds: number;
 }
 
 export interface ToolCheck {
@@ -175,6 +205,43 @@ export interface ArgoApplicationSnapshot {
   readonly operationPhase?: string;
   readonly syncRevision?: string;
   readonly conditions?: readonly ArgoApplicationCondition[];
+  /**
+   * `spec.destination.namespace`. Used to attribute live pods to the
+   * Application that owns them (see `podsBelongingToApplication` /
+   * `081M...` evidence-based Degraded terminal logic below) -- ArgoCD
+   * declares this on every Application object, it is always present the
+   * moment the object exists (no comparison has to have run), and it does
+   * not depend on a chart's own label conventions the way
+   * `app.kubernetes.io/instance` does. `""` (or absent, for the many
+   * hand-written test fixtures that predate this field) means a
+   * cluster-scoped Application or simply "not measured here" -- callers
+   * treat both the same way, via `snapshot.namespace ?? ""`.
+   */
+  readonly namespace?: string;
+  /**
+   * `${kind}/${name}` for every entry in `status.resources[]` whose own
+   * `status` field is `"OutOfSync"` -- ArgoCD's per-resource diff verdict,
+   * distinct from the Application-level `syncStatus` above (an Application can
+   * be OutOfSync because of exactly one resource, or several; this is which
+   * ones). Ordinal-sorted (`.claude/rules/culture-invariant-by-default.md`) so
+   * the list a failure message prints is deterministic across runs and OSes.
+   * `[]` when the Application is Synced or `status.resources` is absent
+   * (081KSXN940008QG0R000SCP2H1 Task B -- see `soakRegressionFailure`, the
+   * consumer this was added for: naming the RESOURCE a soak-phase regression
+   * traces to, not only the Application).
+   */
+  readonly outOfSyncResources?: readonly string[];
+  /**
+   * `${kind}/${name} ${health}: ${message}` for every `status.resources[]` entry
+   * whose OWN `health.status` is present and not `Healthy`. The sync-side twin
+   * of `outOfSyncResources`: that field names which resources DIVERGED, this one
+   * names which resources are NOT HEALTHY -- the only way to explain an
+   * Application that went `Synced/Progressing` during the soak with nothing
+   * out of sync. Measured 2026-09-23: 12 of 18 `included` failures since the
+   * soak phase landed were such flips, and for the `Synced/Progressing` ones the
+   * verdict named no resource at all. Ordinal-sorted; absent when none.
+   */
+  readonly unhealthyResources?: readonly string[];
 }
 
 export interface ApplicationVerdict {
@@ -183,6 +250,10 @@ export interface ApplicationVerdict {
   readonly syncStatus: string;
   readonly healthStatus: string;
   readonly reason?: string;
+  /** Carried straight from `ArgoApplicationSnapshot.outOfSyncResources` -- see its docstring. */
+  readonly outOfSyncResources?: readonly string[];
+  /** Carried straight from `ArgoApplicationSnapshot.unhealthyResources` -- see its docstring. */
+  readonly unhealthyResources?: readonly string[];
 }
 
 export interface HarnessPlan {
@@ -207,6 +278,7 @@ export type HarnessResult =
       readonly applications?: readonly ApplicationVerdict[];
       readonly ephemeralVaultInit?: EphemeralVaultInitReport;
       readonly driftRepair?: "not-requested" | "passed";
+      readonly soak?: SoakReport;
     }
   | {
       readonly ok: false;
@@ -215,6 +287,7 @@ export type HarnessResult =
       readonly applications?: readonly ApplicationVerdict[];
       readonly ephemeralVaultInit?: EphemeralVaultInitReport;
       readonly driftRepair?: "not-requested" | "failed";
+      readonly soak?: SoakReport;
       readonly failure: Failure;
     };
 
@@ -235,6 +308,8 @@ interface MutableCliOptions {
   kindCni: KindCni;
   ephemeralVaultInit: boolean;
   serveTreeProfile: string | null;
+  laneDirs: readonly string[] | null;
+  soakSeconds: number;
 }
 
 interface ParseNumberSuccess {
@@ -288,16 +363,18 @@ const DEFAULT_KIND_CONFIG = "full-ai-cluster/dev-cluster/profiles/ci.kind-config
 const DEFAULT_KIND_CILIUM_CONFIG = "full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml";
 const DEFAULT_TIMEOUT_SECONDS = 900;
 const DEFAULT_POLL_SECONDS = 10;
+/** `0` disables the soak phase (Task B, 081KSXN940008QG0R000SCP2H1) -- see CliOptions.soakSeconds. */
+export const DEFAULT_SOAK_SECONDS = 0;
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const HELP_TEXT =
-  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--cni kindnetd|cilium] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--serve-tree RUNG] [--existing] [--timeout-sec N] [--poll-sec N] [--drift-check] [--ephemeral-vault-init]";
+  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--cni kindnetd|cilium] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--serve-tree RUNG] [--lane-dirs D1,D2] [--existing] [--timeout-sec N] [--poll-sec N] [--soak-sec N] [--drift-check] [--ephemeral-vault-init]";
 const MODE_FLAGS: Readonly<Record<string, Mode>> = {
   "--dry-run": "dry-run",
   "--preflight": "preflight",
   "--run": "run",
 };
-const STRING_FLAGS = new Set(["--git-ref", "--cluster-name", "--config", "--serve-tree"]);
-const INTEGER_FLAGS = new Set(["--timeout-sec", "--poll-sec"]);
+const STRING_FLAGS = new Set(["--git-ref", "--cluster-name", "--config", "--serve-tree", "--lane-dirs"]);
+const INTEGER_FLAGS = new Set(["--timeout-sec", "--poll-sec", "--soak-sec"]);
 const K3D_CLUSTER_NAME_PATTERN = /^\s+name:\s*([A-Za-z\d-]+)\s*$/;
 const DNS_LABEL_PATTERN = /^[a-z\d]([-a-z\d]*[a-z\d])?$/;
 const SMOKE_MIN_APPLICATIONS = 20;
@@ -371,7 +448,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "[cite: glob-defers game-hosting/gmod] " +
       "[cite: resource-rung game-hosting/gmod dev 100] " +
       "[cite: resource-rung game-hosting/gmod metal 1000] " +
-      "[cite: lane-cpu dev 1715 fits]",
+      "[cite: lane-cpu dev 2427 fits]",
   ],
   // `agent-memory` is NOT here. It LEFT this map on 2026-09-03, and the entry is
   // recorded as closed rather than the lines silently deleted.
@@ -441,56 +518,98 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "chart rendered, and that acknowledgement was DELETED from the baseline. The reason kept citing it. This " +
       "is the third instance of one defect in two days -- `platform` (#13472), `temporal` (#13483), and now " +
       "this -- and it is the instance that a check found rather than a person. " +
-      "WHAT IS MEASURED NOW: it renders, and what it renders is 76 GiB of PersistentVolumeClaims across four " +
-      "workloads -- gitaly 50Gi, minio 10Gi, postgresql 8Gi, redis 8Gi -- every one of them declaring NO " +
-      "storageClassName, so all four land on the cluster default (`zeta-local-path`: the node's own disk) and " +
-      "none of them is on a replicated class at all. " +
+      "WHAT WAS MEASURED 2026-08-22: it renders, and what it rendered then was 76 GiB of PersistentVolumeClaims " +
+      "across four workloads -- gitaly 50Gi, minio 10Gi, postgresql 8Gi, redis 8Gi -- every one of them " +
+      "declaring NO storageClassName, so all four land on the cluster default (`zeta-local-path`: the node's " +
+      "own disk) and none of them is on a replicated class at all. " +
+      "WHAT IS MEASURED NOW, 2026-09-22: 66 GiB across THREE workloads -- gitaly 50Gi, postgresql 8Gi, redis " +
+      "8Gi. `minio` dropped out: `global.minio.enabled: false` (gitlab/Application.yaml) disables the bundled " +
+      "minio subchart entirely -- both its images, `minio/minio` and `minio/mc`, were withdrawn from Docker " +
+      "Hub ~2026-09-11, so a first-boot sync with it enabled ImagePullBackOffs. GitLab's object storage now " +
+      "addresses the cluster's shared SeaweedFS instead (object-store/BLOB-STORE-CONTRACT.md), same as loki " +
+      "and mimir; the storageClassName conclusion is otherwise unchanged. " +
       "THE BLOCKER THAT REMAINS, and it is one blocker rather than the two claimed. NO SOURCE FOR THE " +
       "ROOT-PASSWORD SECRET: the manifest reads `initialRootPassword.secret: gitlab-initial-root-password`, and " +
       "nothing in this tree creates that Secret -- outside the two Application manifests that consume it, its " +
       "only occurrence is an instruction to a human at infra/README.md:165. Without it the webservice never " +
       "reaches Ready, and ArgoCD reports Progressing until the timeout. " +
-      "CAPACITY IS CARRIED OVER, NOT MEASURED, and that is said rather than implied: 76 GiB of node-local " +
-      "claims plus GitLab's multi-GB images on one kind node is the earlier reason's estimate, and no run in " +
-      "this lane has ever produced a verdict for this Application to check it against. It is a prediction. " +
+      "CAPACITY IS CARRIED OVER, NOT MEASURED, and that is said rather than implied: 66 GiB of node-local " +
+      "claims plus GitLab's multi-GB images on one kind node is the earlier reason's estimate, updated for the " +
+      "minio removal above, and no run in this lane has ever produced a verdict for this Application to check " +
+      "it against. It is a prediction. " +
       "LIFTS WHEN: `gitlab-initial-root-password` has a source in the tree -- a SealedSecret or an " +
       "ExternalSecret, the same shape the other credentialled apps use -- AND one included run reports this " +
       "Application's actual verdict, which is also what would settle the capacity prediction either way. " +
+      "UPDATE 2026-09-22 (WP24, 081M35K4PV6087G0R001Z3E0P8): THE ROOT-PASSWORD HALF OF THIS BLOCKER IS " +
+      "CLOSED -- `k8s/bootstrap/internal-secret-seeding.yaml` now mints `gitlab-initial-root-password` on a " +
+      "real metal first boot (a create-only Job, same shape as every sibling credential in that file), and " +
+      "`DEV_GITLAB_ROOT_SECRET` mints it in dev/CI. The reference itself was found to be invisible to " +
+      "`audit-existing-secret-is-minted.ts` (a bare `secret:` leaf, not `existingSecret`/`secretName`), which " +
+      "is why it read as unsourced above -- that detection gap is also fixed. This Application STAYS " +
+      "glob-deferred: the capacity reason below (chart size, multi-GB images, a kind runner's assertion " +
+      "budget) is untouched and is the reason that remains. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that " +
       "outlives its artifact goes red instead of reading on. " +
       "[cite: no-unrenderable full-ai-cluster/gitlab] " +
       "[cite: renders full-ai-cluster/gitlab] " +
-      "[cite: pvc-total full-ai-cluster/gitlab 76] " +
+      "[cite: pvc-total full-ai-cluster/gitlab 66] " +
       "[cite: chart-pin full-ai-cluster/gitlab gitlab 8.7.0] " +
       "[cite: published gitlab 8.7.0] " +
       "[cite: path infra/README.md:165] " +
-      "[cite: glob-defers gitlab] ",
+      "[cite: glob-defers gitlab] " +
+      "UPDATE 2026-09-23 -- THE CAPACITY HALF IS MEASURED NOW, AND IT IS MEMORY, NOT CPU. At chart defaults " +
+      "gitlab requests 2375m / 5605Mi (storage-profiles.json ungoverned row, 15 workloads); the dev lane at " +
+      "`dev` now reserves 13412Mi against a 9216Mi application budget " +
+      "[cite: lane-memory dev 13412 over] -- OVER by 4196Mi (652Mi when ArgoCD was priced, +128Mi for the oz controller on 2026-09-30), carried as pinned debt (`dev memory 13412>9216`). " +
+      "It read `9100Mi fits, 116Mi of room` until 2026-09-25, and that was an UNDERCOUNT rather than a fit: " +
+      "26 of 49 Applications declared nothing at all, so pricing the ArgoCD control plane (081M3BQ5GX6087G0R003N44WMZ) " +
+      "made 768Mi of the invisible load visible and tipped it. This strengthens the reason rather than weakening " +
+      "it -- there is now less than no room. CPU is compressible and could be floored at the dev rung; " +
+      "memory is not, so no CPU override makes gitlab fit THIS lane. Its images add ~12.4 GiB on disk " +
+      "(image-footprint.ts). SHARPENED LIFTS WHEN: a lane with >= 5.6 GiB of memory headroom runs it (the " +
+      "lane-partition work is where that comes from) AND its workloads get a dev form sized for that lane.",
   ],
   [
     "longhorn",
-    "Replicated block storage wants real disks and more than one node; a single kind node inside a runner has " +
-      "neither -- it needs real block devices plus open-iscsi on the node. This entry is also the ROOT of the " +
-      "largest deferral group in this file: every " +
-      "APPLIED_BUT_UNASSERTED_REASONS row reading 'requests storageClass: longhorn' is downstream of it, so " +
-      "lifting this one collapses several. " +
-      "LIFTS WHEN: a dev StorageClass provides the `longhorn` name in this lane, or the Applications that " +
-      "request it are parameterised to the substrate's default class. " +
+    "THE CHART ITSELF, and only the chart: replicated block storage wants real block devices plus open-iscsi " +
+      "on the node, and a kind node inside a runner has neither. " +
+      "IT NO LONGER HOLDS ANY OTHER APPLICATION OUT, and that half of this entry is CLOSED. It used to be the " +
+      "root of the largest deferral group in this file (every row reading 'requests storageClass: longhorn'). " +
+      "The first exit was a dev StorageClass NAMED `longhorn` over local-path (2026-08-21); since 2026-09-23 " +
+      "no chart names a provider at all -- charts request the capability `zeta-block-replicated`, metal binds it " +
+      "to Longhorn and dev to rancher.io/local-path (storage-capabilities.ts), so the consumers are asserted " +
+      "with no Longhorn anywhere in the lane. " +
+      "WHERE LONGHORN IS PROVEN INSTEAD: the NixOS QEMU test attaches real virtual disks and binds a volume " +
+      "through the chart (full-ai-cluster/nixos/tests/longhorn-volume-binds.nix). " +
+      "LIFTS WHEN: a CI lane attaches block devices to its node (a VM-backed runner, or the metal cluster) -- " +
+      "not by any change to this Application. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
-      "[cite: path full-ai-cluster/dev-cluster/manifests/longhorn.yaml] " +
+      "[cite: path full-ai-cluster/nixos/tests/longhorn-volume-binds.nix] " +
+      "[cite: path full-ai-cluster/dev-cluster/manifests/zeta-block-replicated.yaml] " +
       "[cite: chart-pin full-ai-cluster/longhorn longhorn 1.12.1] " +
       "[cite: glob-defers longhorn] ",
   ],
   [
     "ollama",
-    "Requests nvidia.com/gpu with nodeSelector zeta.io/gpu, and a 200Gi longhorn PVC. A GitHub-hosted runner " +
+    "Requests nvidia.com/gpu with nodeSelector zeta.io/gpu, and a 200Gi PVC on the replicated capability " +
+      "(`zeta-block-replicated`, Longhorn on metal). A GitHub-hosted runner " +
       "has neither, and the multi-GiB image pull alone outruns the job timeout -- so the Application would " +
       "HANG rather than fail, which is the worse of the two. " +
       "LIFTS WHEN: the lane runs on a GPU-bearing self-hosted runner (arc-runner-set), or this Application " +
       "grows a CPU-only dev profile with a small model and a substrate-default StorageClass. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
-      "[cite: pvc-class full-ai-cluster/ollama longhorn] " +
+      "[cite: pvc-class full-ai-cluster/ollama zeta-block-replicated] " +
       "[cite: pvc-total full-ai-cluster/ollama 200] " +
-      "[cite: glob-defers ollama] ",
+      "[cite: glob-defers ollama] " +
+      "UPDATE 2026-09-23 -- A DEV FORM AND AN AMD FORM EXIST NOW, and what still holds it out is written " +
+      "here rather than implied. rung-overrides.yaml `ollama/cpu-only-dev` turns the GPU off, drops the " +
+      "selector and sizes it 250m / 512Mi at one replica; `ollama/amd-gpu-metal` is the ROCm form for an AMD " +
+      "cluster. Two blockers remain, either sufficient: (1) it is MANUAL-SYNC BY DESIGN -- the local-models " +
+      "phase is deferred by the maintainer -- so a lane could assert only the weaker manual-sync contract; " +
+      "(2) the dev form's 512Mi does not fit the lane's remaining memory " +
+      "[cite: lane-memory dev 13412 over] and the lane budget prices ollama at its stale ungoverned row (0m / 0Mi, " +
+      "written when resources were unset) rather than the override's request. LIFTS WHEN: the maintainer " +
+      "re-enables automated sync for the local-models phase AND a lane with that memory headroom exists.",
   ],
   [
     PLATFORM_APP_DIR,
@@ -541,7 +660,41 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: path full-ai-cluster/portal/DEPLOY.md:122] " +
       "[cite: path .github/workflows/build-platform-images.yml] " +
-      "[cite: glob-defers platform] ",
+      "[cite: glob-defers platform] " +
+      "UPDATE 2026-09-23: even with the pull measured, it needs 160Mi at `dev` and the lane had 116Mi left " +
+      "[cite: lane-memory dev 13412 over] -- and as of 2026-09-25 it has none: the lane is OVER by 4196Mi " +
+      "(081M3BQ5GX6087G0R003N44WMZ priced the ArgoCD control plane, which had declared nothing). So the lift " +
+      "needs lane room even more than it did, not only a credential.",
+  ],
+  [
+    "postgres-shared",
+    "The shared general-purpose CloudNativePG Cluster (2026-10-01) is ON BY DEFAULT on metal and deferred from " +
+      "this lane, with temporal's database, for three reasons that do not depend on its size. (1) Its PostgreSQL " +
+      "image and its operator-injected backup sidecar come from ghcr.io, and this lane mints no pull credential " +
+      "for them (the same caveat cloudnativepg/Application.yaml names for the operator image). (2) It archives WAL " +
+      "through the Barman Cloud plugin (`cnpg-barman-cloud`), whose operator<->plugin mTLS handshake and sidecar " +
+      "injection have never run on a hosted runner, and a Cluster whose named plugin is unreachable reports " +
+      "`Suspended` rather than failing loudly. (3) Its first reconcile needs the first-boot backup credential " +
+      "(`postgres-backup-s3`) that bootstrap/internal-secret-seeding.yaml mints and the dev bring-up does not: " +
+      "dev/CI draws its blob-store identity from dev-cluster/lib.ts, which has no second principal. " +
+      "LIFTS WHEN: a lane has a ghcr.io pull credential for the CNPG images, the plugin has been observed " +
+      "reaching Healthy on a runner, and dev-cluster/lib.ts mints `postgres-backup-s3` beside the blob store; then " +
+      "`postgres-shared/**` can leave `DEFAULT_ROOT_DEV_CATALOG.excludeGlob`. " +
+      "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
+      "[cite: path full-ai-cluster/k8s/applications/postgres-shared/Application.yaml] " +
+      "[cite: glob-defers postgres-shared]",
+  ],
+  [
+    "cnpg-barman-cloud",
+    "The CloudNativePG Barman Cloud plugin (2026-10-01) exists only to serve Clusters that name it, and both " +
+      "(`postgres-shared`, `temporal/postgres`) are themselves deferred from this lane, so applying it here would " +
+      "install a controller, a cert-manager Issuer and two Certificates for nothing to call. Its images are on " +
+      "ghcr.io, which this lane has no pull credential for. " +
+      "LIFTS WHEN: a Cluster that uses the plugin is applied in a lane (see `postgres-shared`), at which point " +
+      "`cnpg-barman-cloud/**` must leave `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` in the same change. " +
+      "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
+      "[cite: path full-ai-cluster/k8s/applications/cnpg-barman-cloud/Application.yaml] " +
+      "[cite: glob-defers cnpg-barman-cloud]",
   ],
   [
     "temporal",
@@ -552,38 +705,46 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "2 ConfigMaps, 1 Job, ZERO PVCs -- retiring the `helm-template-failed` acknowledgement this reason " +
       "cited. Writing that down rather than quietly overwriting it is the point: a stale reason is the " +
       "exact defect #13472 existed to remove from `platform`, and it took ten minutes to reintroduce. " +
-      "THE REAL BLOCKERS, both established by #13469 and both in temporal/Application.yaml's header with " +
-      "their own exits. (1) THE VISIBILITY SCHEMA DOES NOT APPLY TO COCKROACHDB: temporal v1.27.2's " +
+      "THE TWO COCKROACHDB BLOCKERS #13469 ESTABLISHED ARE RETIRED (2026-09-27), and recorded here rather " +
+      "than erased. (1) THE VISIBILITY SCHEMA DID NOT APPLY TO COCKROACHDB: temporal v1.27.2's " +
       "`schema/postgresql/v12/visibility/versioned/v1.2/advanced_visibility.sql` opens with " +
       "`CREATE EXTENSION IF NOT EXISTS btree_gin` and uses a plpgsql function inside " +
       "`GENERATED ALWAYS AS (...) STORED` columns; CockroachDB implements neither " +
-      "(cockroachdb/cockroach#51992 open; computed columns may not reference UDFs, #122945). The DEFAULT " +
-      "store is unaffected, which is why this is a split rather than 'temporal does not work on " +
-      "CockroachDB'. It fails at the `update-visibility-store` init container of `temporal-schema-1`. " +
-      "(2) NO TLS MATERIAL, AND THIS COCKROACHDB IS TLS-ONLY: the cockroachdb Application sets " +
-      "`tls.enabled: true` with the selfSigner, so the SQL port refuses a plaintext client; the CA lives " +
-      "in a Secret in the `cockroachdb` namespace, this app runs in `temporal`, and no `temporal` SQL user " +
-      "exists. Declaring `sql.tls` today would point a values block at a Secret nothing creates -- the " +
-      "declaration-governing-a-nonexistent-path defect -- so it is named instead of declared. " +
-      "LIFTS WHEN: the CRDB CA is distributed into the `temporal` namespace (trust-manager is already in " +
-      "the cluster for exactly this) and a `temporal` SQL user plus its sealed password Secret exist, AND " +
-      "the visibility store is pointed somewhere that accepts its schema; then `temporal/**` can leave " +
-      "`DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and a live run reports the rest. " +
+      "(cockroachdb/cockroach#51992 open; computed columns may not reference UDFs, #122945). " +
+      "(2) THAT COCKROACHDB IS TLS-ONLY (`tls.enabled: true` with the selfSigner), its CA lived in the " +
+      "`cockroachdb` namespace, and no `temporal` SQL user existed. RETIRED BY: both stores now live on the " +
+      "CloudNativePG Cluster `temporal-postgres` declared in `temporal/postgres/` -- real PostgreSQL, one " +
+      "operator-generated credential (`temporal-postgres-app`), sslmode=require. That directory sits under " +
+      "the SAME `temporal/**` glob, so the database and its only consumer leave this lane together or not " +
+      "at all. What remains is lane room, below. " +
+      "LIFTS WHEN: the dev lane has room for temporal's request plus the CNPG instance's 512Mi; then " +
+      "`temporal/**` can leave `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and a live run reports whether the " +
+      "schema Job converges against the CNPG primary. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: no-unrenderable full-ai-cluster/temporal] " +
       "[cite: renders full-ai-cluster/temporal] " +
       "[cite: no-pvc full-ai-cluster/temporal] " +
       "[cite: chart-pin full-ai-cluster/temporal temporal 0.59.0] " +
-      "[cite: glob-defers temporal] ",
+      "[cite: glob-defers temporal] " +
+      "UPDATE 2026-09-23: independently of both blockers, it requests 1184Mi at `dev` against a lane that is now " +
+      "OVER its budget by 4196Mi [cite: lane-memory dev 13412 over] -- it had 116Mi left until 2026-09-25. The " +
+      "schema/TLS fixes alone would not fit it into this lane, and now fit it less -- and the move to a CNPG " +
+      "PostgreSQL adds that instance's own 512Mi request on top.",
   ],
   [
     "vllm",
-    "Same class as ollama: CUDA image, nvidia.com/gpu request, 200Gi longhorn PVC. " +
+    "Same class as ollama: CUDA image, nvidia.com/gpu request, 200Gi PVC on `zeta-block-replicated`. " +
       "LIFTS WHEN: a GPU-bearing self-hosted runner exists for this lane, or a CPU-only dev profile ships. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
-      "[cite: pvc-class full-ai-cluster/vllm longhorn] " +
+      "[cite: pvc-class full-ai-cluster/vllm zeta-block-replicated] " +
       "[cite: pvc-total full-ai-cluster/vllm 200] " +
-      "[cite: glob-defers vllm] ",
+      "[cite: glob-defers vllm] " +
+      "UPDATE 2026-09-23 -- MEASURED, AND DISK BINDS BEFORE THE GPU DOES. The CUDA image is ~23 GiB on disk " +
+      "(image-footprint.ts); beside the dev lane's ~32 GiB of images that leaves nothing inside a hosted " +
+      "runner's 66 GiB, so a CPU form would still need its own lane. vLLM's CPU backend is a different image " +
+      "and needs a model downloaded at start; neither has been measured on a hosted runner, so no dev form is " +
+      "claimed. An AMD form exists (`vllm/amd-gpu-metal`, rocm/vllm). LIFTS WHEN: a GPU-bearing self-hosted " +
+      "runner serves a lane, or a CPU image + tiny model is measured on a hosted runner in a lane with the disk.",
   ],
 ]);
 
@@ -780,10 +941,15 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // reach Synced/Healthy, which is the point -- "both up" that nothing checks is the
   // same claim the standby posture was making. gitlab STAYS deferred below, for
   // reasons that are about chart size rather than about the pair.
-  // charts.gitlab.io/gitlab 8.7.0: ~40 subcharts, a `gitlab-initial-root-password`
-  // Secret CI has no source for, and a Postgres/Redis/Gitaly/MinIO stack wanting
-  // several PVCs plus multi-GB images. A kind runner cannot schedule that inside
-  // the lane's assertion budget.
+  // charts.gitlab.io/gitlab 8.7.0: ~40 subcharts, and a Postgres/Redis/Gitaly/MinIO
+  // stack wanting several PVCs plus multi-GB images. A kind runner cannot schedule
+  // that inside the lane's assertion budget.
+  //
+  // WP24 (081M35K4PV6087G0R001Z3E0P8), 2026-09-22: `gitlab-initial-root-password`
+  // is NO LONGER a reason gitlab is deferred -- `k8s/bootstrap/internal-secret-
+  // seeding.yaml` mints it on metal and `DEV_GITLAB_ROOT_SECRET` mints it in
+  // dev/CI (see argocd-health-test.ts's `gitlab` entry in `DEV_EXCLUDED_REASONS`
+  // for the full trace). Chart size alone is what keeps this entry.
   "gitlab",
   // `headscale` is NOT here. It LEFT this set on 2026-08-22 after ONE cycle, and
   // the entry is recorded as closed rather than the lines silently deleted.
@@ -945,6 +1111,9 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // lane, so the blocker is the unwritten `server.config.persistence` block
   // alone, not an unavailable datastore. That is the next one to close, and it
   // is a manifest change nobody has made rather than a substrate gap.
+  // SUPERSEDED: the persistence block was written (#13469, CockroachDB) and on
+  // 2026-09-27 repointed at the CNPG Cluster `temporal-postgres`
+  // (temporal/postgres/). DEV_EXCLUDED_REASONS carries what still defers it.
   "temporal",
   // `vault` is NOT here. It LEFT this set on 2026-08-21, and the condition that
   // lifted it is recorded rather than the line silently deleted.
@@ -1064,13 +1233,13 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
       "LIFTS WHEN: this lane reports hindsight at `health=Healthy` -- NOT `sync=Synced health=Healthy`. The lane accepts `sync=Unknown health=Healthy` (argocd, cert-manager, external-secrets, headlamp, loki and node-feature-discovery all pass that way in the same green run; minio was in that list until 2026-09-01 and is not an app any more), and a LIFTS WHEN stricter than the gate it names is exactly what kept `headscale` deferred for a cycle after its defect was gone. Reaching it needs (a) the lane-wide capacity trade in (1)/(2) settled by the maintainer, and (b) whatever (3) turns out to cost once (a) lets a pod run long enough to find out. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. The four capacity numbers above are citations rather than prose FOR THAT REASON -- they are the numbers a reader is most likely to act on, so they are the ones that must not be allowed to go quietly stale. " +
       "[cite: glob-applies hindsight] " +
-      "[cite: pvc-class full-ai-cluster/hindsight longhorn] " +
+      "[cite: pvc-class full-ai-cluster/hindsight zeta-block-replicated] " +
       "[cite: pvc-total full-ai-cluster/hindsight 10] " +
       "[cite: chart-pin full-ai-cluster/hindsight hindsight 0.9.2] " +
       "[cite: resource-rung hindsight metal 1000] " +
       "[cite: resource-rung hindsight dev 75] " +
-      "[cite: lane-cpu metal 7390 over] " +
-      "[cite: lane-cpu dev 1715 fits] " +
+      "[cite: lane-cpu metal 8647 over] " +
+      "[cite: lane-cpu dev 2427 fits] " +
       "[cite: workflow-job k8s-argocd-health-test.yml dry-run] " +
       "[cite: path full-ai-cluster/k8s/bootstrap/root-application.yaml] " +
       "[cite: path maintainers/Addisons820/cluster-nodes/node-ad1efd/node.yaml] " +
@@ -1082,7 +1251,8 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
       "weaviate renders TWO `type: LoadBalancer` Services (`weaviate`, `weaviate-grpc`), and gitops-engine `getCorev1ServiceHealth` reports a LoadBalancer Service whose `status.loadBalancer.ingress` is empty as PROGRESSING, unconditionally. kindnetd has no LoadBalancer implementation, so on the default kind lane those two Services never get an address. kind `--cni cilium` applies a Cilium LB-IPAM alias; that alias existing is not a measurement that these Services receive an address. `weaviate-0` was 1/1 Running for 39m while the kindnetd case held, which is how the blocker stayed hidden behind the one that was found. " +
       "The `randAlphaNum` render nondeterminism established by byte diff is real and its narrow `ignoreDifferences` rule is KEPT, because on metal cilium-lb-ipam does assign LB addresses and it may there be the whole story. But the resync loop SURVIVED that rule live, so 'the rule closes the loop' is UNMETERED rather than proven: the OutOfSync cause was checked and the Progressing cause was not, and one confirmed cause was read as THE cause. " +
       "CLOSED ON kind `--cni cilium` by run 33697305243: weaviate=172.18.255.201, weaviate-grpc=172.18.255.202, Application OutOfSync/Healthy, residual OutOfSync named StatefulSet/weaviate rolling update complete. `isExcludedFromIncludedProof` returns false for weaviate when kindCni is cilium. Do not lift the metal cilium-lb-ipam Application. " +
-      "LIFTS WHEN: never on kindnetd -- that lane has no LoadBalancer implementation. The cilium-lane lift is already in code. " +
+      "SUPERSEDED IN THE TREE 2026-09-27, NOT YET ON A CLUSTER: weaviate's Application now sets `service.type` and `grpcService.type` to ClusterIP, so the two LoadBalancer Services this reason describes no longer render. The deferral is KEPT until a live kindnetd run shows weaviate Synced+Healthy, because a removed blocker is not a measured convergence -- this reason already records one fix read as THE fix. " +
+      "LIFTS WHEN: a live kindnetd `included` run reports weaviate Synced+Healthy with the ClusterIP Services. The cilium-lane lift is already in code. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: glob-applies weaviate] " +
       "[cite: renders full-ai-cluster/weaviate] " +
@@ -1121,7 +1291,10 @@ export interface AppliedButUnassertedDrift {
  */
 export function auditAppliedButUnasserted(repoRoot = REPO_ROOT): AppliedButUnassertedDrift {
   const globExcluded = rootDevCatalogExcludedDirs();
-  const applied = discoverExpectedApplications(repoRoot).filter((app) => !globExcluded.has(app.dir));
+  // `<dir>/**` drops nested Applications too (`temporal/postgres` under `temporal/**`).
+  const underGlob = (dir: string): boolean =>
+    globExcluded.has(dir) || [...globExcluded].some((excluded) => dir.startsWith(`${excluded}/`));
+  const applied = discoverExpectedApplications(repoRoot).filter((app) => !underGlob(app.dir));
   const unasserted = applied.filter((app) => app.excludedFromDev).map((app) => app.dir);
   const unassertedSet = new Set(unasserted);
 
@@ -1135,24 +1308,14 @@ export function isIncludedScope(scope: Scope): boolean {
   return scope === "included" || scope === "full";
 }
 
-function requestsLonghornStorageClass(yamlText: string): boolean {
-  return yamlText.split("\n").some((line) => {
-    const trimmed = line.trim();
-    const separator = trimmed.indexOf(":");
-    if (separator < 0) return false;
-    const key = trimmed.slice(0, separator);
-    if (key !== "storageClass" && key !== "storageClassName") return false;
-    const rawValue =
-      trimmed
-        .slice(separator + 1)
-        .split("#", 1)[0]
-        ?.trim() ?? "";
-    const value =
-      (rawValue.startsWith('"') && rawValue.endsWith('"')) || (rawValue.startsWith("'") && rawValue.endsWith("'"))
-        ? rawValue.slice(1, -1)
-        : rawValue;
-    return value === "longhorn";
-  });
+/**
+ * Every StorageClass NAME an Application's text requests. Since 2026-09-23 a
+ * name is a capability (`zeta-block-replicated` ...), never a provider -- see
+ * storage-capabilities.ts, whose line scanner this reuses so the lint and this
+ * rule read `storageClass:` identically.
+ */
+function requestedStorageClasses(yamlText: string): readonly string[] {
+  return storageClassValues(yamlText).map((entry) => entry.value);
 }
 
 function listYamlFilesUnder(dir: string, depth = 0): readonly string[] {
@@ -1166,8 +1329,8 @@ function listYamlFilesUnder(dir: string, depth = 0): readonly string[] {
   });
 }
 
-function yamlTreeReferencesLonghorn(appDir: string): boolean {
-  return listYamlFilesUnder(appDir).some((file) => requestsLonghornStorageClass(readFileSync(file, "utf8")));
+function yamlTreeRequestedStorageClasses(appDir: string): readonly string[] {
+  return listYamlFilesUnder(appDir).flatMap((file) => requestedStorageClasses(readFileSync(file, "utf8")));
 }
 
 /**
@@ -1197,14 +1360,105 @@ function yamlTreeReferencesLonghorn(appDir: string): boolean {
  * chart, which `helm-validate.yml` already does for the k8s tree; wiring the
  * access mode out of that render is the real fix and is not done here.
  */
+/**
+ * Does the RENDERED snapshot show this Application asking for `ReadWriteMany`?
+ *
+ * The second detector, and it sees what the first structurally cannot.
+ * `yamlTreeRequestsReadWriteMany` reads the CHECKED-IN tree, but most
+ * Applications are `spec.source.chart` against an external `repoURL` -- the
+ * repo holds a `valuesObject` and the PVC's access mode lives in the upstream
+ * chart -- so for exactly the Applications it protects it scans files that
+ * cannot contain the answer. That limit was written down in this file and is
+ * now closed from the other side: `helm template` renders the chart, and
+ * `rendered-storage-claims.snapshot.json` carries the `accessModes` it emits.
+ *
+ * READS THE COMMITTED SNAPSHOT, never helm. `isExcludedFromIncludedProof` is a
+ * pure offline predicate that `app-of-apps-discovery.ts` and the unit tests
+ * call with no cluster and no network in sight; rendering here would break
+ * that. The snapshot is regenerated by `rendered-storage-claims.ts
+ * --write-snapshot` and reviewed in the diff like any other committed
+ * measurement.
+ *
+ * THE TWO ARE COMPLEMENTARY, NOT REDUNDANT -- measured 2026-09-19:
+ *   - the render covers 23 Applications, 38 claims, and found ZERO RWX;
+ *   - `arc-runner-set` is NOT in the render set and declares
+ *     `accessModes: [ ReadWriteMany ]` in its own committed `model-cache-pvc.yaml`.
+ * So each detector catches a case the other misses, and the guard asks both.
+ *
+ * Silence is not clearance. An Application the snapshot does not mention gets
+ * `false` HERE -- this function answers only "did the render show RWX" -- and
+ * the residual unknown is reported by `appsTheRenderIsSilentAbout` rather than
+ * being quietly read as safe.
+ */
+export function renderedClaimsRequestReadWriteMany(dir: string, repoRoot = REPO_ROOT): boolean {
+  for (const claim of loadRenderedClaims(repoRoot)) {
+    if (claim.appId.split("/").at(-1) !== dir) continue;
+    if (claim.accessModes.includes("ReadWriteMany")) return true;
+  }
+  return false;
+}
+
+/**
+ * Cached parse of the committed render snapshot; `[]` when it is absent or unreadable.
+ *
+ * KEYED BY `repoRoot`. A single cached value would make the first caller's root
+ * the answer for every later one and silently ignore the parameter -- which the
+ * tests, that point this at fixture trees, would then be unable to see past.
+ */
+const renderedClaimsCache = new Map<string, readonly { appId: string; accessModes: readonly string[] }[]>();
+function loadRenderedClaims(repoRoot: string): readonly { appId: string; accessModes: readonly string[] }[] {
+  const hit = renderedClaimsCache.get(repoRoot);
+  if (hit !== undefined) return hit;
+  // FAIL OPEN HERE, DELIBERATELY, AND ONLY HERE. A missing or unparseable
+  // snapshot must not make every Application look RWX-free by accident, but it
+  // also must not make them all look RWX -- that would exclude the entire
+  // roster from the proof on a file-read error. So this returns `[]`, the
+  // checked-in scan continues to apply unchanged, and the snapshot's absence is
+  // a REPORTING gap surfaced by `appsTheRenderIsSilentAbout`, not a silent
+  // verdict flip in either direction.
+  try {
+    const raw = readFileSync(resolve(repoRoot, "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"), "utf8");
+    const parsed = JSON.parse(raw) as { rendered?: { appId?: unknown; accessModes?: unknown }[] };
+    renderedClaimsCache.set(repoRoot, (parsed.rendered ?? []).flatMap((c) =>
+      typeof c.appId === "string"
+        ? [{ appId: c.appId, accessModes: Array.isArray(c.accessModes) ? c.accessModes.filter((m): m is string => typeof m === "string") : [] }]
+        : [],
+    ));
+  } catch {
+    renderedClaimsCache.set(repoRoot, []);
+  }
+  return renderedClaimsCache.get(repoRoot) ?? [];
+}
+
+/**
+ * Applications the render says nothing about — the honest residual.
+ *
+ * Neither detector can clear these: the render did not cover them and the
+ * checked-in scan can only see in-repo manifests. They are NOT excluded from
+ * the proof on that basis, because excluding an Application for being
+ * unmeasured would quietly shrink the roster the proof covers, which is the
+ * failure this file refuses everywhere else. They are reported so the gap has
+ * a number instead of a silence.
+ */
+export function appsTheRenderIsSilentAbout(dirs: readonly string[], repoRoot = REPO_ROOT): readonly string[] {
+  const covered = new Set(loadRenderedClaims(repoRoot).map((c) => c.appId.split("/").at(-1)));
+  return dirs.filter((d) => !covered.has(d)).toSorted(stringCompare);
+}
+
 function yamlTreeRequestsReadWriteMany(appDir: string): boolean {
   return listYamlFilesUnder(appDir).some((file) => readFileSync(file, "utf8").includes("ReadWriteMany"));
 }
 
 /**
- * Does the repo DECLARE a dev/CI substrate StorageClass named `longhorn`?
+ * Which storage CAPABILITIES does the repo bind for the dev/CI substrate?
  *
- * This is the SUBSTRATE CONDITION the longhorn exclusion now hangs on. It is
+ * Since 2026-09-23 charts name a capability, never a provider
+ * (storage-capabilities.ts), and dev binds the two RWO ones in
+ * `dev-cluster/manifests/`. The question used to be "is there a class NAMED
+ * `longhorn`"; it is now "which of the names charts ask for can this lane
+ * serve", and the answer is a set. `zeta-shared` is never in it.
+ *
+ * This is the SUBSTRATE CONDITION the storage exclusion hangs on. It is
  * deliberately a fact about the checked-in tree rather than about a live
  * cluster, because `isExcludedFromIncludedProof` is a pure, offline predicate
  * that `app-of-apps-discovery.ts` and the unit tests call with no cluster in
@@ -1225,8 +1479,19 @@ function yamlTreeRequestsReadWriteMany(appDir: string): boolean {
  * edit that "restores parity" by naming the real driver silently unlock ten
  * Applications onto a class that provisions nothing.
  */
-export function devLonghornStorageClassAliasDeclared(repoRoot = REPO_ROOT): boolean {
-  const path = resolve(repoRoot, DEV_STORAGE_ALIAS_MANIFEST_RELPATHS.longhorn);
+export function devBoundStorageCapabilities(repoRoot = REPO_ROOT): ReadonlySet<string> {
+  const bound = new Set<string>();
+  for (const key of Object.keys(DEV_STORAGE_ALIAS_MANIFEST_RELPATHS) as (keyof typeof DEV_STORAGE_ALIAS_MANIFEST_RELPATHS)[]) {
+    const expectedName = DEV_STORAGE_ALIAS_CLASS_NAMES[key];
+    if (devBindingManifestDeclares(resolve(repoRoot, DEV_STORAGE_ALIAS_MANIFEST_RELPATHS[key]), expectedName)) {
+      bound.add(expectedName);
+    }
+  }
+  return bound;
+}
+
+/** One dev binding file, fail-closed in every direction (see the doc above). */
+function devBindingManifestDeclares(path: string, expectedName: string): boolean {
   if (!existsSync(path)) return false;
   let document: unknown;
   try {
@@ -1241,7 +1506,7 @@ export function devLonghornStorageClassAliasDeclared(repoRoot = REPO_ROOT): bool
   if (!DEV_SATISFIABLE_PROVISIONERS.has(record.provisioner)) return false;
   const metadata = record.metadata;
   if (typeof metadata !== "object" || metadata === null) return false;
-  return (metadata as { name?: unknown }).name === DEV_LONGHORN_ALIAS_CLASS_NAME;
+  return (metadata as { name?: unknown }).name === expectedName;
 }
 
 /**
@@ -1308,7 +1573,12 @@ export function isExcludedFromIncludedProof(
   dir: string,
   appText: string,
   appDir: string,
-  aliasDeclared: boolean = devLonghornStorageClassAliasDeclared(),
+  /**
+   * The capabilities the dev substrate binds (`devBoundStorageCapabilities`).
+   * An Application requesting ANY class outside this set is excluded: its PVC
+   * could never bind here, and a pending PVC reads as Progressing, not failed.
+   */
+  devBound: ReadonlySet<string> = devBoundStorageCapabilities(),
   /**
    * The provider the proof is running on, when known.
    *
@@ -1331,10 +1601,20 @@ export function isExcludedFromIncludedProof(
   // kindnetd still has no LoadBalancer implementation -- keep deferred there.
   if (dir === "weaviate" && kindCni === "cilium") return false;
   if (DEV_EXCLUDED_DIRS.has(dir)) return true;
+  // A NESTED Application under an excluded directory is excluded too, because
+  // ArgoCD's glob says so: the root's `<dir>/**` drops `<dir>/<child>/Application.yaml`
+  // exactly as it drops `<dir>/Application.yaml`. Asserting the child would make the
+  // lane wait its full timeout on an Application nothing synced -- the case
+  // applied-vs-asserted-agreement.test.ts caught for `temporal/postgres`, which sits
+  // under `temporal/` so that temporal's database defers with temporal, by one glob.
+  if ([...DEV_EXCLUDED_DIRS].some((excluded) => dir.startsWith(`${excluded}/`))) return true;
   if (DEV_INCLUDED_PROOF_DEFERRED_DIRS.has(dir)) return true;
-  if (yamlTreeRequestsReadWriteMany(appDir)) return true;
-  if (aliasDeclared) return false;
-  return requestsLonghornStorageClass(appText) || yamlTreeReferencesLonghorn(appDir);
+  // BOTH detectors, because each sees a case the other cannot: the checked-in
+  // scan catches in-repo manifests (arc-runner-set), the render catches
+  // upstream charts (where most of these Applications keep their PVCs).
+  if (yamlTreeRequestsReadWriteMany(appDir) || renderedClaimsRequestReadWriteMany(dir)) return true;
+  const requested = [...requestedStorageClasses(appText), ...yamlTreeRequestedStorageClasses(appDir)];
+  return requested.some((storageClass) => !devBound.has(storageClass));
 }
 
 function usageFailure(message: string): Failure {
@@ -1411,6 +1691,8 @@ function defaultCliOptions(env: NodeJS.ProcessEnv): ParseOptionsResult {
       kindCni: "kindnetd",
       ephemeralVaultInit: false,
       serveTreeProfile: null,
+      laneDirs: null,
+      soakSeconds: DEFAULT_SOAK_SECONDS,
     },
   };
 }
@@ -1425,6 +1707,7 @@ function readFlagValue(argv: readonly string[], index: number, flag: string, des
 
 function assignStringFlag(options: MutableCliOptions, flag: string, value: string): void {
   if (flag === "--serve-tree") options.serveTreeProfile = value;
+  if (flag === "--lane-dirs") options.laneDirs = parseLaneDirs(value);
   if (flag === "--git-ref") options.gitRef = value;
   if (flag === "--cluster-name") options.clusterName = value;
   if (flag === "--config") {
@@ -1436,6 +1719,7 @@ function assignStringFlag(options: MutableCliOptions, flag: string, value: strin
 function assignIntegerFlag(options: MutableCliOptions, flag: string, value: number): void {
   if (flag === "--timeout-sec") options.timeoutSeconds = value;
   if (flag === "--poll-sec") options.pollSeconds = value;
+  if (flag === "--soak-sec") options.soakSeconds = value;
 }
 
 function parseStringFlag(argv: readonly string[], index: number, options: MutableCliOptions): ParseArgResult {
@@ -1657,17 +1941,25 @@ export function discoverExpectedApplications(
   /** See `isExcludedFromIncludedProof`'s `provider` note: optional, `null` lifts nothing. */
   provider: Provider | null = null,
   kindCni: KindCni = "kindnetd",
+  /**
+   * One lane's Application directories, or `null` for the whole roster. The
+   * SAME list scopes what the root catalogue applies (`laneScopedExcludeGlob`),
+   * so apply and assert cannot disagree about which charts a lane owns.
+   */
+  laneDirs: readonly string[] | null = null,
 ): readonly ExpectedApplication[] {
   // Read the substrate condition ONCE for the whole roster: it is a property of
   // the repo, not of any one Application, and re-reading it per directory would
-  // let two Applications in the same run disagree about whether dev has a
-  // `longhorn` StorageClass.
-  const aliasDeclared = devLonghornStorageClassAliasDeclared(repoRoot);
+  // let two Applications in the same run disagree about which storage
+  // capabilities dev binds.
+  const devBound = devBoundStorageCapabilities(repoRoot);
   const appsDir = resolve(repoRoot, "full-ai-cluster/k8s/applications");
-  const dirs = readdirSync(appsDir, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort(stringCompare);
+  // DEPTH 2, via the module the root catalogue also uses. Depth 1 missed
+  // `game-hosting/gmod`, which ArgoCD's non-segment-bounded glob does apply --
+  // see `application-dirs.ts`.
+  const all = listApplicationDirs(repoRoot);
+  const lane = laneDirs === null ? null : new Set(laneDirs);
+  const dirs = lane === null ? all : all.filter((d) => lane.has(d));
 
   return dirs.flatMap((dir) => {
     const appPath = join(appsDir, dir, "Application.yaml");
@@ -1683,7 +1975,7 @@ export function discoverExpectedApplications(
         dir,
         name,
         path: appPath.slice(repoRoot.length + 1),
-        excludedFromDev: isExcludedFromIncludedProof(dir, appText, appDir, aliasDeclared, provider, kindCni),
+        excludedFromDev: isExcludedFromIncludedProof(dir, appText, appDir, devBound, provider, kindCni),
         manualSync: classifySyncPolicy(appText).kind === "manual",
       },
     ];
@@ -1723,7 +2015,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     // which is the same defect (a lift condition nothing can evaluate) one
     // layer up. `buildPlan` is the only caller that knows which substrate the
     // proof is about; the repo-level callers keep the `null` default.
-    expectedApplications = discoverExpectedApplications(repoRoot, options.provider, options.kindCni);
+    expectedApplications = discoverExpectedApplications(repoRoot, options.provider, options.kindCni, options.laneDirs);
   } catch (error) {
     return {
       kind: "ApplicationManifestInvalid",
@@ -1748,7 +2040,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
       "wait for applications.argoproj.io CRD establishment",
       ...(isIncludedScope(options.scope)
         ? [
-            `assert the dev alias StorageClass "${DEV_LONGHORN_ALIAS_CLASS_NAME}" the repo declares is actually present, before anything waits on a PVC that needs it`,
+            `assert the dev storage-capability StorageClasses (${Object.values(DEV_STORAGE_ALIAS_CLASS_NAMES).join(", ")}) the repo binds are actually present, before anything waits on a PVC that needs one`,
             ...DEV_BOOTSTRAP_SECRETS.map(
               (spec) =>
                 `assert the dev credential ${spec.namespace}/${spec.name} the bring-up mints is actually present, before its Application waits on a Secret that must pre-exist`,
@@ -1771,7 +2063,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     notes: [
       "081KSXN940008QG0R000SCP2H1 is separate from 081KSNY2Z0008QG0R0008PN7RQ; this harness does not test USB reformat retention.",
       "Dev health assertions exclude cilium (except k3d, and kind --cni cilium), the Longhorn chart itself, GPU model-SERVING (ollama/vllm), ReadWriteMany claims, and apps deferred on a named blocker recorded in APPLIED_BUT_UNASSERTED_REASONS; k3d and kind --cni cilium bootstrap Cilium directly, kind --cni kindnetd uses kind's default CNI.",
-      "Longhorn-BACKED manifests are no longer storage-excluded: dev applies a StorageClass named longhorn over rancher.io/local-path (dev-cluster/manifests/longhorn.yaml), so those PVCs bind. MEASURED on run 32519516070: 6 of the 11 formerly-excluded apps reached Synced+Healthy (headscale, mimir, nats, oz, redis, tempo); the other 5 bound their volumes and then failed for named NON-storage defects, visible for the first time. TWO of those five are fixed as of 2026-08-21 and are PROVEN so by live run 32532470499 -- cockroachdb (the chart init Job moved out of ArgoCD PostSync, which deadlocks against the health it is needed to produce) and kube-prometheus-stack (Grafana admin Secret minted at bring-up). weaviate was asserted alongside them for a few hours and the same run refuted it: two `type: LoadBalancer` Services can never be Healthy on a kind node, a blocker independent of the render nondeterminism that was fixed. hindsight remains, on three independent blockers. Still excluded outright are ReadWriteMany claims, which no dev provisioner can serve, and the whole rule returns if that manifest is absent (081M0JXF6MS087G0R001HC34TM).",
+      "Storage is by CAPABILITY, not provider (since 2026-09-23; storage-capabilities.ts): charts request zeta-block-replicated / zeta-block-local / zeta-shared, and dev binds the two RWO capabilities to rancher.io/local-path (dev-cluster/manifests/zeta-block-*.yaml) where it used to fake a class NAMED longhorn, so those PVCs bind. Served dev trees carry the `ci` storage rung + dev resize overrides so the declared disk fits the runner. MEASURED on run 32519516070: 6 of the 11 formerly-excluded apps reached Synced+Healthy (headscale, mimir, nats, oz, redis, tempo); the other 5 bound their volumes and then failed for named NON-storage defects, visible for the first time. TWO of those five are fixed as of 2026-08-21 and are PROVEN so by live run 32532470499 -- cockroachdb (the chart init Job moved out of ArgoCD PostSync, which deadlocks against the health it is needed to produce) and kube-prometheus-stack (Grafana admin Secret minted at bring-up). weaviate was asserted alongside them for a few hours and the same run refuted it: two `type: LoadBalancer` Services can never be Healthy on a kind node, a blocker independent of the render nondeterminism that was fixed. hindsight remains, on three independent blockers. Still excluded outright are ReadWriteMany claims (zeta-shared is deliberately unbound in dev), and any class dev does not bind -- including a provider name -- keeps its Application out (081M0JXF6MS087G0R001HC34TM).",
       "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
   };
@@ -2019,10 +2311,64 @@ function waitForKubectl(
  * the override had been skipped. `lane-tree-source` already refuses a zero-file
  * copy, a zero-edit rung apply, an un-rewritten repoURL and an over-budget pack;
  * this keeps those refusals fatal rather than absorbing them.
+ *
+ * EXPORTED (081KSXN940008QG0R000SCP2H1 WP1b) so `first-boot-replica.ts` can serve the
+ * same rung-overlaid tree its real k3s roster's `root-application.yaml` points at,
+ * rather than re-deriving the rung/override/bundle pipeline a second time. Both
+ * callers get the SAME staged tree, the SAME refusals (zero-file copy, zero-edit
+ * rung apply, un-rewritten repoURL, over-budget pack), and the same `LANE_TREE_IMAGE`.
  */
-function buildLaneTreeForProfile(
+/**
+ * Everything `--serve-tree <rung>` does to the STAGED copy, in order, as one
+ * function the unit tests can drive against a staged tree without building the
+ * bare repository: the resource rung, then the storage profile the catalogue maps
+ * the rung to, then the rung overrides. Never touches the committed tree.
+ */
+export function applyServeTreeRung(
+  profile: string,
+  stagedRoot: string,
+  /**
+   * Non-rung cluster properties (`rung-overrides.yaml` `dimensions`), e.g.
+   * `{gpuVendor: "amd"}` for an AMD GPU cluster. Empty = every dimension at its
+   * committed value (NVIDIA), i.e. exactly the tree this built before
+   * dimensions existed. Validated: an undeclared name or value THROWS rather
+   * than silently building the committed tree under another label.
+   */
+  selection: ClusterSelection = {},
+  /**
+   * Rung-override ids NOT to apply. For a lane that ALSO runs the k3s bootstrap
+   * roster (the first-boot replica): an override on an Application that adopts a
+   * bootstrap HelmChart makes the two owners of one release disagree, because k3s
+   * installs the committed bootstrap values and no rung ever touches them. When the
+   * disagreement lands on an immutable field the Application can never sync
+   * (081M3HYPQCR087G0R003C2VPRS: `spire/disk-dev`, a StatefulSet volumeClaimTemplate
+   * 512Mi vs 5Gi). Empty (the default) = every override, i.e. unchanged behaviour
+   * for the kind/k3d lanes, which install no bootstrap HelmCharts.
+   */
+  options: { readonly skipOverrideIds?: ReadonlySet<string> } = {},
+): { readonly rungEdits: number; readonly storageEdits: number; readonly overrideEdits: number; readonly storageProfile: string | null } {
+  validateSelection(selection, loadOverrideDimensions(stagedRoot));
+  const catalogue = loadResourceCatalogue(undefined, stagedRoot);
+  const rungEdits = applyResourceProfile(catalogue, profile, stagedRoot).length;
+  const storageProfile = storageProfileForResourceRung(profile, undefined, stagedRoot);
+  const storageEdits =
+    storageProfile === null ? 0 : applyProfile(loadCatalogue(undefined, stagedRoot), storageProfile, stagedRoot).length;
+  const skip = options.skipOverrideIds ?? new Set<string>();
+  const overrideEdits = applyRungOverrides(
+    loadRungOverrides(catalogue.profiles, stagedRoot).filter((o) => !skip.has(o.id)),
+    profile,
+    stagedRoot,
+    true,
+    selection,
+  ).length;
+  return { rungEdits, storageEdits, overrideEdits, storageProfile };
+}
+
+export function buildLaneTreeForProfile(
   profile: string | null,
   gitRef: string,
+  /** Passed to `applyServeTreeRung` -- see its `skipOverrideIds`. */
+  options: { readonly skipOverrideIds?: ReadonlySet<string> } = {},
 ): { readonly manifests: string; readonly repoUrl: string; readonly gitRef: string } | null {
   if (profile === null) return null;
   const catalogue = loadResourceCatalogue();
@@ -2047,19 +2393,25 @@ function buildLaneTreeForProfile(
     // could only be excluded from CI entirely. Twelve were.
     //
     // `applyRungOverrides` is the second point: arbitrary dotted-path set/remove,
-    // declared in `rung-overrides.json`, each entry carrying a substrate reason
+    // declared in `rung-overrides.yaml`, each entry carrying a substrate reason
     // and a lift condition, and each REFUSED if it produces no edits. It runs
     // AFTER the rung so a resource claim and an override can address the same
     // manifest without the override being silently reverted.
+    //
+    // A THIRD, BETWEEN THEM (2026-09-23): the STORAGE profile the catalogue maps
+    // this rung to (`storageProfileForResourceRung`, today `dev -> ci`). The
+    // committed tree carries the metal box's disk sizes; the staged dev tree
+    // carries sizes a hosted runner can actually hold. Same `applyProfile` the
+    // `--apply` path uses, so the numbers are the ones `--verify` checks.
     applyRung: (stagedRoot: string) => {
-      const rungEdits = applyResourceProfile(catalogue, profile, stagedRoot).length;
-      const overrideEdits = applyRungOverrides(
-        loadRungOverrides(catalogue.profiles, stagedRoot),
-        profile,
-        stagedRoot,
-      ).length;
-      console.log(`[serve-tree] rung edits=${String(rungEdits)} override edits=${String(overrideEdits)}`);
-      return rungEdits + overrideEdits;
+      const applied = applyServeTreeRung(profile, stagedRoot, {}, options);
+      const skipped = [...(options.skipOverrideIds ?? [])];
+      console.log(
+        `[serve-tree] rung edits=${String(applied.rungEdits)} storage edits=${String(applied.storageEdits)} ` +
+          `(profile ${applied.storageProfile ?? "unchanged"}) override edits=${String(applied.overrideEdits)}` +
+          (skipped.length === 0 ? "" : ` skipped overrides=${skipped.join(",")}`),
+      );
+      return applied.rungEdits + applied.storageEdits + applied.overrideEdits;
     },
   });
   console.log(
@@ -2085,6 +2437,7 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
         containerRuntime: options.runtime,
         cni: options.kindCni,
         ...(laneTree === null ? {} : { laneTree }),
+        ...(options.laneDirs === null ? {} : { laneDirs: options.laneDirs }),
       });
       return null;
     } catch (e) {
@@ -2105,6 +2458,7 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
       configPath: options.configPath,
       gitRef: options.gitRef,
       ...(laneTree === null ? {} : { laneTree }),
+      ...(options.laneDirs === null ? {} : { laneDirs: options.laneDirs }),
     });
     return null;
   } catch (e) {
@@ -2143,33 +2497,37 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
  */
 function assertDevStorageClassPresent(plan: HarnessPlan): Failure | null {
   if (!isIncludedScope(plan.scope)) return null;
-  if (!devLonghornStorageClassAliasDeclared()) return null;
-  const args = ["get", "storageclass", DEV_LONGHORN_ALIAS_CLASS_NAME, "-o", "jsonpath={.provisioner}"];
-  const result = runCommand("kubectl", args, 60_000);
-  const provisioner = result.stdout.trim();
-  const satisfiable = result.status === 0 && DEV_SATISFIABLE_PROVISIONERS.has(provisioner);
-  if (satisfiable) return null;
-  const cause =
-    result.status === 0
-      ? `it is bound to provisioner "${provisioner}", which this lane cannot run`
-      : "it is not present";
-  return {
-    kind: "DevStorageClassMissing",
-    message:
-      `${DEV_STORAGE_ALIAS_MANIFEST_RELPATHS.longhorn} declares a dev StorageClass named ` +
-      `"${DEV_LONGHORN_ALIAS_CLASS_NAME}" over ${[...DEV_SATISFIABLE_PROVISIONERS].join("/")}, and the ` +
-      `included proof asserts Applications that request it, but in cluster ${plan.clusterName} ${cause}. ` +
-      `Those PVCs would stay Pending, which ArgoCD reports as Progressing rather than Degraded, so the run ` +
-      `would burn its whole timeout instead of failing. Failing now instead. Check that the bring-up path ` +
-      `still applies the alias manifest.`,
-    command: ["kubectl", ...args],
-    detail: {
-      stdout: result.stdout.slice(-2000),
-      stderr: result.stderr.slice(-2000),
-      clusterName: plan.clusterName,
-      observedProvisioner: provisioner,
-    },
-  };
+  const bound = devBoundStorageCapabilities();
+  for (const key of Object.keys(DEV_STORAGE_ALIAS_MANIFEST_RELPATHS) as (keyof typeof DEV_STORAGE_ALIAS_MANIFEST_RELPATHS)[]) {
+    const className = DEV_STORAGE_ALIAS_CLASS_NAMES[key];
+    if (!bound.has(className)) continue;
+    const args = ["get", "storageclass", className, "-o", "jsonpath={.provisioner}"];
+    const result = runCommand("kubectl", args, 60_000);
+    const provisioner = result.stdout.trim();
+    const satisfiable = result.status === 0 && DEV_SATISFIABLE_PROVISIONERS.has(provisioner);
+    if (satisfiable) continue;
+    const cause =
+      result.status === 0
+        ? `it is bound to provisioner "${provisioner}", which this lane cannot run`
+        : "it is not present";
+    return {
+      kind: "DevStorageClassMissing",
+      message:
+        `${DEV_STORAGE_ALIAS_MANIFEST_RELPATHS[key]} binds the storage capability "${className}" over ` +
+        `${[...DEV_SATISFIABLE_PROVISIONERS].join("/")}, and the included proof asserts Applications that request ` +
+        `it, but in cluster ${plan.clusterName} ${cause}. Those PVCs would stay Pending, which ArgoCD reports as ` +
+        `Progressing rather than Degraded, so the run would burn its whole timeout instead of failing. Failing ` +
+        `now instead. Check that the bring-up path still applies the binding manifest.`,
+      command: ["kubectl", ...args],
+      detail: {
+        stdout: result.stdout.slice(-2000),
+        stderr: result.stderr.slice(-2000),
+        clusterName: plan.clusterName,
+        observedProvisioner: provisioner,
+      },
+    };
+  }
+  return null;
 }
 
 /**
@@ -2558,6 +2916,12 @@ export function degradedHealthTerminalFailure(verdicts: readonly ApplicationVerd
  *
  * Not a debounce over time, deliberately: consecutive POLLS, so the guarantee
  * does not silently change when `--poll-sec` moves.
+ *
+ * SUPERSEDED at the `waitForApplications` call site by
+ * `evidenceBasedDegradedTerminalFailure` below (081KSXN940008QG0R000SCP2H1,
+ * run 35628762464) -- kept, exported, and still under test rather than
+ * deleted, because it is the regression pin for the false positive it fixed
+ * (run 34369317553) and its own tests are the record of that measurement.
  */
 export function confirmedDegradedTerminalFailure(
   previous: readonly ApplicationVerdict[],
@@ -2569,6 +2933,648 @@ export function confirmedDegradedTerminalFailure(
   return degradedHealthTerminalFailure(confirmed);
 }
 
+/**
+ * EVIDENCE-BASED TERMINAL DEGRADED (081KSXN940008QG0R000SCP2H1, daily schedule red
+ * since 2026-09-19: runs 35456502519 / 35524259964 / 35628762464).
+ *
+ * `confirmedDegradedTerminalFailure` above narrowed the false-positive class from
+ * "one Degraded poll" to "two consecutive Degraded polls" (~15s in CI), which
+ * fixed the openziti-controller flake it was measured against. It is still a
+ * SAMPLE-COUNT rule, and sample count is the wrong axis: MEASURED run
+ * 35628762464 aborted at ~T+10min of a 2400s budget on
+ * `kube-prometheus-stack=Synced/Degraded` while every one of its pods was
+ * simply `PodInitializing` -- still pulling images / provisioning a Longhorn
+ * PVC. Two consecutive polls of an ordinary, still-in-progress first rollout
+ * satisfy the old rule exactly as well as two polls of a genuinely dead
+ * workload; the rule cannot tell them apart because it never looks past the
+ * Application's own `health.status` string. Argo's health for
+ * Prometheus/Alertmanager CRs (and any Deployment before its
+ * `progressDeadlineSeconds`) legitimately reports Degraded for MINUTES during
+ * a first rollout -- this is documented Argo behaviour, not a bug in Argo.
+ *
+ * So: terminal-ness is now a question about the WORKLOAD, not about how many
+ * times ArgoCD printed the word. An Application is terminally Degraded only
+ * when
+ *
+ *   (a) a pod it owns shows HARD evidence waiting cannot fix --
+ *       `podBlockingReason` below: CrashLoopBackOff at/above a restart
+ *       threshold, ImagePullBackOff/ErrImagePull, CreateContainerConfigError,
+ *       or FailedScheduling on insufficient resources -- fires on the FIRST
+ *       poll that sees it, which is MORE fail-fast than the two-poll rule for
+ *       a genuinely dead workload; or
+ *
+ *   (b) it has been continuously Synced/Degraded past a bounded ceiling
+ *       (`DEGRADED_CEILING_SECONDS`) with NO pod making progress -- i.e. none
+ *       of its pods are in an ordinary still-starting state
+ *       (`podStillProvisioning`).
+ *
+ * A pod that is Pending/ContainerCreating/PodInitializing/`Init:N/M`, or
+ * Running-but-not-Ready inside a short startup grace window, blocks BOTH
+ * paths: it is evidence of an ordinary rollout, not of a stuck one, so the
+ * wait keeps waiting.
+ */
+
+export interface PodContainerState {
+  readonly name: string;
+  readonly restartCount: number;
+  readonly ready: boolean;
+  readonly running: boolean;
+  readonly waitingReason: string;
+  readonly waitingMessage: string;
+  readonly terminatedReason: string;
+  readonly terminatedExitCode: number | null;
+}
+
+export interface PodSnapshot {
+  readonly namespace: string;
+  readonly name: string;
+  /** `status.phase`: Pending | Running | Succeeded | Failed | Unknown | "". */
+  readonly phase: string;
+  /** `metadata.labels["app.kubernetes.io/instance"]`, `""` if absent. */
+  readonly instanceLabel: string;
+  /** `metadata.creationTimestamp`, parsed; `null` if absent/unparseable. */
+  readonly startedAtMs: number | null;
+  /** `status.conditions[type=PodScheduled, status=False].reason`, `""` if scheduled or unknown. */
+  readonly scheduledFailureReason: string;
+  readonly scheduledFailureMessage: string;
+  readonly initContainers: readonly PodContainerState[];
+  readonly containers: readonly PodContainerState[];
+}
+
+function podContainerState(raw: unknown): PodContainerState | null {
+  const c = asRecord(raw);
+  if (c === null) return null;
+  const name = typeof c["name"] === "string" ? c["name"] : "";
+  if (name === "") return null;
+  const state = asRecord(c["state"]);
+  const waiting = state ? asRecord(state["waiting"]) : null;
+  const terminated = state ? asRecord(state["terminated"]) : null;
+  return {
+    name,
+    restartCount: typeof c["restartCount"] === "number" ? c["restartCount"] : 0,
+    ready: c["ready"] === true,
+    running: state !== null && asRecord(state["running"]) !== null,
+    waitingReason: waiting && typeof waiting["reason"] === "string" ? waiting["reason"] : "",
+    waitingMessage: waiting && typeof waiting["message"] === "string" ? waiting["message"] : "",
+    terminatedReason: terminated && typeof terminated["reason"] === "string" ? terminated["reason"] : "",
+    terminatedExitCode: terminated && typeof terminated["exitCode"] === "number" ? terminated["exitCode"] : null,
+  };
+}
+
+const POD_INSTANCE_LABEL = "app.kubernetes.io/instance";
+
+/** Exported for unit tests: parse `kubectl get pods -A -o json` into full pod snapshots. */
+export function podsFromPodsJson(stdout: string): readonly PodSnapshot[] {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(stdout);
+  } catch {
+    return [];
+  }
+  const items = asRecord(parsed)?.["items"];
+  if (!Array.isArray(items)) return [];
+  const out: PodSnapshot[] = [];
+  for (const item of items) {
+    const pod = asRecord(item);
+    if (pod === null) continue;
+    const meta = asRecord(pod["metadata"]);
+    const status = asRecord(pod["status"]);
+    const namespace = meta && typeof meta["namespace"] === "string" ? meta["namespace"] : "";
+    const name = meta && typeof meta["name"] === "string" ? meta["name"] : "";
+    if (namespace === "" || name === "") continue;
+    const labels = meta ? asRecord(meta["labels"]) : null;
+    const instanceLabel = labels && typeof labels[POD_INSTANCE_LABEL] === "string" ? labels[POD_INSTANCE_LABEL] : "";
+    const creationTimestamp = meta && typeof meta["creationTimestamp"] === "string" ? meta["creationTimestamp"] : "";
+    const parsedStart = creationTimestamp === "" ? NaN : Date.parse(creationTimestamp);
+    const phase = status && typeof status["phase"] === "string" ? status["phase"] : "";
+    const conditions = status && Array.isArray(status["conditions"]) ? status["conditions"] : [];
+    let scheduledFailureReason = "";
+    let scheduledFailureMessage = "";
+    for (const cond of conditions) {
+      const c = asRecord(cond);
+      if (c !== null && c["type"] === "PodScheduled" && c["status"] === "False") {
+        scheduledFailureReason = typeof c["reason"] === "string" ? c["reason"] : "";
+        scheduledFailureMessage = typeof c["message"] === "string" ? c["message"] : "";
+      }
+    }
+    const initRaw = status && Array.isArray(status["initContainerStatuses"]) ? status["initContainerStatuses"] : [];
+    const containersRaw = status && Array.isArray(status["containerStatuses"]) ? status["containerStatuses"] : [];
+    out.push({
+      namespace,
+      name,
+      phase,
+      instanceLabel,
+      startedAtMs: Number.isNaN(parsedStart) ? null : parsedStart,
+      scheduledFailureReason,
+      scheduledFailureMessage,
+      initContainers: initRaw.flatMap((c) => {
+        const s = podContainerState(c);
+        return s === null ? [] : [s];
+      }),
+      containers: containersRaw.flatMap((c) => {
+        const s = podContainerState(c);
+        return s === null ? [] : [s];
+      }),
+    });
+  }
+  return out;
+}
+
+/**
+ * Which live pods belong to a given Application.
+ *
+ * ROBUSTNESS CHOICE, and why namespace rather than owner-reference chains or
+ * the instance label alone: ArgoCD's default resource-tracking method writes
+ * `app.kubernetes.io/instance: <app-name>` onto the TOP-LEVEL manifests it
+ * applies directly, but a Pod is normally created by a Deployment/StatefulSet
+ * CONTROLLER, not applied by ArgoCD itself -- so the label reaches a Pod only
+ * when the chart's own template also carries it, and that varies chart to
+ * chart. It does NOT hold for kube-prometheus-stack's
+ * prometheus-operator-generated Prometheus/Alertmanager StatefulSets (one of
+ * the two measured false positives this evidence pipeline exists to fix,
+ * alongside openziti-controller) -- prometheus-operator names and labels
+ * those pods itself. Walking owner references (Pod -> ReplicaSet ->
+ * Deployment) would be exact regardless of chart convention, but costs a
+ * second live `kubectl get replicasets -A` call plus chain-resolution on
+ * every poll.
+ *
+ * `spec.destination.namespace` is ArgoCD's own declaration of where an
+ * Application's resources land: always present the instant the Application
+ * object exists (no comparison has to have run first, unlike `status.resources`),
+ * one field already inside the Application list this poll loop already
+ * fetches, and true ground truth rather than a chart convention. Measured
+ * against this repo's own catalogue (every `full-ai-cluster/k8s/applications/<dir>/Application.yaml`),
+ * destination namespace is EXCLUSIVE to one Application for all but four
+ * namespaces (`cert-manager`: cert-manager+trust-manager; `kube-system`:
+ * cilium+cilium-lb-ipam+sealed-secrets; `models`: deepseek-coder+qwen-coder;
+ * `spire`: spire+spire-crds) -- for those, the instance label (present or
+ * not) disambiguates: a labelled pod is attributed to the Application it
+ * names, and an UNLABELLED pod in a shared namespace is attributed to NONE of
+ * the Applications sharing it, never guessed. That is the fail-closed
+ * direction for a function feeding a terminal-failure decision: an unmatched
+ * pod cannot manufacture false "terminal" evidence, it can only cost a missed
+ * one, which the bounded ceiling (case (b) above) still catches.
+ */
+export function podsBelongingToApplication(
+  app: { readonly name: string; readonly namespace?: string },
+  allApplications: readonly { readonly name: string; readonly namespace?: string }[],
+  pods: readonly PodSnapshot[],
+): readonly PodSnapshot[] {
+  const namespace = app.namespace ?? "";
+  if (namespace === "") return [];
+  const sharedNamespace = allApplications.some(
+    (other) => other.name !== app.name && (other.namespace ?? "") === namespace,
+  );
+  return pods.filter((pod) => {
+    if (pod.namespace !== namespace) return false;
+    return sharedNamespace ? pod.instanceLabel === app.name : true;
+  });
+}
+
+/**
+ * Restarts this low are ordinary during a first rollout (a dependency not up
+ * yet, a slow migration retried once). Kubernetes itself does not report the
+ * `CrashLoopBackOff` waiting reason until the kubelet's own backoff has
+ * already run a few cycles, so requiring the reason ALONE (no restart floor)
+ * already excludes the single-crash case; the floor is a second, explicit
+ * margin against flagging a pod still inside its first few attempts.
+ */
+export const CRASHLOOP_RESTART_TERMINAL_THRESHOLD = 3;
+
+const HARD_FAILURE_WAITING_REASONS: ReadonlySet<string> = new Set([
+  "ImagePullBackOff",
+  "ErrImagePull",
+  "CreateContainerConfigError",
+]);
+
+/**
+ * A single pod-level reason waiting CANNOT fix: CrashLoopBackOff at/above the
+ * restart threshold, ImagePullBackOff/ErrImagePull, CreateContainerConfigError
+ * (a referenced Secret/ConfigMap key is missing), or FailedScheduling on
+ * insufficient resources. `null` for everything else -- including a pod that
+ * is simply unhealthy for a reason not on this list, which is a "no opinion"
+ * result, not a "healthy" one; that distinction is what keeps the bounded
+ * ceiling in `degradedApplicationTerminalEvidence` load-bearing.
+ */
+export function podBlockingReason(pod: PodSnapshot): string | null {
+  if (pod.scheduledFailureReason === "Unschedulable" && /insufficient/i.test(pod.scheduledFailureMessage)) {
+    return `FailedScheduling (${pod.scheduledFailureMessage})`;
+  }
+  for (const container of [...pod.initContainers, ...pod.containers]) {
+    if (
+      container.waitingReason === "CrashLoopBackOff" &&
+      container.restartCount >= CRASHLOOP_RESTART_TERMINAL_THRESHOLD
+    ) {
+      return `container ${container.name} CrashLoopBackOff (restarts=${String(container.restartCount)})`;
+    }
+    if (HARD_FAILURE_WAITING_REASONS.has(container.waitingReason)) {
+      const detail = container.waitingMessage.length > 0 ? `: ${container.waitingMessage}` : "";
+      return `container ${container.name} ${container.waitingReason}${detail}`;
+    }
+  }
+  return null;
+}
+
+/**
+ * Grace window for "Running but not yet Ready". A heuristic, not a probe-spec
+ * reader: reading each container's `readinessProbe.initialDelaySeconds` would
+ * be exact, but this only needs to separate "just started" from "stuck", and
+ * 90s comfortably covers the measured false positive (kube-prometheus-stack's
+ * default probes) without stretching the ceiling rule's own 600s budget so
+ * far that a genuinely stuck Application waits nearly as long as before.
+ */
+export const STILL_STARTING_GRACE_SECONDS = 90;
+
+/**
+ * True when a pod's current state is ordinary rollout/startup -- the cases
+ * the task names as explicitly NOT terminal: Pending (awaiting scheduling or
+ * provisioning), an init container that has not yet terminated (`Init:N/M`),
+ * a main container waiting on `PodInitializing`/`ContainerCreating`, or
+ * Running-but-not-Ready inside the startup grace window. Hard evidence
+ * (`podBlockingReason`) always wins over "still provisioning" -- a
+ * CrashLoopBackOff init container is not a pod making progress.
+ */
+export function podStillProvisioning(pod: PodSnapshot, nowMs: number): boolean {
+  if (podBlockingReason(pod) !== null) return false;
+  if (pod.phase === "Pending" || pod.phase === "") return true;
+  if (pod.initContainers.some((c) => c.terminatedReason === "")) return true; // Init:N/M
+  if (pod.containers.some((c) => c.waitingReason === "PodInitializing" || c.waitingReason === "ContainerCreating")) {
+    return true;
+  }
+  const ageMs = pod.startedAtMs === null ? null : nowMs - pod.startedAtMs;
+  const stillYoung = ageMs === null || ageMs < STILL_STARTING_GRACE_SECONDS * 1000;
+  return pod.phase === "Running" && stillYoung && pod.containers.some((c) => !c.ready);
+}
+
+export const DEGRADED_CEILING_SECONDS = 600;
+
+export interface DegradedAppEvidence {
+  readonly name: string;
+  readonly syncStatus: string;
+  readonly healthStatus: string;
+  /** Seconds this Application has been CONTINUOUSLY Synced/Degraded, tracked across polls. */
+  readonly degradedForSec: number;
+  /** Live pods already filtered to this Application via `podsBelongingToApplication`. */
+  readonly pods: readonly PodSnapshot[];
+}
+
+/** Pure per-Application decision; `null` means "not (yet) terminal, keep waiting". */
+export function degradedApplicationTerminalEvidence(
+  evidence: DegradedAppEvidence,
+  nowMs: number,
+): { readonly reason: string; readonly detail: unknown } | null {
+  if (evidence.syncStatus !== "Synced" || evidence.healthStatus !== "Degraded") return null;
+  for (const pod of evidence.pods) {
+    const hard = podBlockingReason(pod);
+    if (hard !== null) {
+      return {
+        reason: `${evidence.name}: pod ${pod.namespace}/${pod.name} ${hard}`,
+        detail: { application: evidence.name, pod: `${pod.namespace}/${pod.name}`, evidence: hard },
+      };
+    }
+  }
+  if (evidence.degradedForSec < DEGRADED_CEILING_SECONDS) return null;
+  if (evidence.pods.some((pod) => podStillProvisioning(pod, nowMs))) return null;
+  return {
+    reason:
+      `${evidence.name}: Synced/Degraded for ${String(evidence.degradedForSec)}s ` +
+      `(ceiling ${String(DEGRADED_CEILING_SECONDS)}s) with no pod making progress`,
+    detail: {
+      application: evidence.name,
+      degradedForSec: evidence.degradedForSec,
+      pods: evidence.pods.map((p) => `${p.namespace}/${p.name}`),
+    },
+  };
+}
+
+/** Orchestrates `degradedApplicationTerminalEvidence` over every currently-Degraded Application. */
+export function evidenceBasedDegradedTerminalFailure(
+  evidences: readonly DegradedAppEvidence[],
+  nowMs: number,
+): Failure | null {
+  const hits = evidences.flatMap((evidence) => {
+    const hit = degradedApplicationTerminalEvidence(evidence, nowMs);
+    return hit === null ? [] : [hit];
+  });
+  if (hits.length === 0) return null;
+  return {
+    kind: "ApplicationUnhealthy",
+    message: `asserted Application is Degraded with terminal evidence: ${hits.map((hit) => hit.reason).join("; ")}`,
+    terminal: true,
+    detail: hits.map((hit) => hit.detail),
+  };
+}
+
+/**
+ * SOAK PHASE (Task B, 081KSXN940008QG0R000SCP2H1): "does it crash-loop?"
+ *
+ * The all-Healthy verdict `waitForApplications` returns says every asserted
+ * Application reached Synced/Healthy ONCE. It says nothing about what happens
+ * a minute later -- a container that starts, passes its readiness probe, and
+ * then crash-loops is indistinguishable from a genuinely stable one at the
+ * moment the wait stops polling. `runSoakPhase` (the impure driver, below the
+ * pure functions here) keeps watching for a bounded window after that verdict
+ * and turns "still Healthy after N seconds, never restarted" into part of the
+ * proof rather than an assumption.
+ *
+ * Two independent regressions, both pure and both fixture-testable:
+ *
+ *   (a) `soakRestartRegressions` -- ANY container's restartCount rising above
+ *       the baseline taken at the all-Healthy moment.
+ *   (b) `soakApplicationInstabilityStep` -- an Application that WAS ok at the
+ *       all-Healthy moment leaving Healthy/Synced for MORE THAN ONE poll (a
+ *       single blip is tolerated, for the same one-sample-is-not-a-verdict
+ *       reason `degradedApplicationTerminalEvidence` above does not trust one
+ *       poll either).
+ */
+
+/** `${namespace}/${pod}/${container}` -> restartCount, captured once at the soak baseline. */
+export function podRestartBaseline(pods: readonly PodSnapshot[]): ReadonlyMap<string, number> {
+  const map = new Map<string, number>();
+  for (const pod of pods) {
+    for (const container of [...pod.initContainers, ...pod.containers]) {
+      map.set(`${pod.namespace}/${pod.name}/${container.name}`, container.restartCount);
+    }
+  }
+  return map;
+}
+
+export interface SoakRestartRegression {
+  readonly namespace: string;
+  readonly pod: string;
+  readonly container: string;
+  readonly baselineRestartCount: number;
+  readonly currentRestartCount: number;
+  readonly terminatedReason: string;
+  readonly terminatedExitCode: number | null;
+}
+
+/** Pure: which containers' restartCount rose above the soak baseline. */
+export function soakRestartRegressions(
+  baseline: ReadonlyMap<string, number>,
+  currentPods: readonly PodSnapshot[],
+): readonly SoakRestartRegression[] {
+  const out: SoakRestartRegression[] = [];
+  for (const pod of currentPods) {
+    for (const container of [...pod.initContainers, ...pod.containers]) {
+      const before = baseline.get(`${pod.namespace}/${pod.name}/${container.name}`);
+      if (before !== undefined && container.restartCount > before) {
+        out.push({
+          namespace: pod.namespace,
+          pod: pod.name,
+          container: container.name,
+          baselineRestartCount: before,
+          currentRestartCount: container.restartCount,
+          terminatedReason: container.terminatedReason,
+          terminatedExitCode: container.terminatedExitCode,
+        });
+      }
+    }
+  }
+  return out;
+}
+
+/**
+ * Pure step: given the consecutive-not-ok streak per Application BEFORE this
+ * poll (only Applications that WERE ok at the soak baseline are tracked at
+ * all), and this poll's verdicts, returns the updated streak and exactly the
+ * Applications this poll pushed from 1 to 2 -- so a regression is reported
+ * once, on the poll that confirms it, not on every poll after.
+ */
+export function soakApplicationInstabilityStep(
+  previousStreak: ReadonlyMap<string, number>,
+  baselineOkNames: ReadonlySet<string>,
+  currentVerdicts: readonly ApplicationVerdict[],
+): { readonly streak: ReadonlyMap<string, number>; readonly newlyUnstable: readonly ApplicationVerdict[] } {
+  const streak = new Map<string, number>();
+  const newlyUnstable: ApplicationVerdict[] = [];
+  for (const verdict of currentVerdicts) {
+    if (!baselineOkNames.has(verdict.name) || verdict.ok) continue;
+    const count = (previousStreak.get(verdict.name) ?? 0) + 1;
+    streak.set(verdict.name, count);
+    if (count === 2) newlyUnstable.push(verdict);
+  }
+  return { streak, newlyUnstable };
+}
+
+/** Shapes a soak-phase regression (either kind, or both) into one Failure. `null` if neither fired. */
+export function soakRegressionFailure(
+  restartRegressions: readonly SoakRestartRegression[],
+  newlyUnstableApps: readonly ApplicationVerdict[],
+): Failure | null {
+  if (restartRegressions.length === 0 && newlyUnstableApps.length === 0) return null;
+  const restartLines = restartRegressions.map((r) => {
+    const termination =
+      r.terminatedReason.length === 0
+        ? ""
+        : ` (last termination: ${r.terminatedReason}${r.terminatedExitCode === null ? "" : ` exit ${String(r.terminatedExitCode)}`})`;
+    return (
+      `${r.namespace}/${r.pod} [${r.container}] restartCount ${String(r.baselineRestartCount)} -> ` +
+      `${String(r.currentRestartCount)}${termination}`
+    );
+  });
+  // Names the RESOURCE, not only the Application (081M34AW07F087G0R001KATSP6):
+  // run 35713533700 named the app-level failure ("argo-workflows left
+  // Healthy/Synced (OutOfSync/Progressing)") with nothing to grep for in the
+  // `##[error]` line itself -- the resource that actually drifted
+  // (`CustomResourceDefinition/workfloweventbindings.argoproj.io`) only
+  // appeared several thousand log lines later, in a separate diagnostics dump
+  // this same line does not draw from. `outOfSyncResources` is absent (not
+  // `[]`) whenever the Application went unstable for a reason `status.resources`
+  // cannot carry -- health regressed with no OutOfSync resource, or the poll
+  // that produced this verdict never populated it -- so that case still reads
+  // exactly as it did before this field existed, rather than claiming a
+  // resource-level cause nothing measured.
+  const appLines = newlyUnstableApps.map((a) => {
+    const resources =
+      a.outOfSyncResources !== undefined && a.outOfSyncResources.length > 0
+        ? ` [${a.outOfSyncResources.join(", ")}]`
+        : "";
+    // The HEALTH side, which the line above cannot carry: an Application that
+    // went Synced/Progressing had no out-of-sync resource to name, so this is
+    // the only thing that says which Deployment/StatefulSet regressed and why.
+    const unhealthy =
+      a.unhealthyResources !== undefined && a.unhealthyResources.length > 0
+        ? ` {unhealthy: ${a.unhealthyResources.join("; ")}}`
+        : "";
+    return `${a.name} left Healthy/Synced (${a.syncStatus}/${a.healthStatus})${resources}${unhealthy}`;
+  });
+  return {
+    kind: "ApplicationUnhealthy",
+    message: `soak phase detected instability after the all-Healthy verdict: ${[...restartLines, ...appLines].join("; ")}`,
+    detail: { restartRegressions, newlyUnstableApps },
+  };
+}
+
+/**
+ * STARTUP-RESTARTS report (Task B): every container with restartCount>0 AT
+ * THE all-Healthy MOMENT -- i.e. it already crash-looped and self-healed
+ * BEFORE the wait ever stopped polling. Not itself a soak-phase regression
+ * (see `soakRestartRegressions` above, which measures increases FROM this
+ * baseline); this is the ordering-smell report -- "mimir crash-looping on
+ * 'ring doesn't exist in KV store'" is the measured example.
+ */
+export interface StartupRestartEntry {
+  /** Owning Application name, or `""` if `podsBelongingToApplication` could not attribute it. */
+  readonly app: string;
+  readonly namespace: string;
+  readonly pod: string;
+  readonly container: string;
+  readonly restartCount: number;
+}
+
+export function startupRestartEntries(
+  pods: readonly PodSnapshot[],
+  applications: readonly { readonly name: string; readonly namespace?: string }[],
+): readonly StartupRestartEntry[] {
+  const owners = new Map<string, string>(); // `${namespace}/${pod}` -> app name
+  for (const app of applications) {
+    for (const pod of podsBelongingToApplication(app, applications, pods)) {
+      owners.set(`${pod.namespace}/${pod.name}`, app.name);
+    }
+  }
+  const out: StartupRestartEntry[] = [];
+  for (const pod of pods) {
+    const app = owners.get(`${pod.namespace}/${pod.name}`) ?? "";
+    for (const container of [...pod.initContainers, ...pod.containers]) {
+      if (container.restartCount > 0) {
+        out.push({ app, namespace: pod.namespace, pod: pod.name, container: container.name, restartCount: container.restartCount });
+      }
+    }
+  }
+  // Ordinal, per .claude/rules/culture-invariant-by-default.md -- this ordering
+  // is compared against a checked-in baseline file, not just displayed.
+  return [...out].sort((a, b) =>
+    stringCompare(`${a.app}/${a.namespace}/${a.pod}/${a.container}`, `${b.app}/${b.namespace}/${b.pod}/${b.container}`),
+  );
+}
+
+/**
+ * STARTUP-RESTART POLICY -- threshold-based, not a both-directions exact
+ * ratchet.
+ *
+ * MEASURED, 081KSXN940008QG0R000SCP2H1: run 35692573183 (the first live run
+ * with --soak-sec) named 8 (app, container) pairs, all restartCount 1-3. Run
+ * 35695291413 -- the SAME tree, one push later -- named two DIFFERENT pairs
+ * (argocd/repo-server, spire/spire-controller-manager) that had not restarted
+ * the first time. A both-directions exact-match ratchet (the original design
+ * here) treats a 1-2-restart dependency-ordering wait as equivalent in
+ * severity to a genuine crash loop, and BOTH directions of "the set changed"
+ * as a failure -- which cannot be right for a signal this run-to-run
+ * nondeterministic: it would flake red on an unrelated PR most nights.
+ *
+ * So the policy is a THRESHOLD, per (app, container), not a set-equality
+ * ratchet:
+ *
+ *   restartCount >= STARTUP_RESTART_HARD_FAIL_THRESHOLD (a real crash loop,
+ *   not a single dependency-ordering retry) -- FAIL, unless the baseline
+ *   names this (app, container) with a `maxRestarts` at or above the
+ *   observed count (a KNOWN, bounded startup race, already investigated).
+ *
+ *   restartCount below the threshold and not covered by the baseline -- a
+ *   WARNING (annotation + summary line), never a failure. This is the
+ *   ordinary, expected shape of a first-rollout dependency wait.
+ *
+ *   A baseline entry NOT measured this run -- a NOTICE, never a failure.
+ *   Absence is the expected case most runs (the dependency happened to come
+ *   up in the right order this time). Its `lastSeen` date is what stops a
+ *   baseline entry from silently documenting a container that no longer
+ *   exists: unseen for more than STARTUP_RESTART_STALE_DAYS is flagged
+ *   `stale`, a prompt to re-verify or retire the row, not a failure either.
+ */
+export interface StartupRestartBaselineEntry {
+  readonly app: string;
+  readonly container: string;
+  /** Tolerated restartCount for this (app, container): observed <= maxRestarts is covered, never fails or warns. */
+  readonly maxRestarts: number;
+  readonly reason: string;
+  /** ISO date (YYYY-MM-DD) this entry was last actually measured. */
+  readonly lastSeen: string;
+}
+
+/** A real crash loop, never a single dependency-ordering retry: kubelet does not usually report CrashLoopBackOff below this either. */
+export const STARTUP_RESTART_HARD_FAIL_THRESHOLD = 3;
+/** A baseline row unseen this long is a prompt to re-verify or retire it, not evidence it is still true. */
+export const STARTUP_RESTART_STALE_DAYS = 14;
+
+function startupRestartKey(app: string, container: string): string {
+  return `${app}::${container}`;
+}
+
+/** `null` when the baseline covers this entry (observed <= maxRestarts): no action. */
+export function classifyStartupRestartEntry(
+  entry: StartupRestartEntry,
+  baseline: ReadonlyMap<string, StartupRestartBaselineEntry>,
+): "ok" | "warn" | "fail" {
+  const known = baseline.get(startupRestartKey(entry.app, entry.container));
+  const covered = known !== undefined && known.maxRestarts >= entry.restartCount;
+  if (covered) return "ok";
+  return entry.restartCount >= STARTUP_RESTART_HARD_FAIL_THRESHOLD ? "fail" : "warn";
+}
+
+export interface StartupRestartFailureDetail {
+  readonly entry: StartupRestartEntry;
+  /** `null` when this (app, container) is not in the baseline at all. */
+  readonly baselineMaxRestarts: number | null;
+}
+
+export interface AbsentBaselineEntry {
+  readonly entry: StartupRestartBaselineEntry;
+  readonly daysSinceLastSeen: number;
+  readonly stale: boolean;
+}
+
+export interface StartupRestartClassification {
+  readonly failures: readonly StartupRestartFailureDetail[];
+  readonly warnings: readonly StartupRestartEntry[];
+  readonly absent: readonly AbsentBaselineEntry[];
+}
+
+/** Pure: the whole policy above, applied to one measurement against one baseline. */
+export function classifyStartupRestarts(
+  measured: readonly StartupRestartEntry[],
+  baseline: readonly StartupRestartBaselineEntry[],
+  nowMs: number,
+): StartupRestartClassification {
+  const byKey = new Map(baseline.map((entry) => [startupRestartKey(entry.app, entry.container), entry]));
+  const failures: StartupRestartFailureDetail[] = [];
+  const warnings: StartupRestartEntry[] = [];
+  for (const entry of measured) {
+    const verdict = classifyStartupRestartEntry(entry, byKey);
+    if (verdict === "ok") continue;
+    if (verdict === "fail") {
+      failures.push({ entry, baselineMaxRestarts: byKey.get(startupRestartKey(entry.app, entry.container))?.maxRestarts ?? null });
+    } else {
+      warnings.push(entry);
+    }
+  }
+  const measuredKeys = new Set(measured.map((entry) => startupRestartKey(entry.app, entry.container)));
+  const absent: AbsentBaselineEntry[] = baseline
+    .filter((entry) => !measuredKeys.has(startupRestartKey(entry.app, entry.container)))
+    .map((entry) => {
+      const lastSeenMs = Date.parse(entry.lastSeen);
+      const daysSinceLastSeen = Number.isNaN(lastSeenMs) ? Number.POSITIVE_INFINITY : (nowMs - lastSeenMs) / 86_400_000;
+      return { entry, daysSinceLastSeen, stale: daysSinceLastSeen > STARTUP_RESTART_STALE_DAYS };
+    });
+  return { failures, warnings, absent };
+}
+
+/** `null` when nothing crossed the hard-fail threshold -- warnings and absences never produce a Failure. */
+export function startupRestartFailure(classification: StartupRestartClassification): Failure | null {
+  if (classification.failures.length === 0) return null;
+  const lines = classification.failures.map((f) => {
+    const covered =
+      f.baselineMaxRestarts === null ? "not in the baseline" : `exceeds baseline maxRestarts=${String(f.baselineMaxRestarts)}`;
+    return `${f.entry.app === "" ? "(unmatched)" : f.entry.app}/${f.entry.container}: restartCount=${String(f.entry.restartCount)} (${covered})`;
+  });
+  return {
+    kind: "ApplicationUnhealthy",
+    message:
+      `startup restart(s) at or above the crash-loop threshold (${String(STARTUP_RESTART_HARD_FAIL_THRESHOLD)}): ` +
+      lines.join("; "),
+    detail: classification,
+  };
+}
 
 export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
   readonly label: string;
@@ -2925,12 +3931,64 @@ function parseApplicationConditions(status: Record<string, unknown> | null): rea
   });
 }
 
+/**
+ * `${kind}/${name}` for every `status.resources[]` entry whose own `status`
+ * is `"OutOfSync"` -- see `ArgoApplicationSnapshot.outOfSyncResources`.
+ * Ordinal-sorted, per `.claude/rules/culture-invariant-by-default.md`, and NOT
+ * `localeCompare` for the same reason `stringCompare` is used elsewhere in
+ * this file: this ordering feeds a failure message that must read identically
+ * on every runner locale, not merely display consistently on one.
+ */
+function parseOutOfSyncResources(status: Record<string, unknown> | null): readonly string[] {
+  if (status === null) return [];
+  const raw = status.resources;
+  if (!Array.isArray(raw)) return [];
+  const names = raw.flatMap((item) => {
+    const record = asRecord(item);
+    if (record === null) return [];
+    if (stringAt(record, "status") !== "OutOfSync") return [];
+    const kind = stringAt(record, "kind");
+    const name = stringAt(record, "name");
+    if (kind.length === 0 && name.length === 0) return [];
+    return [`${kind}/${name}`];
+  });
+  return [...names].sort(stringCompare);
+}
+
+/**
+ * `${kind}/${name} ${health}: ${message}` for every `status.resources[]` entry
+ * whose own `health.status` is present and not `Healthy` -- see
+ * `ArgoApplicationSnapshot.unhealthyResources`. Resources ArgoCD assesses no
+ * health for (CRDs, ConfigMaps, most RBAC) carry no `health` and are skipped:
+ * absence of a health verdict is not an unhealthy one. Ordinal-sorted.
+ */
+export function parseUnhealthyResources(status: Record<string, unknown> | null): readonly string[] {
+  if (status === null) return [];
+  const raw = status.resources;
+  if (!Array.isArray(raw)) return [];
+  const lines = raw.flatMap((item) => {
+    const record = asRecord(item);
+    if (record === null) return [];
+    const health = recordAt(record, "health");
+    if (health === null) return [];
+    const h = stringAt(health, "status");
+    if (h.length === 0 || h === "Healthy") return [];
+    const kind = stringAt(record, "kind");
+    const name = stringAt(record, "name");
+    const message = stringAt(health, "message");
+    return [`${kind}/${name} ${h}${message.length > 0 ? `: ${message}` : ""}`];
+  });
+  return [...lines].sort(stringCompare);
+}
+
 export function parseApplicationList(jsonText: string): readonly ArgoApplicationSnapshot[] {
   const root = asRecord(JSON.parse(jsonText));
   const items = Array.isArray(root?.items) ? root.items : [];
   return items.flatMap((item) => {
     const itemRecord = asRecord(item);
     const metadata = itemRecord ? recordAt(itemRecord, "metadata") : null;
+    const spec = itemRecord ? recordAt(itemRecord, "spec") : null;
+    const destination = spec ? recordAt(spec, "destination") : null;
     const status = itemRecord ? recordAt(itemRecord, "status") : null;
     const sync = status ? recordAt(status, "sync") : null;
     const health = status ? recordAt(status, "health") : null;
@@ -2940,14 +3998,19 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
     const operationPhase = operationState ? stringAt(operationState, "phase") : "";
     const syncRevision = sync ? stringAt(sync, "revision") : "";
     const conditions = parseApplicationConditions(status);
+    const outOfSyncResources = parseOutOfSyncResources(status);
+    const unhealthyResources = parseUnhealthyResources(status);
     const snapshot: ArgoApplicationSnapshot = {
       name,
       syncStatus: sync ? stringAt(sync, "status") : "",
       healthStatus: health ? stringAt(health, "status") : "",
       message: health ? stringAt(health, "message") : "",
+      namespace: destination ? stringAt(destination, "namespace") : "",
       ...(operationPhase.length > 0 ? { operationPhase } : {}),
       ...(syncRevision.length > 0 ? { syncRevision } : {}),
       ...(conditions.length > 0 ? { conditions } : {}),
+      ...(outOfSyncResources.length > 0 ? { outOfSyncResources } : {}),
+      ...(unhealthyResources.length > 0 ? { unhealthyResources } : {}),
     };
     return [snapshot];
   });
@@ -3107,6 +4170,9 @@ export function classifyApplications(
         ok,
         syncStatus: snapshot.syncStatus || "Unknown",
         healthStatus: snapshot.healthStatus || "Unknown",
+        ...(snapshot.outOfSyncResources !== undefined ? { outOfSyncResources: snapshot.outOfSyncResources } : {}),
+    ...(snapshot.unhealthyResources !== undefined ? { unhealthyResources: snapshot.unhealthyResources } : {}),
+        ...(snapshot.unhealthyResources !== undefined ? { unhealthyResources: snapshot.unhealthyResources } : {}),
       };
       return ok ? base : { ...base, reason: outcome.reason };
     });
@@ -3134,6 +4200,7 @@ function verdictFromSnapshot(
     ok: snapshotOk,
     syncStatus: snapshot.syncStatus || "Unknown",
     healthStatus: snapshot.healthStatus || "Unknown",
+    ...(snapshot.outOfSyncResources !== undefined ? { outOfSyncResources: snapshot.outOfSyncResources } : {}),
   };
   return snapshotOk ? base : { ...base, reason: snapshot.message || unhealthyReason };
 }
@@ -3186,7 +4253,13 @@ async function waitForApplications(
   options: CliOptions,
 ): Promise<readonly ApplicationVerdict[] | Failure> {
   let lastVerdicts: readonly ApplicationVerdict[] = [];
-  let previousVerdicts: readonly ApplicationVerdict[] = [];
+  // How long (continuous polls) each Application has been Synced/Degraded.
+  // See evidenceBasedDegradedTerminalFailure's docstring: this REPLACES the
+  // two-consecutive-poll rule that used to live here, which could not tell a
+  // dead workload from an ordinary first-rollout Degraded blip (081KSXN940008QG0R000SCP2H1,
+  // run 35628762464: kube-prometheus-stack aborted while its pods were merely
+  // PodInitializing).
+  const degradedSinceMs = new Map<string, number>();
   const startedAt = Date.now();
   let lastProgressAt = startedAt;
   console.log(`Waiting: ArgoCD Applications Synced+Healthy (cap ${String(options.timeoutSeconds)}s)`);
@@ -3209,13 +4282,43 @@ async function waitForApplications(
           ? classifyApplications(plan.expectedApplications, snapshots)
           : classifyApplications(plan.expectedApplications, snapshots);
     if (lastVerdicts.every((verdict) => verdict.ok)) return null;
-    // TWO CONSECUTIVE POLLS, never one. See confirmedDegradedTerminalFailure:
-    // run 34369317553 aborted at T+123s of 2400s on a Degraded that the
-    // cluster's own events show had already gone back to Progressing.
-    const degraded = confirmedDegradedTerminalFailure(previousVerdicts, lastVerdicts);
-    previousVerdicts = lastVerdicts;
-    if (degraded !== null) return degraded;
     const now = Date.now();
+    // EVIDENCE-BASED, not sample-count-based -- see evidenceBasedDegradedTerminalFailure.
+    const currentlyDegraded = new Set(degradedApplicationNames(lastVerdicts));
+    for (const name of degradedSinceMs.keys()) {
+      if (!currentlyDegraded.has(name)) degradedSinceMs.delete(name);
+    }
+    for (const name of currentlyDegraded) {
+      if (!degradedSinceMs.has(name)) degradedSinceMs.set(name, now);
+    }
+    if (currentlyDegraded.size > 0) {
+      // Only fetches live pods (a second kubectl call) when there is a
+      // Degraded Application to explain -- the common all-healthy-eventually
+      // path pays nothing extra.
+      const podsResult = kubectl(["get", "pods", "-A", "-o", "json"], Math.max(options.pollSeconds, 10));
+      if (podsResult.status === 0) {
+        const pods = podsFromPodsJson(podsResult.stdout);
+        const appsByName = new Map(snapshots.map((snapshot) => [snapshot.name, snapshot]));
+        const allApplications = snapshots.map((snapshot) => ({ name: snapshot.name, namespace: snapshot.namespace ?? "" }));
+        const evidences: DegradedAppEvidence[] = [...currentlyDegraded].map((name) => {
+          const verdict = lastVerdicts.find((v) => v.name === name);
+          const app = appsByName.get(name);
+          const since = degradedSinceMs.get(name) ?? now;
+          return {
+            name,
+            syncStatus: verdict?.syncStatus ?? "",
+            healthStatus: verdict?.healthStatus ?? "",
+            degradedForSec: Math.floor((now - since) / 1000),
+            pods: app === undefined ? [] : podsBelongingToApplication(app, allApplications, pods),
+          };
+        });
+        const terminal = evidenceBasedDegradedTerminalFailure(evidences, now);
+        if (terminal !== null) return terminal;
+      }
+      // A failed pod-list fetch is not itself terminal: fall through to the
+      // ordinary "still waiting" verdict below rather than manufacturing a
+      // second failure mode on top of whatever ArgoCD already reported.
+    }
     if (now - lastProgressAt >= 60_000) {
       const elapsedSec = Math.floor((now - startedAt) / 1000);
       console.log(formatHealthWaitProgress(elapsedSec, lastVerdicts));
@@ -3241,6 +4344,158 @@ async function waitForApplications(
   // FailedScheduling event is one line and it replaces a paragraph of hypothesis.
   if (failure !== null) return attachClusterDiagnostics(failure, "ArgoCD health wait gave up");
   return lastVerdicts;
+}
+
+const STARTUP_RESTART_BASELINE_PATH = join(REPO_ROOT, "src/Core.TypeScript/cluster/startup-restart-baseline.json");
+
+interface StartupRestartBaselineFile {
+  readonly measured: string;
+  readonly allowed: readonly StartupRestartBaselineEntry[];
+}
+
+/**
+ * A missing or unparseable baseline reads as EMPTY, never as "skip the
+ * policy" -- an empty baseline covers nothing, so every currently-restarting
+ * container is classified fresh against the hard-fail threshold (see
+ * `classifyStartupRestarts`), which is the correct behaviour on a tree with
+ * no baseline committed yet, not a silently-passing gate.
+ */
+function readStartupRestartBaseline(): readonly StartupRestartBaselineEntry[] {
+  // READ, then interpret failure -- rather than existsSync() then read, which
+  // is a check-then-use race (the file can vanish, or be created, between the
+  // two calls; CWE-367). A missing file (ENOENT) and an unparseable one are
+  // both folded into the same "empty baseline" result on purpose: this is not
+  // a fatal-error path, it is what makes every currently-restarting container
+  // classify fresh (uncovered) rather than silently skip the policy.
+  try {
+    const parsed = JSON.parse(readFileSync(STARTUP_RESTART_BASELINE_PATH, "utf8")) as Partial<StartupRestartBaselineFile>;
+    return Array.isArray(parsed.allowed) ? parsed.allowed : [];
+  } catch {
+    return [];
+  }
+}
+
+export interface SoakReport {
+  readonly soakSeconds: number;
+  readonly startupRestarts: readonly StartupRestartEntry[];
+  readonly classification: StartupRestartClassification;
+}
+
+/**
+ * The soak phase's impure driver: fetches the baseline pod/Application
+ * snapshot, prints + classifies the STARTUP-RESTARTS report, then polls for
+ * `options.soakSeconds` watching for a restartCount regression or an
+ * Application leaving Healthy/Synced for more than one poll. All DECISIONS
+ * are the pure functions above (`soakRestartRegressions`,
+ * `soakApplicationInstabilityStep`, `soakRegressionFailure`,
+ * `classifyStartupRestarts`, `startupRestartFailure`); this function only
+ * fetches and loops.
+ *
+ * `options.soakSeconds <= 0` (the default -- see `DEFAULT_SOAK_SECONDS`) is a
+ * full no-op: no extra kubectl calls, no report, no ratchet. Every caller
+ * that does not pass `--soak-sec` sees zero behaviour change.
+ */
+async function runSoakPhase(
+  plan: HarnessPlan,
+  options: CliOptions,
+  applications: readonly ApplicationVerdict[],
+): Promise<{ readonly report: SoakReport | null; readonly failure: Failure | null }> {
+  if (options.soakSeconds <= 0) return { report: null, failure: null };
+
+  console.log(
+    `Soak: watching for restartCount regressions and Application instability for ${String(options.soakSeconds)}s`,
+  );
+  const podsCommand = ["get", "pods", "-A", "-o", "json"];
+  const appsCommand = ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"];
+
+  const baselinePodsResult = kubectl(podsCommand, Math.max(options.pollSeconds, 10));
+  if (baselinePodsResult.status !== 0) {
+    return { report: null, failure: kubectlFailure("could not list pods for the soak baseline", podsCommand, baselinePodsResult) };
+  }
+  const baselinePods = podsFromPodsJson(baselinePodsResult.stdout);
+  const restartBaseline = podRestartBaseline(baselinePods);
+
+  const appsResult = kubectl(appsCommand, Math.max(options.pollSeconds, 10));
+  if (appsResult.status !== 0) {
+    return { report: null, failure: kubectlFailure("could not list ArgoCD Applications for the soak baseline", appsCommand, appsResult) };
+  }
+  const baselineSnapshots = parseApplicationListOrFailure(appsResult.stdout, appsCommand);
+  // A malformed Application list here is not itself a soak-phase FINDING --
+  // report it as the JSON-shaped Failure it already is, rather than silently
+  // matching every pod to no Application, which would make the ratchet
+  // compare a real baseline against an artificially empty one.
+  if (isFailure(baselineSnapshots)) return { report: null, failure: baselineSnapshots };
+  const applicationsForMatch = baselineSnapshots;
+
+  // STARTUP-RESTARTS report + threshold policy. Measured ONCE, at the all-Healthy
+  // moment these pods were already retrieved for -- restarts the workload
+  // recovered from BEFORE the soak started, an ordering smell, not a
+  // soak-phase regression (that is `soakRestartRegressions` in the poll loop
+  // below, which measures increases FROM this same baseline).
+  const startupRestarts = startupRestartEntries(
+    baselinePods,
+    applicationsForMatch.map((snapshot) => ({ name: snapshot.name, namespace: snapshot.namespace ?? "" })),
+  );
+  console.log(
+    `STARTUP-RESTARTS (restartCount>0 at the all-Healthy moment -- self-healed before the wait stopped polling): ${String(startupRestarts.length)}`,
+  );
+  for (const entry of startupRestarts) {
+    console.log(`  ${entry.app === "" ? "(unmatched)" : entry.app} ${entry.namespace}/${entry.pod} [${entry.container}] restarts=${String(entry.restartCount)}`);
+  }
+  const baseline = readStartupRestartBaseline();
+  const classification = classifyStartupRestarts(startupRestarts, baseline, Date.now());
+  const report: SoakReport = { soakSeconds: options.soakSeconds, startupRestarts, classification };
+  // WARNINGS never fail the run -- a 1-2 restart dependency-ordering wait is
+  // the ordinary shape of a first rollout (081KSXN940008QG0R000SCP2H1: run
+  // 35695291413 named two such pairs the immediately preceding run had not,
+  // on the identical tree). Printed as GitHub Actions annotations (`::warning::`)
+  // so they surface in the Checks UI without failing the job.
+  for (const entry of classification.warnings) {
+    console.log(
+      `::warning::startup restart below the crash-loop threshold, not yet in the baseline: ` +
+        `${entry.app === "" ? "(unmatched)" : entry.app}/${entry.container} restartCount=${String(entry.restartCount)} ` +
+        `(namespace ${entry.namespace}, pod ${entry.pod})`,
+    );
+  }
+  // ABSENT baseline entries are a notice, not a failure -- absence is the
+  // expected case most runs. Only flagged when stale, as a prompt to
+  // re-verify or retire the row.
+  for (const absent of classification.absent) {
+    const staleNote = absent.stale ? ` -- STALE (unseen ${String(Math.floor(absent.daysSinceLastSeen))}d > ${String(STARTUP_RESTART_STALE_DAYS)}d)` : "";
+    console.log(`  baseline entry not measured this run: ${absent.entry.app}/${absent.entry.container}${staleNote}`);
+  }
+  const startupFailure = startupRestartFailure(classification);
+  if (startupFailure !== null) return { report, failure: startupFailure };
+
+  // The soak polling loop: does anything crash-loop, or leave Healthy/Synced,
+  // AFTER the all-Healthy verdict.
+  const baselineOkNames = new Set(applications.filter((app) => app.ok).map((app) => app.name));
+  let streak: ReadonlyMap<string, number> = new Map();
+  const deadline = Date.now() + options.soakSeconds * 1000;
+  while (Date.now() < deadline) {
+    await Bun.sleep(options.pollSeconds * 1000);
+
+    const podsPoll = kubectl(podsCommand, Math.max(options.pollSeconds, 10));
+    const currentPods = podsPoll.status === 0 ? podsFromPodsJson(podsPoll.stdout) : [];
+    const restartRegressions = soakRestartRegressions(restartBaseline, currentPods);
+
+    const appsPoll = kubectl(appsCommand, Math.max(options.pollSeconds, 10));
+    const currentSnapshots = appsPoll.status === 0 ? parseApplicationListOrFailure(appsPoll.stdout, appsCommand) : [];
+    const currentVerdicts = isFailure(currentSnapshots)
+      ? []
+      : plan.scope === "smoke"
+        ? classifySmokeApplications(currentSnapshots)
+        : classifyApplications(plan.expectedApplications, currentSnapshots);
+    const step = soakApplicationInstabilityStep(streak, baselineOkNames, currentVerdicts);
+    streak = step.streak;
+
+    const regressionFailure = soakRegressionFailure(restartRegressions, step.newlyUnstable);
+    if (regressionFailure !== null) {
+      return { report, failure: attachClusterDiagnostics(regressionFailure, "soak phase detected instability") };
+    }
+  }
+  console.log(`Soak: ${String(options.soakSeconds)}s elapsed with no restartCount regression and no Application instability.`);
+  return { report, failure: null };
 }
 
 async function runDriftRepairCheck(options: CliOptions): Promise<Failure | null> {
@@ -3393,6 +4648,11 @@ function vaultReportField(report: EphemeralVaultInitReport | null): {
   return report === null ? {} : { ephemeralVaultInit: report };
 }
 
+/** Same `exactOptionalPropertyTypes` discipline as `vaultReportField`: absent, not null, when the soak phase did not run. */
+function soakReportField(report: SoakReport | null): { readonly soak?: SoakReport } {
+  return report === null ? {} : { soak: report };
+}
+
 export async function runHarness(options: CliOptions): Promise<HarnessResult> {
   const arch = architectureFailure();
   const plan = buildPlan(options);
@@ -3452,6 +4712,22 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
     return { ok: false, plan, preflight, ...vaultReportField(vault.report), failure: apps };
   }
 
+  // SOAK PHASE (Task B, 081KSXN940008QG0R000SCP2H1): "does it crash-loop?",
+  // placed after the all-Healthy verdict and before the optional drift check
+  // -- a no-op unless `--soak-sec` was passed (see runSoakPhase).
+  const soak = await runSoakPhase(plan, options, apps);
+  if (soak.failure !== null) {
+    return {
+      ok: false,
+      plan,
+      preflight,
+      applications: apps,
+      ...vaultReportField(vault.report),
+      ...soakReportField(soak.report),
+      failure: soak.failure,
+    };
+  }
+
   if (options.driftCheck) {
     const driftFailure = await runDriftRepairCheck(options);
     if (driftFailure !== null) {
@@ -3461,6 +4737,7 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
         preflight,
         applications: apps,
         ...vaultReportField(vault.report),
+        ...soakReportField(soak.report),
         driftRepair: "failed",
         failure: driftFailure,
       };
@@ -3471,6 +4748,7 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
       preflight,
       applications: apps,
       ...vaultReportField(vault.report),
+      ...soakReportField(soak.report),
       driftRepair: "passed",
     };
   }
@@ -3481,6 +4759,7 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
     preflight,
     applications: apps,
     ...vaultReportField(vault.report),
+    ...soakReportField(soak.report),
     driftRepair: "not-requested",
   };
 }

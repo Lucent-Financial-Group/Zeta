@@ -89,6 +89,11 @@ on:
       # glob for manifests it never evaluates would spend 32 minutes proving nothing
       # about what changed.
       - "full-ai-cluster/k8s/bootstrap/**"
+      # WP9 (081M33STPKN087G0R0004B5CAK): the single source
+      # `k3s-registry-mirrors.nix` reads via `builtins.fromJSON`. `nixos/**`
+      # below already covers a module edit; this covers a JSON-only edit,
+      # which would otherwise trigger no lane that evaluates it.
+      - "full-ai-cluster/k8s/registry-mirrors.json"
       - "src/Core.TypeScript/zflash/**"
       - "src/Core.TypeScript/ci/audit-installer-substrate.ts"
       - "src/Core.TypeScript/ci/audit-installer-iso-content.ts"
@@ -104,6 +109,55 @@ on:
       - "src/Core.TypeScript/observe/**"
       - ".github/workflows/build-ai-cluster-iso.yml"
   workflow_dispatch:
+    inputs:
+      # Run ONLY the three-VM HA cluster job (081M10ZG61D087G0R001A70F0P follow-up).
+      # A full dispatch also runs every dispatch-only step of `build` (scenario
+      # 3/4, wifi ESP, keyfile, WP11 — several 90-100 min steps), which is the
+      # wrong price for re-running one cluster test. Default false: a plain
+      # dispatch is unchanged.
+      only_cluster_ha:
+        description: "Run only the 3-node HA cluster + replicated Longhorn job"
+        type: boolean
+        default: false
+      # Symmetric to only_cluster_ha, for the same reason: a plain dispatch runs
+      # every dispatch-only scenario (3/4, wifi ESP, keyfile, WP11), several of
+      # them 90-100 min, so iterating on ONE of them costs hours of unrelated
+      # QEMU. WP11 is the installed-disk first-boot k3s verify -- the lane that
+      # answers "does Kubernetes come up on a real install", which is the one
+      # under active diagnosis. Default false: a plain dispatch is unchanged.
+      #
+      # ALSO skips the seven always-on hermetic NixOS test steps that run
+      # BEFORE the ISO is even built (control-plane cluster-init, node
+      # platform fixes, agent join, cluster-CIDR/server-join eval, a second
+      # control plane joins, dirty-disk fail-closed, cluster-online) plus the
+      # push/workflow_dispatch-gated longhorn-volume-binds step -- MEASURED
+      # (run 35965945581): a WP11-scoped dispatch spent its first ~25+ min
+      # sitting in "k3s agent JOINS the server", nowhere near the ISO build,
+      # none of which exercises the installed-disk boot path WP11 measures.
+      # This is scoped to the WORKFLOW_DISPATCH TRIGGER ONLY -- the PR path
+      # (pull_request) and push still run every one of those steps
+      # unconditionally; a dispatch with only_wp11 is a deliberately narrowed
+      # probe, not a weakening of the lane.
+      #
+      # HOW TO PASS IT (081M39CJP96087G0R001T4J2R3, WP29): a boolean input is
+      # read below as `inputs.only_wp11`, and `gh workflow run` sends `-f`
+      # values as STRINGS while `-F` sends typed values. Use:
+      #
+      #   gh workflow run build-ai-cluster-iso.yml --ref main -F only_wp11=true
+      #
+      # `docs/ops/WP11-SCOPED-DISPATCH.md` carries the same command plus how to
+      # CONFIRM it took, which is the part worth doing: read the job's step
+      # conclusions and require the dispatch-only steps to say `skipped`.
+      only_wp11:
+        description: "Run only the WP11 installed-disk first-boot k3s verify (also skips the pre-ISO-build NixOS test steps on a dispatch; PR/push runs are unaffected). Pass with `gh workflow run ... -F only_wp11=true` — -F, not -f, because -f sends a string"
+        type: boolean
+        default: false
+  # WP11 — the installed-disk first-boot k3s verify step below (gated to
+  # workflow_dispatch + schedule; see that step's own comment for why it is
+  # not on the PR path) needs a way to run unattended. Daily, off the hour,
+  # to avoid stacking with other cron lanes at :00.
+  schedule:
+    - cron: "23 5 * * *"
 
 permissions:
   contents: read
@@ -119,6 +173,9 @@ concurrency:
 jobs:
   build:
     name: build-iso
+    # Skipped only by an explicit `only_cluster_ha` dispatch; `inputs` is empty
+    # on every other event, so PR/push/schedule/plain dispatch are unchanged.
+    if: ${{ !inputs.only_cluster_ha }}
     runs-on: ubuntu-24.04
     # Cold-cache PR runs can exceed the old 90-minute budget while still
     # actively compiling Nix dependencies in `Build installer ISO` (run
@@ -126,7 +183,15 @@ jobs:
     # builds). Keep manual dispatch roomier for hardware-oriented debugging,
     # and give PR/push enough budget to finish a real cold build instead of
     # cancelling useful work at the boundary.
-    timeout-minutes: ${{ fromJSON(github.event_name == 'workflow_dispatch' && '240' || '180') }}
+    #
+    # WP11 (2026-09-22): schedule/workflow_dispatch runs now also carry the
+    # installed-disk first-boot k3s verify step (own timeout-minutes: 120,
+    # on top of the existing dispatch-only scenario 3/4/wifi/keyfile steps
+    # already budgeted at 90m each) — bumped from 240 to 330 so a cold ISO
+    # build plus every dispatch-only step has room to finish rather than
+    # racing the job-level clock. PR/push stays at 180 — the new step never
+    # runs there.
+    timeout-minutes: ${{ fromJSON((github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && '330' || '180') }}
     permissions:
       contents: read
       # 081KSKBP80008QG0R000Y2B7HC.1 cosign keyless OIDC — sigstore/Fulcio CA mints a short-lived
@@ -252,25 +317,33 @@ jobs:
             echo "::error title=full-ai-cluster flake check validated nothing::nix flake check exited 0 having checked ZERO outputs. An eval lane that evaluates nothing is indistinguishable from one that passed."
             exit 1
           fi
-          # NAME THE CHECKS THIS STEP IS THE ONLY EVALUATOR OF. Nine eval-only checks in
+          # NAME THE CHECKS THIS STEP IS THE ONLY EVALUATOR OF. Eleven eval-only checks in
           # this flake are named individually by NO workflow step anywhere — their sole
           # coverage is this `nix flake check`. A green here that never reached them is a
           # green about some other output. Measured 2026-09-09: mutating
           # zeta-creds-to-k8s-eval-test.nix so every property fails makes
           # `nix flake check --no-build --all-systems` exit 1 in 61 s, which is what
           # earns the claim that this step covers them.
+          #
+          # `k3s-registry-mirrors-model` (WP9, 081M33STPKN087G0R0004B5CAK) and
+          # `k8s-node-tunables-model` both added 2026-09-22, same pattern as the
+          # other nine: no VM, no build, assertions fire at evaluation.
+          # `k3s-etcd-peers-model` added 2026-09-23 (081M10ZG61D087G0R001A70F0P):
+          # the opt-in etcd peer admission and the joining-server refusal.
           missing=""
           for c in zeta-creds-to-k8s-model tpm2-seal-prereqs-model host-seal-profile-model \
                    secure-boot-desired-state-model longhorn-node-preflight \
                    longhorn-disk-registration longhorn-common-default-disk-eval \
-                   cilium-wireguard-preflight gpu-node-label-preflight; do
+                   cilium-wireguard-preflight gpu-node-label-preflight \
+                   k3s-registry-mirrors-model k8s-node-tunables-model \
+                   k3s-etcd-peers-model; do
             grep -q "$c" /tmp/aic-flake-check.log || missing="$missing $c"
           done
           if [ -n "$missing" ]; then
             echo "::error title=Eval-only checks were not among the outputs evaluated::nix flake check never mentioned:$missing. These checks are named by no other step in any workflow, so this step is their only coverage. Either they were renamed or removed, or --all-systems omitted the system they live on. Either way this lane is green about something else."
             exit 1
           fi
-          echo "all nine eval-only checks were evaluated."
+          echo "all twelve eval-only checks were evaluated."
 
       # Regression test for the k3s --cluster-init token deadlock
       # (k3s-server.nix). Boots the control-plane k3s module in a QEMU VM
@@ -285,7 +358,10 @@ jobs:
       # pods Running (those need the Cilium CNI image); that is an online
       # cluster-integration lane (081KSGS9H0008QG0R0011BC7T2 Slice 2+). ubuntu-24.04 runners
       # expose /dev/kvm; the nixosTest driver falls back to TCG if absent.
+      # Skipped only on a WP11-scoped dispatch (only_wp11=true) -- the PR and
+      # push paths run this step unconditionally, same as before.
       - name: NixOS test — k3s control-plane reaches active (token-deadlock regression)
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L --print-build-logs --fallback
 
@@ -303,7 +379,9 @@ jobs:
       #
       # Hermetic (no internet), ~2 min, so it runs early beside the other
       # fast node-level check rather than behind the ~15-min ISO build.
+      # Skipped only on a WP11-scoped dispatch -- PR and push are unaffected.
       - name: NixOS test — node platform fixes are live (rpfilter/iscsi/storage flags)
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 20
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-control-plane-platform-fixes -L --print-build-logs --fallback
@@ -325,7 +403,9 @@ jobs:
       # Hermetic — no internet, so the joined node stays NotReady and the test
       # asserts MEMBERSHIP, not readiness (readiness is the online lane
       # below). Runs before the ~15-min ISO build so a broken join fails fast.
+      # Skipped only on a WP11-scoped dispatch -- PR and push are unaffected.
       - name: NixOS test — k3s agent JOINS the server (scenario 5 markers on serial)
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 30
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-agent-join -L --print-build-logs --fallback
@@ -358,7 +438,9 @@ jobs:
       #
       # They cost no VM and their assertions fire during EVALUATION, so this is
       # seconds, not minutes.
+      # Skipped only on a WP11-scoped dispatch -- PR and push are unaffected.
       - name: Nix eval checks — cluster CIDR derivation + server-join model (were unrun)
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 10
         working-directory: full-ai-cluster
         run: |
@@ -380,7 +462,9 @@ jobs:
       # Hermetic (no internet -> no CNI -> nodes stay NotReady): membership and
       # CA identity, never readiness. ~1-2 min, budgeted from the measured 67 s
       # the two-node agent-join step costs on this runner.
+      # Skipped only on a WP11-scoped dispatch -- PR and push are unaffected.
       - name: NixOS test — a second CONTROL PLANE joins (one cluster CA, not two)
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 30
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-server-join -L --print-build-logs --fallback
@@ -398,10 +482,100 @@ jobs:
       # rewire that unit `wantedBy` and k3s starts anyway, the script still
       # exits 1, and every existing assertion still passes. This step asserts
       # the thing that mutation breaks — that k3s.service never started.
+      # Skipped only on a WP11-scoped dispatch -- PR and push are unaffected.
       - name: NixOS test — dirty disk FAILS CLOSED (k3s must not start)
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 30
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-datastore-preflight-fail-closed -L --print-build-logs --fallback
+
+      # ZERO-LENGTH k3s CREDENTIALS SELF-HEAL, on a real boot. WP25
+      # (081M38G8NGC087G0R001GEGEDK). `nixos/tests/k3s-agent-tls-self-heal.nix`
+      # was wired into `flake.nix` (`k3s-agent-tls-self-heal`) but named by NO
+      # workflow step -- the same gap this file's own history already has two
+      # precedents for (see "node platform fixes" and "cluster CIDR
+      # derivation" above): a check that only `nix flake check`/`nix build`
+      # locally would ever run is a check CI never runs, and this repo
+      # refuses that shape (a check that did not run must never look like one
+      # that passed).
+      #
+      # k3s-agent-tls-self-heal.test.ts already EXECUTES the repair script
+      # over fixture directories and proves the pure "which files get
+      # removed" logic, including the allowlist regression this step's
+      # sibling VM test also carries (a real WP25 CI run measured the
+      # pre-allowlist revision removing 3243 legitimately zero-length files
+      # from inside containerd's own image store in one boot -- see PR
+      # #17608). What no fixture-directory test can reach is whether systemd
+      # actually runs the ExecStartPre before k3s on a REAL boot, and whether
+      # a REAL k3s regenerates the files and reaches active once they're
+      # gone -- and whether the planted containerd-snapshot fixture survives
+      # that same real boot. That is this step's job.
+      #
+      # Hermetic (no internet, no image pulls) and boots ONE node twice
+      # (write real cert material, stop, truncate, restart) -- same shape and
+      # cost class as "dirty disk FAILS CLOSED" immediately above; on the PR
+      # path rather than gated to workflow_dispatch because it is cheap (see
+      # the measured wall-clock this comment will carry once the first PR run
+      # completes).
+      #
+      # SKIPPED ON A WP11-SCOPED DISPATCH, like every other NixOS step in this
+      # job. This guard was missing when the step was added (WP25, now
+      # stopped; the step was left with no owner and no branch in flight), so
+      # every narrowed WP11 probe has been paying 3m 01s -- MEASURED on run
+      # 36089766331 -- for a hermetic VM test that exercises nothing the
+      # installed-disk first-boot lane measures. Trigger condition only; what
+      # this step asserts is unchanged.
+      - name: NixOS test — zero-length k3s credentials self-heal on boot
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
+        timeout-minutes: 30
+        working-directory: full-ai-cluster
+        run: nix build .#checks.x86_64-linux.k3s-agent-tls-self-heal -L --print-build-logs --fallback
+
+      # 081M39CR74D087G0R002BEG2G4. The has-ever-bootstrapped sentinel guard.
+      # k3s creates server/db and, if the machine is stopped in the first ~20s
+      # of its FIRST boot, leaves it non-empty with no bootstrap data in it --
+      # the one state k3s will not initialise into, so it refuses forever and
+      # no reboot recovers (measured: run 35968222668, 58 restarts, 76 fatals,
+      # on a real installed disk). A sentinel written only once k3s's own
+      # /readyz has succeeded is what makes discarding such a datastore safe:
+      # before it exists the datastore has never held anything, after it
+      # exists the datastore is never touched again.
+      #
+      # THE DECISION LOGIC IS ALREADY PINNED OVER FIXTURES in
+      # src/Core.TypeScript/hygiene/k3s-datastore-bootstrap-recovery.test.ts,
+      # which runs on the bun path. This step exists for the two halves that
+      # test structurally cannot reach, and both are the dangerous ones:
+      #   1. that the sentinel unit's DEFAULT readyz command actually succeeds
+      #      against a real k3s from inside its real unit -- if it silently
+      #      never did, no sentinel would ever be written and every healthy
+      #      datastore would look stillborn to the recovery script, inverting
+      #      the guard into the data loss it exists to prevent;
+      #   2. that a real, already-served datastore given a WRONG TOKEN emits
+      #      the identical ambiguous fatal a stillborn one does -- the claim
+      #      the whole module rests on, asserted in prose everywhere and
+      #      measured only here -- and SURVIVES it.
+      #
+      # COST, MEASURED rather than estimated. Run 36089766331 (this step's
+      # first wired run, which went red on a test-harness defect -- see the
+      # test file's header on `wait_for_unit` against a poll loop): 4m 00s,
+      # 03:30:43 -> 03:34:43, of which 121s was a timeout that a correct
+      # predicate does not pay. Its sibling above, same shape, measured
+      # 3m 01s on the same run. Budget it at the self-heal step's class.
+      #
+      # Hermetic (no internet, no image pulls); boots ONE node and restarts
+      # k3s in place, same shape and cost class as the self-heal step above.
+      #
+      # SKIPPED ON A WP11-SCOPED DISPATCH, like the pre-ISO-build NixOS steps
+      # above it. A hermetic VM test that boots k3s twice exercises nothing
+      # the installed-disk first-boot lane measures, so leaving the guard off
+      # would silently lengthen every narrowed probe -- MEASURED tonight by
+      # WP29 at 15m 48s burned on exactly this omission, on one step. The PR
+      # and push paths are unaffected and run this every time.
+      - name: NixOS test — a datastore that has SERVED is never auto-discarded
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
+        timeout-minutes: 30
+        working-directory: full-ai-cluster
+        run: nix build .#checks.x86_64-linux.k3s-datastore-bootstrap-sentinel -L --print-build-logs --fallback
 
       # ONLINE end-to-end proof: boots the control-plane WITH internet,
       # installs Cilium for real, asserts the node reaches Ready + CoreDNS
@@ -411,7 +585,9 @@ jobs:
       # user-mode NIC reach the internet to pull images (the nix sandbox
       # blocks network); the GitHub runner user is a trusted nix user, so
       # the flag is honored. ubuntu-24.04 exposes /dev/kvm. Budget ~20 min.
+      # Skipped only on a WP11-scoped dispatch -- PR and push are unaffected.
       - name: NixOS test — cluster comes ALL the way up (online; node Ready + CoreDNS)
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 35
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-cluster-online -L --print-build-logs --fallback --option sandbox false
@@ -429,16 +605,137 @@ jobs:
       # convention: it needs internet and ~15-25 min on a cold runner, so PR runs
       # stay fast while main keeps the guarantee. Measured 162 s of test-script
       # time on a warm host; the runner cost is image pulls, not the assertions.
+      # Already push/workflow_dispatch-gated (see above); now ALSO skipped on
+      # a WP11-scoped dispatch specifically -- a push run is unaffected.
       - name: NixOS test — a longhorn PVC actually BINDS and data survives
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        if: always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 45
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.longhorn-volume-binds -L --print-build-logs --fallback --option sandbox false
+
+      # ── WP34 (081M3BZ111D087G0R000YBMKRY): the bootstrap container images ──
+      #
+      # A first boot pulls 134 images across EIGHT registries and the
+      # pull-through mirror covers ONE. These 25 are the bootstrap roster -- 21
+      # of them on registries the mirror does not cover -- so preloading them
+      # turns a spent rate limit from "partially provisioned node with no
+      # explanation" into "cluster up, ArgoCD visibly behind".
+      #
+      # VERIFY EARLIER, NOT LESS. `--verify` re-resolves every pinned digest
+      # BEFORE anything is fetched, so an image that moved under its tag fails
+      # HERE -- in CI, with credentials, no meaningful rate limit, and a human
+      # reading a red build -- instead of on an operator's first boot. The
+      # builder then fetches BY DIGEST and checks every blob against the digest
+      # that asked for it, so what ships is exactly what was verified.
+      #
+      # NOT `continue-on-error`. A silently-skipped preload is the defect class
+      # this work item exists to remove: an ISO that quietly shipped without one
+      # would be indistinguishable from an ISO that shipped with a broken one.
+      # OPTION 1 OF THREE, and the choice is the reviewable part.
+      #
+      # MEASURED: run 36129391858 failed this step with
+      # `Cannot find package 'yaml' from .../bootstrap-image-preload.ts`. This
+      # job installs Bun but never ran `bun install`, because every other `bun`
+      # step in it is node-builtins-only. The preload module is not: it reads
+      # YAML to derive the roster.
+      #
+      # The three ways out, and why this one:
+      #
+      #   1. DO THE WORK OUTSIDE NIX AND PASS THE RESULT IN -- taken. These two
+      #      steps are ordinary `run:` steps that execute BEFORE `nix build`,
+      #      produce a file, and the nix build consumes that file. `bun install`
+      #      here gives them the dependency they need and touches nothing nix
+      #      sees. It also leaves the derivation in TypeScript, where its 47
+      #      falsifiers live.
+      #   2. Drop the `yaml` dependency by hand-parsing the HelmChart CRs.
+      #      Rejected: a second YAML parser in this tree is its own defect class,
+      #      and this module exists precisely to avoid a second copy of a roster.
+      #   3. Make `node_modules` reachable from inside the nix build. REJECTED
+      #      outright -- it breaks nix's isolation and makes the ISO build depend
+      #      on a `bun install` having happened, which is exactly the property
+      #      `.claude/rules/clone-at-tag-stays-sufficient.md` protects. Note
+      #      that (1) does NOT have that effect: `isoImage.contents` falls back
+      #      to a loud `lib.warn` and an ISO with no preload, so a clone at a tag
+      #      with no bun still builds a working ISO.
+      - name: Install TypeScript dependencies for the preload steps
+        run: bun install --frozen-lockfile
+
+      - name: Verify the bootstrap image pins still resolve
+        run: bun src/Core.TypeScript/cluster/bootstrap-image-preload.ts --verify
+
+      - name: Build the bootstrap image archive the ISO carries
+        run: |
+          set -euo pipefail
+          bun src/Core.TypeScript/cluster/bootstrap-image-preload.ts \
+            --build-archive --out full-ai-cluster/usb-nixos-installer/preload/zeta-bootstrap-images.tar
+          ls -l full-ai-cluster/usb-nixos-installer/preload/zeta-bootstrap-images.tar
+          # Flakes only see GIT-TRACKED files, so an untracked artifact is
+          # invisible to `nix build` wherever it sits. `git add -f` stages it
+          # for THIS runner's evaluation only -- nothing is committed, nothing
+          # is pushed. It is not committed because a 1 GB binary in a tree whose
+          # verification discipline is that proofs are TEXT is exactly what
+          # `no-binary-in-proof-lineage` forbids.
+          git add -f full-ai-cluster/usb-nixos-installer/preload/zeta-bootstrap-images.tar
+          # Staging the archive makes the tree DIRTY, so the flake loses
+          # `self.rev` and the ISO would bake no commit pin (nightly
+          # 36297481926: every CI-built ISO aborted its install on
+          # `ZETA_ISO_COMMIT='unknown'`). Hand the commit in the same way --
+          # but only after proving the archive is the ONLY difference from
+          # HEAD, so the pin names exactly the source nix is about to build.
+          # See the provenance block in nixos/installer/configuration.nix.
+          dirt="$(git status --porcelain --untracked-files=no)"
+          expected="A  full-ai-cluster/usb-nixos-installer/preload/zeta-bootstrap-images.tar"
+          if [ "$dirt" != "$expected" ]; then
+            echo "::error title=ISO source is not HEAD plus the preload archive::refusing to stamp $(git rev-parse HEAD) as the ISO's commit; tracked changes besides the archive:" >&2
+            printf '%s\n' "$dirt" >&2
+            exit 1
+          fi
+          git rev-parse HEAD > full-ai-cluster/usb-nixos-installer/preload/iso-commit
+          git add -f full-ai-cluster/usb-nixos-installer/preload/iso-commit
 
       - name: Build installer ISO
         id: iso_build
         working-directory: full-ai-cluster
         run: nix build .#installer-iso --print-build-logs --fallback
+
+      # The archive only matters if it actually reached the image. This asserts
+      # the ARTIFACT rather than the option that was supposed to place it -- the
+      # same discipline as the ISO-name check below, and for the same reason
+      # that check exists: an option evaluating to the right value is not
+      # evidence that a file is on the ISO.
+      - name: The built ISO carries the bootstrap image archive
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          iso="$(find result/iso -name '*.iso' -print -quit)"
+          if [ -z "$iso" ]; then echo "no ISO found under result/iso"; exit 1; fi
+          if ! 7z l "$iso" | grep -q 'zeta-bootstrap-images.tar'; then
+            echo "The ISO does not contain /zeta/zeta-bootstrap-images.tar."
+            echo "Every node installed from it would PULL all 25 bootstrap images on first boot,"
+            echo "21 of them from registries the pull-through mirror does not cover."
+            exit 1
+          fi
+          echo "bootstrap image archive present on the ISO"
+
+      # The installer REFUSES an unparseable pin (zeta-install.sh ZETA-REPO-PIN
+      # block), so a release ISO whose provenance is not a 40-hex commit aborts
+      # every operator install. That shipped silently from WP34 until nightly
+      # 36297481926 because every lane that tested it also wrote an ESP pin over
+      # the baked one. Read the REALIZED file (the same store path the ISO's
+      # closure carries), not the option that produces it, and require it to
+      # name exactly the commit this job checked out.
+      - name: The built ISO pins the commit it was built from
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          f="$(nix build --no-link --print-out-paths '.#nixosConfigurations.installer.config.environment.etc."zeta-iso-provenance".source')"
+          baked="$(sed -n "s/^ *ZETA_ISO_COMMIT=//p" "$f")"
+          head="$(git rev-parse HEAD)"
+          echo "baked pin: '${baked}'  HEAD: ${head}"
+          if [ "$baked" != "$head" ]; then
+            echo "::error title=ISO provenance pin is wrong::the ISO bakes ZETA_ISO_COMMIT='${baked}', expected ${head}. zeta-install.sh fails closed on a pin it cannot honour." >&2
+            exit 1
+          fi
 
       - name: The built ISO carries the name this repo chose
         working-directory: full-ai-cluster
@@ -605,8 +902,19 @@ jobs:
       # must run with budget left — measured run 32647553460 died with
       # restore still in_progress after those earlier dispatch jobs ate the
       # wall clock. Workflow_dispatch only — not on gate.
+      #
+      # 081M39CJP96087G0R001T4J2R3 (WP29) — THE `!inputs.only_wp11` HALF WAS
+      # MISSING HERE while the sibling upload step below already carried it.
+      # MEASURED on run 36044770870, dispatched with only_wp11: every other
+      # dispatch-only step reported `skipped` and this one RAN, for 15m 48s,
+      # and then `Upload UEFI keyfile restore serial log` — which DID have the
+      # guard — skipped, so the failure it produced could not be read. Run
+      # 36014672753 did exactly the same thing four hours earlier, and both
+      # restore failures are therefore unrecoverable. A step that runs while
+      # its log upload is skipped is a check nobody can read, so the two
+      # conditions must AGREE, not merely both exist.
       - name: UEFI keyfile restore decrypt (workflow_dispatch only)
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -625,7 +933,7 @@ jobs:
           bun ../src/Core.TypeScript/ci/qemu-full-install-test.ts "$iso_abs"
 
       - name: Upload UEFI keyfile restore serial log
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: qemu-uefi-keyfile-restore-serial-log
@@ -642,7 +950,7 @@ jobs:
       # picker / scenarios 3–4 skipped). Keep restore itself without always()
       # so a restore red still fails the job. Keep all of this off gate.
       - name: 081KSGS9H0008QG0R003V23XNZ wifi ESP acceptance (workflow_dispatch only)
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -663,7 +971,7 @@ jobs:
           bun ../src/Core.TypeScript/ci/qemu-full-install-test.ts "$iso_abs"
 
       - name: Upload 081KSGS9H0008QG0R003V23XNZ wifi ESP serial log
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: qemu-wifi-esp-serial-log
@@ -672,7 +980,7 @@ jobs:
           retention-days: 7
 
       - name: UEFI keyfile install-time write (workflow_dispatch only)
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -691,7 +999,7 @@ jobs:
           bun ../src/Core.TypeScript/ci/qemu-full-install-test.ts "$iso_abs"
 
       - name: Upload UEFI keyfile phase-1 serial log
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: qemu-uefi-keyfile-serial-log
@@ -700,7 +1008,7 @@ jobs:
           retention-days: 7
 
       - name: UEFI keyfile picker bind (workflow_dispatch only)
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -719,7 +1027,7 @@ jobs:
           bun ../src/Core.TypeScript/ci/qemu-full-install-test.ts "$iso_abs"
 
       - name: Upload UEFI keyfile picker serial log
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: qemu-uefi-keyfile-picker-serial-log
@@ -728,7 +1036,7 @@ jobs:
           retention-days: 7
 
       - name: 081KSNY2Z0008QG0R0008PN7RQ scenario 3 — reformat with retention (workflow_dispatch only)
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -748,7 +1056,7 @@ jobs:
           bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario reformat-with-retention "$iso_abs"
 
       - name: 081KSNY2Z0008QG0R0008PN7RQ scenario 4 — path-fork migrate vs fresh (workflow_dispatch only)
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -769,7 +1077,7 @@ jobs:
           bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario reformat-from-scratch "$iso_abs"
 
       - name: Upload 081KSNY2Z0008QG0R0008PN7RQ retention serial logs
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: b0891-retention-serial-logs
@@ -778,11 +1086,96 @@ jobs:
           retention-days: 7
 
       - name: Upload 081KSNY2Z0008QG0R0008PN7RQ path-fork serial logs
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: b0891-path-fork-serial-logs
           path: b0891-path-fork-run/**/*.log
+          if-no-files-found: warn
+          retention-days: 7
+
+      # 081M3NB0PAG087G0R000JQQCF4 — MEASURED, run 36420588893: the two B0891
+      # lanes above leave their qcow2 / boot images in the workspace (~38 GiB),
+      # so WP11's phase 1 started with 14.3 GiB free (54.9 GiB earlier in the
+      # same job). Its first boot writes ~26 GiB (images + the dev toolchain);
+      # the runner hit "Free space left: 0 MB" six minutes in, QEMU paused the
+      # guest on ENOSPC (virtio werror=enospc), and the serial simply stopped --
+      # read as a guest freeze for 70 minutes. Their logs are uploaded above;
+      # only the images go. The preinstalled SDKs removed are the same ones the
+      # HA job below frees; no later step in this job uses them.
+      - name: Reclaim B0891 disk images before WP11
+        if: always() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+        run: |
+          set -uo pipefail
+          df -h /
+          for d in "$GITHUB_WORKSPACE/b0891-retention-run" "$GITHUB_WORKSPACE/b0891-path-fork-run"; do
+            if [ -d "$d" ]; then find "$d" -type f ! -name '*.log' -print -delete; fi
+          done
+          rm -f /tmp/zflash-test-baseline.qcow2
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost
+          df -h /
+
+      # WP11 — closes the literal "plug in the USB and run it" gap. Every
+      # QEMU scenario above stops at a serial marker on the INSTALLER side
+      # (ZETA CLUSTER NODE INSTALL COMPLETE) or, for scenario 2, a login
+      # prompt on the installed disk with NO network
+      # (`buildQemuDiskBootArgsPure`'s own comment explains why: a NIC on
+      # that boot risks a UEFI PXE boot-order stall). Kubernetes/ArgoCD
+      # health has never been checked past that point on the ACTUAL
+      # installer -> installed-disk path (disko partitioning, hardware
+      # config, zeta-install.sh host selection, tokens, the installed
+      # configuration.nix's own import graph) — the closest existing
+      # coverage, nixos/tests/k3s-first-boot-roster.nix, boots the k3s
+      # modules directly in a nixosTest sandbox and never goes through the
+      # installer at all.
+      #
+      # This step reboots the SAME installed disk a second time, now with a
+      # user-mode NIC (image pulls need internet), and lets
+      # zeta-first-boot-k3s-verify.nix's oneshot unit — gated OFF by default
+      # via ConditionPathExists, only turned on by the
+      # QEMU_K3S_FIRST_BOOT_PHASE=1 marker this step's own ISO bake writes —
+      # watch k3s + the first-boot roster converge and print a JSON verdict
+      # (six named checks) to serial. The TS harness also appends a
+      # human-readable table + the raw JSON to $GITHUB_STEP_SUMMARY.
+      #
+      # Deliberately dispatch+schedule ONLY, not on the PR path: k3s +
+      # ~2-3 GB of Helm-chart image pulls converging is budgeted 45-70 min by
+      # the nixosTest lane that already asks this exact question
+      # (k3s-first-boot-roster.nix's own header) — adding that to every PR
+      # touching the installer/k3s paths would make the already-heaviest
+      # ISO lane far slower for no benefit to the merge-gating question PRs
+      # actually need answered. workflow_dispatch covers on-demand deep
+      # verification; `schedule` (daily, 05:23 UTC) covers unattended drift
+      # detection between deliberate dispatches.
+      - name: WP11 — installed-disk first-boot k3s verify (workflow_dispatch/schedule only)
+        if: always() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+        # 100 -> 120 (081M3K23YCP087G0R003BVDS1P): the dev toolchain moved from
+        # phase 1 (pre-reboot) to this boot's background unit, and the harness
+        # waits up to QEMU_DEV_TOOLCHAIN_WAIT_SECONDS (1200) after the k3s
+        # verdict for its SUCCEEDED/FAILED line.
+        timeout-minutes: 120
+        working-directory: full-ai-cluster
+        env:
+          SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-k3s-first-boot-verify-serial.log
+          QEMU_K3S_FIRST_BOOT_PHASE: "1"
+        run: |
+          set -euo pipefail
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::WP11 k3s first-boot verify: No installer ISO under result/iso/" >&2
+            exit 1
+          fi
+          iso_abs=$(readlink -f "${iso_candidates[0]}")
+          echo "WP11 k3s first-boot verify ISO: $iso_abs"
+          echo "Serial log out path: $SERIAL_LOG_OUT_PATH"
+          bun ../src/Core.TypeScript/ci/qemu-full-install-test.ts "$iso_abs"
+
+      - name: Upload WP11 k3s first-boot verify serial log
+        if: always() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: qemu-k3s-first-boot-verify-serial-log
+          path: qemu-k3s-first-boot-verify-serial.log
           if-no-files-found: warn
           retention-days: 7
 
@@ -1008,6 +1401,7 @@ jobs:
   # Skips the k3s nixosTest checks (x86_64-gated in the flake).
   build-aarch64:
     name: build-iso-aarch64 + qemu-boot
+    if: ${{ !inputs.only_cluster_ha }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 120
     permissions:
@@ -1227,3 +1621,141 @@ jobs:
           path: ${{ steps.iso.outputs.sha256_path }}
           retention-days: 14
           if-no-files-found: error
+
+  # THREE CONTROL PLANES, REPLICATED STORAGE, LOSE ONE — the first CLUSTER test.
+  #
+  # Every other nixosTest here boots one node, or two with no CNI. This job boots
+  # three role=server members (embedded-etcd HA: one founds, two join through the
+  # shipped injected-server-join.nix), brings them all Ready on the real Cilium,
+  # installs Longhorn at the prod chart version with ONE test-only override
+  # (3 replicas), proves the three replicas sit on three DISTINCT nodes, then
+  # hard power-cuts the node holding a replica and the original write and
+  # asserts: /readyz on both survivors, a quorum WRITE commits, and the data's
+  # sha256 verifies from a pod on a surviving node with the volume `degraded`.
+  # See full-ai-cluster/nixos/tests/k3s-ha-longhorn-cluster.nix.
+  #
+  # The etcd 2379/2380 admission it relies on is the PRODUCT's
+  # (`zeta.k3sServer.etcdPeers`, modules/k3s-etcd-peers.nix) — the harness opens
+  # no port of its own (081M10ZG61D087G0R001A70F0P was a harness that did).
+  #
+  # ITS OWN JOB, not a step in `build`, for two measured reasons: `build` already
+  # spends its 180-min PR/push budget on the ISO and the single-node lanes, and
+  # three 4 GiB guests need the whole 16 GiB of a fresh hosted runner rather
+  # than one shared with a cold ISO build's nix store. It runs in parallel, so it
+  # adds runner-minutes, not wall-clock.
+  #
+  # TIER: workflow_dispatch ONLY, until it has one green run on a hosted runner.
+  # It was wired at longhorn-volume-binds' tier (push + schedule) and has not
+  # yet passed there, so on push it would be a standing red on every
+  # full-ai-cluster change. Measured on ubuntu-24.04 (16 GiB / 4 vCPU):
+  #   run 35920509908  3 x 4096 MiB, all on root images: join + 3 Ready +
+  #                    Longhorn on 3 nodes in 1476 s; PVC bind timed out —
+  #                    etcd fdatasync > 1 s, applies up to 5.7 s, k3s restarts
+  #                    on every server. Host RAM peak 14572 / 15989 MiB.
+  #   run 35926193063  3 x 3584 MiB, /var/lib/rancher on a cache=unsafe disk:
+  #                    3 Ready in 336 s, Longhorn in 1155 s; PVC bind timed out
+  #                    again — 26847 slow-fdatasync warnings, k3s still
+  #                    restarting. Host RAM peak 13213 / 15989 MiB.
+  #   run 35930213010  + etcd db on tmpfs: slow-fdatasync gone (1 warning),
+  #                    3 Ready at 329 s, Longhorn at 566 s — and the PVC bind
+  #                    STILL timed out. 16825 `apply request took too long`
+  #                    (2-5 s on read-only ranges, i.e. CPU, not disk) and 12
+  #                    k3s exits on `leaderelection lost`. Host RAM 13156 MiB.
+  # VERDICT from those three: three full control planes + the product Cilium
+  # (envoy, hubble relay/ui) + Longhorn do NOT fit 4 hosted vCPUs; the guests'
+  # 6 vCPUs starve each other past the leader-election renew deadline. This
+  # needs a larger runner (8+ vCPU); relaxing the election timers would hide
+  # the starvation rather than fix it. Restore push/schedule in the change
+  # that records its first green run.
+  # `only_cluster_ha` on a dispatch runs this job alone. Advisory either way:
+  # `gate (required)` is the only required check on main.
+  cluster-ha:
+    name: k3s HA cluster + replicated Longhorn (3 VMs)
+    # SKIPPED ON A WP11-SCOPED DISPATCH -- AT THE JOB LEVEL, DELIBERATELY, and
+    # this is the one of the three orphaned steps that needed a DIFFERENT fix
+    # rather than the step-level guard its siblings carry.
+    #
+    # Its lone NixOS step was ungated like the two in `build`, but gating the
+    # STEP here would have been half a fix: this job is a 120-minute,
+    # three-guest lane whose Checkout / Free runner disk / Install Nix /
+    # memory-sampler steps are its own setup, and a skipped final step would
+    # still have paid for all of it on a runner. The whole job is what a
+    # narrowed probe must not start, so the condition belongs on the job.
+    #
+    # `github.event_name == 'workflow_dispatch'` alone admitted EVERY dispatch,
+    # including `only_wp11=true` -- so a probe deliberately narrowed to the
+    # installed-disk first-boot lane was also booting a 3-node HA cluster with
+    # replicated Longhorn. The `only_cluster_ha` lane is unaffected (`&&`
+    # short-circuits, and that input is orthogonal), and PR/push never reached
+    # this job at all. Trigger condition only; what the step asserts is
+    # unchanged.
+    if: ${{ github.event_name == 'workflow_dispatch' && !inputs.only_wp11 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Three guests x 12 GiB qcow2 (sparse, but each fills with its own copy of
+      # the Cilium + Longhorn images) plus the test closure. The hosted image's
+      # preinstalled SDKs are dead weight for a nix-only job.
+      - name: Free runner disk
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost
+          df -h /
+
+      - name: Install Nix
+        # Same pinned installer and settings as the `build` job.
+        uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          determinate: false
+
+      - name: Start host memory sampler
+        run: |
+          nproc
+          free -m
+          ls -l /dev/kvm || echo "no /dev/kvm: the nixosTest driver will fall back to TCG"
+          sample_host_memory() {
+            while true; do
+              echo "$(date +%s) $(free -m | awk '/Mem:/{print $3}')" >> "$RUNNER_TEMP/host-mem.log"
+              sleep 10
+            done
+          }
+          sample_host_memory >/dev/null 2>&1 &
+          disown
+
+      - name: NixOS test — 3-node HA cluster survives losing a replica-holding node
+        timeout-minutes: 100
+        working-directory: full-ai-cluster
+        run: |
+          start=$(date +%s)
+          rc=0
+          nix build .#checks.x86_64-linux.k3s-ha-longhorn-cluster -L --print-build-logs --fallback --option sandbox false || rc=$?
+          echo "k3s-ha-longhorn-cluster: rc=$rc after $(( $(date +%s) - start )) s"
+          exit "$rc"
+
+      - name: Host resource budget (measured)
+        if: always()
+        run: |
+          log="$RUNNER_TEMP/host-mem.log"
+          if [ ! -s "$log" ]; then
+            echo "::warning::host memory sampler recorded nothing; no budget measurement for this run"
+            exit 0
+          fi
+          total=$(free -m | awk '/Mem:/{print $2}')
+          peak=$(sort -k2 -n "$log" | tail -n1 | awk '{print $2}')
+          samples=$(wc -l < "$log")
+          {
+            echo "### k3s-ha-longhorn-cluster host budget"
+            echo ""
+            echo "| metric | value |"
+            echo "|---|---|"
+            echo "| host RAM total | ${total} MiB |"
+            echo "| host RAM used, peak | ${peak} MiB |"
+            echo "| samples (10 s) | ${samples} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "peak used ${peak} MiB of ${total} MiB over ${samples} samples"
+          df -h /

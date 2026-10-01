@@ -60,6 +60,72 @@ spec:
           repo: semitechnologies/weaviate
           tag: 1.32.7
         replicas: 1 # bump to 3 for HA once cluster has the headroom
+        # NO PRIVILEGED `alpine:latest` INITCONTAINER. The chart's default
+        # `initContainers.sysctlInitContainer.enabled: true` renders, MEASURED by
+        # `helm template` of 17.8.3 against this valuesObject (2026-09-30), a
+        # `configure-sysctl` init container with `privileged: true`, `runAsUser: 0`
+        # and image `docker.io/alpine:latest`. Three defects in one line:
+        #
+        #  1. AN IMAGE THAT NOTHING PRELOADS AND NOTHING PINS. `alpine:latest` is on
+        #     no bootstrap preload list, so on a fresh install the pod cannot leave
+        #     `Init:0/1` until an anonymous Docker Hub pull succeeds -- the same
+        #     registry whose 429 is cited above for weaviate itself. A StatefulSet
+        #     with readyReplicas 0 != replicas 1 is `Progressing`, and an
+        #     Application whose only complaint is a Progressing workload has an EMPTY
+        #     `status.conditions`: the signature of the "Synced/Progressing,
+        #     conditions empty" run recorded in
+        #     docs/trajectories/usb-installer-first-boot-reliability/RESUME.md §4.
+        #     A CANDIDATE for that run, not a confirmed cause: no live pod
+        #     description exists.
+        #  2. `:latest` MOVES. The repo's own image audit flags it
+        #     (image-resolvability.json `isLatestOrUntagged: true`).
+        #  3. PRIVILEGED, to run `sysctl -w`. Refused by any restricted Pod Security
+        #     admission, and the only privileged container in this namespace.
+        #
+        # THE HOST ALREADY OWNS THIS KNOB. `vm.max_map_count` is a node-wide kernel
+        # setting, so the init container was setting the host's value from a pod --
+        # which is why opensearch ships `sysctlInit.enabled: false` for the same
+        # reason, and why full-ai-cluster/k8s/node-tunables.json declares it once for
+        # the NixOS host (k8s-node-tunables.nix) and the CI runner. The value this
+        # chart asked for (524288) is now the declared host value; it was 262144,
+        # opensearch's floor and below weaviate's.
+        initContainers:
+          sysctlInitContainer:
+            enabled: false
+        # CLUSTER-INTERNAL, NOT LoadBalancer. The chart defaults BOTH `service`
+        # and `grpcService` to `type: LoadBalancer`, which did two things here
+        # and neither was intended:
+        #
+        #  1. HEALTH GATED ON LB-IPAM. gitops-engine `getCorev1ServiceHealth`
+        #     reports a LoadBalancer Service with empty
+        #     `status.loadBalancer.ingress` as Progressing, forever. MEASURED:
+        #     kind/kindnetd (no LB implementation) held weaviate Progressing
+        #     with `weaviate-0` 1/1 Running for 39m (run 32532470499); kind
+        #     `--cni cilium`, where both Services got pool addresses, went
+        #     Healthy (run 33697305243); the Docker first-boot replica, which
+        #     excludes cilium-lb-ipam, read `health=Progressing with no
+        #     classified pod issue` (run 36303440548). So weaviate's convergence
+        #     depended on two of the eleven addresses in zeta-lb-pool -- a
+        #     block that ip-pool.yaml itself says must be adjusted to the
+        #     operator's LAN -- on every box.
+        #  2. EXPOSURE. It published a vector store whose chart default is
+        #     `authentication.anonymous_access.enabled: true` on a LAN address.
+        #
+        # Nothing outside the cluster consumes it (no manifest in this tree
+        # names weaviate other than this one); in-cluster clients use
+        # weaviate.weaviate.svc / weaviate-grpc.weaviate.svc, which ClusterIP
+        # serves unchanged. Publish it deliberately, behind auth, if that
+        # changes.
+        #
+        # NOT PROVEN to be the WP11 installed-disk cause (run 36221053730:
+        # Synced/Progressing, conditions empty, no resource-level health in the
+        # dump). It removes the one mechanism measured to hold this
+        # Application Progressing; whether anything else does on metal is for
+        # the next run to say.
+        service:
+          type: ClusterIP
+        grpcService:
+          type: ClusterIP
         storage:
           # SIZE CUT, NOT A POD CUT: 100Gi -> 32Gi. `replicas: 1` above is
           # unchanged and was never a candidate -- there is no redundancy here
@@ -72,7 +138,7 @@ spec:
           # cluster's corpus, not a library; the failure mode when it is
           # outgrown is loud (write errors), not silent.
           size: 32Gi
-          storageClassName: longhorn
+          storageClassName: zeta-block-replicated
         modules:
           # Use the cluster's own LLM serving for vectorization +
           # generative endpoints. Swap to text-embeddings-inference
@@ -173,6 +239,24 @@ spec:
       jsonPointers:
         - /data/username
         - /data/password
+  # ServerSideApply DELIBERATELY DROPPED, 2026-09-22 -- A SECOND, INDEPENDENT
+  # DRIFT SOURCE from the Secret randomness documented above. Live run
+  # 35713533700 showed `StatefulSet/weaviate: sync=OutOfSync health=-` even with
+  # the Secret ignore rule already in place, and the Application itself flipped
+  # to `OutOfSync/Progressing` during the post-Healthy soak -- an actual re-apply,
+  # not the benign OutOfSync+Healthy this lane otherwise tolerates. MEASURED:
+  # chart 17.8.3 with this valuesObject renders the `weaviate` StatefulSet's
+  # `volumeClaimTemplates[0]` (JSON-encoded 3923 bytes, the single largest
+  # resource this chart renders -- 66x under the 262144-byte
+  # last-applied-configuration cap) as
+  # name/accessModes/storageClassName/resources.requests.storage only -- the same
+  # argo-cd#11143 class as cockroachdb/headscale/hindsight/nats/opensearch and the
+  # spire precedent (spire/Application.yaml).
+  # RespectIgnoreDifferences DOES NOT NEED ServerSideApply: the sync-options.md
+  # description ("pre-patching the desired state before applying it") and the
+  # controller/sync.go comment cited above describe patching the desired object
+  # before the apply call, independent of which apply mode follows -- so the
+  # Secret ignore rule above is unaffected by this change.
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true, RespectIgnoreDifferences=true ]
+    syncOptions: [ CreateNamespace=true, RespectIgnoreDifferences=true ]

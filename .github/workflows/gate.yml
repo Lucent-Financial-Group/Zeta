@@ -837,14 +837,32 @@ jobs:
         run: dotnet build Zeta.sln -c Release
 
       - name: Test
-        # `id:` is load-bearing — the blame-printer below keys off THIS step's
-        # outcome, not off the job's. See the note there.
+        # `id:` is load-bearing — the step-outcome reporter below keys off THIS
+        # step's outcome, not off the job's. See the note there.
         id: test
         if: needs.path-filter.outputs.code == 'true'
-        # --blame-crash / --blame-hang-timeout: when the test host crashes or
-        # hangs (the silent "MSB4181: VSTestTask returned false but did not log
-        # an error" class — seen once on windows-11-arm), collect a crash dump
-        # and a Sequence_*.xml naming the in-flight test, instead of a mystery.
+        # MICROSOFT.TESTING.PLATFORM MODE (global.json `test.runner`). xunit.v3 4.x ships
+        # MTP v2, which refuses the VSTest mode of `dotnet test` on the .NET 10 SDK, so the
+        # VSTest flags this step used to carry do not exist any more:
+        #   --solution Zeta.sln   replaces the positional path (MTP mode rejects it).
+        #   everything after `--` goes to each test application, not to `dotnet test`.
+        #   --long-running 300    replaces --blame-hang-timeout's "name the in-flight test":
+        #                         xUnit reports, BY NAME, every test still running after 300 s.
+        #   --timeout 20m         replaces --blame-hang-timeout's kill: each test app is
+        #                         stopped after 20 min (slowest leg's WHOLE step was ~8 min on
+        #                         run 33998492679), so a hang fails this step well inside the
+        #                         job's own timeout instead of consuming it.
+        # NOT carried over: the blame crash dump + Sequence_*.xml. Nothing uploaded the dump,
+        # and MTP-mode `dotnet test` reports each test app's exit code by name, so the old
+        # "MSB4181: VSTestTask returned false but did not log an error" mystery (the reason
+        # --blame-crash was added) cannot occur. Naming the in-flight test on a CRASH needs the
+        # Microsoft.Testing.Extensions.CrashDump package, which must match xunit.v3's MTP major
+        # — see workitem 081M380V792087G0R001PR993V.
+        #
+        # MTP mode also removes the Windows-only "Catastrophic failure ... Test process did not
+        # return valid JSON" flake: that was xunit.runner.visualstudio (the VSTest adapter)
+        # launching sibling test processes and parsing their stdout. MTP runs each test app
+        # directly and talks to it over a pipe, so no stdout is parsed.
         #
         # ZETA_PERF_OBS_FILE: the perf emitter appends each `##perf-obs` line here as well as to
         # stdout, so the collector below has a file to fold. This is an ENV VAR and nothing else --
@@ -859,7 +877,7 @@ jobs:
         # File.AppendAllText handles Windows and POSIX without the workflow knowing which it is on.
         env:
           ZETA_PERF_OBS_FILE: ${{ runner.temp }}/zeta-perf-obs.log
-        run: dotnet test Zeta.sln -c Release --no-build --verbosity normal --blame-crash --blame-hang-timeout 15m
+        run: dotnet test --solution Zeta.sln -c Release --no-build --verbosity normal -- --long-running 300 --timeout 20m
 
       - name: Retain unexpected TLC attempts
         if: always() && needs.path-filter.outputs.code == 'true'
@@ -920,31 +938,13 @@ jobs:
         # workflow-command annotation, so the answer appears in the check-run summary
         # where `Process completed with exit code 1` currently sits alone.
         #
-        # `if: failure()` is correct HERE (unlike the blame printer below) precisely
+        # `if: failure()` is correct HERE (unlike a reporter that needs `bun`) precisely
         # because this step has no prerequisite that could also have failed.
         if: failure()
         run: |
           echo "::error title=build-and-test: which step failed::install-unix=${{ steps.install_unix.outcome }} install-windows=${{ steps.install_windows.outcome }} roslyn-guard=${{ steps.roslyn_guard.outcome }} build=${{ steps.build.outcome }} test=${{ steps.test.outcome }}"
           echo "[step-outcomes] install-unix=${{ steps.install_unix.outcome }} install-windows=${{ steps.install_windows.outcome }} roslyn-guard=${{ steps.roslyn_guard.outcome }} build=${{ steps.build.outcome }} test=${{ steps.test.outcome }}"
           echo "[step-outcomes] a failing install means the toolchain never provisioned; read that step's log, not the reporters below."
-
-      - name: Name the crashed/hung test (on failure)
-        # Surface the blame Sequence_*.xml into the CI log so a host crash/hang
-        # is diagnosable without artifact plumbing — turns "VSTestTask returned
-        # false" into "test X was running when the host died". Cross-platform (bun).
-        #
-        # Gated on `steps.test.outcome`, NOT on bare `failure()`. Under `failure()`
-        # this ran after ANY earlier step failed — including the toolchain-install
-        # step, which is the one step whose job is to put `bun` on PATH. So when
-        # install failed, this fired without a `bun` to run and died with
-        # "The term 'bun' is not recognized", adding a second red step and a second
-        # `Process completed with exit code 1` annotation that said nothing about
-        # either failure. A failure reporter that fails is worse than no reporter:
-        # it buries the real annotation under its own. print-blame-sequences.ts is
-        # exit-0-always by contract, so gating on the Test step's own outcome makes
-        # a non-zero exit here mean what it should — a defect in the reporter.
-        if: failure() && steps.test.outcome == 'failure'
-        run: bun src/Core.TypeScript/ci/print-blame-sequences.ts
 
       - name: Skipped (docs-only PR)
         # Status-check passthrough: when the path filter said code=false,
@@ -1361,6 +1361,103 @@ jobs:
         # red immediately, and the 12 that stayed green are exactly the controls and
         # the pure-unit cases, which do not read the exit code. ~2.8 s.
         run: bun test src/Core.TypeScript/cluster/audit-agentic-org-manifests.test.ts
+
+  lint-gator-hat-policies:
+    # EXECUTES the hat-system Gatekeeper policies with `gator verify` -- Gatekeeper's
+    # own offline policy tester, pinned in .mise.full.toml to the same release as the
+    # gatekeeper chart (3.23.1). Before this job nothing in CI had ever run that Rego
+    # against an input: the kind lane proves it COMPILES and APPLIES,
+    # hat-constraint-roster.ts proves the sync Config feeds what it READS, and the
+    # conflict-of-interest symmetry test MODELS one rule from its text.
+    #
+    # MEASURED on first execution (2026-09-23): four policies failed open on a
+    # missing field -- 02 and 03 ignored a HatBinding the operator had not yet given a
+    # status, 04 bound a quorum-gated hat when `cosignedBy` was omitted, 07 admitted a
+    # self-supervising hat while no Hat was synced. All four fixed in the landing PR;
+    # the suites carry a case for each.
+    #
+    # DRIFT TIER, not in `gate (required)`'s needs: a red X here is signal for the
+    # policy's owners, never a lock on unrelated lanes. Promotion to the floor is the
+    # treaty-amendment consent path, not a line edit here.
+    #
+    # COST. The checks themselves are seconds (47 cases ~0.2 s; the mutation suite
+    # re-runs the whole set once per planted defect, 18 runs ~7 s). Wall clock is the
+    # full-tier toolchain install, which is why the cache key below is BYTE-IDENTICAL
+    # to helm-validate.yml's `charts` job: both need tier=full, so they share one warm
+    # cache rather than each paying for its own.
+    name: lint (gator hat policies)
+    timeout-minutes: 25
+    runs-on: ubuntu-24.04
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
+
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_gator_hat_policies != 'false'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
+          key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
+
+      - name: Restore apt archives (root fix for the exit-124 install-step class)
+        # docs/research/2026-08-26-caching-var-cache-apt-archives-is-the-root-fix-for-the-apt-wall-budget-class.md
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: full
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          # TIER DECLARED, not detected: gator ships in .mise.full.toml, which only
+          # tier=full merges (audit-install-tier-declared.ts refuses silence).
+          ZETA_HOST_TIER: full
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Confirm gator is on PATH
+        # Fail HERE, loudly, if the toolchain did not land. The runner exits 2 on a
+        # missing gator and the mutation suite fails under ZETA_REQUIRE_GATOR=1, but
+        # a named step is the clearer red.
+        run: |
+          set -euo pipefail
+          command -v gator
+          gator --version
+
+      - name: gator verify — every hat policy, must-violate and must-admit cases
+        # Also refuses before running if any ConstraintTemplate lacks a must-violate
+        # or a must-admit case, or if the gator on PATH is not the chart's version.
+        # No pipe: a pipeline would report its last stage's status, not gator's.
+        run: bun src/Core.TypeScript/cluster/gator-verify-hat-policies.ts
+
+      - name: gator verify — mutation suite (proves it goes red)
+        # Plants 17 defects one at a time in a copy of the policies -- including
+        # deleting 03's reverse-direction rule and reverting each of the four
+        # fail-open fixes -- and requires the real gator run to exit 1 on every one,
+        # plus an unmutated control that must exit 0. ZETA_REQUIRE_GATOR=1 turns an
+        # absent gator into a failure instead of the skip the hermetic lane takes.
+        env:
+          ZETA_REQUIRE_GATOR: "1"
+        run: bun test src/Core.TypeScript/cluster/gator-verify-hat-policies.test.ts
 
   lint-shell:
     # Shellcheck on every bash script under tools/setup/ + tools/.

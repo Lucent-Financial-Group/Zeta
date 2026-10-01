@@ -131,6 +131,11 @@ spec:
           installAndUpgradeHooks:
             enabled: false
         spire-server:
+          resources:
+            requests: { cpu: 50m, memory: 192Mi }
+          controllerManager:
+            resources:
+              requests: { cpu: 10m, memory: 64Mi }
           caSubject:
             country: US
             commonName: zeta-spire-ca
@@ -138,7 +143,33 @@ spec:
           persistence:
             type: pvc
             size: 5Gi
-            storageClass: zeta-local-path
+            storageClass: zeta-block-local
+          # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT). Chart default is
+          # failureThreshold 2 x timeout 3s at a 60s period: a RUNNING spire-server is
+          # killed after (2-1)*60+3 = 63s of slow /live. The constrained first-boot replica
+          # (run 36685251210) measured spire-server-0 in CrashLoopBackOff. 3 failures and a
+          # 10s timeout: kill budget 15+2*60 = 135s, running-stall tolerance 130s. Kept
+          # EQUAL at both pin sites (k8s/bootstrap/spire-install.yaml and the Application).
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 60
+            timeoutSeconds: 10
+          # PINNED 2026-09-22 -- mirrors k8s/bootstrap/spire-install.yaml (see the comment
+          # there for the full derivation and the live-VM evidence: run 35687536936,
+          # helm-install-spire's post-install-job ErrImagePull-looping on
+          # docker.io/rancher/kubectl:v1.35.7, which was never published).
+          # `spire-lib.kubectl-image` derives this hook image's tag from
+          # `.Capabilities.KubeVersion.Version` unless `tools.kubectl.image.tag` is set --
+          # pinned here to the newest tag that actually exists upstream (verified multi-arch
+          # via the Docker Hub tags API) rather than one derived from a cluster version the
+          # image publisher hasn't caught up to. Keep both twins equal --
+          # bootstrap-application-pin-parity is about chart VERSION, not this values key, so
+          # nothing else catches a drift here.
+          tools:
+            kubectl:
+              image:
+                tag: v1.35.6
           # Chain to Vault as the upstream CA. Uncomment + configure
           # after vault/Application.yaml is healthy:
           # upstreamAuthority:
@@ -149,6 +180,8 @@ spec:
           #     caCertSecret: vault-ca
           #     authMethod: k8s
         spire-agent:
+          resources:
+            requests: { cpu: 25m, memory: 96Mi }
           # K3S uses containerd, not Docker — wire the agent at the
           # containerd socket so SVIDs attach to the right workload.
           workloadAttestors:
@@ -159,6 +192,11 @@ spec:
               enabled: true
         spiffe-csi-driver:
           enabled: true
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+          nodeDriverRegistrar:
+            resources:
+              requests: { cpu: 10m, memory: 24Mi }
         spiffe-oidc-discovery-provider:
           enabled: false   # broken pre-delete hook deadlocks uninstall; not needed
   destination:

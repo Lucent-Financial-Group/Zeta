@@ -54,6 +54,10 @@ export interface BlueprintSidecar {
   args?: string[];
   ports?: BlueprintPort[];
   mountDataAt?: string; // mount the shared data volume here (e.g. an SFTP sidecar)
+  // ConfigMaps mounted read-only into this sidecar. `name` is templated with
+  // ${VAR} (e.g. "${RESOURCE_NAME}-sftp-keys" for a per-server ConfigMap);
+  // `optional` lets the pod start with an empty dir while it does not exist.
+  configMaps?: { name: string; mountPath: string; optional?: boolean }[];
 }
 
 /** A reusable run-recipe. Stored as a Blueprint CR or a library entry — DATA. */
@@ -68,7 +72,7 @@ export interface Blueprint {
   envFrom?: BlueprintEnvFrom[]; // env vars sourced from Secret keys (credentials)
   ports?: BlueprintPort[];
   storage?: { size: string; mountPath: string }; // optional persistent volume (Longhorn)
-  storageClassName?: string; // StorageClass for the volume; default "longhorn"
+  storageClassName?: string; // CAPABILITY-named StorageClass (never a provider); default "zeta-block-replicated"
   resources?: { cpu?: string; memory?: string };
   probe?: { readiness?: Probe; liveness?: Probe }; // health checks on the main container
   variables?: BlueprintVariable[];
@@ -108,9 +112,17 @@ export function resolveValues(bp: Blueprint, cr: Deployable): Record<string, str
   return out;
 }
 
-/** A Secret-sourced env entry -> a Kubernetes container env entry with secretKeyRef. */
-function secretEnv(e: BlueprintEnvFrom): Record<string, unknown> {
-  return { name: e.name, valueFrom: { secretKeyRef: { name: e.secret, key: e.key } } };
+/**
+ * A Secret-sourced env entry -> a Kubernetes container env entry with secretKeyRef.
+ *
+ * The Secret NAME is templated with the same ${VAR} map as env values, so a Blueprint can name
+ * a PER-INSTANCE Secret (`${RESOURCE_NAME}-credentials`) instead of a fixed one. That is what lets
+ * a credential-bearing Blueprint (postgres) carry NO default password: the instance's Secret either
+ * exists, or the pod fails loudly with CreateContainerConfigError naming it -- never a known
+ * password that every instance shares.
+ */
+function secretEnv(e: BlueprintEnvFrom, sub: (s: string) => string): Record<string, unknown> {
+  return { name: e.name, valueFrom: { secretKeyRef: { name: sub(e.secret), key: e.key } } };
 }
 
 /** Shape a Probe into a Kubernetes probe object, dropping the absent timing fields. */
@@ -138,15 +150,17 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
   const expose: Expose = cr.spec.expose ?? bp.defaultExpose ?? "none";
   const stateful = isTrue(bp.stateful) || (!!bp.storage && stableNeeded(bp));
   const storageSize = cr.spec.size?.storage ?? bp.storage?.size;
-  const storageClassName = bp.storageClassName ?? "longhorn";
+  // A capability name, never a provider name: each cluster binds it (metal ->
+  // Longhorn, dev/CI -> local-path). See storage-capabilities.ts.
+  const storageClassName = bp.storageClassName ?? "zeta-block-replicated";
   const out: K8sObject[] = [];
 
   // ── primary container ──────────────────────────────────────────────
   // plaintext env first, then Secret-sourced env (blueprint, then instance) — credentials never inline.
   const env = [
     ...Object.entries(bp.env ?? {}).map(([k, v]) => ({ name: k, value: sub(v) })),
-    ...(bp.envFrom ?? []).map(secretEnv),
-    ...(cr.spec.envFrom ?? []).map(secretEnv),
+    ...(bp.envFrom ?? []).map((e) => secretEnv(e, sub)),
+    ...(cr.spec.envFrom ?? []).map((e) => secretEnv(e, sub)),
   ];
   const ports = (bp.ports ?? []).map((p) => ({ name: p.name, containerPort: p.port, protocol: p.protocol ?? "TCP" }));
   const volumeMounts = bp.storage ? [{ name: "data", mountPath: bp.storage.mountPath }] : [];
@@ -167,14 +181,21 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
   };
 
   const containers: Record<string, unknown>[] = [mainContainer];
+  const configMapVolumes: Record<string, unknown>[] = []; // inline pod volumes, rendered on BOTH workload kinds
   for (const sc of bp.sidecars ?? []) {
+    const scMounts: Record<string, unknown>[] = sc.mountDataAt && bp.storage ? [{ name: "data", mountPath: sc.mountDataAt }] : [];
+    (sc.configMaps ?? []).forEach((cm, i) => {
+      const vol = `${sc.name}-cm-${i}`;
+      configMapVolumes.push({ name: vol, configMap: { name: sub(cm.name), ...(cm.optional ? { optional: true } : {}) } });
+      scMounts.push({ name: vol, mountPath: cm.mountPath, readOnly: true });
+    });
     containers.push({
       name: sc.name,
       image: sc.image,
       ...(sc.command ? { command: sc.command.map(sub) } : {}),
       ...(sc.args ? { args: sc.args.map(sub) } : {}),
       ...(sc.ports ? { ports: sc.ports.map((p) => ({ name: p.name, containerPort: p.port, protocol: p.protocol ?? "TCP" })) } : {}),
-      ...(sc.mountDataAt && bp.storage ? { volumeMounts: [{ name: "data", mountPath: sc.mountDataAt }] } : {}),
+      ...(scMounts.length ? { volumeMounts: scMounts } : {}),
     });
   }
 
@@ -191,7 +212,9 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
   // ── workload (Deployment | StatefulSet) ────────────────────────────
   const replicas = cr.spec.replicas ?? 1;
   if (stateful) {
-    podSpec.volumes = [{ name: "data-extra-cm", emptyDir: {} }]; // placeholder slot; PVC via template
+    // The data PVC comes from volumeClaimTemplates, never an inline volume; only
+    // sidecar ConfigMap volumes are inline.
+    if (configMapVolumes.length) podSpec.volumes = configMapVolumes;
     out.push({
       apiVersion: "apps/v1",
       kind: "StatefulSet",
@@ -200,7 +223,7 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
         serviceName: name,
         replicas,
         selector: { matchLabels: { "app.kubernetes.io/name": name } },
-        template: { metadata: { labels: lbls }, spec: stripPlaceholder(podSpec) },
+        template: { metadata: { labels: lbls }, spec: podSpec },
         ...(bp.storage
           ? {
               volumeClaimTemplates: [
@@ -221,8 +244,9 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
         metadata: { name: `${name}-data`, namespace: ns, labels: lbls, ownerReferences: [owner] },
         spec: { accessModes: ["ReadWriteOnce"], storageClassName, resources: { requests: { storage: storageSize } } },
       });
-      podSpec.volumes = [{ name: "data", persistentVolumeClaim: { claimName: `${name}-data` } }];
     }
+    const volumes = [...(bp.storage ? [{ name: "data", persistentVolumeClaim: { claimName: `${name}-data` } }] : []), ...configMapVolumes];
+    if (volumes.length) podSpec.volumes = volumes;
     out.push({
       apiVersion: "apps/v1",
       kind: "Deployment",
@@ -279,8 +303,4 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
 // explicitly stateless — game servers / DBs. Web apps set stateful:false.
 function stableNeeded(bp: Blueprint): boolean {
   return bp.stateful !== false;
-}
-function stripPlaceholder(podSpec: Record<string, unknown>): Record<string, unknown> {
-  const { volumes, ...rest } = podSpec;
-  return rest; // StatefulSet gets its volume from volumeClaimTemplates, not an inline volume
 }

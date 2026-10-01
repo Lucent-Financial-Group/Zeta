@@ -7,6 +7,15 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-70"
+    # OPT-IN HEALTH GATING (081M33T23ZQ087G0R002ZYRHDG). cert-manager provides
+    # cert-manager.io/acme.cert-manager.io CRDs genuinely consumed by later
+    # waves (openziti-controller's Certificates/Issuers, platform's
+    # ClusterIssuer, trust-manager's Bundle sourcing). Verified metal-safe:
+    # zero Secret/existingSecret references anywhere in this Application, not
+    # declared manual-sync, self-issues its own webhook CA (no external
+    # credential), and bootstrap-installed (cert-manager-install.yaml applies
+    # it before ArgoCD exists, so it has a long head start to be Ready).
+    zeta.io/gates-later-waves: "true"
   name: cert-manager
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
@@ -28,7 +37,7 @@ spec:
           enabled: true
         # Enable the Gateway API integration so cert-manager can solve ACME
         # HTTP-01 via http01.gatewayHTTPRoute and auto-provision certs for
-        # Gateway listeners (zeta-gateway → portal-tls). Requires the Gateway
+        # Gateway listeners (zeta-public-gateway → portal-tls, install-time; see k8s/public-tls/). Requires the Gateway
         # API CRDs. Cilium does NOT ship them (gatewayAPI.enabled consumes them).
         # Metal first-boot applies full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml
         # as aa-gateway-api-crds. Kind --cni cilium and k3d bring-up apply the
@@ -38,11 +47,39 @@ spec:
           apiVersion: controller.config.cert-manager.io/v1alpha1
           kind: ControllerConfiguration
           enableGatewayAPI: true
+        resources:
+          requests: { cpu: 25m, memory: 96Mi }
         replicaCount: 1
+        # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT). Chart defaults:
+        # controller timeout 15s x 8 failures (kill budget 80s, just under the
+        # 120s floor); webhook timeout 1s x 3 failures (a RUNNING webhook is
+        # killed after 21s of slow /livez). The constrained first-boot replica
+        # (run 36685251210) measured cert-manager-webhook in CrashLoopBackOff
+        # and the controller/cainjector restarting; every Certificate and
+        # webhook in the roster waits on these. Controller: 12 failures ->
+        # budget 10+11*10 = 120s. Webhook keeps its 60s startup delay; timeout
+        # 5s x 8 failures -> budget 60+7*10 = 130s, stall tolerance 75s.
+        livenessProbe:
+          enabled: true
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 15
+          successThreshold: 1
+          failureThreshold: 12
         webhook:
           replicaCount: 1
+          resources:
+            requests: { cpu: 10m, memory: 48Mi }
+          livenessProbe:
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 8
         cainjector:
           replicaCount: 1
+          resources:
+            requests: { cpu: 10m, memory: 96Mi }
         prometheus:
           enabled: true
           servicemonitor:

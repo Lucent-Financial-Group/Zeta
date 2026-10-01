@@ -125,6 +125,7 @@ import {
 import { resolve, join, dirname } from "node:path";
 import { applicationDirs } from "./declared-cluster-trees.ts";
 import { spawnSync } from "node:child_process";
+import { DEFAULT_MAX_BYTES } from "../io/safe-io.ts";
 import { parseAllDocuments, stringify as yamlStringify } from "yaml";
 import { stringCompare } from "../collation/collation.ts";
 import { quantityToGib } from "./single-node-readiness.ts";
@@ -339,9 +340,33 @@ export interface RenderOptions {
    * `helm-remote`, which has a values surface of its own.
    */
   readonly manifestOverlays?: readonly ManifestOverlay[] | undefined;
+  /**
+   * `--kube-version` for `helm template`, i.e. what `.Capabilities.KubeVersion`
+   * reports to the chart. OMITTED when unset — helm's own compiled-in default —
+   * which is the PRE-EXISTING behaviour every current caller still gets.
+   *
+   * Added 2026-09-22: a real first-boot VM found `spire`'s bootstrap chart
+   * deriving a hook image's TAG from this capability
+   * (`docker.io/rancher/kubectl:v1.35.7`, absent upstream) — a class of failure
+   * this renderer could not previously reproduce because it never told the
+   * chart which Kubernetes it is templating against. Callers that care about
+   * matching the real cluster (`image-resolvability.ts`) pass the version
+   * declared in `full-ai-cluster/k8s/kubernetes-version.json`; nothing requires
+   * it, so existing callers (`image-footprint.ts`) are unaffected.
+   */
+  readonly kubeVersion?: string | undefined;
 }
 
-function defaultRunHelm(
+/**
+ * The ONE helm runner. Exported because it was cloned, and the clone rotted.
+ *
+ * `inert-valuesobject-keys.ts` carried a BYTE-IDENTICAL copy of this function,
+ * including the 1 MiB `maxBuffer` defect fixed here in #17622 -- so the fix
+ * landed in one of the two and the other kept silently dropping the six
+ * largest charts. Three hand-rolled clones of one helm invocation is why this
+ * class recurred; exporting it removes one of them outright.
+ */
+export function defaultRunHelm(
   helmBin: string,
   timeoutMs: number,
 ): (args: readonly string[], cwd: string) => { status: number; stdout: string; stderr: string } {
@@ -350,12 +375,38 @@ function defaultRunHelm(
       cwd,
       encoding: "utf8",
       timeout: timeoutMs,
+      // MEASURED 2026-09-24: without this, six charts are silently unrenderable.
+      //
+      // Node's default `maxBuffer` is 1 MiB. `helm template` on a large chart
+      // blows straight past it -- cloudnative-pg alone renders 1,272,266 bytes
+      // -- and spawnSync then KILLS the child with ENOBUFS. The six biggest
+      // charts in the tree (arc-controller, argo-rollouts, argocd,
+      // cloudnativepg, external-secrets, kube-prometheus-stack) all failed this
+      // way, and every consumer of this renderer quietly stopped seeing them:
+      // the storage-claims snapshot, image-footprint, image-resolvability and
+      // inert-valuesobject-keys alike.
+      //
+      // The cap is not removed, it is RAISED to the repo's own
+      // `DEFAULT_MAX_BYTES` (64 MiB, safe-io.ts). An unbounded child can hang
+      // the process on a runaway render; a 64x headroom over the largest chart
+      // measured cannot.
+      maxBuffer: DEFAULT_MAX_BYTES,
       env: { ...process.env, HELM_EXPERIMENTAL_OCI: "1" },
     });
+    // `result.error` FIRST, and the `??` chain below is why this is not a
+    // stylistic change. On ENOBUFS and on timeout, spawnSync sets `status` to
+    // null and leaves `stderr` as the EMPTY STRING rather than undefined -- so
+    // `result.stderr ?? result.error.message` never reached the message, and
+    // the caller reported `helm-template-failed` with an empty detail. A
+    // failure that cannot say why is the shape that cost a day here: the six
+    // charts above read as a chart defect for as long as nobody ran helm by
+    // hand.
+    const failure = result.error === undefined ? "" : `${result.error.name}: ${result.error.message}`;
+    const stderr = (result.stderr ?? "").trim() === "" ? failure : (result.stderr ?? "");
     return {
       status: result.status ?? 1,
       stdout: result.stdout ?? "",
-      stderr: result.stderr ?? (result.error === undefined ? "" : String(result.error.message)),
+      stderr,
     };
   };
 }
@@ -587,6 +638,7 @@ export function renderApplication(source: ApplicationSource, options: RenderOpti
       "--values",
       valuesFile,
       "--include-crds",
+      ...(options.kubeVersion === undefined ? [] : ["--kube-version", options.kubeVersion]),
     ],
     cacheDir,
   );
@@ -630,19 +682,71 @@ export interface RenderedPvc {
   readonly gibibytes: number | null;
   /** How many PVC objects this entry provisions: 1 standalone, `replicas` for a template. */
   readonly count: number;
+  /**
+   * The claim's `accessModes`, exactly as rendered. `[]` means the manifest
+   * DECLARED NONE, which is an unknown and not a denial.
+   *
+   * This field is the whole reason the render is worth reading for access
+   * mode. The prior guard scanned the CHECKED-IN tree for the string
+   * `ReadWriteMany`, and every Application it protects is a
+   * `spec.source.chart` against an external `repoURL` -- the repo holds a
+   * `valuesObject` and the PVC's access mode lives in the upstream chart. So
+   * for exactly the charts it existed to protect, it scanned files that cannot
+   * contain the answer. Here the answer is in the rendered output.
+   */
+  readonly accessModes: readonly string[];
 }
 
 function asRecord(value: unknown): Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
 }
 
-function claimShape(spec: Record<string, unknown>): { storageClassName: string; size: string } {
+function claimShape(spec: Record<string, unknown>): {
+  storageClassName: string;
+  size: string;
+  accessModes: readonly string[];
+} {
   const resources = asRecord(spec["resources"]);
   const requests = asRecord(resources["requests"]);
+  // Only string entries survive. A non-string in `accessModes` is a shape this
+  // cannot read, and dropping it keeps the array honest -- the consumer then
+  // sees fewer modes than were declared, which reads as MORE unknown rather
+  // than as a mode that is not there.
+  const raw = spec["accessModes"];
+  const accessModes = Array.isArray(raw) ? raw.filter((m): m is string => typeof m === "string") : [];
   return {
     storageClassName: typeof spec["storageClassName"] === "string" ? spec["storageClassName"] : "",
     size: typeof requests["storage"] === "string" ? requests["storage"] : String(requests["storage"] ?? ""),
+    accessModes,
   };
+}
+
+/** Does a rendered claim ask for `ReadWriteMany`? */
+export function claimIsReadWriteMany(pvc: RenderedPvc): boolean {
+  return pvc.accessModes.includes("ReadWriteMany");
+}
+
+/**
+ * What the render can say about an Application's RWX need.
+ *
+ * THREE ANSWERS, NOT TWO, and the third is the point. A dev cluster serves
+ * every class from `rancher.io/local-path`, which is node-local and RWO-only,
+ * so an RWX claim never binds: the pod stays `Pending` and ArgoCD reports a
+ * pending PVC as Progressing rather than Degraded -- the Application does not
+ * fail, it never finishes. Guessing wrong in the permissive direction buys a
+ * hang, so `unknown` is a real verdict here and never collapses into `no`.
+ */
+export type RwxVerdict = "yes" | "no" | "unknown";
+
+export function rwxVerdictForApp(claims: readonly RenderedPvc[], appId: string): RwxVerdict {
+  const mine = claims.filter((c) => c.appId === appId);
+  // Nothing rendered for this app: the render is silent, not reassuring.
+  if (mine.length === 0) return "unknown";
+  if (mine.some(claimIsReadWriteMany)) return "yes";
+  // A claim that declared no modes at all cannot clear the app -- one silent
+  // claim is enough to make the whole answer unknown.
+  if (mine.some((c) => c.accessModes.length === 0)) return "unknown";
+  return "no";
 }
 
 /**
@@ -670,6 +774,7 @@ export function extractRenderedPvcs(
         name,
         workload: "",
         storageClassName: shape.storageClassName,
+        accessModes: shape.accessModes,
         size: shape.size,
         gibibytes: shape.size === "" ? null : quantityToGib(shape.size),
         count: 1,
@@ -698,10 +803,43 @@ export function extractRenderedPvcs(
         name: `storage/${name}`,
         workload: `${kind}/${name}`,
         storageClassName: shape.storageClassName,
+        accessModes: shape.accessModes,
         size: shape.size,
         gibibytes: shape.size === "" ? null : quantityToGib(shape.size),
         count: replicas,
       });
+    }
+
+    // CLOUDNATIVEPG `Cluster`. Same situation as the operator CRs above, different
+    // shape: the operator creates one PVC per instance (named `<cluster>-<n>`, RWO
+    // by default) from `spec.storage.{storageClass,size}`, and nothing in the
+    // manifest is a PersistentVolumeClaim. `spec.instances` is the count. Matched
+    // by apiVersion + kind because `spec.storage.size` alone is too generic a shape
+    // to mean "an operator will claim this". (`spec.walStorage`, a second volume
+    // per instance, is read the same way when present.)
+    const apiVersion = typeof doc["apiVersion"] === "string" ? doc["apiVersion"] : "";
+    if (kind === "Cluster" && apiVersion.split("/")[0] === "postgresql.cnpg.io") {
+      const instances = typeof spec["instances"] === "number" ? spec["instances"] : 1;
+      for (const [volume, field] of [
+        ["pgdata", "storage"],
+        ["pgwal", "walStorage"],
+      ] as const) {
+        const cnpgStorage = asRecord(spec[field]);
+        if (Object.keys(cnpgStorage).length === 0) continue;
+        const size = typeof cnpgStorage["size"] === "string" ? cnpgStorage["size"] : "";
+        out.push({
+          appId,
+          origin: "operatorStorageSpec",
+          name: `${volume}/${name}`,
+          workload: `${kind}/${name}`,
+          storageClassName: typeof cnpgStorage["storageClass"] === "string" ? cnpgStorage["storageClass"] : "",
+          accessModes: ["ReadWriteOnce"],
+          size,
+          gibibytes: size === "" ? null : quantityToGib(size),
+          count: instances,
+        });
+      }
+      continue;
     }
 
     const templates = spec["volumeClaimTemplates"];
@@ -717,6 +855,7 @@ export function extractRenderedPvcs(
         name: `${templateName}/${name}`,
         workload: `${kind}/${name}`,
         storageClassName: shape.storageClassName,
+        accessModes: shape.accessModes,
         size: shape.size,
         gibibytes: shape.size === "" ? null : quantityToGib(shape.size),
         count: replicas,

@@ -52,6 +52,20 @@
     # No-op on agents: the module guards its config to `services.k3s.role ==
     # "server"`, so a worker imports the options and contributes nothing.
     ./cluster-discovery-advertise.nix
+    # 081M3JG74G0087G0R001XJC837: public TLS as INSTALL-TIME configuration.
+    # With /etc/zeta/acme-email + /etc/zeta/public-domain present (written by
+    # zeta-install.sh from the ESP conf or the start-of-install prompt), a k3s
+    # server gets the `platform-public-tls` ArgoCD Application. Absent -> adds
+    # nothing, and the platform runs LAN-only with no issuer and no hostname.
+    ./injected-public-tls.nix
+    # docs/ops/INSTALL-TIME-CONFIG.md row 3: the Cilium LoadBalancer address range as
+    # INSTALL-TIME configuration. With /etc/zeta/lb-pool present (`<first-ip>-<last-ip>`,
+    # written by zeta-install.sh from the ESP conf or the start-of-install prompt, after
+    # validating it against the LAN it measured), a k3s server gets the
+    # `cilium-lb-ipam-pool` ArgoCD Application. Absent -> adds nothing: no pool, and
+    # Services of type LoadBalancer stay <pending> (the installer said so). The repo
+    # carries NO default range -- the old 192.168.1.240-250 was right for one subnet.
+    ./injected-lb-pool.nix
     ./login-banner.nix
     # 081M00KTH58087G0R00120WT6F: the option surface for Secure Boot desired
     # state. At its default phase ("off") it sets NO boot option and contributes
@@ -174,6 +188,33 @@
     # pods can mount the GitHub / AI-login creds restore already wrote.
     # Control-plane only (enable flip below). Not a Helm chart.
     ./zeta-creds-to-k8s.nix
+    # 081M33PQ4MG087G0R002ZKDAVR: node-wide kernel tunables the ~150-pod Argo
+    # CD catalog needs (vm.max_map_count for OpenSearch, fs.inotify.* for
+    # kubelet + config-reloader sidecars + log-tailing agents). Imported here
+    # rather than per-role so control-plane AND every worker get the SAME
+    # values — a single-node crash-loop cause does not become a multi-node
+    # one just because a worker's role file forgot to import it. Values +
+    # citations: ../../k8s/node-tunables.json.
+    ./k8s-node-tunables.nix
+    # WP11: verify k3s + the first-boot roster on the INSTALLED disk's own
+    # first multi-user boot. Test-only, gated by ConditionPathExists on
+    # /etc/zeta/qemu-k3s-first-boot-verify -- a marker only the QEMU test
+    # harness's zeta-install.sh probe ever writes, so this import is a no-op
+    # (unit never starts) on every real install.
+    ./zeta-first-boot-k3s-verify.nix
+    # 081M3K23YCP087G0R003BVDS1P: the operator's dev toolchain (install.sh,
+    # tier full) runs HERE, after first boot, niced + idle-IO, bounded --
+    # not in the installer before the reboot, where it held a silent console
+    # for ~30 minutes and nothing k3s/ArgoCD/the roster needs came from it.
+    ./zeta-dev-toolchain.nix
+    # WP34 (081M3BZ111D087G0R000YBMKRY): own /var/lib/rancher/k3s/agent/images/
+    # -- the directory k3s imports container images from BEFORE it pulls
+    # anything -- and report a named PRESENT/ABSENT verdict about the bootstrap
+    # archive on every boot. Imported here rather than in k3s-server.nix
+    # because EVERY node's k3s agent reads that directory, exactly as
+    # k3s-registry-mirrors.nix is imported by both roles for the same reason:
+    # a preload only the control plane has does not help a worker start pods.
+    ./k3s-bootstrap-image-preload.nix
   ];
 
   # B-0852.4 default-on flip (operator pain point closure 2026-05-27).
@@ -194,6 +235,12 @@
   # maintainers/<gh-user>/cluster-nodes/<host> PR) once cred-restore has put gh
   # auth back. Idempotent; per-host opt-out: zeta.selfRegister.enable = false;
   zeta.selfRegister.enable = lib.mkDefault true;
+
+  # WP34: on by default on every node. Enabling this does NOT by itself put an
+  # image on the disk -- it owns the directory k3s imports from and makes the
+  # archive's ABSENCE a named, logged verdict instead of a step nobody records.
+  # Per-host opt-out: `zeta.bootstrapImagePreload.enable = false;`
+  zeta.bootstrapImagePreload.enable = lib.mkDefault true;
 
   # B-0891 slice 3: numbered menu by default; set useLlm = true for Ollama chooser.
   zeta.firstSession.enable = lib.mkDefault true;
@@ -339,6 +386,23 @@
     extraGroups = [ "wheel" "networkmanager" ];
   };
   security.sudo.wheelNeedsPassword = lib.mkDefault true;
+
+  # 081M3K16QKA087G0R002GT2F8X: /etc/zeta is the flake this node REBUILDS FROM,
+  # cloned by the installer as root. It stays root-owned on purpose: root
+  # evaluates and activates it (`sudo nixos-rebuild switch --impure --flake /etc/zeta/...`), it
+  # holds root-only files (initial-hashedpassword), and a tree the unprivileged
+  # user could write is a tree that user could turn into root the next time
+  # anyone rebuilds. What it must NOT do is refuse to be READ -- measured on
+  # node-5b2dfa: `git -C /etc/zeta rev-parse HEAD` as zeta ->
+  # "fatal: detected dubious ownership". Git's safe.directory check guards
+  # against a LESS privileged owner planting hooks/config for you to run;
+  # trusting a root-owned repo trusts the account that already controls the
+  # machine, so this entry costs nothing. Declared in the system gitconfig so it
+  # holds for every user and survives a rebuild.
+  programs.git = {
+    enable = true;
+    config.safe.directory = "/etc/zeta";
+  };
 
   environment.systemPackages = with pkgs; [
     git vim htop btop tmux ripgrep jq yq-go curl wget rsync tree

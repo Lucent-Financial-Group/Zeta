@@ -32,7 +32,7 @@ Open `docs/BACKLOG.md`. Before starting any row, complete the backlog-item start
 git fetch origin main && git merge origin/main    # BEFORE testing, every push
 bun src/Core.TypeScript/ci/local-checks.ts        # what THIS diff will face in CI
 dotnet build -c Release   # 0 warnings, 0 errors — TreatWarningsAsErrors is on
-dotnet test Zeta.sln -c Release
+dotnet test --solution Zeta.sln -c Release
 ```
 
 Two failures this ordering prevents, both measured 2026-09-11:
@@ -52,7 +52,7 @@ a finding) rather than 1.
 ## 5. Ship
 
 Set branch: `export ZETA_EXPECTED_BRANCH=<branch> && git checkout -b "$ZETA_EXPECTED_BRANCH"`
-Open PR against `main`. Arm auto-merge: `gh pr merge <N> --auto --squash`.
+Open PR against `main`. Arm auto-merge: `bun src/Core.TypeScript/forge-host/github/arm-auto-merge.ts <N>` (reads it back; `gh pr merge --auto` exits 0 even when nothing armed).
 
 ## 6. When stuck
 

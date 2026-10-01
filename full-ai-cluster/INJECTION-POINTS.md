@@ -63,10 +63,17 @@ file to confirm it is an AES-256-GCM envelope.
 | `/zeta-join-token`            | **secret material**                         | **refused by class; ships under the §6 recorded exception** |
 | `/zeta-wifi-credentials.json` | **secret material**                         | **REFUSED — no exception on file; see §4a**                 |
 | `/zeta-qemu-creds-passphrase` | **UNDECIDED — pending security review**     | **REFUSED; see §4b**                                        |
+| `/zeta-qemu-k3s-first-boot-verify` | public identifier (the literal bytes `1\n`) | permitted by class                                     |
 
 A ninth destination arrived later: `/zeta-qemu-bake-test-cred` (081M12178AR), a
 public-identifier marker (`1\n`) that asks the guest picker to bake one
 deterministic gh-cli _test_ token. The token is not on the ESP.
+
+A tenth destination, `/zeta-qemu-k3s-first-boot-verify` (WP11), is the same
+shape again: presence asks the INSTALLED disk's own first multi-user boot to
+run `zeta-k3s-first-boot-verify.nix`'s bounded k3s + first-boot-roster
+bring-up check and print a JSON verdict to serial. Reading the marker
+discloses nothing and grants nothing.
 
 **What is NOT claimed.** This module performs no cryptography and no key
 material passes through it. Nothing here is sealed, bound, attested, or
@@ -166,14 +173,14 @@ NixOS module (declarative reader) + iter/backlog tag.
 | ----------------------- | ------------------------------------------------------------------------------------------------- |
 | **Stage**               | Cluster console at install time → typed twice                                                     |
 | **Content class**       | **Secret material** (NEVER on USB ESP)                                                            |
-| **Operator-driven via** | `read -s` prompt in `zeta-install.sh`; Enter to skip → keeps `zeta-change-me` default             |
+| **Operator-driven via** | `read -s` prompt in `zeta-install.sh`; Enter to skip → a RANDOM one-time password is minted (below) |
 | **Hash mechanism**      | `mkpasswd -m sha-512 -s` (sha512crypt; reads from stdin to avoid argv exposure)                   |
 | **Backed by file**      | `/mnt/etc/zeta/initial-hashedpassword` (chmod 0600, chown root:root)                              |
 | **NixOS reader module** | `full-ai-cluster/nixos/modules/initial-password.nix`                                              |
 | **Iter / backlog**      | iter-5.3 (+ 081KSGS9H0008QG0R00120EEHM Bug 3b runtime-injection fix)                              |
 | **Reader entry point**  | `builtins.readFile` → `users.users.zeta.hashedPassword`                                           |
 | **Why console-only**    | Per constitutional rail above; password shouldn't transit Mac keychain OR USB ESP                 |
-| **Fallback hash**       | sha512crypt of `zeta-change-me` (BACKWARD-COMPAT; rotate via `passwd zeta` after first SSH login) |
+| **No password typed**   | **minted per install** (24 lowercase base32 chars from `/dev/urandom`), shown ONCE on `/dev/console` + `/dev/tty1` and never on the tee'd stdout (so not in the log copied onto the node); hash written as above plus marker `/etc/zeta/initial-password-minted`; applied ONCE (state file) so a later `passwd zeta` is never reverted. Not shown anywhere -> account LOCKED (`/etc/zeta/console-password-locked`). The shared `zeta-change-me` default is retired for installer-built nodes (docs/ops/INSTALL-TIME-CONFIG.md row 19). `initial-password.nix` still carries it as the build-time default for a system built WITHOUT the installer |
 
 ### 4. WiFi credentials
 
@@ -382,6 +389,150 @@ each `decided: false`, asserted by test):
    shared-capability / delegated-operational — taxonomy fixed by the 2026-08-14
    L0→L6 ladder, per-key assignment explicitly left to ratification).
 
+### 10. Public TLS — ACME contact email + public base domain (081M3JG74G0087G0R001XJC837)
+
+**Why it is an injection point and not a manifest value.** `platform/clusterissuer.yaml`
+used to ship `email: you@example.com # ← CHANGE`, and the Gateway / portal route shipped
+`portal.example.com` / `portal.zeta.example.com`. A generic installer changes no file, so
+every install applied them. Measured on a bare-metal node: the ClusterIssuers failed
+`invalidContact ... forbidden domain "example.com"`, ArgoCD's sync of `platform` sat on
+`waiting for healthy state of cert-manager.io/ClusterIssuer/letsencrypt-prod` forever, and
+the controller, portal, Gateway, HTTPRoute, monitoring objects and Blueprints were never
+applied. **No value is defaulted anywhere in the repo or the installer now.**
+
+| Property                | Value                                                                                                                              |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Stage**               | (1) flash time → ESP conf, or (2) cluster console at the **start** of the install (before disk enumeration)                        |
+| **Content class**       | Public identifier (an ACME contact is not secret; LE does not publish it)                                                          |
+| **Operator-driven via** | `zflash --acme-email <addr> --public-domain <domain>` (device and file-backed), else the installer prompt                          |
+| **ESP carrier**         | `ZETA_ACME_EMAIL='…'` / `ZETA_PUBLIC_DOMAIN='…'` appended to `/zeta-firstboot.conf` (exported by `zeta-first-boot.sh`)             |
+| **Backed by files**     | `/mnt/etc/zeta/acme-email` + `/mnt/etc/zeta/public-domain` (written only when SET; symlinked to `/etc/zeta/` for `--impure` eval)  |
+| **NixOS reader module** | `full-ai-cluster/nixos/modules/injected-public-tls.nix` (k3s servers only)                                                          |
+| **Reaches the cluster** | the k3s auto-deploy roster — the same door `root-application.yaml` uses — as the ArgoCD Application `platform-public-tls`          |
+| **Validation**          | `src/Core.TypeScript/installer/public-endpoint.ts`; shell twin `ZETA-PUBLIC-TLS` block in `zeta-install.sh` (parity-tested)       |
+
+**Resolution order** (installer, `zeta_public_tls_resolve`): **(1)** the ESP pair when both
+are present and valid → **(2)** otherwise ask → **(3)** otherwise **UNSET**. Enter at either
+question, EOF, no TTY, or no keypress in the first-boot window all mean UNSET — never a
+default. An ESP value that fails validation is refused loudly and treated as absent; half a
+pair is never applied. A joiner does not ask: the endpoint is a property of the cluster.
+
+**Validation.** Email: `[A-Za-z0-9._%+-]{1,64}@<domain>` (deliberately narrower than RFC
+5322 so no quote, space, `$` or backtick reaches a sourced file or a manifest). Domain: two
+or more LDH labels, last label starting with a letter, `portal.<domain>` ≤ 253. **Reserved
+names are refused** in both: RFC 2606 `.test` `.example` `.invalid` `.localhost` and
+`example.com/.net/.org` (any subdomain), plus RFC 6762 `.local`.
+
+**What the prompt looks like.** Interactive `zeta-install` asks directly. On the zero-typing
+first-boot path (a TTY, `ZETA_AUTO_CONFIRM=WIPE`) it is one keypress away:
+
+```text
+[public-tls] ── public TLS (ACME email + public domain) ──
+[public-tls] Press 'p' within 15s to set up PUBLIC TLS (Let's Encrypt for portal.<your-domain>).
+[public-tls] Any other key, or waiting, installs LAN-only (no public hostname, no certificate).
+[public-tls] ACME contact email (Let's Encrypt expiry notices): _
+[public-tls] Public base domain (portal.<domain> will be served), e.g. yourdomain.net: _
+```
+
+(`PUBLIC_TLS_PROMPT_SECS` overrides the 15 s window.)
+
+**UNSET (a clean, working state).** `platform` applies no ClusterIssuer, no Certificate, and
+nothing with a hostname: `zeta-gateway` has one `:80` listener with no hostname, and the
+`portal` HTTPRoute matches any Host. The portal is reachable on the LAN at the `zeta-gateway`
+LoadBalancer IP.
+
+**SET.** A separate Application, `platform-public-tls`, applies `full-ai-cluster/k8s/public-tls/`
+(kustomize base: both Let's Encrypt ClusterIssuers, the `zeta-public-gateway` Gateway with
+`:80` + `:443`, and the `portal-public` HTTPRoute) with the two values arriving **only** as
+the Application's inline patches: the issuers' `spec.acme.email`, the HTTPS listener's
+`hostname: portal.<domain>`, and the route's `hostnames: [portal.<domain>]`. Being its own
+Application with no sync waves inside it, an issuer or Certificate that cannot go Ready never
+gates `platform` again.
+
+**GitLab rides the same values** (081M3K253BR087G0R001151P2A). SET adds two more HTTPS
+listeners (`gitlab.<domain>`, `registry.<domain>`, one certificate each), the `gitlab-public` /
+`gitlab-registry-public` HTTPRoutes, and Job `gitlab-public-hosts`, which merge-patches the
+`gitlab` Application's `spec.source.helm.parameters` so GitLab's external URL is
+`https://gitlab.<domain>` (`zeta-root` ignores exactly that field). UNSET: GitLab is LAN-only at
+**`http://<last address of the resolved LB range>/`** (§11) — its own hostname-less `gitlab-lan`
+Gateway pinned to that address; the registry is the same address (`/v2/`). The address is no longer
+in git: Job `gitlab-lan-address` (in `cilium-lb-ipam-pool`) merge-patches three valuesObject leaves.
+
+**Forgejo rides them too** (docs/ops/INSTALL-TIME-CONFIG.md row 28). Its chart renders
+`DOMAIN` / `ROOT_URL` / `SSH_DOMAIN` = `git.example.com` when nothing sets them, and nothing did.
+UNSET: they are its in-cluster Service names (`forgejo-http.forgejo.svc:3000`). SET: a fifth listener
+`git.<domain>` with its own certificate, the `forgejo-public` route, and Job `forgejo-public-hosts`,
+which merge-patches the `forgejo` Application's helm parameters to `https://git.<domain>/` (`zeta-root`
+ignores exactly that field). Same shape as GitLab above, a separate Job scoped to Application/forgejo.
+
+**The operator step when SET** (also printed in the installer's completion banner):
+
+1. **DNS:** an `A` record `portal.<domain>` → your public IP (and `gitlab.<domain>`,
+   `registry.<domain>`, `git.<domain>` → the same IP to publish GitLab / Forgejo).
+2. **Router:** forward TCP **80** and **443** to the public gateway's LoadBalancer IP —
+   `sudo k3s kubectl -n zeta-platform get gateway zeta-public-gateway -o jsonpath='{.status.addresses[0].value}'`.
+3. Watch `sudo k3s kubectl -n zeta-platform get certificate portal-tls` go Ready. HTTP-01
+   reaches back on :80, so the certificate cannot issue before 1 and 2 hold.
+
+**Adding or changing it after install:** write both files under `/etc/zeta/` on the control
+plane and `sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#<host>`.
+
+**Not verified here:** that ArgoCD's bundled kustomize applies the inline patches exactly as
+`src/Core.TypeScript/cluster/public-tls.ts` mirrors them, and that `nix` renders the template
+byte-for-byte as the TypeScript mirror does — both are pinned by tests on the text, not run.
+
+### 11. LoadBalancer address range + LAN collision check (docs/ops/INSTALL-TIME-CONFIG.md rows 3–5)
+
+**Supersedes §10's mention of `cilium-lb-ipam/ip-pool.yaml`: that file is gone.** It carried
+`192.168.1.240–250`, free addresses on exactly one home subnet; on any other network Cilium handed
+every `type: LoadBalancer` Service an address no router knew and reported it healthy. The range is
+now resolved per install by the **same mechanism as §10** — nothing is invented twice.
+
+| Property                | Value                                                                                                                                         |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Stage**               | (1) flash time → ESP conf, or (2) cluster console at the **start** of the install (Step 0.6, before disk enumeration)                        |
+| **Content class**       | Public identifier (IPv4 addresses on the node's own LAN)                                                                                      |
+| **Operator-driven via** | `zflash --lb-pool auto\|<first-ip>-<last-ip>` (device and file-backed), else the installer prompt                                              |
+| **ESP carrier**         | `ZETA_LB_POOL='…'` appended to `/zeta-firstboot.conf` (exported by `zeta-first-boot.sh`)                                                       |
+| **Backed by file**      | `/mnt/etc/zeta/lb-pool` = `<first-ip>-<last-ip>` (written only when SET; symlinked to `/etc/zeta/` for `--impure` eval)                         |
+| **NixOS reader module** | `full-ai-cluster/nixos/modules/injected-lb-pool.nix` (k3s servers only)                                                                       |
+| **Reaches the cluster** | the k3s auto-deploy roster, as the ArgoCD Application `cilium-lb-ipam-pool` (kustomize base `k8s/lb-ipam/` carries **no** address; inline patch) |
+| **Validation**          | `src/Core.TypeScript/installer/lan-config.ts`; shell twin `ZETA-LB-POOL` block in `zeta-install.sh` (parity-tested); shape + pod/service overlap re-asserted in Nix |
+
+**Resolution order** (`zeta_lb_pool_resolve`): **(1)** the ESP value (`auto` or a range) when it
+validates **against the LAN the installer measured** → **(2)** otherwise ask, offering `.240–.250`
+of the node's /24 _only on an explicit `y`_ → **(3)** otherwise **UNSET, loudly**. A range is refused
+if it is outside the node's subnet, includes the network/broadcast address, the node itself or the
+gateway, overlaps the cluster's derived pod/service CIDR or the `10.88.0.0/24` segment, spans more
+than 256 addresses, **or any of its addresses already answers a ping**. An ESP value that fails any of
+these **refuses the install before the wipe** when nobody can be asked (at a console it is re-asked).
+A joiner never asks and never applies one: the range is the founder's.
+
+**UNSET (visible, not a placeholder).** No pool exists; Services of type LoadBalancer stay
+`<pending>`; the installer's prompt output and completion banner both say exactly that and how to fix
+it (`/etc/zeta/lb-pool` + `nixos-rebuild switch --impure`).
+
+**The collision check (row 4).** Before the wipe the installer compares every network the node can
+already route to with the cluster's derived pod `/17`, service `/19` and the inter-node segment, and
+**refuses** on overlap (`ZETA_ALLOW_CIDR_OVERLAP=1` overrides, and is named in the refusal). It is
+detection, not injection, because the Cilium CIDRs live in git (see `cluster-identity.json`). The ISO
+ships `/etc/zeta-cluster-identity.json` so the pre-wipe check knows the cluster name; after the clone
+the check repeats against the cloned tree's own copy.
+
+**GitLab follows the range** (inventory row 6). `applications/gitlab/Application.yaml` holds no real
+address: its three LAN-address leaves (`global.hosts.gitlab.name`, `global.hosts.registry.name`,
+`global.zeta.lanAddress`) carry the RFC 5737 documentation sentinel `192.0.2.250`, and the `gitlab-lan`
+Gateway READS `global.zeta.lanAddress` through the runner subchart's `tpl`. With a range resolved, Job
+`gitlab-lan-address` merge-patches those three leaves to the range's LAST address (LB-IPAM allocates
+lowest-first, so the pin does not race automatic allocations); `zeta-root` ignores exactly those
+paths. It writes `valuesObject` leaves while `gitlab-public-hosts` writes `parameters`, so the two
+Jobs cannot clobber each other, and with a public domain also set its helm parameters outrank these
+hosts values. UNSET keeps the sentinel: `gitlab-lan` stays `<pending>`, loudly, on an address no
+network can route.
+
+**Not verified here:** nothing in §11 has been booted (no nix, no QEMU); see
+`docs/ops/INSTALL-TIME-CONFIG.md` "Not verified".
+
 ## Operator-driven `zflash` flag inventory (current)
 
 Allowlist from `zflash.ts`:
@@ -399,6 +550,14 @@ Allowlist from `zflash.ts`:
                      instead of pulling latest CI artifact
 --agent              authorized-agent mode (auto-types `yes <nonce>` challenge;
                      operator's Touch ID still gates the dd)
+--acme-email <addr>  public TLS (§10): Let's Encrypt contact → ZETA_ACME_EMAIL in
+                     /zeta-firstboot.conf; requires --public-domain
+--public-domain <d>  public TLS (§10): base domain; portal.<d> is published →
+                     ZETA_PUBLIC_DOMAIN. Both omitted: the installer asks at the
+                     start of the install. RFC 2606 names refused.
+--lb-pool <v>        LoadBalancer range (§11): `auto` (.240-.250 of the node's /24) or
+                     <first-ip>-<last-ip> → ZETA_LB_POOL. Omitted: the installer asks;
+                     nobody there → UNSET, loudly. Checked against the LAN at install.
 ```
 
 ## In-flight injection points (substrate-engineering targets — not yet shipped)
@@ -489,6 +648,95 @@ Operator's substrate-honest acknowledgment 2026-05-27: _"i know you can't preser
 - [081KSKBP80008QG0R003AX2A69](../docs/backlog/P1/081KSKBP80008QG0R003AX2A69-credential-persistence-on-usb-esp-plus-boot-sequence-auth-method-picker-encrypted-blob-bound-to-usb-uuid-plus-operator-passphrase-aaron-2026-05-27.md) — credential persistence on USB ESP + boot-sequence auth-method picker (the active substrate this catalog cross-references for in-flight rows 5 + 6 above)
 - [081KSKBP80008QG0R00146WEX1](../docs/backlog/P1/081KSKBP80008QG0R00146WEX1-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md) — post-boot AI as home-owner; 3-mode USB-boot recovery substrate (fix / reformat-with-current-keys / full-reflash); operational-freedom mechanism; AI-worry-about-mistakes dissolves
 
+## In-cluster catalog Secrets — who mints them on metal vs dev (WP14, 081M343EEP8087G0R000BAF6QF)
+
+Everything above is USB-ESP / flash-time injection. This section is the OTHER
+half: Secrets the AUTO-SYNCED ArgoCD catalog (`k8s/applications/`) references
+by name (`existingSecret`, `secretKeyRef`, `envFrom`, `imagePullSecrets`) but
+does not create itself — the class `audit-existing-secret-is-minted.ts`
+watches for the dev/CI lane. `first-boot-replica.ts` run 35700790207 (real
+NixOS k3s roster in Docker, ArgoCD syncing the dev rung) found
+`CreateContainerConfigError` for hindsight, loki, mimir and opensearch, all
+traced to this gap.
+
+The split that matters: **INTERNAL** (a random credential used only BETWEEN
+in-cluster components — nothing outside the cluster ever needs to know it) vs
+**EXTERNAL** (operator-supplied — a real third-party credential this cluster
+cannot generate for itself). INTERNAL + nobody-mints-it-on-metal is a
+first-boot defect; EXTERNAL + nobody-mints-it-on-metal is an operator gap, not
+a bug, and MUST NOT be papered over with a randomly-generated value.
+
+| Secret                         | Namespace(s)                             | Class        | Mints on metal                                                                                  | Mints in dev/CI                                            |
+| ------------------------------- | ----------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| `grafana-admin-credentials`     | `monitoring`                              | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml` (Job, create-if-absent)                              | `DEV_GRAFANA_ADMIN_SECRET` (`dev-cluster/lib.ts`)            |
+| `ziti-admin-credentials`        | `openziti`                                | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml`                                                      | `DEV_ZITI_ADMIN_SECRET`                                      |
+| `opensearch-admin-credentials`  | `opensearch`                              | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml`                                                      | `DEV_OPENSEARCH_ADMIN_SECRET`                                |
+| `forgejo-initial-admin`         | `forgejo`                                 | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml`                                                      | `DEV_FORGEJO_ADMIN_SECRET`                                   |
+| `gitlab-initial-root-password`  | `gitlab`                                  | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml` (WP24, 081M35K4PV6087G0R001Z3E0P8)                    | `DEV_GITLAB_ROOT_SECRET`                                     |
+| `zeta-blob-store`               | `object-store`, `loki`, `mimir`, `gitlab` | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml` (ONE value, four namespaces, one pod)                 | `DEV_BLOB_STORE_SECRET`                                      |
+| `postgres-backup-s3`            | `postgres-shared`, `temporal`             | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml` (the SAME pod as `zeta-blob-store`, a SEPARATE draw: a bucket-scoped `pgBackup` SeaweedFS identity, not the admin key) | none — both consumers are dev-excluded (`postgres-shared/**`, `temporal/**`) |
+| `redis-auth`                    | `redis`, `orleans`                        | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml` (ONE value, two namespaces, one pod)                  | `DEV_REDIS_AUTH_SECRET`                                      |
+| `hindsight-llm-api-key`         | `hindsight`                               | **EXTERNAL** | **NOBODY — see below.** A real Groq API key; this cluster cannot draw one for itself.              | `DEV_HINDSIGHT_LLM_SECRET` (placeholder value; boot-check only, no LLM call succeeds) |
+| `ghcr-pull` (`imagePullSecrets`) | `zeta-platform`                           | **EXTERNAL** | **NOBODY — already tracked above** ("GHCR pull token" row, 081M33TN49G087G0R000X5ZJ75)             | `DEV_GHCR_PULL_SECRET` (from a CI-held token)                |
+| `arc-github-app` (`githubConfigSecret`) | `arc-runners`                     | **EXTERNAL** | **NOBODY.** A real GitHub App id/installation id/private key; `arc-runner-set/Application.yaml`'s own header says so ("Materialised by external-secrets from Vault"). Acknowledged in `existing-secret-is-minted.baseline.json` (`arc-runner-set\|arc-github-app`) — `arc-runner-set` is also in `DEV_EXCLUDED_REASONS`, so no pod in the dev lane ever resolves the name. | none — operator/Vault-provisioned on metal, never minted in dev/CI |
+
+### The six INTERNAL rows above were the first-boot defect; five fixed by WP14, `gitlab-initial-root-password` by WP24
+
+Before WP14, nothing on a real USB/metal install minted any of the first five
+INTERNAL credentials — matching this repo's own `existing-secret-is-minted.baseline.json`
+`orleans|redis-auth` entry ("redis's OWN Application.yaml has the identical
+unminted reference … metal: Sealed Secret / Vault") and the `redis` chart
+comment ("create via Sealed Secret / Vault") that named the intent without
+ever shipping the mechanism. `gitlab-initial-root-password` was a SIXTH such
+gap that WP14/WP16's own accounting missed for a mechanical reason: the
+reference (`global.initialRootPassword.secret`, a bare `secret:` leaf) was
+INVISIBLE to `audit-existing-secret-is-minted.ts` until WP24 widened that
+script's detection — see the workitem for the full trace, including why this
+tree seeds the Secret itself rather than relying on the GitLab chart's own
+`shared-secrets` pre-install hook (broader `get`/`list`/`create`/`patch` RBAC
+than every sibling credential in this class uses).
+
+`k8s/bootstrap/internal-secret-seeding.yaml` is a k3s first-boot manifest
+(`nixos/modules/k3s-server.nix`'s `services.k3s.manifests` roster — the SAME
+mechanism `openziti-namespace.yaml` and the other `*-install.yaml` bootstrap
+files already use), applied BEFORE ArgoCD exists. It mints exactly these seven
+credentials, per-namespace RBAC-scoped (`create` on `secrets` only, nothing
+else), `kubectl create` (never `apply`/`replace`, so an existing Secret is
+never overwritten). Key shapes are cross-checked against `dev-cluster/lib.ts`'s
+`DEV_BOOTSTRAP_SECRETS` / `DEV_SHARED_SECRETS` by
+`internal-secret-seeding.test.ts` so the two cannot silently drift apart.
+
+**Randomness (hardened WP16, 081M349QTRM087G0R001HM7ESM):** each Job's FIRST
+step is a `draw-entropy` initContainer (`busybox`, pinned by tag AND digest —
+the one container here with a shell) that reads `/dev/urandom` and writes the
+value ONLY to an in-memory (`emptyDir: {medium: Memory}`, tmpfs) volume shared
+with the rest of that pod. The `kubectl` containers
+(`docker.io/rancher/kubectl:v1.35.6` — the same shell-less, FROM-scratch image
+the spire chart's hooks already pull in the bootstrap roster, so the preload
+archive carries one kubectl rather than two; 081M3C10FFX087G0R0033DYXG0) read the secret value
+off that file with `--from-file`, never as an argv token or env var. WP14's
+original mechanism drew randomness from each Job's own pod UID via the
+Kubernetes Downward API, which was weak: a pod UID is readable by anyone with
+`get`/`list` on Pods in the namespace and appears in events/audit
+logs/`kubectl describe`, and a UUIDv4's ~122 bits come from the apiserver's ID
+generator, not a CSPRNG designated for secrets.
+
+### `hindsight-llm-api-key` stays an EXTERNAL gap, on purpose
+
+`hindsight/Application.yaml`'s own header already made this call (Aaron
+2026-09-07, "the decision that is not mine to make": ESO on metal + a minted
+dev Secret) — the Secret's NAME is shared between metal and dev, but its
+PROVENANCE is not, and metal's half (a `ClusterSecretStore` + `ExternalSecret`)
+does not exist yet. This is not something WP14 papers over: a randomly-drawn
+value here would clear the crash loop and never do the one thing the
+credential exists for (an actual LLM call). Isolation check: `hindsight` is
+NOT `zeta.io/gates-later-waves` (not in the annotated set anywhere under
+`k8s/applications/*/Application.yaml`), so its `CreateContainerConfigError`
+today does not block any later sync wave — matching `kube-prometheus-stack`'s
+same deliberate non-gating annotation. Lifts when a `ClusterSecretStore` +
+`ExternalSecret` land for this namespace; see the Application's own header for
+the five layers that still have to exist first.
+
 ## Remaining gaps (no backlog row yet — candidates per constitutional rail)
 
 Substrate-engineering targets NOT covered by 081KSKBP80008QG0R003AX2A69 or sibling rows.
@@ -518,6 +766,21 @@ entry; the persist/restore code reads the manifest + iterates.
 | **GHCR pull token (`zeta-platform/ghcr-pull`)** | **Secret**    | **Cluster console at install time, OR retired entirely by making the packages public** | **Live blocker, not a candidate — see below** |
 
 ### The GHCR pull token is the first entry here that is BLOCKING something today
+
+> **STATUS 2026-10-01 -- NO LONGER BLOCKING; the exit below was taken.** An ANONYMOUS
+> pull (a token-less `ghcr.io/token` exchange, then a manifest GET on `:latest`) returns
+> **HTTP 200** for `zeta-platform-controller`, `zeta-portal` and `zeta-orleans-silo` --
+> and `k8s/image-source-provenance.json` has recorded all three as `artifact: public`
+> since 2026-09-22. So the platform pods do not take `ImagePullBackOff` on metal, the
+> missing `zeta-platform/ghcr-pull` Secret is a kubelet warning and not a failure (an
+> absent `imagePullSecrets` entry is skipped and the pull proceeds anonymously), and the
+> `imagePullSecrets` reference in `platform/controller.yaml` and `platform/portal.yaml` is
+> INERT, exactly as the last paragraph of this section predicted. What remains true:
+> the row stays an inventory entry for a cluster whose packages are made private again,
+> and `hat-system-operator:placeholder` is the one referenced GHCR image that still
+> answers 401 (it is `replicas: 0`, so nothing pulls it). The text below is kept as the
+> record of the 2026-08-22 measurement, not as the current state. **Not verified:** a
+> metal node pulling these images -- this is a registry-side measurement, not a cluster run.
 
 Every other row above is a target. This one names why the metal platform control
 plane has never started, and it is recorded here because the constitutional rail

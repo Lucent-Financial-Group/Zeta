@@ -24,13 +24,24 @@ spec:
         app.kubernetes.io/name: gmod
     spec:
       securityContext:
-        fsGroup: 1000 # shared group so game + sftp can both write /data
+        # Shared group so game + sftp can both write /data. Kubelet chgrps the
+        # volume to 1000 (g+rw, setgid dirs) on every mount under the default
+        # fsGroupChangePolicy (Always), which also repairs files an earlier
+        # root run left group-read-only. Do NOT switch to OnRootMismatch.
+        fsGroup: 1000
       initContainers:
         # Install / update Garry's Mod dedicated server (Steam app 4020) into
         # the persistent Longhorn volume. First run is slow; subsequent restarts
         # validate-only (fast) since the files persist.
         - name: install
           image: cm2network/steamcmd:root
+          # SteamCMD must NOT run as root: as uid 0 it failed with
+          # "Failed to install app '4020' (Missing file permissions)" on the
+          # fresh bare-metal install of 2026-09-27. Run as the image's own
+          # `steam` user (uid/gid 1000, owner of /home/steam/steamcmd); the
+          # pod's fsGroup 1000 is what lets that identity write the PVC.
+          # Guard: src/Core.TypeScript/cluster/pvc-write-identity.ts
+          securityContext: { runAsUser: 1000, runAsGroup: 1000 }
           command: [ "/bin/bash", "-c" ]
           args:
             - |
@@ -46,6 +57,7 @@ spec:
       containers:
         - name: gmod
           image: cm2network/steamcmd:root
+          securityContext: { runAsUser: 1000, runAsGroup: 1000 } # same identity as `install`
           workingDir: /data/gmod
           command: [ "/bin/bash", "-c" ]
           args:
@@ -72,9 +84,33 @@ spec:
         # SFTP sidecar — FTP access to the same game files (the FTP root IS the
         # Longhorn PVC). Key-based auth: drop operator/tenant pubkeys into the
         # `gmod-sftp-keys` ConfigMap (the controller injects them per tenant).
+        #
+        # SFTP IS OPT-IN. A fresh install has no `gmod-sftp-keys` ConfigMap (the
+        # volume is `optional`, so the mount is an empty dir), and atmoz's
+        # create-sftp-user dies on `cat /home/gmod/.ssh/keys/*` when that dir is
+        # empty -- a crash-looping sidecar that held gmod-0 at 1/2 and the
+        # StatefulSet unready on the 2026-09-27 bare-metal install. So the
+        # entrypoint is gated: with no key file the sidecar idles (pod Ready,
+        # no sshd listening) and polls; once a key appears it execs atmoz.
+        # Operator step to enable SFTP:
+        #   kubectl -n game-hosting create configmap gmod-sftp-keys --from-file=operator.pub=$HOME/.ssh/id_ed25519.pub
+        # To reach it from the LAN too (the `gmod-sftp` Service is ClusterIP until you ask, so a fresh
+        # install spends no LoadBalancer address on it -- see service.yaml):
+        #   kubectl -n game-hosting patch svc gmod-sftp -p '{"spec":{"type":"LoadBalancer"}}'
+        # The kubelet projects it into the running pod within its sync period
+        # (~1 min); `kubectl -n game-hosting delete pod gmod-0` forces it.
+        # Guard: src/Core.TypeScript/cluster/gmod-sftp-keys.test.ts
         - name: sftp
           image: atmoz/sftp:alpine
-          args: [ "gmod::1000:1000" ] # user gmod, key-only (no password)
+          command: [ "/bin/sh", "-c" ]
+          args:
+            - |
+              KEYS=/home/gmod/.ssh/keys
+              if ! ls "$KEYS"/* >/dev/null 2>&1; then
+                echo "SFTP disabled: no public key in $KEYS (ConfigMap gmod-sftp-keys absent/empty); waiting"
+                until ls "$KEYS"/* >/dev/null 2>&1; do sleep 30; done
+              fi
+              exec /entrypoint gmod::1000:1000 # user gmod, key-only (no password)
           ports:
             - { name: sftp, containerPort: 22, protocol: TCP }
           volumeMounts:
@@ -90,7 +126,7 @@ spec:
         name: data
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: longhorn
+        storageClassName: zeta-block-replicated
         resources:
           requests:
             # SIZE CUT, NOT A POD CUT: 20Gi -> 10Gi; `replicas` above is

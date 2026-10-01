@@ -137,7 +137,7 @@ NEVER_APPLIED_COVERAGE.set("cilium-lb-ipam", {
 NEVER_APPLIED_COVERAGE.set("longhorn", {
   coveredBy: null,
   reason:
-    "a kind node has no second disk to give it. The dev lane substitutes a StorageClass NAMED longhorn over rancher.io/local-path, so PVCs bind and the CONSUMERS are asserted -- the chart itself is not, and no job renders or applies it",
+    "a kind node has no second disk to give it. Charts request the capability `zeta-block-replicated`, which dev binds to rancher.io/local-path, so PVCs bind and the CONSUMERS are asserted with no Longhorn in the lane -- the chart itself is not, and no CI job applies it (the NixOS QEMU test longhorn-volume-binds.nix does)",
 });
 
 NEVER_APPLIED_COVERAGE.set("ollama", {
@@ -159,6 +159,24 @@ NEVER_APPLIED_COVERAGE.set("gitlab", {
 NEVER_APPLIED_COVERAGE.set("temporal", {
   coveredBy: null,
   reason: "excluded on lane cost; nothing renders or applies it in CI",
+});
+
+NEVER_APPLIED_COVERAGE.set("temporal/postgres", {
+  coveredBy: null,
+  reason:
+    "temporal's CNPG database (2026-09-27), nested under `temporal/` so the `temporal/**` exclude defers it with its only consumer -- applying a database for an app the lane never runs would buy 512Mi of nothing. Offline checks cover its wiring (temporal-datastore.test.ts); no CI job applies it",
+});
+
+NEVER_APPLIED_COVERAGE.set("postgres-shared", {
+  coveredBy: null,
+  reason:
+    "the shared CNPG Cluster (2026-10-01), excluded from the dev lane with temporal: it pulls its PostgreSQL image from ghcr.io, archives through a plugin whose operator mTLS has never run on a runner, and needs a first-boot backup credential dev bring-up does not mint. Offline checks cover its wiring (postgres-shared-cluster.test.ts); no CI job applies it",
+});
+
+NEVER_APPLIED_COVERAGE.set("cnpg-barman-cloud", {
+  coveredBy: null,
+  reason:
+    "the CloudNativePG Barman Cloud plugin (2026-10-01): it serves only Clusters that name it, and both (postgres-shared, temporal/postgres) are themselves deferred from the dev lane, so applying it alone would install a controller and two Certificates for nothing to call. Offline checks cover its wiring (postgres-shared-cluster.test.ts); no CI job applies it",
 });
 
 NEVER_APPLIED_COVERAGE.set("platform", {

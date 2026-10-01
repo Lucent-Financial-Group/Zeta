@@ -176,6 +176,14 @@ describe("buildInventoryReport", () => {
         files: [
           ".gemini/service/install-lior-service.sh",
           ".gemini/service/lior-loop.sh",
+          // WP25: systemd ExecStartPre on systemd.services.k3s, removing
+          // zero-length agent cert/kubeconfig files before k3s starts. Same
+          // boot-path edge as its siblings below.
+          "full-ai-cluster/nixos/modules/k3s-agent-tls-self-heal.sh",
+          // Stillborn-datastore recovery pair, ordered after k3s.service.
+          // Same boot-path retained-shell edge as the rest of this category.
+          "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-recovery.sh",
+          "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-sentinel-write.sh",
           // systemd ExecStart on a NixOS cluster node, ordered before
           // k3s.service. The node's closure carries no bun, so the boot path
           // is a retained-shell edge.
@@ -184,6 +192,14 @@ describe("buildInventoryReport", () => {
           // second machine is added. Same boot-path edge, same reason it stays
           // a tracked `.sh` rather than an inline Nix string.
           "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh",
+          // 081M3KC68TK087G0R002NT64S8: sizes the kubelet reservations to the
+          // booted node before k3s.service starts. Same boot-path edge.
+          "full-ai-cluster/nixos/modules/k3s-kubelet-reservations.sh",
+          // 081M3K23YCP087G0R003BVDS1P: the unit that installs bun cannot be
+          // bun; the dev toolchain moved here from zeta-install.sh.
+          "full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh",
+          // The one-time kubevirt + cdi sync on a fresh cluster; boot-path edge.
+          "full-ai-cluster/nixos/modules/zeta-virt-first-sync.sh",
         ],
       },
       {
@@ -314,7 +330,7 @@ describe("renderReport", () => {
       report.retainedCategories.find((summary) => summary.category === "setup/bootstrap")?.files.length ?? 0;
     expect(renderReport(report)).toContain(`- setup/bootstrap: ${bootstrapCount.toString()}`);
     expect(renderReport(report)).toContain("- git hooks: 4");
-    expect(renderReport(report)).toContain("- host-service wrappers: 4");
+    expect(renderReport(report)).toContain("- host-service wrappers: 10");
   });
 
   test("renders drift sections", () => {

@@ -52,6 +52,16 @@ spec:
 
         mimir:
           structuredConfig:
+            # SINGLE TENANT, ON PURPOSE. Mimir defaults `multitenancy_enabled` to TRUE
+            # (Mimir configuration reference), which makes every push and query require
+            # an X-Scope-OrgID header. Alloy's prometheus.remote_write sends none, so with
+            # the default every sample is refused (no org id) while all Mimir pods read
+            # Ready. Loki is already single-tenant (`auth_enabled: false`); with this set
+            # Mimir files everything under the tenant `anonymous`. If tenancy is ever
+            # wanted, flip this AND add the header to Alloy's remote_write in the same
+            # change -- the audit-observability-chain `mimir:` check refuses one without
+            # the other.
+            multitenancy_enabled: false
             blocks_storage:
               backend: s3
               s3:
@@ -108,15 +118,15 @@ spec:
         # StorageClass.
         ingester:
           persistentVolume:
-            storageClass: longhorn
+            storageClass: zeta-block-replicated
             size: 16Gi
         store_gateway:
           persistentVolume:
-            storageClass: longhorn
+            storageClass: zeta-block-replicated
             size: 16Gi
         compactor:
           persistentVolume:
-            storageClass: longhorn
+            storageClass: zeta-block-replicated
             size: 16Gi
         # DECLARED so the ladder can price it. mimir-distributed 6.2.0 turns the
         # INGEST-STORAGE architecture on by default -- `kafka.enabled: true` plus
@@ -138,6 +148,43 @@ spec:
             requests:
               cpu: 1
               memory: 1024Mi
+        # THE ONE MIMIR CONTAINER THAT RENDERED BestEffort. MEASURED (helm template
+        # mimir-distributed 6.2.0): `Deployment/mimir-gateway` -- the nginx in front of the
+        # query and push paths -- shipped with no `resources` at all, while every other mimir
+        # component carries a chart-default request and has a `resourceClaims` row. An unset
+        # request is cpu.weight 2 (the cgroup floor) and the first thing a node evicts, on the
+        # path Grafana and any remote_write client would use. Requests only, no limits. 2m /
+        # 32Mi is a floor reservation, not a measurement (nginx serving a handful of proxy
+        # hops); the row in storage-profiles.json carries the same numbers at both rungs.
+        gateway:
+          resources:
+            requests:
+              cpu: 2m
+              memory: 32Mi
+        # LIVENESS KILL BUDGET -- WIDENED, NOT A startupProbe. MEASURED (rendered this
+        # Application at 6.2.0): `overrides-exporter` has no `startupProbe` key in
+        # `templates/overrides-exporter/overrides-exporter-dep.yaml` -- only
+        # `{{ toYaml .Values.overrides_exporter.livenessProbe }}`, which without an
+        # override here renders the chart's own default (`initialDelaySeconds: 45`, no
+        # periodSeconds/failureThreshold -> kubelet defaults 10s/3 -> 65s kill budget).
+        # Not individually vetted at WP15's 2026-09-22 catalog audit; ranked here as a
+        # known slow starter (WP18 category b, ★ in the audit tool's own
+        # KNOWN_SLOW_STARTERS) -- mimir's other components (distributor/ingester/ruler)
+        # were observed restarting repeatedly across every CI run examined 2026-09-22,
+        # though the audit tool cannot currently price their kill budget (their
+        # rendered livenessProbe fields are non-numeric after Helm's own templating --
+        # a separate finding, out of this PR's scope) so overrides-exporter is the one
+        # mimir container this audit can actually act on.
+        #
+        # failureThreshold: 18 (chart's own initialDelaySeconds/httpGet unchanged,
+        # periodSeconds defaults to 10) -> kill budget 45+17*10=215s.
+        overrides_exporter:
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: http-metrics
+            initialDelaySeconds: 45
+            failureThreshold: 18
   destination:
     server: https://kubernetes.default.svc
     namespace: mimir

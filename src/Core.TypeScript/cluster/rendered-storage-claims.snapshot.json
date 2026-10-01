@@ -1,13 +1,16 @@
 {
-  "measuredOn": "2026-09-06",
-  "clusterDefaultStorageClass": "zeta-local-path",
+  "measuredOn": "2026-10-01",
+  "clusterDefaultStorageClass": "zeta-block-local",
   "rendered": [
     {
       "appId": "full-ai-cluster/agent-memory",
       "origin": "volumeClaimTemplate",
       "name": "memory/agent-memory",
       "workload": "StatefulSet/agent-memory",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "8Gi",
       "gibibytes": 8,
       "count": 1
@@ -17,7 +20,10 @@
       "origin": "volumeClaimTemplate",
       "name": "datadir/cockroachdb",
       "workload": "StatefulSet/cockroachdb",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "48Gi",
       "gibibytes": 48,
       "count": 3
@@ -28,6 +34,9 @@
       "name": "dapr-scheduler-data-dir/dapr-scheduler-server",
       "workload": "StatefulSet/dapr-scheduler-server",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 3
@@ -37,7 +46,10 @@
       "origin": "PersistentVolumeClaim",
       "name": "gitea-shared-storage",
       "workload": "",
-      "storageClassName": "zeta-local-path",
+      "storageClassName": "zeta-block-local",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "20Gi",
       "gibibytes": 20,
       "count": 1
@@ -47,7 +59,10 @@
       "origin": "volumeClaimTemplate",
       "name": "data/gmod",
       "workload": "StatefulSet/gmod",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "10Gi",
       "gibibytes": 10,
       "count": 1
@@ -58,18 +73,11 @@
       "name": "data/gitlab-postgresql",
       "workload": "StatefulSet/gitlab-postgresql",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "8Gi",
       "gibibytes": 8,
-      "count": 1
-    },
-    {
-      "appId": "full-ai-cluster/gitlab",
-      "origin": "PersistentVolumeClaim",
-      "name": "gitlab-minio",
-      "workload": "",
-      "storageClassName": "",
-      "size": "10Gi",
-      "gibibytes": 10,
       "count": 1
     },
     {
@@ -78,6 +86,9 @@
       "name": "redis-data/gitlab-redis-master",
       "workload": "StatefulSet/gitlab-redis-master",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "8Gi",
       "gibibytes": 8,
       "count": 1
@@ -88,6 +99,9 @@
       "name": "repo-data/gitlab-gitaly",
       "workload": "StatefulSet/gitlab-gitaly",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "50Gi",
       "gibibytes": 50,
       "count": 1
@@ -97,7 +111,10 @@
       "origin": "volumeClaimTemplate",
       "name": "data/headscale",
       "workload": "StatefulSet/headscale",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "3Gi",
       "gibibytes": 3,
       "count": 1
@@ -107,7 +124,10 @@
       "origin": "volumeClaimTemplate",
       "name": "data/hindsight-postgresql",
       "workload": "StatefulSet/hindsight-postgresql",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "10Gi",
       "gibibytes": 10,
       "count": 1
@@ -117,7 +137,10 @@
       "origin": "PersistentVolumeClaim",
       "name": "kube-prometheus-stack-grafana",
       "workload": "",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "5Gi",
       "gibibytes": 5,
       "count": 1
@@ -127,7 +150,10 @@
       "origin": "operatorStorageSpec",
       "name": "storage/kube-prometheus-stack-alertmanager",
       "workload": "Alertmanager/kube-prometheus-stack-alertmanager",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "5Gi",
       "gibibytes": 5,
       "count": 1
@@ -137,7 +163,10 @@
       "origin": "operatorStorageSpec",
       "name": "storage/kube-prometheus-stack-prometheus",
       "workload": "Prometheus/kube-prometheus-stack-prometheus",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "32Gi",
       "gibibytes": 32,
       "count": 1
@@ -148,6 +177,9 @@
       "name": "data/loki-backend",
       "workload": "StatefulSet/loki-backend",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "10Gi",
       "gibibytes": 10,
       "count": 1
@@ -158,6 +190,9 @@
       "name": "data/loki-write",
       "workload": "StatefulSet/loki-write",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "10Gi",
       "gibibytes": 10,
       "count": 1
@@ -168,6 +203,9 @@
       "name": "kafka-data/mimir-kafka",
       "workload": "StatefulSet/mimir-kafka",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "5Gi",
       "gibibytes": 5,
       "count": 1
@@ -178,6 +216,9 @@
       "name": "storage/mimir-alertmanager",
       "workload": "StatefulSet/mimir-alertmanager",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "1Gi",
       "gibibytes": 1,
       "count": 1
@@ -187,7 +228,10 @@
       "origin": "volumeClaimTemplate",
       "name": "storage/mimir-compactor",
       "workload": "StatefulSet/mimir-compactor",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 1
@@ -197,7 +241,10 @@
       "origin": "volumeClaimTemplate",
       "name": "storage/mimir-ingester-zone-a",
       "workload": "StatefulSet/mimir-ingester-zone-a",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 1
@@ -207,7 +254,10 @@
       "origin": "volumeClaimTemplate",
       "name": "storage/mimir-ingester-zone-b",
       "workload": "StatefulSet/mimir-ingester-zone-b",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 1
@@ -217,7 +267,10 @@
       "origin": "volumeClaimTemplate",
       "name": "storage/mimir-ingester-zone-c",
       "workload": "StatefulSet/mimir-ingester-zone-c",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 1
@@ -227,7 +280,10 @@
       "origin": "volumeClaimTemplate",
       "name": "storage/mimir-store-gateway-zone-a",
       "workload": "StatefulSet/mimir-store-gateway-zone-a",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 1
@@ -237,7 +293,10 @@
       "origin": "volumeClaimTemplate",
       "name": "storage/mimir-store-gateway-zone-b",
       "workload": "StatefulSet/mimir-store-gateway-zone-b",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 1
@@ -247,7 +306,10 @@
       "origin": "volumeClaimTemplate",
       "name": "storage/mimir-store-gateway-zone-c",
       "workload": "StatefulSet/mimir-store-gateway-zone-c",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 1
@@ -257,7 +319,10 @@
       "origin": "volumeClaimTemplate",
       "name": "nats-js/nats",
       "workload": "StatefulSet/nats",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "10Gi",
       "gibibytes": 10,
       "count": 3
@@ -267,7 +332,10 @@
       "origin": "PersistentVolumeClaim",
       "name": "ollama",
       "workload": "",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "200Gi",
       "gibibytes": 200,
       "count": 1
@@ -277,7 +345,10 @@
       "origin": "volumeClaimTemplate",
       "name": "audit/openbao",
       "workload": "StatefulSet/openbao",
-      "storageClassName": "zeta-local-path",
+      "storageClassName": "zeta-block-local",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "5Gi",
       "gibibytes": 5,
       "count": 1
@@ -287,7 +358,10 @@
       "origin": "volumeClaimTemplate",
       "name": "data/openbao",
       "workload": "StatefulSet/openbao",
-      "storageClassName": "zeta-local-path",
+      "storageClassName": "zeta-block-local",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "10Gi",
       "gibibytes": 10,
       "count": 1
@@ -297,7 +371,10 @@
       "origin": "volumeClaimTemplate",
       "name": "opensearch-cluster-master/opensearch-cluster-master",
       "workload": "StatefulSet/opensearch-cluster-master",
-      "storageClassName": "zeta-local-path",
+      "storageClassName": "zeta-block-local",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "20Gi",
       "gibibytes": 20,
       "count": 1
@@ -307,7 +384,10 @@
       "origin": "PersistentVolumeClaim",
       "name": "ziti-controller",
       "workload": "",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "3Gi",
       "gibibytes": 3,
       "count": 1
@@ -317,9 +397,25 @@
       "origin": "volumeClaimTemplate",
       "name": "rooms/portal",
       "workload": "StatefulSet/portal",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "5Gi",
       "gibibytes": 5,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/postgres-shared",
+      "origin": "operatorStorageSpec",
+      "name": "pgdata/postgres-shared",
+      "workload": "Cluster/postgres-shared",
+      "storageClassName": "zeta-block-local",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "size": "20Gi",
+      "gibibytes": 20,
       "count": 1
     },
     {
@@ -327,7 +423,10 @@
       "origin": "volumeClaimTemplate",
       "name": "valkey-data/redis-valkey",
       "workload": "StatefulSet/redis-valkey",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "8Gi",
       "gibibytes": 8,
       "count": 3
@@ -337,7 +436,10 @@
       "origin": "PersistentVolumeClaim",
       "name": "blob-store-seaweedfs-all-in-one-data",
       "workload": "",
-      "storageClassName": "zeta-local-path",
+      "storageClassName": "zeta-block-local",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "20Gi",
       "gibibytes": 20,
       "count": 1
@@ -347,7 +449,10 @@
       "origin": "volumeClaimTemplate",
       "name": "spire-data/spire-server",
       "workload": "StatefulSet/spire-server",
-      "storageClassName": "zeta-local-path",
+      "storageClassName": "zeta-block-local",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "5Gi",
       "gibibytes": 5,
       "count": 1
@@ -357,9 +462,25 @@
       "origin": "volumeClaimTemplate",
       "name": "storage/tempo",
       "workload": "StatefulSet/tempo",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "20Gi",
       "gibibytes": 20,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/temporal/postgres",
+      "origin": "operatorStorageSpec",
+      "name": "pgdata/temporal-postgres",
+      "workload": "Cluster/temporal-postgres",
+      "storageClassName": "zeta-block-local",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "size": "10Gi",
+      "gibibytes": 10,
       "count": 1
     },
     {
@@ -367,7 +488,10 @@
       "origin": "PersistentVolumeClaim",
       "name": "vllm-cache",
       "workload": "",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "200Gi",
       "gibibytes": 200,
       "count": 1
@@ -377,12 +501,15 @@
       "origin": "volumeClaimTemplate",
       "name": "weaviate-data/weaviate",
       "workload": "StatefulSet/weaviate",
-      "storageClassName": "longhorn",
+      "storageClassName": "zeta-block-replicated",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "32Gi",
       "gibibytes": 32,
       "count": 1
     }
   ],
   "unrenderable": [],
-  "appsDiscovered": 49
+  "appsDiscovered": 52
 }

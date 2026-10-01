@@ -32,7 +32,78 @@
     # module that defines it, or it can only be evaluated inside an aggregate
     # that happens to supply it.
     ./cluster-network.nix
+
+    # WP9 (081M33STPKN087G0R0004B5CAK): the Docker Hub pull-through mirror.
+    # Writes /etc/rancher/k3s/registries.yaml so this node's containerd tries
+    # mirror.gcr.io before burning Docker Hub's 100-pull/6h anonymous quota on
+    # the ~50 docker.io images the bootstrap roster + catalog pull at first
+    # boot. Imported here AND on k3s-agent.nix — every node needs the mirror,
+    # not just the control plane. See the module's own header for the
+    # fallback-safety argument (a mirror miss/outage can never make a pull
+    # fail that would otherwise succeed).
+    ./k3s-registry-mirrors.nix
+
+    # 081M3K1K1SY087G0R0010A76XY: kernel-level protection for the k3s PROCESS
+    # (systemd MemoryLow / CPUWeight / OOMScoreAdjust on k3s.service and
+    # system.slice), the kubelet image-pull flags, and the boot-time generator
+    # that sizes the reservations and eviction thresholds to the node. The
+    # reservations are accounting; that module is the enforcement. This file's
+    # targets are set just after the imports.
+    ./k3s-process-protection.nix
+
+    # WP20 (081M34R7P99087G0R000H77GX9): drops k3s.service's After=/Wants=
+    # network-online.target (root-cause work for run 35717757526: k3s.service
+    # never reached active in 4201s on the real installed disk) and adds a
+    # bounded ExecStartPre wait for an address in its place. See that
+    # module's header for the full citation, the honest limit on what a VM
+    # negative control could and could not validate, and why the drop and the
+    # bounded wait are both needed. Imported here AND on k3s-agent.nix --
+    # nixpkgs names the unit "k3s" on both roles.
+    ./k3s-wait-for-address.nix
+
+    # WP25 (081M38G8NGC087G0R001GEGEDK): root-cause work for run 35927439681
+    # -- k3s.service stuck `activating` for 70+ minutes on the real installed
+    # disk, retrying forever on zero-length agent cert/kubeconfig files left
+    # by an unclean stop. Adds a bounded ExecStartPre that removes only
+    # zero-length files under /var/lib/rancher/k3s/agent before k3s starts.
+    # See that module's header for the full citation (rancher/dynamiclistener
+    # LoadOrGenerateKeyFile) and for why server/tls and server/cred are
+    # deliberately out of scope. Imported here AND on k3s-agent.nix -- a
+    # server also runs its own embedded agent under this same path.
+    ./k3s-agent-tls-self-heal.nix
+
+    # Defines `zeta.k3sServer.etcdPeers` — the OPT-IN, source-scoped admission
+    # of etcd 2379/2380 that multi-server HA needs and that the firewall comment
+    # below has prescribed since it was written. Default empty: this host's
+    # firewall is unchanged unless a host names its peers. Also refuses, at
+    # evaluation, a JOINING server that nothing admits etcd traffic to
+    # (081M10ZG61D087G0R001A70F0P). See the module header for the decision.
+    ./k3s-etcd-peers.nix
+
+    # 081M39CR74D087G0R002BEG2G4: a has-ever-bootstrapped sentinel + recovery
+    # pair, server role only (a worker has no server/db). Recovers a
+    # STILLBORN datastore -- one truncated by a power cut in the first ~20s
+    # of first boot, before k3s ever wrote bootstrap data into it -- while
+    # NEVER touching a datastore that has genuinely served, under any
+    # circumstance. See that module's header for the full citation and the
+    # one-way property this pair guarantees.
+    ./k3s-datastore-bootstrap-recovery.nix
+
+    # One-time sync of the manual-sync `kubevirt` + `cdi` Applications on a
+    # FRESH cluster (no operator CRD present), so a flashed node comes up with
+    # the VM layer instead of two Applications `Missing` forever. Skips any
+    # cluster that already runs either operator. See that module's header.
+    ./zeta-virt-first-sync.nix
   ];
+
+  # The server's reservation TARGETS (see "NODE RESERVATIONS" below for the
+  # derivation). They are applied at boot by k3s-process-protection.nix, scaled
+  # down on a node too small to hold them (081M3KC68TK087G0R002NT64S8) -- as
+  # static flags they made the kubelet refuse to start below ~3 GiB. The kube
+  # target is also k3s.service's MemoryLow: what the scheduler withholds from
+  # pods and what the kernel protects from reclaim are the same bytes.
+  zeta.k3sProcessProtection.kubeReservedCpuMillis = 500;
+  zeta.k3sProcessProtection.kubeReservedMemoryMi = 2048;
 
   services.k3s = {
     enable = true;
@@ -98,13 +169,166 @@
       "--disable=traefik"
 
       # Disable the bundled local-path-provisioner. local-storage.nix
-      # re-declares it as `zeta-local-path` (the single default class) with
+      # re-declares it as `zeta-block-local` (the single default class; was
+      # `zeta-local-path` until 2026-09-23) with
       # a fixed path; leaving k3s' built-in enabled creates a SECOND
       # StorageClass *also* marked default (`local-path (default)` AND
       # `zeta-local-path (default)`), which is an invalid/ambiguous config —
       # a class-less PVC then binds non-deterministically. Observed on
       # node-09485d (2026-06-07). Keep exactly one default.
       "--disable=local-storage"
+
+      # Pod-count ceiling — kubelet's `--max-pods` default is 110, and it is a
+      # COUNT limit independent of the CPU/memory budget work in
+      # `full-ai-cluster/k8s/storage-profiles.json`: shrinking every request in
+      # the tree would not schedule one more pod once the count ceiling is hit.
+      #
+      # MEASURED, NOT GUESSED. `src/Core.TypeScript/cluster/rendered-resource-requests.snapshot.json`
+      # renders 147 pods across the 49 Applications the metal root
+      # (`bootstrap/root-application.yaml`) applies. The steady-state floor —
+      # what a fresh single-node sync actually leaves Running/Pending, not the
+      # render's raw total — is measured in
+      # `src/Core.TypeScript/cluster/single-node-readiness.ts`'s `findPodBudget`:
+      # subtract the four manual-sync Applications (cdi, kubevirt, ollama, vllm —
+      # `manual-sync-policy.ts`; never auto-applied) and every Job/CronJob pod
+      # (terminal — the kubelet's max-pods admission counts only non-terminal
+      # pods), add the k3s-bundled coredns + metrics-server + this file's own
+      # local-path-provisioner (none of which any Application renders). That
+      # floor is ~124 today, already inside the default 110 ceiling's failure
+      # zone, and it only grows as Applications are added.
+      #
+      # `cdi` and `kubevirt` are subtracted above because nothing AUTO-syncs them,
+      # but a fresh cluster now gets ONE sync of each from zeta-virt-first-sync
+      # (imported above): operators + KubeVirt's virt-api x2 / virt-controller x2 /
+      # virt-handler + CDI's apiserver / controller / uploadproxy, ~11 pods before
+      # any VM exists, plus one virt-launcher pod per running VM. ~135 still sits
+      # well under 220; a node that hosts many VMs spends the rest on them.
+      #
+      # 220 clears the default 110 by 2x and the measured ~124 by ~77%, while
+      # staying under the 254 usable addresses Cilium's cluster-pool IPAM hands
+      # this single node at the chart's default `clusterPoolIPv4MaskSize: 24`
+      # (`k8s/applications/cilium/Application.yaml` / `k8s/bootstrap/cilium-install.yaml`,
+      # both now set that key explicitly since this budget relies on it) — a
+      # pod ceiling above the node's own address block would be a limit the
+      # network could never actually let a pod reach. Not 250: that would leave
+      # only 4 addresses of slack against the /24, which the node's own
+      # cilium_host router IP and any hostNetwork pod already eats into.
+      #
+      # SET ON BOTH SERVER AND AGENT (`k3s-agent.nix` carries the identical
+      # flag) — `--kubelet-arg` configures the LOCAL kubelet, so a control
+      # plane that also schedules pods and a worker both need it; it is not one
+      # of the networking flags k3s-agent.nix's own comment says are
+      # server-only.
+      "--kubelet-arg=max-pods=220"
+
+      # ── NODE RESERVATIONS — Allocatable was Capacity, so nothing was held
+      # ── back for the process that IS the control plane ────────────────────
+      #
+      # THE DEFECT. Until 2026-09-25 this file raised `max-pods` to 220 and set
+      # no `kube-reserved`, no `system-reserved` and no eviction threshold. Both
+      # default to empty, so Allocatable == Capacity: the scheduler was free to
+      # hand out every millicore and every byte of the node to pods, reserving
+      # nothing for the k3s server process — which on k3s is not a set of pods.
+      # apiserver, scheduler, controller-manager and the kine/etcd datastore all
+      # run INSIDE the `k3s.service` systemd unit, outside every pod cgroup, and
+      # therefore outside everything the scheduler is accounting for.
+      #
+      # MEASURED, same dispatch as the ArgoCD requests fix (36097310492, WP11,
+      # real installed disk). This is a SECOND and INDEPENDENT starvation, not
+      # the pod-QoS one, and fixing only the pod side would have left it:
+      #   - 7 of 100 unconverged ArgoCD rows read `failed to get server version`
+      #   - the verdict's own apiserver probe failed on 17 of 59 samples
+      # Both are the apiserver being intermittently unreachable on a node that
+      # had promised its entire capacity to something else.
+      #
+      # `single-node-readiness.ts` has been printing the same sentence on every
+      # run without anything acting on it: "That bound is the node's WHOLE
+      # capacity: nothing is held back for the kubelet, the control plane,
+      # kube-system or the OS."
+      #
+      # WHY ONE ABSOLUTE NUMBER IS DEFENSIBLE ON BOTH HARDWARE PROFILES, which
+      # is the part that has to be argued rather than asserted. `kube-reserved`
+      # takes an absolute quantity, not a fraction, so a number tuned for one
+      # box normally mis-serves the other — too small to protect the big node,
+      # or large enough to cripple the small one. It works here because of what
+      # the reserved process actually scales with:
+      #
+      #   the k3s server's load tracks the CLUSTER (object count, watch streams,
+      #   reconcile rate), NOT the NODE it runs on.
+      #
+      # The roster is the same roster on both: 49 Applications, ~145 rendered
+      # pods, one node. So the apiserver has the same work to do on the 4-vCPU
+      # WP11 guest as on a 16-core registered ClusterNode, and one absolute
+      # reservation is the right shape for it. What differs is only what the
+      # reservation COSTS, and that is stated below rather than left implied.
+      #
+      # WHAT EACH PROFILE PAYS
+      #                                    4-vCPU/12288Mi guest    16-core/62942Mi node
+      #   kube-reserved    500m / 2Gi            12.5% / 16.7%          3.1% / 3.3%
+      #   system-reserved  250m / 512Mi           6.3% / 4.2%           1.6% / 0.8%
+      #   eviction-hard            500Mi                / 4.1%                 / 0.8%
+      #   total                                 18.8% / 25.0%           4.7% / 4.9%
+      #
+      # kube-reserved memory was 1Gi until 081M3K1K1SY087G0R0010A76XY. MEASURED
+      # on node-5b2dfa (2026-09-27, freshly reinstalled, full roster): the
+      # k3s-server process alone held 3.1 GiB RSS, containerd 0.36 GiB. 1Gi
+      # promised pods memory the control plane was already using. 2Gi is still
+      # below that metal figure (Go's heap grows into available RAM, so the
+      # 62 GiB node overstates what the 12 GiB guest needs), and it is also the
+      # MemoryLow that k3s-process-protection.nix gives k3s.service, so the
+      # accounting and the kernel protection name the same bytes.
+      #
+      # On the big node this is rounding error. On the guest it is real, and it
+      # is the correct trade: 18.8% of the CPU withheld from pods is how the
+      # apiserver stops being unreachable, and an apiserver that answers is
+      # worth more than three more pods that cannot be scheduled through it.
+      #
+      # HONEST LIMIT, AND IT IS THE IMPORTANT LINE HERE. Without
+      # `--kube-reserved-cgroup` these flags are ACCOUNTING, not ENFORCEMENT.
+      # They shrink Allocatable so the scheduler stops over-committing the node;
+      # they do NOT create a cgroup that guarantees the k3s process those shares
+      # under contention. So this is a fix for OVER-SCHEDULING, and it reaches
+      # CPU contention only indirectly, by admitting fewer competitors. The
+      # enforcement form is deliberately not taken: it requires the cgroup to
+      # exist and be correctly parented before the kubelet starts, and a
+      # misconfigured `--kube-reserved-cgroup` makes the kubelet refuse to start
+      # at all — which on a first-boot installer is an unrecoverable node rather
+      # than a slow one.
+      #
+      # EVICTION THRESHOLD. k3s inherits the kubelet default
+      # `memory.available<100Mi`, which on a node this size is below the noise
+      # floor of a burst of image pulls: the kernel OOM killer fires before the
+      # kubelet ever notices, and it picks its victim by oom_score rather than
+      # by QoS or by what the cluster needs. 500Mi gives the kubelet room to
+      # make that choice deliberately and in QoS order. The roster's declared
+      # memory exceeds this guest's RAM at every rung, so eviction on a small
+      # box is not a hypothetical, and which pod dies is the whole question.
+      #
+      # ALL FOUR SIGNALS ARE RESTATED, AND THAT IS NOT VERBOSITY — IT IS THE BUG
+      # THIS FLAG INVITES. `--eviction-hard` REPLACES the kubelet's entire
+      # default map rather than merging into it, so passing `memory.available`
+      # alone would silently DELETE `imagefs.available<15%` and
+      # `nodefs.inodesFree<5%`. On a node that pulls ~135 images on first boot,
+      # dropping the imagefs threshold removes the trigger for image garbage
+      # collection under disk pressure — a disk-exhaustion regression shipped as
+      # a memory fix, invisible in the diff. The three non-memory values below
+      # are the kubelet's own defaults, written out so they survive; only
+      # `memory.available` is changed, 100Mi -> 500Mi.
+      #
+      # SET ON BOTH SERVER AND AGENT for the same reason `max-pods` is, with one
+      # difference recorded in k3s-agent.nix: an agent runs no apiserver, so its
+      # `kube-reserved` covers kubelet and containerd alone and is smaller.
+      #
+      # NO LONGER STATIC FLAGS (081M3KC68TK087G0R002NT64S8). The numbers above
+      # are now TARGETS (`zeta.k3sProcessProtection.*`, set near the top of this
+      # file). "One absolute number" held for the two profiles in the table and
+      # failed below them: 2Gi + 512Mi + 500Mi = 3060Mi is MORE than a 2560 MB
+      # VM has, and the kubelet refuses to start when reservations exceed
+      # capacity -- every k3s NixOS VM test failed that way in build-ai-cluster-iso
+      # run 36379743833. k3s-kubelet-reservations.sh writes the four eviction and
+      # reservation flags at boot: these exact values on any node >= ~12 GiB,
+      # scaled proportionally into 25% of the node below that. The eviction-hard
+      # map it writes still restates all four signals, for the reason above.
 
       # Cluster CIDRs — DERIVED from the cluster's identity, not hardcoded.
       #
@@ -148,9 +372,10 @@
     #
     #      aa-gateway-api-crds -> argocd-install -> argocd-namespace ->
     #      cert-manager-install -> cilium-install -> cilium-namespace ->
-    #      external-secrets-install -> local-path-provisioner (from
-    #      local-storage.nix) -> openziti-namespace -> root-application ->
-    #      spire-install -> trust-manager-install
+    #      external-secrets-install -> internal-secret-seeding ->
+    #      local-path-provisioner (from local-storage.nix) ->
+    #      openziti-namespace -> root-application -> spire-install ->
+    #      trust-manager-install
     #
     # 3. SUBMISSION ORDER IS NOT DEPENDENCY ORDER, and no renaming can make it
     #    one. The deploy controller submits all eleven files within seconds of
@@ -186,6 +411,17 @@
     #      nixos/tests/k3s-first-boot-roster.nix is the VM test that decides
     #      it, with three named verdicts instead of a timeout. UNRUN as of
     #      2026-08-21: it needs a KVM host, internet, and ~45-70 min.
+    #
+    #      CORROBORATING MEASUREMENT (2026-09-22, WP1,
+    #      src/Core.TypeScript/cluster/first-boot-replica.ts): a Docker
+    #      container configured to match this file's extraFlags + roster
+    #      (not the NixOS VM test above, which is still unrun) measured
+    #      VERDICT A -- ROOT_LANDED. applications.argoproj.io/zeta-root
+    #      appeared once the ArgoCD chart's Job completed and the CRD existed;
+    #      the deploy controller retried the earlier unknown-kind apply and
+    #      self-healed. Recorded as corroborating evidence, not a replacement
+    #      for the VM test this comment names -- see workitem
+    #      081M33QTNVD087G0R002632YDV.
     #
     # The DEPENDENCY INTENT below (per Aaron 2026-05-25) is retained because
     # it is the design, but note it is expressed in ArgoCD sync waves and in
@@ -246,11 +482,53 @@
       trust-manager-install.source = ../../k8s/bootstrap/trust-manager-install.yaml;
       # External Secrets Operator (operator + CRDs; no store wired yet).
       external-secrets-install.source = ../../k8s/bootstrap/external-secrets-install.yaml;
+      # INTERNAL secret seeding (WP14, 081M343EEP8087G0R000BAF6QF) -- mints
+      # grafana-admin-credentials / ziti-admin-credentials /
+      # opensearch-admin-credentials / forgejo-initial-admin / zeta-blob-store /
+      # redis-auth ONLY IF ABSENT, so the catalog Applications that name these
+      # Secrets by reference never hit CreateContainerConfigError on a fresh
+      # metal/USB install. Self-contained (creates its own namespaces, including
+      # a redundant `openziti` -- this file sorts BEFORE openziti-namespace.yaml
+      # lexically, see internal-secret-seeding.yaml's own header). Sorts before
+      # ArgoCD exists, which is the point: every consuming Application finds its
+      # Secret already in place at sync time.
+      internal-secret-seeding.source = ../../k8s/bootstrap/internal-secret-seeding.yaml;
       # ArgoCD (reconciler for everything else).
       argocd-namespace.source = ../../k8s/bootstrap/argocd-namespace.yaml;
       argocd-install.source = ../../k8s/bootstrap/argocd-install.yaml;
       # Root App-of-Apps — hands off to ArgoCD.
       root-application.source = ../../k8s/bootstrap/root-application.yaml;
+
+      # ── THE NODE'S FLOOR: k3s's own CoreDNS and metrics-server, vendored ──
+      #
+      # MEASURED (constrained replica lane, dispatch 36119931377): under memory
+      # pressure both were killed by their OWN liveness probes while alive and
+      # slow -- `context deadline exceeded (Client.Timeout exceeded ...)`, not a
+      # refused connection -- with zero OOMKilled and zero Evicted across the run.
+      # k3s ships both probes at `timeoutSeconds: 1, failureThreshold: 3`. Every
+      # other pod depends on these two, so they are fixed before any app's budget.
+      #
+      # WHY VENDORED, NOT PATCHED. k3s rewrites its packaged manifests on every
+      # start, offers no HelmChartConfig for these two (they are plain manifests,
+      # not charts), and `--disable=coredns` would also switch off the node
+      # controller that writes `NodeHosts` into CoreDNS's ConfigMap
+      # (k3s pkg/server/server.go: `node.Register(ctx, !Skips["coredns"], ...)`).
+      # A `<file>.skip` marker is the one mechanism that removes a single
+      # packaged file from the deploy controller and nothing else
+      # (pkg/deploy/controller.go `listFilesIn`): it is keyed by BASENAME
+      # anywhere in the manifests tree, which is what lets the second marker
+      # reach `metrics-server/metrics-server-deployment.yaml` while leaving that
+      # directory's RBAC, Service and APIService with k3s.
+      #
+      # The two `target`s below are the only entries in this roster that set
+      # one; `k3s-first-boot-apply-order-eval-test.nix` declares them and still
+      # refuses a target on any other entry.
+      k3s-coredns.source = ../../k8s/bootstrap/k3s-coredns.yaml;
+      k3s-metrics-server.source = ../../k8s/bootstrap/k3s-metrics-server.yaml;
+      k3s-skip-coredns.target = "coredns.yaml.skip";
+      k3s-skip-coredns.source = ../../k8s/bootstrap/k3s-packaged-manifest.skip;
+      k3s-skip-metrics-server.target = "metrics-server-deployment.yaml.skip";
+      k3s-skip-metrics-server.source = ../../k8s/bootstrap/k3s-packaged-manifest.skip;
     };
   };
 
@@ -327,13 +605,15 @@
       4244    # Hubble server
       4245    # Hubble Relay
       8472    # legacy flannel/VXLAN (kept for safety)
-      # etcd ports 2379/2380 intentionally NOT in this list.
-      # K3S embedded etcd binds 127.0.0.1 by default. Opening
-      # those ports at the host firewall would risk exposing etcd
-      # to the LAN if the bind address ever drifts. For multi-
-      # server HA, add 2379/2380 to a host-specific override that
-      # ALSO scopes them with `interfacesIn`/source-IP filtering to
-      # the other control-plane nodes only.
+      # etcd ports 2379/2380 intentionally NOT in this list: a flat
+      # allowedTCPPorts entry would admit them from every address that
+      # can reach the NIC. (Correction: embedded etcd does NOT bind only
+      # 127.0.0.1 — once it has a node IP it listens on <node-ip>:2379
+      # and :2380 too, which is how run 33035015161 saw the refusal
+      # land in THIS firewall. The firewall is the guard, not the bind.)
+      # For multi-server HA set `zeta.k3sServer.etcdPeers` (see
+      # ./k3s-etcd-peers.nix): it admits both ports from the named
+      # control-plane peers ONLY. Default empty = closed, as before.
     ];
     allowedUDPPorts = [
       8472    # VXLAN (Cilium can also run native-routing)
@@ -384,4 +664,12 @@
   # `lib.mkDefault` so a host can switch it off.
   zeta.k3sJoinIntentPreflight.enable = lib.mkDefault true;
   zeta.k3sJoinIntentPreflight.role = lib.mkDefault "server";
+
+  # WP20 root-cause fix: see ./k3s-wait-for-address.nix (imported above) for
+  # the systemd.services.k3s.after/wants override, the ExecStartPre bounded
+  # address wait, and the full citation + honest limits on validation.
+
+  # WP25 root-cause fix: see ./k3s-agent-tls-self-heal.nix (imported above)
+  # for the zero-length-file ExecStartPre, the dynamiclistener citation, and
+  # why server/tls + server/cred are deliberately out of scope.
 }

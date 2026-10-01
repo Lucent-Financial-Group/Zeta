@@ -43,6 +43,7 @@ const pvc = (over: Partial<RenderedPvc> = {}): RenderedPvc => ({
   name: "data/app",
   workload: "StatefulSet/app",
   storageClassName: "longhorn",
+  accessModes: ["ReadWriteOnce"],
   size: "10Gi",
   gibibytes: 10,
   count: 1,
@@ -603,7 +604,7 @@ describe("the live catalogue against the measured render", () => {
 
   // The numbers, pinned. Not decoration: this is what makes a declaration edit
   // that nobody re-measured go red offline, with no helm and no network.
-  test("MEASURED 2026-08-22 — declared 943 GiB, rendered 843 GiB on longhorn", () => {
+  test("MEASURED 2026-08-22 — declared 943 GiB, rendered 843 GiB on the replicated capability (was `longhorn`)", () => {
     const result = auditAgainstSnapshot(snapshot!, {});
     expect(declaredTotalGib(result.expectations)).toBe(943);
     const totals = renderedTotalsByClass(result.rendered, result.clusterDefault);
@@ -619,7 +620,10 @@ describe("the live catalogue against the measured render", () => {
     // default class) is the same 76 GiB its sibling in infra/ already rendered.
     // None of that disk is new. It stopped being invisible, which is the only
     // thing an unrenderable app ever hides.
-    expect(totals.get("longhorn")).toBe(843);
+    // `longhorn` -> `zeta-block-replicated` on 2026-09-23: the same 843 GiB on the
+    // same metal pool, under the capability name charts request now.
+    expect(totals.get("zeta-block-replicated")).toBe(843);
+    expect(totals.get("longhorn")).toBeUndefined();
     // 249 -> 301 on 2026-09-01, when the snapshot was re-measured against the
     // charts already merged on main: dapr's scheduler 1Gi x1 -> 16Gi x3 (+47)
     // and mimir 6.2.0's bundled Kafka (+5). The disk was rendered the moment
@@ -627,7 +631,14 @@ describe("the live catalogue against the measured render", () => {
     // 301 -> 321 GiB on 2026-09-04: opensearch added a 20Gi PVC on zeta-local-path.
     // 321 -> 336 on 2026-09-05: openbao adds 10Gi data + 5Gi audit.
     // 336 -> 230 on 2026-09-05: vault removed (-30 GiB), openbao added (+15).
-    expect(totals.get("zeta-local-path")).toBe(230);
+    // 230 -> 220 on 2026-09-22: gitlab's bundled minio subchart disabled
+    // (`global.minio.enabled: false` -- both minio/minio and minio/mc were
+    // withdrawn from Docker Hub); its 10Gi `gitlab-minio` PVC no longer renders.
+    // `zeta-local-path` -> `zeta-block-local` on 2026-09-23: renamed, not moved.
+    // 220 -> 230 on 2026-09-27: temporal-postgres, a CNPG Cluster on node-local
+    // storage by design; its operator-created PVC is now read from the CR.
+    // 230 -> 250 on 2026-10-01: postgres-shared (20Gi), the shared general-purpose CNPG Cluster.
+    expect(totals.get("zeta-block-local")).toBe(250);
   });
 
   // WAS "the two live inert-values defects are still exactly two apps". Both
@@ -654,12 +665,12 @@ describe("the live catalogue against the measured render", () => {
     expect(hindsight?.size).toBe("10Gi");
     // NOT "": a blank class binds zeta-local-path, which is rancher.io/local-path
     // with reclaimPolicy Delete. This assertion is the durability, not the size.
-    expect(hindsight?.storageClassName).toBe("longhorn");
+    expect(hindsight?.storageClassName).toBe("zeta-block-replicated");
     expect(hindsight?.count).toBe(1);
 
     const nats = byName.get("full-ai-cluster/nats nats-js/nats");
     expect(nats?.size).toBe("10Gi");
-    expect(nats?.storageClassName).toBe("longhorn");
+    expect(nats?.storageClassName).toBe("zeta-block-replicated");
     // Three, from `config.cluster.replicas`. At 1 there is no JetStream quorum
     // and a stream created with replicas > 1 refuses to create.
     expect(nats?.count).toBe(3);
@@ -753,7 +764,7 @@ describe("the live catalogue against the measured render", () => {
 
 describe("machinery", () => {
   test("the cluster default StorageClass is read from the tree, not assumed", () => {
-    expect(clusterDefaultStorageClass()).toBe("zeta-local-path");
+    expect(clusterDefaultStorageClass()).toBe("zeta-block-local");
     expect(clusterDefaultStorageClass(mkdtempSync(join(tmpdir(), "zeta-empty-")))).toBeNull();
   });
 
@@ -927,7 +938,7 @@ describe("machinery", () => {
     const hindsight = declaredExpectations(catalogue, "measured").find(
       (entry) => entry.claimId === "full-ai-cluster/hindsight/postgres",
     );
-    expect(hindsight?.storageClass).toBe("longhorn");
+    expect(hindsight?.storageClass).toBe("zeta-block-replicated");
     expect(hindsight?.size).toBe("10Gi");
   });
 });

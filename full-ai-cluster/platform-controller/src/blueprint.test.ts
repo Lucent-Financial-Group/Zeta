@@ -8,7 +8,10 @@
 //   4. a stateful database         (TCP port + storage, cluster-only)
 // Plus the value-substitution and resolution rules each on their own.
 
-import { expect, test, describe } from "bun:test";
+import { expect, test, describe, afterAll } from "bun:test";
+import { readFileSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { API_VERSION } from "./types.ts";
 import {
   type Blueprint,
@@ -18,6 +21,7 @@ import {
   resolveValues,
   substitute,
 } from "./blueprint.ts";
+import { ICH777_IMAGE_PREFIX, ich777ContractViolations, sftpGateViolations } from "./steamcmd-contract.ts";
 
 // ── helpers ───────────────────────────────────────────────────────────
 function instance(name: string, spec: Deployable["spec"]): Deployable {
@@ -97,7 +101,7 @@ describe("game server blueprint (stateful, UDP, storage, sidecar, install)", () 
     const ss = one(objs, "StatefulSet");
     const vct = (ss.spec as any).volumeClaimTemplates;
     expect(vct[0].metadata.name).toBe("data");
-    expect(vct[0].spec.storageClassName).toBe("longhorn");
+    expect(vct[0].spec.storageClassName).toBe("zeta-block-replicated");
     expect(vct[0].spec.resources.requests.storage).toBe("20Gi");
   });
   test("install becomes an initContainer; main has templated args/env", () => {
@@ -291,18 +295,18 @@ describe("production fields: envFrom (Secret), probes, storageClassName", () => 
     });
   });
 
-  // (c) storageClassName overrides the longhorn default on the PVC / volumeClaimTemplate.
-  describe("storageClassName overrides the longhorn default", () => {
+  // (c) storageClassName overrides the zeta-block-replicated default on the PVC / volumeClaimTemplate.
+  describe("storageClassName overrides the zeta-block-replicated default", () => {
     test("StatefulSet volumeClaimTemplate uses the named class", () => {
       const db: Blueprint = {
         name: "pg",
         stateful: true,
         image: "postgres:16",
         storage: { size: "50Gi", mountPath: "/var/lib/postgresql/data" },
-        storageClassName: "zeta-local-path",
+        storageClassName: "zeta-block-local",
       };
       const ss = one(renderDeployable(db, instance("fast-db", { blueprint: "pg" })), "StatefulSet");
-      expect((ss.spec as any).volumeClaimTemplates[0].spec.storageClassName).toBe("zeta-local-path");
+      expect((ss.spec as any).volumeClaimTemplates[0].spec.storageClassName).toBe("zeta-block-local");
     });
     test("stateless PVC also honors the named class", () => {
       const cache: Blueprint = {
@@ -310,10 +314,10 @@ describe("production fields: envFrom (Secret), probes, storageClassName", () => 
         stateful: false,
         image: "redis:7",
         storage: { size: "5Gi", mountPath: "/data" },
-        storageClassName: "zeta-local-path",
+        storageClassName: "zeta-block-local",
       };
       const pvc = one(renderDeployable(cache, instance("kv", { blueprint: "cache" })), "PersistentVolumeClaim");
-      expect((pvc.spec as any).storageClassName).toBe("zeta-local-path");
+      expect((pvc.spec as any).storageClassName).toBe("zeta-block-local");
     });
   });
 
@@ -330,9 +334,9 @@ describe("production fields: envFrom (Secret), probes, storageClassName", () => 
     const objs = renderDeployable(legacy, instance("plain-db", { blueprint: "legacy-db" }));
     const main = () => (one(objs, "StatefulSet").spec as any).template.spec.containers[0];
 
-    test("longhorn stays the default storageClassName", () => {
+    test("zeta-block-replicated stays the default storageClassName", () => {
       const vct = (one(objs, "StatefulSet").spec as any).volumeClaimTemplates;
-      expect(vct[0].spec.storageClassName).toBe("longhorn");
+      expect(vct[0].spec.storageClassName).toBe("zeta-block-replicated");
     });
     test("no probes are rendered", () => {
       expect(main().readinessProbe).toBeUndefined();
@@ -361,5 +365,249 @@ describe("ownership + AI labels are stamped on every child", () => {
     for (const o of objs) {
       expect((o.metadata as any).labels["platform.zeta.io/admin"]).toBe("otto");
     }
+  });
+});
+
+/** The shipped Blueprint library, as Blueprint values. */
+function library(): Blueprint[] {
+  const docs = Bun.YAML.parse(readFileSync(new URL("../../k8s/applications/platform/blueprints.yaml", import.meta.url), "utf8")) as Array<{ metadata: { name: string }; spec: Omit<Blueprint, "name"> }>;
+  return docs.map((d) => ({ name: d.metadata.name, ...d.spec }) as Blueprint);
+}
+
+// ── ich777 SteamCMD blueprints: identity + image contract ───────────────
+// Workitems 081M3K1408D087G0R000WP4NDE (identity, PR #17721) and
+// 081M0QB1ZCV087G0R001P9YCPX (the steamcmd path).
+//
+// IDENTITY. PR #17708 fixed gmod's hand-written StatefulSet by forcing
+// runAsUser 1000, because cm2network/steamcmd owns its tree as uid 1000. The
+// controller-rendered `ghcr.io/ich777/steamcmd:*` Blueprints must NOT copy that:
+// their registry configs carry no `User`, so the process starts as root, and the
+// image's own `/opt/scripts/start.sh` does `usermod` / `groupmod` /
+// `chown -R ${UID}:${GID} ${DATA_DIR}` and then `su steam` to drop to UID=99,
+// GID=100. That drop REQUIRES starting as root. So the controller imposes NO
+// process identity: pod securityContext is exactly { fsGroup: 1000 }, and no
+// container carries a securityContext of its own.
+//
+// IMAGE CONTRACT. Read 2026-09-28 from the registry (config blob + every layer),
+// not from a README — ghcr.io/ich777/steamcmd, linux/amd64:
+//   garrysmod  index sha256:8b7aa732d5317ea6ea3cd0c53d599af9121fd438fa6c4c536e48cc1f2cb4bfc7
+//   unturned   index sha256:7aad70045a425c8f14262305b0f5e5d7832bc8e930be8b61c1c2e3e193972840
+//   both  Entrypoint ["/opt/scripts/start.sh"], no Cmd, no User
+//         Env DATA_DIR=/serverdata STEAMCMD_DIR=/serverdata/steamcmd
+//             SERVER_DIR=/serverdata/serverfiles GAME_ID=template
+//             GAME_NAME=template GAME_PARAMS=template GAME_PORT=27015
+//             VALIDATE= UID=99 GID=100
+//   layers: the only steamcmd-shaped path is the EMPTY directory
+//     `serverdata/steamcmd/` (beside `serverdata/serverfiles/`); `opt/` holds
+//     only `opt/scripts/start.sh` and `opt/scripts/start-server.sh`. There is
+//     no `/opt/steamcmd` and no steamcmd binary anywhere in the image.
+//   The two scripts extracted from the last layer are byte-identical (modulo
+//   CRLF) to the `garrysmod` / `unturned` branches of ich777/docker-steamcmd-server.
+// `start-server.sh` is what installs the game. If `${STEAMCMD_DIR}/steamcmd.sh`
+// is missing it wgets steamcmd_linux.tar.gz INTO `${STEAMCMD_DIR}` (it never
+// mkdirs it), runs `+force_install_dir ${SERVER_DIR} +app_update ${GAME_ID}`
+// (plus `validate` iff VALIDATE == "true"), then starts the server from
+// `${SERVER_DIR}`:
+//   garrysmod  srcds_run -game ${GAME_NAME} ${GAME_PARAMS} -console +port ${GAME_PORT}
+//   unturned   Unturned_Headless.x86_64 -nographics ${GAME_PARAMS} -port:${GAME_PORT} -sv
+// So, pinned below:
+//   * no `command` / `args` on main and no install initContainer — an override
+//     skips start.sh, steamcmd is never fetched, and nothing is installed;
+//   * GAME_ID is the Steam appid (never the image's `template`);
+//   * the PVC mounts at SERVER_DIR, not DATA_DIR: a volume over /serverdata
+//     would hide the image's `serverdata/steamcmd/` directory, and the wget
+//     into it would fail on a fresh volume.
+//
+// NOT pinned here (needs the network): that a future tag keeps this contract.
+// Re-read the image config and layers when bumping a tag.
+describe("ich777 SteamCMD blueprints: the image's own entrypoint installs the game (library data)", () => {
+  const steamcmd = library().filter((bp) => bp.image.startsWith(ICH777_IMAGE_PREFIX));
+  const EXPECT: Record<string, { appId: string; gamePort: string }> = {
+    gmod: { appId: "4020", gamePort: "27015" },
+    unturned: { appId: "1110390", gamePort: "27015" },
+  };
+
+  test("the library actually contains the ich777 SteamCMD blueprints (not vacuous)", () => {
+    expect(steamcmd.map((b) => b.name).sort()).toEqual(["gmod", "unturned"]);
+  });
+
+  for (const bp of steamcmd) {
+    test(`${bp.name}: satisfies the ich777 contract (steamcmd-contract.ts)`, () => {
+      const podSpec = (one(renderDeployable(bp, instance(`${bp.name}-srv`, { blueprint: bp.name })), "StatefulSet").spec as any).template.spec;
+      expect(ich777ContractViolations(podSpec, EXPECT[bp.name]!)).toEqual([]);
+    });
+  }
+
+  test("gmod: GAME_NAME is the srcds game directory", () => {
+    expect(steamcmd.find((b) => b.name === "gmod")?.env?.GAME_NAME).toBe("garrysmod");
+  });
+
+  // The helper must be able to fail: the pre-#17729 gmod shape trips it.
+  test("control: the pre-#17729 gmod shape is reported, not passed", () => {
+    const old: Blueprint = {
+      name: "gmod-old", stateful: true, image: "ghcr.io/ich777/steamcmd:garrysmod",
+      install: "/opt/steamcmd/steamcmd.sh +force_install_dir /data +login anonymous +app_update 4020 validate +quit",
+      command: ["/data/srcds_run"], storage: { size: "1Gi", mountPath: "/data" },
+    };
+    const podSpec = (one(renderDeployable(old, instance("old", { blueprint: "gmod-old" })), "StatefulSet").spec as any).template.spec;
+    expect(ich777ContractViolations(podSpec, { appId: "4020", gamePort: "27015" }).length).toBeGreaterThanOrEqual(5);
+  });
+});
+
+// ── atmoz/sftp sidecars are opt-in (library data, rendered) ──────────────
+// PR #17736 / workitem 081M3K57P0A087G0R000AZ486D; the full contract, the uid:gid
+// reasoning and the stub-based runner live in steamcmd-contract.ts.
+//   gmod/unturned: 99:100 (ich777 start.sh chowns DATA_DIR to UID=99 GID=100)
+//   arma-reforger: 1000:1000 (acemod image runs as root; SFTP is not served as root,
+//                  so the fsGroup — read via the group, write to game files NOT guaranteed)
+describe("atmoz/sftp sidecars are opt-in: idle without a key, start atmoz with a user spec once one exists", () => {
+  const withSftp = library().filter((bp) => (bp.sidecars ?? []).some((s) => s.image.startsWith("atmoz/sftp")));
+  const OWNER: Record<string, string> = { gmod: "99:100", unturned: "99:100", "arma-reforger": "1000:1000" };
+  const ROOT = mkdtempSync(join(tmpdir(), "bp-sftp-keys-")).replaceAll("\\", "/");
+  afterAll(() => rmSync(ROOT, { recursive: true, force: true }));
+
+  test("the library has the three atmoz/sftp sidecar blueprints (not vacuous)", () => {
+    expect(withSftp.map((b) => b.name).sort()).toEqual(["arma-reforger", "gmod", "unturned"]);
+  });
+
+  for (const bp of withSftp) {
+    test(`${bp.name}: opt-in gate, optional keys ConfigMap, key-only user zeta::${OWNER[bp.name]}`, async () => {
+      const podSpec = (one(renderDeployable(bp, instance(`${bp.name}-srv`, { blueprint: bp.name })), "StatefulSet").spec as any).template.spec;
+      expect(await sftpGateViolations(podSpec, `${bp.name}-srv`, `zeta::${OWNER[bp.name]}`, ROOT)).toEqual([]);
+    });
+  }
+
+  // The runner must be able to fail: a bare sidecar (the pre-#17736 shape) trips it.
+  test("control: the pre-#17736 bare sidecar is reported, not passed", async () => {
+    const bare: Blueprint = {
+      name: "bare", stateful: true, image: "x", storage: { size: "1Gi", mountPath: "/d" },
+      sidecars: [{ name: "sftp", image: "atmoz/sftp:alpine", mountDataAt: "/home/zeta/data" }],
+    };
+    const podSpec = (one(renderDeployable(bare, instance("bare", { blueprint: "bare" })), "StatefulSet").spec as any).template.spec;
+    expect((await sftpGateViolations(podSpec, "bare", "zeta::99:100", ROOT)).length).toBeGreaterThanOrEqual(3);
+  });
+});
+
+// ── library Blueprints serve on the port they declare ───────────────────
+// The `web` Blueprint ran `nginx:1.27-alpine` while declaring port 8080. That image's
+// config says `ExposedPorts {"80/tcp"}` and runs as root, so the pod was Running with
+// nothing listening on the containerPort, the Service targetPort and the HTTPRoute
+// backend the engine renders from that one number -- and with no probe, nothing said so.
+//
+// A render cannot see this: the mismatch is between the Blueprint and the IMAGE. So the
+// image half is a table, read from the registry config blobs (linux/amd64), 2026-10-01:
+//   library/nginx:1.27-alpine                    ExposedPorts 80/tcp                no User
+//   nginxinc/nginx-unprivileged:1.29-alpine      ExposedPorts 8080/tcp              User 101
+//   library/postgres:16-alpine                   ExposedPorts 5432/tcp
+// An image with no row cannot be checked and FAILS rather than passing -- unknown is not
+// agreement. Game servers are configured by environment rather than by image default, so
+// for them the check is that the env names the same port the Blueprint declares.
+describe("library Blueprints serve on the port they declare", () => {
+  /** Docker Hub repository (no registry host, tag or digest) -> the TCP ports its image listens on. */
+  const IMAGE_TCP_PORTS: Record<string, number[]> = {
+    "nginxinc/nginx-unprivileged": [8080],
+    "library/nginx": [80],
+    "library/postgres": [5432],
+  };
+  const hubRepo = (image: string): string => {
+    const noDigest = image.split("@")[0]!;
+    const noTag = noDigest.replace(/:[^/:]+$/, "");
+    const stripped = noTag.replace(/^(registry-1\.)?docker\.io\//, "");
+    return stripped.includes("/") ? stripped : `library/${stripped}`;
+  };
+  const tcpBlueprints = library().filter((bp) => (bp.ports ?? []).some((p) => (p.protocol ?? "TCP") === "TCP"));
+  /** Why a Blueprint's declared TCP ports cannot be served by its image; empty = they can. */
+  const portViolations = (bp: Blueprint): string[] => {
+    const known = IMAGE_TCP_PORTS[hubRepo(bp.image)];
+    if (known === undefined) return [`${bp.name}: no listen-port row for image ${bp.image}; add one from its registry config`];
+    return (bp.ports ?? [])
+      .filter((p) => (p.protocol ?? "TCP") === "TCP" && !known.includes(p.port))
+      .map((p) => `${bp.name}: port ${p.name}=${p.port} but ${bp.image} listens on ${known.join(",")}`);
+  };
+
+  test("the library has TCP-serving Blueprints (not vacuous)", () => {
+    expect(tcpBlueprints.map((b) => b.name).sort()).toEqual(["postgres", "web"]);
+  });
+
+  for (const bp of tcpBlueprints) {
+    test(`${bp.name}: every declared TCP port is one its image listens on`, () => {
+      expect(portViolations(bp)).toEqual([]);
+    });
+  }
+
+  test("web: renders containerPort, Service targetPort and probe on the port nginx-unprivileged listens on", () => {
+    const web = library().find((b) => b.name === "web")!;
+    expect(hubRepo(web.image)).toBe("nginxinc/nginx-unprivileged");
+    const objs = renderDeployable(web, instance("site", { blueprint: "web" }));
+    const container = (one(objs, "Deployment").spec as any).template.spec.containers[0];
+    expect(container.ports[0].containerPort).toBe(8080);
+    expect((one(objs, "Service").spec as any).ports[0].targetPort).toBe(8080);
+    // The probe is what makes a future mismatch visible: NotReady, not silently Running.
+    expect(container.readinessProbe?.httpGet?.port).toBe(8080);
+  });
+
+  test("control: the pre-fix pairing (library nginx on 8080) is reported, not passed", () => {
+    const prefix: Blueprint = { name: "web", image: "nginx:1.27-alpine", ports: [{ name: "http", port: 8080, web: true }] };
+    expect(portViolations(prefix)).toEqual(["web: port http=8080 but nginx:1.27-alpine listens on 80"]);
+    // ...and an image nobody wrote a row for is a failure, never a pass.
+    expect(portViolations({ name: "x", image: "example.org/unknown:1", ports: [{ name: "p", port: 1 }] })[0]).toContain("no listen-port row");
+  });
+
+  test("game Blueprints: the env port equals the declared UDP port", () => {
+    const ENV_PORT: Record<string, string> = { gmod: "GAME_PORT", unturned: "GAME_PORT", "arma-reforger": "SERVER_BIND_PORT" };
+    for (const [name, key] of Object.entries(ENV_PORT)) {
+      const bp = library().find((b) => b.name === name)!;
+      const vals = resolveValues(bp, instance(`${name}-srv`, { blueprint: name }));
+      const declared = (bp.ports ?? [])[0]!.port;
+      expect(substitute(bp.env![key]!, vals), `${name}: ${key}`).toBe(String(declared));
+    }
+  });
+});
+
+// ── no Blueprint ships a known credential ──────────────────────────────
+// docs/ops/INSTALL-TIME-CONFIG.md row 24. The postgres Blueprint had a `PASSWORD` variable that
+// defaulted to "change-me": every instance that did not set one ran with the SAME password, in the
+// clear in its pod spec. A default on a credential-shaped variable is a known credential on every
+// install, so the library may not carry one; a credential arrives from a per-instance Secret, and
+// a missing Secret stops the pod loudly (CreateContainerConfigError) instead of starting insecure.
+describe("no Blueprint ships a known credential", () => {
+  const CREDENTIAL_NAME = /pass(word|wd)|secret|token|credential|\bkey\b|_key$|_pwd$/i;
+
+  test("THE DEFECT: no shipped Blueprint has a credential-named variable with a default", () => {
+    const offenders = library().flatMap((bp) =>
+      (bp.variables ?? []).filter((v) => CREDENTIAL_NAME.test(v.name) && v.default !== undefined).map((v) => `${bp.name}.${v.name}=${JSON.stringify(v.default)}`),
+    );
+    expect(offenders).toEqual([]);
+  });
+
+  test("no shipped Blueprint passes a credential-named env var in plaintext", () => {
+    const offenders = library().flatMap((bp) =>
+      Object.keys(bp.env ?? {}).filter((k) => CREDENTIAL_NAME.test(k)).map((k) => `${bp.name}.env.${k}`),
+    );
+    expect(offenders).toEqual([]);
+  });
+
+  test("postgres takes its password from a Secret named for the instance, and renders no plaintext password", () => {
+    const pg = library().find((b) => b.name === "postgres")!;
+    const objs = renderDeployable(pg, instance("orders-db", { blueprint: "postgres" }));
+    const main = (one(objs, "StatefulSet").spec as any).template.spec.containers[0];
+    expect(main.env.filter((e: any) => e.name === "POSTGRES_PASSWORD")).toEqual([
+      { name: "POSTGRES_PASSWORD", valueFrom: { secretKeyRef: { name: "orders-db-credentials", key: "password" } } },
+    ]);
+    expect(JSON.stringify(objs)).not.toContain("change-me");
+  });
+
+  test("two instances get two DIFFERENT Secret names (no shared credential)", () => {
+    const pg = library().find((b) => b.name === "postgres")!;
+    const name = (n: string) =>
+      (one(renderDeployable(pg, instance(n, { blueprint: "postgres" })), "StatefulSet").spec as any).template.spec.containers[0].env.find((e: any) => e.name === "POSTGRES_PASSWORD").valueFrom.secretKeyRef.name;
+    expect(name("a-db")).toBe("a-db-credentials");
+    expect(name("b-db")).toBe("b-db-credentials");
+  });
+
+  test("a Secret name is templated with the same variable map as env values", () => {
+    const bp: Blueprint = { name: "x", image: "x:1", envFrom: [{ name: "TOKEN", secret: "${RESOURCE_NAME}-tok", key: "t" }] } as Blueprint;
+    const main = (one(renderDeployable(bp, instance("svc", { blueprint: "x" })), "Deployment").spec as any).template.spec.containers[0];
+    expect(main.env).toContainEqual({ name: "TOKEN", valueFrom: { secretKeyRef: { name: "svc-tok", key: "t" } } });
   });
 });

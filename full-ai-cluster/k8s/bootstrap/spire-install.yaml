@@ -53,6 +53,37 @@ spec:
   version: 0.24.2
   targetNamespace: spire
   createNamespace: true
+  # WP26 (081M38GCTFX087G0R003MMTXJE), MEASURED on first-boot-replica run
+  # 35946414428: this job's `helm install` permanently CrashLoopBackOff'd
+  # (66 retries over 97 minutes, never once succeeding) with
+  #   Error: INSTALLATION FAILED: unable to continue with install:
+  #   ServiceAccount "spire-spiffe-csi-driver" in namespace "spire" exists
+  #   and cannot be imported into the current release: invalid ownership
+  #   metadata; annotation validation error: missing key
+  #   "meta.helm.sh/release-name": must be set to "spire"
+  #
+  # THIS IS THE HANDOFF RACING ITSELF, not a chart defect. The design (see
+  # the spire-crds HelmChart above, "K3S at first boot, then the Application
+  # adopts it") is that THIS bootstrap install creates the release and
+  # ArgoCD's spire Application (k8s/applications/spire/Application.yaml,
+  # sync-wave -50) takes over afterward. Nothing gates ArgoCD's reconcile on
+  # this job's completion -- it is a separate controller with no
+  # dependency edge on a k3s HelmChart CR -- so ArgoCD can (and, on this
+  # run, did) apply the identical spiffe-csi-driver ServiceAccount FIRST via
+  # a plain `kubectl apply`, which writes no `meta.helm.sh/*` annotations.
+  # Helm 3's install-time ownership check then refuses to touch that object
+  # forever: nothing about a retry changes the annotation, so every one of
+  # the 66 observed retries failed identically -- not a transient race that
+  # self-resolves, a permanent one.
+  #
+  # `takeOwnership` is the k3s helm-controller's own field for exactly this
+  # (helm.cattle.io/v1 HelmChartSpec: "Set to True if helm should take
+  # ownership of existing resources") -- it lets THIS install adopt
+  # resources that already exist without Helm's bookkeeping annotations,
+  # whichever installer put them there, instead of refusing outright. It
+  # does not change what gets installed, only whether a pre-existing,
+  # unowned match blocks the install.
+  takeOwnership: true
   valuesContent: |-
     global:
       spire:
@@ -68,7 +99,34 @@ spec:
       persistence:
         type: pvc
         size: 5Gi
-        storageClass: zeta-local-path
+        storageClass: zeta-block-local
+      # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT) -- EQUAL to
+      # k8s/applications/spire/Application.yaml, which adopts this release. Chart default
+      # is failureThreshold 2 x timeout 3s at a 60s period (running-stall tolerance 63s);
+      # 3 failures and a 10s timeout give kill budget 135s, tolerance 130s. See that file
+      # for the evidence (run 36685251210, constrained first-boot replica).
+      livenessProbe:
+        failureThreshold: 3
+        initialDelaySeconds: 15
+        periodSeconds: 60
+        timeoutSeconds: 10
+      # PINNED 2026-09-22. `spire-lib.kubectl-image` (charts/spire-lib/templates/_helpers.tpl
+      # in chart 0.24.2) derives this hook image's tag from `.Capabilities.KubeVersion.Version`
+      # whenever `tools.kubectl.image.tag` is empty -- its own default. K3S reports
+      # `v1.35.7+k3s1`, the helper strips that to `v1.35.7`, and `rancher/kubectl:v1.35.7` has
+      # never been published (Docker Hub 404; confirmed live on GitHub Actions run
+      # 35687536936: helm-install-spire's post-install-job ErrImagePull/NotFound-loops
+      # forever). `rancher/kubectl:v1.35.6` IS published, multi-arch (linux/amd64 +
+      # linux/arm64 verified via the Docker Hub tags API), and is the newest tag that exists --
+      # so pin here rather than let the chart derive a tag from a cluster version the image
+      # publisher hasn't caught up to yet. Four hook templates read this same value
+      # (post-install, post-upgrade, pre-delete twice); pinning it once here fixes all four.
+      # Mirrored at k8s/applications/spire/Application.yaml (the ArgoCD twin) -- keep both in
+      # sync, see bootstrap-application-pin-parity.
+      tools:
+        kubectl:
+          image:
+            tag: v1.35.6
     spire-agent:
       workloadAttestors:
         k8s: { enabled: true, skipKubeletVerification: false }

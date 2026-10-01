@@ -26,7 +26,35 @@
     # Imported here for the same reason the two above are: this file owns the
     # option's value, so it owns the import.
     ./k3s-join-intent-preflight.nix
+
+    # WP9 (081M33STPKN087G0R0004B5CAK): the Docker Hub pull-through mirror.
+    # Imported here AND on k3s-server.nix — an agent pulls its own images
+    # (kubelet, CNI, workload pods) independently of the control plane, and a
+    # worker sharing the founder's home NAT is exactly the "second node
+    # behind the same NAT" case that pushes first boot over Docker Hub's
+    # 100-pull/6h anonymous quota. See k3s-registry-mirrors.nix's header.
+    ./k3s-registry-mirrors.nix
+
+    # WP20 (081M34R7P99087G0R000H77GX9): see that module's header. Imported
+    # here AND on k3s-server.nix -- nixpkgs names the unit "k3s" on both
+    # roles, so the ordering risk and the node-ip risk are identical.
+    ./k3s-wait-for-address.nix
+
+    # WP25 (081M38G8NGC087G0R001GEGEDK): see that module's header. Imported
+    # here AND on k3s-server.nix -- an agent's own kubelet/agent certs live
+    # under this SAME path on a server too (its embedded agent), so the
+    # zero-length-file defect and the fix are identical on both roles.
+    ./k3s-agent-tls-self-heal.nix
+
+    # 081M3K1K1SY087G0R0010A76XY: same kernel-level protection as the server
+    # (k3s.service here holds the kubelet and containerd every pod depends on).
+    ./k3s-process-protection.nix
   ];
+
+  # The agent's reservation targets are k3s-process-protection.nix's defaults
+  # (kube 250m/512Mi, system 250m/512Mi, eviction-hard 500Mi): an agent runs no
+  # apiserver or etcd, so it reserves and protects less than the server's 2Gi.
+  # They are applied at boot, scaled to the node (081M3KC68TK087G0R002NT64S8).
 
   # k3s's join is the join (Aaron 2026-08-13, closing PR #10493's open
   # question). Nothing below implements a join; the observer only reports
@@ -65,6 +93,41 @@
       # rejects them on agents with a `flag not supported` error.
       # Cilium owns CNI on both sides; the server-side flags are
       # what disables flannel cluster-wide.
+
+      # `--kubelet-arg` is NOT one of those server-only flags — it configures
+      # THIS node's own kubelet, so it must be repeated here rather than
+      # inherited. Same value and same reasoning as k3s-server.nix's copy:
+      # the kubelet default `max-pods` (110) is a pod-COUNT ceiling a
+      # single-node metal install's measured steady state (~124 pods, see
+      # k3s-server.nix's comment) already exceeds, and 220 stays under the
+      # 254-address /24 Cilium's cluster-pool IPAM hands each node.
+      "--kubelet-arg=max-pods=220"
+
+      # Node reservations — the agent's half, and DELIBERATELY SMALLER than the
+      # server's. The long derivation lives on k3s-server.nix's copy and is not
+      # repeated; what differs here is the only thing that should:
+      #
+      #   AN AGENT RUNS NO APISERVER. On k3s the apiserver, scheduler,
+      #   controller-manager and kine all live inside `k3s.service` on the
+      #   SERVER, so the server reserves for them. An agent's `k3s-agent.service`
+      #   is kubelet plus containerd and nothing else, so 250m / 512Mi covers
+      #   what is actually there rather than copying a number sized for a
+      #   process this node does not run.
+      #
+      # Reserving the server's 500m/2Gi here would withhold half a core from
+      # pods on every worker to protect a control plane that is not on it --
+      # which is how a reservation becomes a tax. `system-reserved` and the
+      # eviction threshold ARE the same on both: the OS and the kernel's OOM
+      # behaviour do not care which k3s role the node holds.
+      #
+      # Same honest limit as the server copy: without `--kube-reserved-cgroup`
+      # these are ACCOUNTING, not ENFORCEMENT -- they stop the scheduler
+      # over-committing the node, and do not guarantee shares under contention.
+      #
+      # The values themselves are no longer flags here: k3s-process-protection.nix
+      # writes them at boot from this role's targets, scaled to the node, because
+      # a static reservation larger than a small node's memory makes the kubelet
+      # refuse to start (081M3KC68TK087G0R002NT64S8).
     ];
   };
 
@@ -89,4 +152,6 @@
   systemd.tmpfiles.rules = [
     "d /var/lib/rancher/k3s 0755 root root - -"
   ];
+
+  # WP20 root-cause fix: see ./k3s-wait-for-address.nix (imported above).
 }

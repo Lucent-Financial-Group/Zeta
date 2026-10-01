@@ -15,40 +15,61 @@ import {
   buildDevAdminSecretManifest,
   buildDevSharedSecretManifest,
   buildDevRegistryPullSecretManifest,
+  composeOpenSearchAdminPassword,
   DEV_BOOTSTRAP_SECRETS,
   DEV_SHARED_SECRETS,
   DEV_CILIUM_LB_KIND_CRDS,
   DEV_GHCR_PULL_SECRET,
   devCiliumLbKindManifestPath,
   devStorageAliasManifestPath,
+  DEV_STOCK_DEFAULT_STORAGE_CLASSES,
   resolveRegistryToken,
   REPO_ROOT,
 } from "./lib.ts";
+import type { DevBootstrapSecretSpec } from "./lib.ts";
 import { CHART_ROTATION_CONSTRAINTS } from "../chart-rotation-conformance.ts";
 import { SERVED_GIT_REF } from "../lane-tree-source.ts";
 
 /**
- * Apply the dev/CI alias StorageClasses, BEFORE the app-of-apps root syncs.
+ * Apply the dev/CI storage-CAPABILITY bindings, BEFORE the app-of-apps root syncs.
+ *
+ * Charts name a capability (`zeta-block-replicated`, `zeta-block-local`), never
+ * a provider (storage-capabilities.ts); this is where dev binds the two RWO
+ * capabilities, both to `rancher.io/local-path`, the provisioner kind and k3s
+ * already run -- it declares NAMES, never a second provisioner Deployment.
  *
  * Order is load-bearing: a PVC created by a synced Application before its class
- * exists sits `Pending` and only a `WaitForFirstConsumer` retry saves it. Both
- * aliases bind to `rancher.io/local-path`, the provisioner kind and k3s already
- * run -- this declares NAMES, never a second provisioner Deployment.
+ * exists sits `Pending` and only a `WaitForFirstConsumer` retry saves it.
+ *
+ * THEN IT CLEARS THE STOCK DEFAULT. kind ships `standard` and k3s ships
+ * `local-path`, each marked default; `zeta-block-local` is the default on metal
+ * and is marked default here too, so the stock class is un-marked and a chart
+ * that omits `storageClassName` resolves the same way on both substrates. A
+ * class that is absent (k3d with local-storage disabled, a future kind) is
+ * skipped -- absence is not a failure here, it is already the state we want.
  *
  * Shared by the kind and k3d bring-ups on purpose. `isExcludedFromIncludedProof`
- * is provider-independent, so if only one provider created the `longhorn` alias
- * the harness would assert longhorn-backed Applications on a substrate that
- * cannot bind them, and they would hang `Pending` instead of failing.
+ * is provider-independent, so if only one provider bound a capability the
+ * harness would assert Applications on a substrate that cannot bind them, and
+ * they would hang `Pending` instead of failing.
  *
  * EXPORTED because `apply-root-app.ts` is a THIRD entrypoint that applies the
  * root catalogue without going through either bring-up. Left alone it would
- * sync longhorn-backed Applications into a cluster with no such class -- the
+ * sync storage-backed Applications into a cluster with no such class -- the
  * same hazard, reached by a door the bring-up falsifiers do not watch.
  */
 export function applyDevStorageClassAliases(ports: DevClusterPorts): void {
-  console.log("Ensuring dev/CI alias StorageClasses (zeta-local-path, longhorn) ...");
-  ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("zetaLocalPath"));
-  ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("longhorn"));
+  console.log("Binding dev/CI storage capabilities (zeta-block-local [default], zeta-block-replicated) ...");
+  ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("blockLocal"));
+  ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("blockReplicated"));
+  for (const stock of DEV_STOCK_DEFAULT_STORAGE_CLASSES) {
+    if (!ports.controlPlane.resourceExists(`storageclass/${stock}`, null)) continue;
+    ports.controlPlane.mergePatch(
+      `storageclass/${stock}`,
+      null,
+      JSON.stringify({ metadata: { annotations: { "storageclass.kubernetes.io/is-default-class": "false" } } }),
+    );
+  }
 }
 
 /**
@@ -122,9 +143,42 @@ export function applyVendoredGatewayApiCrds(ports: DevClusterPorts): void {
  */
 export function applyK3dControlPlaneHostsAlias(ports: DevClusterPorts, kubeApiHost: string): void {
   console.log("Mapping control-plane -> 127.0.0.1 on the k3d server node (metal k3s-server.nix founder hosts) ...");
-  const script =
-    "grep -qE '(^|[[:space:]])control-plane($|[[:space:]])' /etc/hosts || echo '127.0.0.1 control-plane' >> /etc/hosts";
-  ports.process.run("docker", ["exec", kubeApiHost, "sh", "-c", script], { timeoutMs: 30_000 });
+  mapControlPlaneToLoopback(ports, kubeApiHost);
+}
+
+/** The idempotent `/etc/hosts` line both substrates need, written into one node container. */
+export const CONTROL_PLANE_HOSTS_SCRIPT =
+  "grep -qE '(^|[[:space:]])control-plane($|[[:space:]])' /etc/hosts || echo '127.0.0.1 control-plane' >> /etc/hosts";
+
+function mapControlPlaneToLoopback(ports: DevClusterPorts, nodeContainer: string): void {
+  ports.process.run("docker", ["exec", nodeContainer, "sh", "-c", CONTROL_PLANE_HOSTS_SCRIPT], { timeoutMs: 30_000 });
+}
+
+/**
+ * The SAME mapping on the kind control-plane node, for `--cni cilium` (2026-09-23).
+ *
+ * MEASURED, dispatch run 35929570637 (PROBE kind+Cilium included proof): 14
+ * minutes into the run `cilium-*` sat in Init:CrashLoopBackOff and
+ * `cilium-operator` in CrashLoopBackOff, and 30 Applications went Degraded or
+ * Progressing behind them (cert-manager's webhook unreachable, then everything
+ * that needs it). The sequence is the one this function's k3d twin was written
+ * for: the bring-up helm-installs Cilium with `k8sServiceHost` rewritten to the
+ * kind node's Docker DNS name, then the included lane LIFTS the `cilium`
+ * Application (`ciliumOwnsCniSlot`), ArgoCD adopts the release and selfHeals it
+ * back to the metal value `control-plane` -- a name the kind node cannot
+ * resolve. k3d had this line; kind did not.
+ *
+ * Resolving the name is half of it. The agent dials `https://control-plane:6443`
+ * and verifies the API server's certificate, so the kind profile also SANs
+ * `control-plane` (ci.cilium.kind-config.yaml, kubeadm `certSANs`) -- the same
+ * pair metal gets from k3s-server.nix (`/etc/hosts` + `--tls-san=control-plane`).
+ * The cilium agent is hostNetwork, so the node's `/etc/hosts` is what it reads.
+ *
+ * kind names its control-plane container `<cluster>-control-plane`.
+ */
+export function applyKindControlPlaneHostsAlias(ports: DevClusterPorts, clusterName: string): void {
+  console.log("Mapping control-plane -> 127.0.0.1 on the kind control-plane node (parity with metal and k3d) ...");
+  mapControlPlaneToLoopback(ports, `${clusterName}-control-plane`);
 }
 
 /**
@@ -191,9 +245,35 @@ export function applyDevBootstrapSecrets(ports: DevClusterPorts): void {
       continue;
     }
     console.log(`Minting dev/CI credential ${namespace}/${name} (value is per-cluster and never logged) ...`);
-    ports.controlPlane.applyInlineManifest(buildDevAdminSecretManifest(spec, randomBytes(24).toString("base64url")));
+    ports.controlPlane.applyInlineManifest(buildDevAdminSecretManifest(spec, mintDevAdminPassword(spec)));
   }
   applyDevSharedSecrets(ports);
+}
+
+/**
+ * Draw one admin-secret password, honoring `spec.passwordPolicy` when the consumer's
+ * chart documents a strength rule this mint must satisfy BY CONSTRUCTION.
+ *
+ * WP22 (081M35DFB9B087G0R003WD5WJ6): every OTHER bootstrap secret's consumer was audited
+ * and found unconstrained (see `DevBootstrapSecretSpec.passwordPolicy`'s docstring in
+ * `lib.ts`), so `randomBytes(24).toString("base64url")` stays their draw -- it already
+ * guarantees upper/lower/digit at astronomically high probability and none of them require
+ * a special character. `"opensearch-strength"` is the one exception: OpenSearch Security's
+ * `OPENSEARCH_ADMIN_PASSWORD_REGEX` requires all four classes, and base64url's draw has only
+ * ~62% odds per attempt of including `-`/`_` (its only non-alphanumeric characters), so
+ * relying on chance would fail ~38% of dev/CI clusters the same way the metal hex draw
+ * failed 100% of them before WP19c. `composeOpenSearchAdminPassword` guarantees the classes
+ * instead of hoping for them, using the SAME hex-nibble maps as WP19c's metal fix.
+ */
+function mintDevAdminPassword(spec: DevBootstrapSecretSpec): string {
+  if (spec.passwordPolicy === "opensearch-strength") {
+    return composeOpenSearchAdminPassword(
+      randomBytes(1).toString("hex"),
+      randomBytes(1).toString("hex"),
+      randomBytes(31).toString("hex"),
+    );
+  }
+  return randomBytes(24).toString("base64url");
 }
 
 /**
@@ -287,9 +367,7 @@ export interface CredentialRotation {
 export function rotateDevCredential(ports: DevClusterPorts, target: string): CredentialRotation {
   const shared = DEV_SHARED_SECRETS.find((spec) => spec.name === target);
   if (shared !== undefined) {
-    const missing = shared.namespaces.filter(
-      (ns) => !ports.controlPlane.resourceExists(`secret/${shared.name}`, ns),
-    );
+    const missing = shared.namespaces.filter((ns) => !ports.controlPlane.resourceExists(`secret/${shared.name}`, ns));
     if (missing.length > 0) {
       return {
         credential: shared.name,
@@ -342,9 +420,7 @@ export function rotateDevCredential(ports: DevClusterPorts, target: string): Cre
   }
 
   console.log(`Rotating dev/CI credential ${target} (new value is per-cluster and never logged) ...`);
-  ports.controlPlane.applyInlineManifest(
-    buildDevAdminSecretManifest(spec, randomBytes(24).toString("base64url")),
-  );
+  ports.controlPlane.applyInlineManifest(buildDevAdminSecretManifest(spec, mintDevAdminPassword(spec)));
   return {
     credential: target,
     rotated: true,
@@ -384,7 +460,6 @@ export function allDevCredentialTargets(): readonly string[] {
   ];
 }
 
-
 /**
  * Which Applications keep the old value until restarted.
  *
@@ -396,7 +471,6 @@ export function allDevCredentialTargets(): readonly string[] {
 function consumersOf(credential: string): readonly string[] {
   return CHART_ROTATION_CONSTRAINTS.filter((c) => c.secret === credential).map((c) => c.consumer);
 }
-
 
 export function applyDevSharedSecrets(ports: DevClusterPorts): void {
   for (const spec of DEV_SHARED_SECRETS) {
@@ -479,6 +553,11 @@ export function applyDevRegistryPullSecret(
 }
 
 export interface KindCiBringUpOptions {
+  /**
+   * One lane's Application directories; absent is the whole roster. Scopes the
+   * root catalogue's exclude glob via `laneScopedExcludeGlob`.
+   */
+  readonly laneDirs?: readonly string[];
   readonly configPath: string;
   readonly clusterName: string;
   readonly gitRef: string;
@@ -528,6 +607,11 @@ export interface KindCiBringUpOptions {
 }
 
 export interface K3dDevBringUpOptions {
+  /**
+   * One lane's Application directories; absent is the whole roster. Scopes the
+   * root catalogue's exclude glob via `laneScopedExcludeGlob`.
+   */
+  readonly laneDirs?: readonly string[];
   readonly configPath: string;
   readonly clusterName: string;
   readonly agentCount: number;
@@ -583,6 +667,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
   if (cni === "cilium") {
     console.log("Waiting for Kubernetes API readiness (nodes stay NotReady until Cilium is the CNI) ...");
     controlPlane.waitForApiReady(60, 3000);
+    applyKindControlPlaneHostsAlias(ports, options.clusterName);
     applyVendoredGatewayApiCrds(ports);
     installShippedCiliumOnKind(ports, options.clusterName);
     controlPlane.waitForAllNodesReady(180);
@@ -635,7 +720,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
       // the failure that cached the seaweedfs manifest error.
       version: "10.8.0",
       namespace: "argocd",
-      setValues: ["server.service.type=ClusterIP"],
+      setValues: [...ARGOCD_HELM_SET_VALUES],
       wait: true,
     });
   }
@@ -652,7 +737,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
   // readiness wait removes entirely.
   const rootRepoUrl = applyLaneTreeSource(ports, options.laneTree) ?? options.gitRepoUrl;
   const catalogRef = laneTreeCatalogRef(options.laneTree, options.gitRef);
-  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "kind", cni);
+  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "kind", cni, options.laneDirs ?? null);
 }
 
 /**
@@ -664,10 +749,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
  * contain. Absent a lane tree, the bring-up ref is still what GitHub-hosted
  * catalogs need on a PR.
  */
-function laneTreeCatalogRef(
-  laneTree: { readonly gitRef?: string } | undefined,
-  bringUpRef: string,
-): string {
+function laneTreeCatalogRef(laneTree: { readonly gitRef?: string } | undefined, bringUpRef: string): string {
   if (laneTree === undefined) return bringUpRef;
   return laneTree.gitRef ?? SERVED_GIT_REF;
 }
@@ -850,6 +932,23 @@ export function applyK3dCoreDnsUpstreamOverride(ports: DevClusterPorts): void {
  */
 export const DEV_COREDNS_UPSTREAM_FORWARD = "forward . 1.1.1.1 8.8.8.8";
 
+/**
+ * The `--set` list for the kind and k3d ArgoCD bootstrap installs. ONE list,
+ * so the two lanes cannot drift apart from each other.
+ *
+ * `redis.image.repository` moves the chart's redis off its default,
+ * `ecr-public.aws.com/docker/library/redis`, which failed k8s-lane-partition
+ * run 36364582440 with `toomanyrequests: Data limit exceeded` (a data quota on
+ * anonymous ecr-public; retries do not clear it). docker.io serves the same
+ * bytes. Must equal the value in k8s/bootstrap/argocd-install.yaml and the
+ * self-managed Application, which carries it forward after wave -90
+ * (081M3K1K20Y087G0R00088W4DD; pinned in bootstrap-image-preload.test.ts).
+ */
+export const ARGOCD_HELM_SET_VALUES: readonly string[] = [
+  "server.service.type=ClusterIP",
+  "redis.image.repository=docker.io/library/redis",
+];
+
 const KIND_CILIUM_COREDNS_FALLBACK_COREFILE = [
   ".:53 {",
   "    errors",
@@ -1020,7 +1119,7 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
       // reasons, and the harness reaches ArgoCD through kubectl in both cases, so
       // no lane needs an externally-routable ArgoCD. Matching kind removes a
       // difference rather than adding one.
-      setValues: ["server.service.type=ClusterIP"],
+      setValues: [...ARGOCD_HELM_SET_VALUES],
       wait: true,
     });
   }
@@ -1040,7 +1139,7 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   // PROVIDER PASSED. Without it the catalogue keeps the static exclude glob
   // while the harness asserts the k3d-lifted roster -- asserted-but-unapplied,
   // which hangs for the full timeout and blames the Application.
-  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "k3d");
+  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "k3d", "kindnetd", options.laneDirs ?? null);
 }
 
 export function tearDownK3dDevCluster(ports: DevClusterPorts, clusterName: string): void {

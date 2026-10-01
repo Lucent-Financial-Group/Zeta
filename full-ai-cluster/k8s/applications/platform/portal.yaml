@@ -91,6 +91,12 @@ spec:
         prometheus.io/path: /metrics
     spec:
       serviceAccountName: portal
+      # STATUS 2026-10-01: THE PACKAGE IS NOW PUBLIC and the reference below is inert.
+      # An anonymous manifest GET on this image returns HTTP 200 (see the status note
+      # in full-ai-cluster/INJECTION-POINTS.md), so a missing `ghcr-pull` Secret is a
+      # kubelet warning, not an ImagePullBackOff. The paragraph below is the
+      # 2026-08-21 record and describes the PRIVATE state.
+      #
       # The image below lives in a PRIVATE GHCR package -- one of the two this
       # Application runs. An anonymous manifest GET against it takes HTTP 401, a
       # credentialed one takes HTTP 200 (measured 2026-08-21).
@@ -144,7 +150,7 @@ spec:
         name: rooms
       spec:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: longhorn
+        storageClassName: zeta-block-replicated
         resources:
           requests:
             storage: 5Gi
@@ -169,8 +175,11 @@ spec:
     # what lets the scrape config say what it means.
     - { name: metrics, port: 8080, targetPort: http }
 ---
-# Publish the portal on the shared Cilium Gateway (HTTPS via cert-manager). The
-# hostname is a placeholder — set it to your domain.
+# Publish the portal on the LAN Cilium Gateway, for ANY Host header — so it works
+# with no domain configured. The public, TLS-terminated route for
+# portal.<domain> exists only when the install supplied a domain, and lives in
+# the separate `platform-public-tls` Application (full-ai-cluster/k8s/public-tls/).
+# No hostname is hardcoded here, ever (081M3JG74G0087G0R001XJC837).
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -181,7 +190,6 @@ metadata:
 spec:
   parentRefs:
     - { name: zeta-gateway, namespace: zeta-platform }
-  hostnames: ["portal.zeta.example.com"]
   rules:
     - backendRefs:
         - { name: portal, port: 80 }

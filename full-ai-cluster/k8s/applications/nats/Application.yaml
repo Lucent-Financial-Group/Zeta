@@ -66,12 +66,48 @@ spec:
                 # chart: a stream whose max_bytes exceeds the store will hit
                 # the limit and age out or reject publishes.
                 size: 10Gi
-                storageClassName: longhorn
+                storageClassName: zeta-block-replicated
+        # REQUESTS DECLARED on the server container: `container.resources` is `{}` by chart
+        # default, so all three JetStream replicas rendered BestEffort -- a message bus whose
+        # Raft quorum is lost when two of three are evicted or starved past their liveness
+        # budget. Requests only, no limits: a memory limit OOM-kills a replica mid-snapshot.
+        # The reloader sidecar and nats-box have no `resources` key in chart 2.14.6 (the
+        # only one under natsBox is nested beneath `image` and is never read), so they take
+        # it through the chart's own `merge` extension point, which strategic-merges onto
+        # the rendered container.
+        container:
+          resources:
+            requests:
+              cpu: 6m
+              memory: 64Mi
+        reloader:
+          merge:
+            resources:
+              requests:
+                cpu: 2m
+                memory: 16Mi
         natsBox:
           enabled: true
+          container:
+            merge:
+              resources:
+                requests:
+                  cpu: 2m
+                  memory: 16Mi
   destination:
     server: https://kubernetes.default.svc
     namespace: nats
+  # ServerSideApply DELIBERATELY ABSENT -- same class as cockroachdb/headscale/
+  # hindsight, the spire precedent (spire/Application.yaml), and named by
+  # argo-cd#11143 commenter linhng98 as a chart this exact defect hits ("this issue
+  # appear with serverSideApply in any volumeClaimTemplates related helmchart
+  # (harbor, vault, eck, nats, ...)"). MEASURED 2026-09-22, chart 2.14.6 with this
+  # valuesObject: the `nats` StatefulSet's `volumeClaimTemplates[0]`
+  # (JSON-encoded 2778 bytes) sets only
+  # name/accessModes/storageClassName/resources.requests.storage. Live run
+  # 35713533700 showed exactly this resource OutOfSync while nats-box and the
+  # ConfigMap/Services stayed Synced. Largest resource this chart renders is this
+  # StatefulSet, ~94x under the 262144-byte last-applied-configuration cap.
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [ CreateNamespace=true ]

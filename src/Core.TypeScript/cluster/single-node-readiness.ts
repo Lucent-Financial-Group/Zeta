@@ -45,7 +45,7 @@
 // reports "this StatefulSet's redundancy is nominal, not real on N nodes".
 // Whether that is acceptable for a PoC is the ledger's (human's) call.
 
-import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync, statSync, type Dirent } from "node:fs";
 import { clusterDirs } from "./declared-cluster-trees.ts";
 import { join, relative, resolve, sep } from "node:path";
 import { parseAllDocuments } from "yaml";
@@ -77,8 +77,35 @@ import {
   type ResourceCatalogue,
 } from "./storage-profiles.ts";
 import { clusterDefaultStorageClass } from "./cluster-default-storage-class.ts";
+import {
+  METAL_STORAGE_BINDINGS_SOURCE,
+  metalPoolCapabilities,
+  metalStorageBindings,
+} from "./storage-capabilities.ts";
+import {
+  gpuEvidenceOf,
+  gpuLabelKey,
+  pciVendorIds,
+  splitDemand,
+  type SchedulableDemand,
+  type SelectedClaim,
+} from "./schedulable-demand.ts";
+import {
+  autoLonghornTailGib,
+  COMMITTED_LONGHORN_DEMAND_GIB,
+  COMMITTED_LONGHORN_SCHEDULABLE_GIB,
+  LOCAL_PATH_ADVISORY_GIB,
+  LONGHORN1_TAIL_AUTO,
+  ROOT_FLOOR_GIB,
+} from "../installer/longhorn-capacity-preflight.ts";
+import { classifySyncPolicy } from "./manual-sync-policy.ts";
+import {
+  DEFAULT_SNAPSHOT_PATH as DEFAULT_RESOURCE_REQUESTS_SNAPSHOT_PATH,
+  loadSnapshot as loadResourceRequestsSnapshot,
+  type AppMeasurement,
+} from "./rendered-resource-requests.ts";
 
-const REPO_ROOT = resolve(import.meta.dir, "../../..");
+export const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
 /** Charts whose default `podAntiAffinity.type` is `soft` — i.e. co-scheduling is ALLOWED unless overridden. */
 const SOFT_ANTIAFFINITY_BY_DEFAULT = new Set(["cockroachdb"]);
@@ -109,6 +136,23 @@ export interface StorageClaim {
   readonly gibibytes: number;
   /** Per-pod claims are multiplied by the StatefulSet replica count. */
   readonly replicas: number;
+  /**
+   * `[key, value]` pairs from the `nodeSelector` that governs this claim's
+   * owning workload — empty when nothing selects.
+   *
+   * 081M397QHX8087G0R003DQSY0B: a claim whose workload can never be placed is
+   * declared capacity that no node will ever be asked for, because every
+   * capability class is `WaitForFirstConsumer` and an unconsumed PVC provisions
+   * nothing. Carried on the claim so `schedulable-demand.ts` can split the
+   * total without re-walking the manifests.
+   *
+   * OPTIONAL, and absent means "no selector was read" rather than "no selector
+   * exists". Both readings leave the claim counted in DECLARED, which is the
+   * conservative direction: capacity leaves the total only when a selector is
+   * PRESENT and PROVEN unsatisfiable, so a fixture or caller that omits this
+   * cannot shrink the demand by accident.
+   */
+  readonly nodeSelector?: readonly (readonly [string, string])[];
 }
 
 export interface RootAppIdentity {
@@ -125,6 +169,8 @@ export interface Finding {
     | "false-redundancy"
     | "capacity-provenance"
     | "compute-provenance"
+    | "longhorn-geometry"
+    | "pod-budget"
     | "rung-coverage"
     | "storage-profile"
     | "resource-profile"
@@ -226,6 +272,35 @@ export interface Ledger {
    * inherited. Deleting the entry is the fix, and the fix is a maintainer call.
    */
   readonly acknowledgedRungBudgetGap: readonly string[];
+  /**
+   * Pod-COUNT shortfalls against the kubelet's configured `--max-pods` ceiling,
+   * recorded as `<declared>pods@<nodeCount>node(s)>><budget>pods@<hostname-or-"unset">`.
+   *
+   * Same shape as `acknowledgedComputeShortfall` and for the same reason: both
+   * numbers are in the key so any later growth in the steady-state pod count —
+   * or a lowered `max-pods` — re-reddens instead of being silently absorbed.
+   * Defaulted to EMPTY (not refused) in `readLedger`, same as
+   * `acknowledgedComputeShortfall`: an absent key can only make this check
+   * louder, never quieter.
+   */
+  readonly acknowledgedPodBudgetShortfall: readonly string[];
+  /**
+   * Longhorn pools that the INSTALLER's geometry cannot fill, recorded as
+   * `longhorn-geometry=<schedulable>GiB<<<demand>GiB@<hostname>`.
+   *
+   * Both numbers are in the key for the same reason as
+   * `acknowledgedComputeShortfall`: a roster that grows, or a `LONGHORN1_TAIL`
+   * that shrinks, re-reddens rather than being absorbed by an acknowledgement
+   * taken against different arithmetic. Defaulted to EMPTY in `readLedger` —
+   * an absent key can only make this check louder.
+   *
+   * NOTE what this can and cannot acknowledge. A node whose partitioned pool is
+   * too small is a HARDWARE fact somebody may knowingly carry. A
+   * `COMMITTED_LONGHORN_DEMAND_GIB` that has drifted from the roster is NOT
+   * acknowledgeable at all, because that is the installer refusing at a number
+   * no longer describing anything — an absent check wearing a threshold.
+   */
+  readonly acknowledgedLonghornGeometryShortfall: readonly string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -367,6 +442,74 @@ export function extractReplicaClaims(manifest: AppManifest, nodeCount: number): 
 }
 
 /** Nearest enclosing replica count for a storage field, so per-pod PVCs are multiplied correctly. */
+/**
+ * The one `nodeSelector` every document in a manifest agrees on, or `[]`.
+ *
+ * `[]` both when nothing selects and when two documents select DIFFERENTLY —
+ * the two are not distinguished on purpose, because both leave the claim in the
+ * DECLARED total and neither may shrink it.
+ */
+function unanimousSelector(manifest: AppManifest): readonly (readonly [string, string])[] {
+  const seen = new Map<string, readonly (readonly [string, string])[]>();
+  for (const doc of manifest.docs) {
+    for (const [field, value] of walk(doc)) {
+      if (lastSegment(field) !== "nodeSelector") continue;
+      if (!isRecord(value)) continue;
+      const pairs = Object.entries(value)
+        .filter((entry): entry is [string, string] => typeof entry[1] === "string")
+        .map(([key, selected]) => [key, selected] as const)
+        .sort((a, b) => stringCompare(a[0], b[0]));
+      if (pairs.length === 0) continue;
+      seen.set(pairs.map(([key, selected]) => `${key}=${selected}`).join(","), pairs);
+    }
+  }
+  return seen.size === 1 ? ([...seen.values()][0] ?? []) : [];
+}
+
+/**
+ * The `nodeSelector` governing a storage claim: the nearest enclosing one.
+ *
+ * Same nearest-shared-prefix idiom as `replicasGoverning` just below, and it
+ * inherits that function's honest limitation — this is a HEURISTIC over a
+ * generic YAML walk, not a Kubernetes owner-reference resolution. It can
+ * therefore attribute a neighbouring workload's selector to a claim, exactly as
+ * `replicasGoverning` is documented to borrow a neighbouring replica count.
+ *
+ * WHICH WAY THAT ERROR LEANS, and it is why the heuristic is acceptable here:
+ * attributing a selector that is not really there moves a claim OUT of the
+ * schedulable total, which is the ACQUITTING direction — so it must not be
+ * trusted on its own. It is not: a selector only removes capacity once
+ * `classifySelector` PROVES no registered node can carry it, and today nothing
+ * is provable, so every selected claim lands in the `undecidable` bucket and
+ * the exit code keeps using the DECLARED total regardless.
+ *
+ * `affinity.nodeAffinity` is deliberately NOT parsed. It expresses `In`/`NotIn`
+ * over sets with required-vs-preferred tiers, and a half-understood parse of it
+ * would produce confident wrong answers. An unparsed selector contributes
+ * nothing here, which leaves the claim in DECLARED — the safe direction.
+ */
+function selectorGoverning(doc: Json, storageField: string): readonly (readonly [string, string])[] {
+  let best: (readonly [string, string])[] = [];
+  let bestDepth = -1;
+  for (const [field, value] of walk(doc)) {
+    if (lastSegment(field) !== "nodeSelector") continue;
+    if (!isRecord(value)) continue;
+    const pairs = Object.entries(value)
+      .filter((entry): entry is [string, string] => typeof entry[1] === "string")
+      .map(([key, selected]) => [key, selected] as const)
+      .sort((a, b) => stringCompare(a[0], b[0]));
+    if (pairs.length === 0) continue;
+    const parent = field.slice(0, Math.max(0, field.lastIndexOf(".")));
+    const shared = parent.length > 0 && storageField.startsWith(parent.slice(0, parent.lastIndexOf(".") + 1));
+    const depth = shared ? parent.length : 0;
+    if (depth > bestDepth) {
+      bestDepth = depth;
+      best = [...pairs];
+    }
+  }
+  return best;
+}
+
 function replicasGoverning(doc: Json, storageField: string): number {
   let best = 1;
   let bestDepth = -1;
@@ -462,6 +605,18 @@ export function extractStorageClaims(
   const out: StorageClaim[] = [];
   const clusterDefault = options.clusterDefault ?? null;
   const instantiated = options.instantiated ?? new Set<string>();
+  // A PVC is very often its OWN document, with the nodeSelector on the sibling
+  // Deployment that mounts it (vllm is exactly this shape: `deployment.yaml`
+  // carries the selector and a `---`-separated PersistentVolumeClaim carries
+  // the storage). A per-document walk cannot see across that boundary, so the
+  // manifest-wide selector is computed once and used as the FALLBACK when a
+  // claim's own document declares none.
+  //
+  // USED ONLY WHEN EVERY SELECTOR IN THE MANIFEST AGREES. With two disagreeing
+  // workloads there is no single answer and attributing either would be a
+  // guess, so the claim keeps an empty selector and stays in DECLARED — the
+  // conservative direction, same as everywhere else in this split.
+  const manifestSelector = unanimousSelector(manifest);
   for (const doc of manifest.docs) {
     if (isTemplateDocument(doc, instantiated)) continue;
     for (const [field, value] of walk(doc)) {
@@ -479,6 +634,7 @@ export function extractStorageClaims(
       const size = sizeNear(doc, scope);
       if (size === null) continue;
       const governing = replicasGoverning(doc, field);
+      const nodeSelector = selectorGoverning(doc, field);
       const replicas = options.excludesPrimaryAt?.has(`${manifest.path} ${field}`) === true ? governing + 1 : governing;
       out.push({
         app: manifest.app,
@@ -487,6 +643,7 @@ export function extractStorageClaims(
         storageClass,
         gibibytes: size,
         replicas,
+        nodeSelector: nodeSelector.length > 0 ? nodeSelector : manifestSelector,
       });
     }
   }
@@ -653,6 +810,24 @@ export interface MeasuredNode {
   readonly cpuMillis: number | null;
   /** `spec.hardware.memory` parsed as DECIMAL bytes (see `siMemoryToMib`), in MiB. */
   readonly memoryMib: number | null;
+  /**
+   * `spec.hardware.gpu` — the LEGACY single display-device line, captured as
+   * `lspci -nn | grep -iE 'vga|3d|display' | head -1`. One device, so it
+   * establishes what IS there and never what is not.
+   */
+  readonly gpu?: string | null;
+  /**
+   * `spec.hardware.gpus` — EVERY display device, from the fixed capture.
+   * `null` means the registration predates it and is not an enumeration, which
+   * is the distinction `schedulable-demand.ts` refuses to blur: absence of
+   * evidence is not evidence of absence.
+   *
+   * Both GPU fields are OPTIONAL for the same reason `nodeSelector` is on a
+   * claim: a node with no recorded GPU evidence makes every GPU selector
+   * UNDECIDABLE, which keeps that capacity in the DECLARED total. Omitting them
+   * can never shrink the demand.
+   */
+  readonly gpus?: readonly string[] | null;
 }
 
 /**
@@ -784,6 +959,8 @@ export function collectMeasuredNodes(
       const rawMemory = at(at(spec, "hardware"), "memory");
       const coresRaw = typeof rawCores === "number" ? rawCores : null;
       const memoryRaw = typeof rawMemory === "string" ? rawMemory : null;
+      const rawGpu = at(at(spec, "hardware"), "gpu");
+      const rawGpus = at(at(spec, "hardware"), "gpus");
       out.push({
         path: rel,
         hostname: typeof rawHost === "string" ? rawHost : rel,
@@ -793,6 +970,10 @@ export function collectMeasuredNodes(
         memoryRaw,
         cpuMillis: coresRaw === null ? null : coresToMillis(coresRaw),
         memoryMib: memoryRaw === null ? null : siMemoryToMib(memoryRaw),
+        gpu: typeof rawGpu === "string" ? rawGpu : null,
+        gpus: Array.isArray(rawGpus)
+          ? rawGpus.filter((entry): entry is string => typeof entry === "string")
+          : null,
       });
     }
   }
@@ -1078,6 +1259,395 @@ export function findCapacityProvenance(
 
 
 // ---------------------------------------------------------------------------
+// LONGHORN GEOMETRY provenance — the PARTITIONING term the comparator above is
+// missing, and the reason it reads green on a cluster that cannot start.
+//
+// WHY A FOURTH COMPARATOR AND NOT A TWEAK TO `capacity-provenance`
+// ----------------------------------------------------------------
+// `capacity-provenance` bounds the roster by the SUM OF EVERY BLOCK DEVICE on
+// the smallest registered node. Its own header already states what that
+// ignores: it "counts the USB stick, and it ignores the ESP, the root
+// filesystem, swap, and Longhorn's own reserve". That was written as a note
+// about generosity — the bound convicts and never acquits, so over-counting was
+// the safe direction for the question it asks.
+//
+// It is not the safe direction for the question an OPERATOR asks, because the
+// missing term is not a reserve percentage. It is PARTITIONING. Measured
+// 2026-09-24 on the committed tree:
+//
+//   zeta-install.sh:70    LONGHORN1_TAIL="${LONGHORN1_TAIL:-1G}"
+//   zeta-install.sh       sgdisk -n "2:0:-${LONGHORN1_TAIL}"  -> root
+//   zeta-install.sh       sgdisk -n "3:0:0"                   -> longhorn1
+//   zeta-install.sh       mount longhorn1 at /var/lib/longhorn-disk1
+//   longhorn-disks.nix    dataDisks <- requiredMounts (those mountpoints ONLY)
+//   longhorn Application  createDefaultDiskLabeledNodes: true
+//
+// So on a single-disk install Longhorn's entire pool is the tail — 1 GiB — no
+// matter how large the disk is, because ESP + root take the rest and the root
+// filesystem is NEVER a Longhorn data path. Physical disks are not schedulable
+// capacity. Running the auditor against node-ad1efd prints `1047 GiB` measured,
+// a `763 GiB` schedulable estimate, and `no blockers.` — while the machine it
+// describes would hand Longhorn either 1 GiB or 116 GiB depending on which
+// device the operator picks as the boot disk.
+//
+// That is the most expensive class this repo names: not a missing check, but an
+// EXISTING check that reads green on the defect. A check that did not measure
+// the thing looks exactly like one that passed.
+//
+// THE INFERENCE IS ONE-WAY, SAME AS ITS NEIGHBOURS
+// ------------------------------------------------
+// The capacity side is read as generously as the registration permits: every
+// boot-disk choice the installer would not REFUSE is enumerated, and the one
+// yielding the largest pool wins. Nothing in a ClusterNode registration records
+// which device the operator booted, and assuming the favourable one keeps the
+// verdict convicting: falling short under the most generous reading is proven,
+// while clearing it proves nothing.
+//
+// The demand side takes the LARGER of the two available readings per class,
+// for the mirror reason — see `longhornPoolDemandGib`.
+// ---------------------------------------------------------------------------
+
+export const ZETA_INSTALL_SH_PATH = "full-ai-cluster/usb-nixos-installer/zeta-install.sh";
+
+/**
+ * `LONGHORN1_TAIL`'s default, READ OUT OF the installer.
+ *
+ * Read and never restated, because the whole finding is about this literal: a
+ * copy of it in this file would be a second roster that agrees by coincidence,
+ * and the first edit to the installer would make the gate describe a geometry
+ * nothing installs.
+ *
+ * Three outcomes, and the difference between the last two matters:
+ *
+ *   a number   — a fixed tail in whole GiB, whatever the disk's size
+ *   `"auto"`   — the tail is COMPUTED per boot disk (disk − ESP − root floor),
+ *                so it cannot be known without a disk. `installerGeometryFor`
+ *                resolves it against each measured node.
+ *   `null`     — the line is absent, or carries a unit this cannot convert.
+ *                The caller REFUSES rather than substituting a number, same as
+ *                an absent registration in `findCapacityProvenance`.
+ */
+export type InstallerTailDefault = number | "auto";
+
+export function installerLonghornTailGib(repoRoot = REPO_ROOT): InstallerTailDefault | null {
+  const text = readIfPresent(resolve(repoRoot, ZETA_INSTALL_SH_PATH));
+  if (text === null) return null;
+  if (/^LONGHORN1_TAIL="\$\{LONGHORN1_TAIL:-auto\}"/m.test(text)) return LONGHORN1_TAIL_AUTO;
+  const match = /^LONGHORN1_TAIL="\$\{LONGHORN1_TAIL:-(\d+)([KMGT])\}"/m.exec(text);
+  if (match === null) return null;
+  const magnitude = Number(match[1]);
+  if (!Number.isFinite(magnitude)) return null;
+  // Binary units, matching the installer's own `size_spec_to_bytes`.
+  const gib: Readonly<Record<string, number>> = { K: 1 / 1024 ** 2, M: 1 / 1024, G: 1, T: 1024 };
+  const scale = gib[match[2] ?? ""];
+  if (scale === undefined) return null;
+  return Math.floor(magnitude * scale);
+}
+
+/** The root floor the installer reserves, READ OUT OF it — never restated here, same reason as the tail. */
+export function installerRootFloorGib(repoRoot = REPO_ROOT): number | null {
+  const text = readIfPresent(resolve(repoRoot, ZETA_INSTALL_SH_PATH));
+  if (text === null) return null;
+  const match = /^ZETA_ROOT_FLOOR_GIB=(\d+)$/m.exec(text);
+  if (match === null) return null;
+  const value = Number(match[1]);
+  return Number.isInteger(value) && value > 0 ? value : null;
+}
+
+/** One Longhorn-bound StorageClass's demand, with BOTH readings kept so the print can show its work. */
+export interface LonghornClassDemand {
+  readonly storageClass: string;
+  readonly renderedGib: number;
+  readonly derivedGib: number;
+  /** `max(rendered, derived)` — see `longhornPoolDemandGib`. */
+  readonly gib: number;
+}
+
+export interface LonghornPoolDemand {
+  readonly perClass: readonly LonghornClassDemand[];
+  readonly totalGib: number;
+}
+
+/**
+ * The committed roster's demand on the metal Longhorn pool, in GiB.
+ *
+ * SCOPE is derived, never a hardcoded pair: `metalPoolCapabilities()` parses
+ * `local-storage.nix` and returns the classes metal binds to the same
+ * provisioner as `zeta-block-replicated` (`driver.longhorn.io`) — today that
+ * and `zeta-shared`. If `zeta-shared` were rebound tomorrow its claims would
+ * leave this scope on the same edit, rather than being counted against a pool
+ * they no longer use.
+ *
+ * VALUE is `max(rendered, derived)` PER CLASS, because the two readings are
+ * blind in OPPOSITE directions and neither dominates:
+ *
+ *   - the YAML-derived extractor cannot see pod counts that live in an upstream
+ *     chart (mimir renders 3 ingesters and 3 store-gateways our YAML never
+ *     mentions), so it reads LOW on `zeta-block-replicated`: 779 against 843;
+ *   - the render snapshot covers the trees it was run over, so it reads LOW on
+ *     a class whose claims live outside them: 0 against 100 on `zeta-shared`.
+ *
+ * Taking either reading alone would acquit on the class the other one sees. A
+ * comparator that picks the smaller of two available numbers because it is the
+ * one that flatters the conclusion has chosen its own verdict.
+ *
+ * `null` when the render snapshot cannot be read at all — an absent measurement
+ * is not a demand of zero.
+ */
+export function longhornPoolDemandGib(
+  repoRoot = REPO_ROOT,
+  claims: readonly StorageClaim[] | null = null,
+): LonghornPoolDemand | null {
+  const pool = metalPoolCapabilities(repoRoot);
+  if (pool.length === 0) return null;
+  const rendered = readRenderedTotals(repoRoot);
+  if (rendered === null) return null;
+
+  const derivedClaims = claims ?? defaultStorageClaims(repoRoot);
+  const derived = new Map(storageTotals(derivedClaims));
+
+  const perClass = pool
+    .map((storageClass) => {
+      const renderedGib = Math.round(rendered.total.get(storageClass) ?? 0);
+      const derivedGib = Math.round(derived.get(storageClass) ?? 0);
+      return { storageClass, renderedGib, derivedGib, gib: Math.max(renderedGib, derivedGib) };
+    })
+    .sort((a, b) => stringCompare(a.storageClass, b.storageClass));
+
+  return { perClass, totalGib: perClass.reduce((sum, row) => sum + row.gib, 0) };
+}
+
+/**
+ * The storage claims `auditAll` would derive, for callers that want the demand
+ * without running the whole audit (the preflight's constant-pinning test, and
+ * the CLI's print path). Loads the catalogue so `excludesPrimaryAt` matches;
+ * a catalogue that cannot be read degrades to `null`, which is the same shape
+ * `auditAll` accepts from a synthetic-tree caller.
+ */
+function defaultStorageClaims(repoRoot = REPO_ROOT): readonly StorageClaim[] {
+  let catalogue: ProfileCatalogue | null = null;
+  try {
+    catalogue = loadCatalogue(DEFAULT_CATALOGUE_PATH);
+  } catch {
+    catalogue = null;
+  }
+  const manifests = loadManifests(DEFAULT_ROOTS, repoRoot);
+  return manifests.flatMap((manifest) =>
+    extractStorageClaims(manifest, {
+      clusterDefault: clusterDefaultStorageClass(repoRoot),
+      instantiated: instantiatedBlueprints(manifests),
+      excludesPrimaryAt: excludesPrimaryCoordinates(catalogue),
+    }),
+  );
+}
+
+/** What zeta-install.sh would hand Longhorn on a given node, read as generously as the registration permits. */
+export interface InstallerGeometry {
+  /** The device assumed to be the boot disk: the SMALLEST, which maximises the pool. */
+  readonly bootDiskGib: number;
+  /** `LONGHORN1_TAIL` — all the boot disk contributes. */
+  readonly tailGib: number;
+  /** Every other device, whole, as longhorn2..N. */
+  readonly dataDiskGib: readonly number[];
+  /** `tailGib` + the data disks. */
+  readonly rawGib: number;
+}
+
+/**
+ * Apply the installer's partitioning to a measured node.
+ *
+ * `null` when the registration records no parsable device — an unmeasured node
+ * must not read as a node with no disks (the same distinction `MeasuredNode`
+ * draws between `null` and zero).
+ */
+export function installerGeometryFor(
+  node: MeasuredNode,
+  tail: InstallerTailDefault,
+  rootFloorGib: number | null = null,
+): InstallerGeometry | null {
+  const sizes = node.devices
+    .map((line) => deviceLineToGib(line))
+    .filter((gib): gib is number => gib !== null)
+    .sort((a, b) => a - b);
+  if (sizes.length === 0) return null;
+  const floor = rootFloorGib ?? ROOT_FLOOR_GIB;
+
+  // EVERY candidate boot disk, not the smallest one.
+  //
+  // The first version of this took the smallest device as the boot disk,
+  // because under a FIXED tail that maximises the pool: the boot disk
+  // contributes a constant, so giving up the least capacity to it is best. That
+  // reasoning INVERTS under `LONGHORN1_TAIL=auto`, where the tail is
+  // (disk − ESP − root floor) and a BIGGER boot disk yields a bigger tail. On
+  // node-ad1efd the smallest device is 115.5 GiB, which cannot hold the 120 GiB
+  // floor at all — so the "generous" reading was picking a shape the installer
+  // would refuse outright.
+  //
+  // Enumerating and taking the maximum is generous under BOTH tail modes, and
+  // needs no separate case. Candidates whose tail comes back 0 are dropped
+  // first: that is the installer bailing, and a layout it refuses is not a
+  // layout whose capacity counts.
+  const candidates = sizes
+    .map((bootDiskGib, index) => {
+      const dataDiskGib = sizes.filter((_, other) => other !== index);
+      const tailGib =
+        tail === LONGHORN1_TAIL_AUTO ? autoLonghornTailGib(Math.floor(bootDiskGib), floor) : tail;
+      return {
+        bootDiskGib,
+        tailGib,
+        dataDiskGib,
+        rawGib: dataDiskGib.reduce((sum, gib) => sum + gib, tailGib),
+      };
+    })
+    .filter((candidate) => candidate.tailGib >= 1);
+
+  // No candidate means the installer would refuse EVERY boot-disk choice on
+  // this node — the disk cannot hold ESP + root floor + a 1 GiB tail. That is a
+  // pool of zero, reported as such rather than as an unmeasured node, because
+  // it IS measured and the answer is "nothing".
+  if (candidates.length === 0) {
+    const [bootDiskGib = 0, ...dataDiskGib] = sizes;
+    return { bootDiskGib, tailGib: 0, dataDiskGib, rawGib: 0 };
+  }
+  return candidates.reduce((best, candidate) => (candidate.rawGib > best.rawGib ? candidate : best));
+}
+
+export function longhornGeometryShortfallKey(schedulableGib: number, demandGib: number, host: string): string {
+  return `longhorn-geometry=${schedulableGib.toFixed(0)}GiB<<${demandGib.toFixed(0)}GiB@${host}`;
+}
+
+export function findLonghornGeometry(
+  ledger: Ledger,
+  nodes: readonly MeasuredNode[],
+  repoRoot = REPO_ROOT,
+  claims: readonly StorageClaim[] | null = null,
+): readonly Finding[] {
+  const demand = longhornPoolDemandGib(repoRoot, claims);
+  if (demand === null || demand.totalGib === 0) return [];
+
+  const tailGib = installerLonghornTailGib(repoRoot);
+  if (tailGib === null) {
+    return [
+      {
+        check: "longhorn-geometry",
+        severity: "blocker",
+        message:
+          `Longhorn geometry UNVERIFIED: ${demand.totalGib.toFixed(0)} GiB of driver.longhorn.io PVCs are ` +
+          `declared, but ${ZETA_INSTALL_SH_PATH}'s LONGHORN1_TAIL default could not be read. That literal IS ` +
+          `the Longhorn pool on a single-disk install, so without it there is no comparator with provenance ` +
+          `and the only honest verdict is "I cannot know". Restore the default or update the reader.`,
+        detail: ["this finding is NOT acknowledgeable — an absent comparator is not debt, it is an absent check"],
+      },
+    ];
+  }
+
+  // The committed refusal the installer carries must describe the roster the
+  // installer will actually meet. It is a literal in shell-reachable TypeScript
+  // only because the ISO ships no bun and the repo is not cloned until after
+  // the wipe; this is what stops it going stale quietly.
+  const findings: Finding[] = [];
+  // The SCHEDULABLE constant is what the installer refuses at, so it is checked
+  // against what this fleet can actually be asked for; the DECLARED constant is
+  // checked against the roster. Both, because convicting on a stale number and
+  // printing a stale number are two different defects with the same cause.
+  const split = longhornSchedulableDemand(repoRoot, claims, nodes);
+  const schedulableTarget = split !== null && split.exact ? split.lowerBoundGib : demand.totalGib;
+  if (COMMITTED_LONGHORN_SCHEDULABLE_GIB !== schedulableTarget) {
+    findings.push({
+      check: "longhorn-geometry",
+      severity: "blocker",
+      message:
+        `The installer REFUSES at ${COMMITTED_LONGHORN_SCHEDULABLE_GIB} GiB but the schedulable demand on the ` +
+        `registered fleet is now ${schedulableTarget.toFixed(0)} GiB. ` +
+        (split?.exact === true
+          ? `Every registration now enumerates its display devices, so the unschedulable claims are PROVEN and ` +
+            `the split is exact — the installer should refuse at the smaller, credible number.`
+          : `Nothing is proven unschedulable yet, so schedulable still equals declared.`) +
+        ` Update COMMITTED_LONGHORN_SCHEDULABLE_GIB in ` +
+        `src/Core.TypeScript/installer/longhorn-capacity-preflight.ts and ZETA_LONGHORN_SCHEDULABLE_GIB in ` +
+        `${ZETA_INSTALL_SH_PATH} to ${schedulableTarget.toFixed(0)}.`,
+      detail: [
+        `declared ${demand.totalGib.toFixed(0)} GiB · proven unschedulable ${(split?.unschedulableGib ?? 0).toFixed(0)} GiB · undecidable ${(split?.undecidableGib ?? 0).toFixed(0)} GiB`,
+        ...(split?.rows ?? []).map((row) => `${row.gib.toFixed(0).padStart(5)} GiB  ${row.app}  [${row.selector}]  ${row.verdict.kind}`),
+        "this finding is NOT acknowledgeable — a stale refusal threshold is an absent check, not debt",
+      ],
+    });
+  }
+  if (COMMITTED_LONGHORN_DEMAND_GIB !== demand.totalGib) {
+    findings.push({
+      check: "longhorn-geometry",
+      severity: "blocker",
+      message:
+        `The installer refuses at ${COMMITTED_LONGHORN_DEMAND_GIB} GiB but the roster now declares ` +
+        `${demand.totalGib.toFixed(0)} GiB on the metal Longhorn pool. zeta-install.sh cannot compute this ` +
+        `number (no bun on the ISO, no clone before the wipe), so it carries it as a constant — which makes ` +
+        `THIS the check that keeps it true. Update COMMITTED_LONGHORN_DEMAND_GIB in ` +
+        `src/Core.TypeScript/installer/longhorn-capacity-preflight.ts and ZETA_LONGHORN_DEMAND_GIB in ` +
+        `${ZETA_INSTALL_SH_PATH} to ${demand.totalGib.toFixed(0)}.`,
+      detail: [
+        ...demand.perClass.map(
+          (row) =>
+            `${row.gib.toFixed(0).padStart(6)} GiB  ${row.storageClass}  ` +
+            `(rendered ${row.renderedGib.toFixed(0)}, derived ${row.derivedGib.toFixed(0)}, max wins)`,
+        ),
+        "this finding is NOT acknowledgeable — a stale refusal threshold is an absent check, not debt",
+      ],
+    });
+  }
+
+  const measured = nodes.filter((node) => node.totalGib !== null);
+  if (measured.length === 0) {
+    findings.push({
+      check: "longhorn-geometry",
+      severity: "blocker",
+      message:
+        `Longhorn geometry UNVERIFIED: no checked-in ClusterNode registration carries a measurable ` +
+        `spec.hardware.storage, so the ${demand.totalGib.toFixed(0)} GiB of driver.longhorn.io PVCs cannot be ` +
+        `compared against the pool zeta-install.sh would actually partition. Register a node.`,
+      detail: ["this finding is NOT acknowledgeable — an absent comparator is not debt, it is an absent check"],
+    });
+    return findings;
+  }
+
+  const fraction = mostConservativeUsableFraction(collectLonghornReserves(loadManifests(DEFAULT_ROOTS, repoRoot)));
+  for (const node of measured) {
+    const geometry = installerGeometryFor(node, tailGib, installerRootFloorGib(repoRoot));
+    if (geometry === null) continue;
+    const schedulable = Math.floor(geometry.rawGib * fraction) * ledger.nodeCount;
+    if (schedulable >= demand.totalGib) continue;
+    const key = longhornGeometryShortfallKey(schedulable, demand.totalGib, node.hostname);
+    if (ledger.acknowledgedLonghornGeometryShortfall.includes(key)) continue;
+    findings.push({
+      check: "longhorn-geometry",
+      severity: "blocker",
+      message:
+        `zeta-install.sh would give Longhorn ${schedulable.toFixed(0)} GiB schedulable on ${node.hostname}, but ` +
+        `the roster declares ${demand.totalGib.toFixed(0)} GiB of driver.longhorn.io PVCs — short by ` +
+        `${(demand.totalGib - schedulable).toFixed(0)} GiB. The pool is the longhorn1 TAIL off the boot disk ` +
+        `(${geometry.tailGib} GiB) plus every NON-boot disk whole, NOT the sum of the block devices: the ESP and ` +
+        `the root floor take the remainder and the root filesystem is never a Longhorn data path. Those PVCs ` +
+        `pend forever.`,
+      detail: [
+        `measured evidence: ${node.path}`,
+        ...node.devices.map((device) => `  ${device}`).sort((a, b) => stringCompare(a, b)),
+        `boot disk assumed to be ${geometry.bootDiskGib} GiB — whichever choice MAXIMISES the pool, the most GENEROUS reading`,
+        tailGib === LONGHORN1_TAIL_AUTO
+          ? `tail is COMPUTED (LONGHORN1_TAIL=auto): ${geometry.bootDiskGib} GiB boot disk − 1 GiB ESP − ` +
+            `${String(installerRootFloorGib(repoRoot) ?? ROOT_FLOOR_GIB)} GiB root floor = ${geometry.tailGib} GiB`
+          : `tail is a FIXED ${String(tailGib)} GiB, so the boot disk's size does not change it`,
+        `pool = ${geometry.tailGib} GiB tail + ${geometry.dataDiskGib.length} whole disk(s) ` +
+          `[${geometry.dataDiskGib.join(", ")}] = ${geometry.rawGib} GiB raw`,
+        `x ${(fraction * 100).toFixed(0)}% Longhorn will place x ${ledger.nodeCount} node(s) = ${schedulable} GiB`,
+        `roster: ${demand.perClass.map((row) => `${row.storageClass} ${row.gib.toFixed(0)} GiB`).join(" + ")}`,
+        `cheapest remedy is usually a second internal disk: the installer formats every non-boot disk whole`,
+        `acknowledge with: ${key}`,
+      ],
+    });
+  }
+  return findings;
+}
+
+// ---------------------------------------------------------------------------
 // COMPUTE provenance — the CPU/memory half of the same comparator
 //
 // WHY IT EXISTS, AND WHAT WAS MISSING
@@ -1274,6 +1844,325 @@ export function findResourceProfileDrift(
       detail: drift.map((finding) => `${finding.claimId}: ${finding.problem}`).sort((a, b) => stringCompare(a, b)),
     },
   ];
+}
+
+// ---------------------------------------------------------------------------
+// POD BUDGET — does the steady-state pod COUNT fit the kubelet's --max-pods?
+//
+// THE DEFECT THIS CLOSES
+// -----------------------
+// Every check above this one prices CPU and memory. Nothing priced the number
+// of pods, and the kubelet enforces that as a THIRD, independent ceiling:
+// `--max-pods` (default 110) admits or refuses a pod purely on COUNT, before
+// its requests are ever weighed against allocatable CPU/memory. A node can
+// have gigabytes and cores to spare and still refuse the 111th pod with
+// `0/1 nodes are available: 1 Too many pods` — exactly the failure the CI
+// kind/k3d dev-cluster profiles already raise `maxPods: 250` to dodge
+// (`full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml`,
+// `ci.cilium.kind-config.yaml`). Nothing in `k3s-server.nix` / `k3s-agent.nix`
+// ever set the equivalent kubelet flag for the hardware install this ladder is
+// FOR, so a fresh single-node metal boot had no static check standing between
+// it and the same wall — the tail of the sync waves would sit Pending forever,
+// and nothing above would have gone red.
+//
+// THE ARITHMETIC, against the render's OWN pod counts
+// -----------------------------------------------------
+// `rendered-resource-requests.snapshot.json` (the same measured render
+// `findComputeProvenance` prices) carries a `pods` count and a per-workload
+// breakdown for every Application. This check derives the STEADY-STATE floor
+// from it rather than trusting the raw total, because the raw total overcounts
+// in two ways and the render cannot see two more:
+//
+//   SUBTRACT declared manual-sync Applications (`manual-sync-policy.ts`) —
+//     cdi, kubevirt, ollama, vllm as of this writing. Nothing in this lane ever
+//     syncs them (see that module's header), so their rendered pods never
+//     exist on a fresh boot. Derived from each Application's own annotation,
+//     never a hardcoded list — an app leaving or joining that set moves this
+//     total with no edit here.
+//   SUBTRACT Job/CronJob pods. The kubelet's max-pods admission counts only
+//     NON-TERMINAL pods (Running/Pending); a Job's pod moves to Succeeded and
+//     stops counting. Counting it as steady-state load would overstate by
+//     every migration/init/admission Job the tree runs (23 of them today).
+//   ADD the k3s-bundled `coredns` + `metrics-server` (not disabled by any
+//     `--disable=` flag in `k3s-server.nix` — grep confirms `servicelb`,
+//     `traefik` and `local-storage` are the only three) plus THIS repo's own
+//     `local-path-provisioner` re-declaration (`local-storage.nix`, read
+//     directly off its committed Deployment rather than assumed). None of
+//     these renders from any Application, so the render structurally cannot
+//     see them — same shape as the storage ladder's "chart-default PVC" gap.
+//
+// Measured 2026-09-22: 147 rendered − 23 Job/CronJob − 3 manual-sync (cdi 1,
+// kubevirt 2; ollama/vllm already render 0) + 3 kube-system baseline = 124.
+// `KUBE_SYSTEM_ADDON_PODS` (coredns + metrics-server) is a NAMED ASSUMPTION,
+// not a measurement — like `OS_ROOT_ALLOWANCE_GIB` above, it is not something
+// any checked-in manifest states, because k3s vendors those charts internally.
+//
+// CONVICTS, NEVER ACQUITS — same discipline as `findComputeProvenance`. The
+// floor above undercounts anything neither the render nor the two named
+// constants can see (a future BestEffort DaemonSet, an operator-created pod),
+// so staying under budget here proves nothing on its own; exceeding it is a
+// real count against a real kubelet ceiling.
+// ---------------------------------------------------------------------------
+
+export const K3S_SERVER_NIX_PATH = "full-ai-cluster/nixos/modules/k3s-server.nix";
+export const K3S_AGENT_NIX_PATH = "full-ai-cluster/nixos/modules/k3s-agent.nix";
+export const LOCAL_STORAGE_NIX_PATH = "full-ai-cluster/nixos/modules/local-storage.nix";
+
+const MAX_PODS_FLAG = /--kubelet-arg=max-pods=(\d+)/;
+
+/** `--kubelet-arg=max-pods=N` -> N, or `null` when the flag is absent or malformed. */
+export function readMaxPodsFlag(text: string): number | null {
+  const match = MAX_PODS_FLAG.exec(text);
+  if (match === null) return null;
+  const n = Number(match[1]);
+  return Number.isInteger(n) && n > 0 ? n : null;
+}
+
+/** The kubelet `max-pods` flag as configured on each role, or `null` per role when absent/unreadable. */
+export interface MaxPodsConfig {
+  readonly server: number | null;
+  readonly agent: number | null;
+}
+
+export function readConfiguredMaxPods(repoRoot = REPO_ROOT): MaxPodsConfig {
+  const serverText = readIfPresent(resolve(repoRoot, K3S_SERVER_NIX_PATH));
+  const agentText = readIfPresent(resolve(repoRoot, K3S_AGENT_NIX_PATH));
+  return {
+    server: serverText === null ? null : readMaxPodsFlag(serverText),
+    agent: agentText === null ? null : readMaxPodsFlag(agentText),
+  };
+}
+
+/**
+ * `replicas: N` on the `local-path-provisioner` Deployment inside
+ * `local-storage.nix`'s embedded manifest — READ, not assumed, because it is a
+ * committed manifest and a hand-typed number here could drift from it.
+ * `null` when the file or the field cannot be found (the caller then falls
+ * back to the chart's own single-replica shape, documented at the call site).
+ */
+export function readLocalPathProvisionerReplicas(repoRoot = REPO_ROOT): number | null {
+  const text = readIfPresent(resolve(repoRoot, LOCAL_STORAGE_NIX_PATH));
+  if (text === null) return null;
+  const nameIndex = text.indexOf("name: local-path-provisioner");
+  if (nameIndex < 0) return null;
+  const after = text.slice(nameIndex);
+  const match = /replicas:\s*(\d+)/.exec(after);
+  if (match === null) return null;
+  const n = Number(match[1]);
+  return Number.isInteger(n) && n >= 0 ? n : null;
+}
+
+/**
+ * `coredns` + `metrics-server` — k3s's own bundled addons. NEITHER is disabled
+ * by any `--disable=` flag in `k3s-server.nix` (only `servicelb`, `traefik`
+ * and `local-storage` are), and neither renders from any Application this
+ * repo declares, so the rendered-resource-requests snapshot structurally
+ * cannot see them. A NAMED ASSUMPTION (one pod each, k3s's chart defaults),
+ * not a measurement — no manifest for either is checked in here to read a
+ * true count off. Kept as a constant so it is one number to argue with rather
+ * than a literal buried in the arithmetic, same discipline as
+ * `OS_ROOT_ALLOWANCE_GIB` above.
+ */
+export const KUBE_SYSTEM_ADDON_PODS = 2;
+
+export interface PodBudget {
+  /** Steady-state non-terminal pod count this check derived. */
+  readonly pods: number;
+  /** Rendered total before any subtraction — the render's raw `pods` sum. */
+  readonly renderedTotal: number;
+  readonly jobAndCronJobPods: number;
+  readonly manualSyncPods: number;
+  readonly kubeSystemBaselinePods: number;
+  readonly localPathProvisionerReplicas: number;
+}
+
+/**
+ * Every auto-synced Application's tree-qualified id whose own manifest
+ * declares `zeta.io/sync-policy: manual` — derived by re-classifying each
+ * `applications/*\/Application.yaml` with `manual-sync-policy.ts`'s own
+ * `classifySyncPolicy`, never a hardcoded roster. An app leaving or joining
+ * that set moves this check with no edit here, same discipline
+ * `manual-sync-policy.ts` itself documents.
+ */
+export function manualSyncAppIds(repoRoot = REPO_ROOT): ReadonlySet<string> {
+  const appsDir = resolve(repoRoot, "full-ai-cluster/k8s/applications");
+  const out = new Set<string>();
+  // ATTEMPT the read; do not `existsSync` first — the check-then-use pair is a
+  // TOCTOU window (`lint-check-then-use-file-races.ts`): the directory can be
+  // created, removed or replaced between the check and the use, so the
+  // answer the check returned is already stale. One syscall, one answer — a
+  // miss IS the ENOENT. Same discipline `readIfPresent` above applies to files.
+  let entries: readonly Dirent[];
+  try {
+    entries = readdirSync(appsDir, { withFileTypes: true });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return out;
+    throw error;
+  }
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const manifestText = readIfPresent(join(appsDir, entry.name, "Application.yaml"));
+    if (manifestText === null) continue;
+    const declaration = classifySyncPolicy(manifestText);
+    if (declaration.kind === "manual") out.add(`full-ai-cluster/${entry.name}`);
+  }
+  return out;
+}
+
+/** Sum of an app's Job/CronJob workload replicas — terminal, excluded from the steady-state floor. */
+function jobAndCronJobPods(app: AppMeasurement): number {
+  let total = 0;
+  for (const workload of app.workloads) {
+    const kind = workload.workload.split("/")[0] ?? "";
+    if (kind === "Job" || kind === "CronJob") total += workload.replicas;
+  }
+  return total;
+}
+
+/** The steady-state pod-count floor for `profile`, or `null` when the snapshot has no such rung. */
+export function computePodBudget(
+  apps: readonly AppMeasurement[],
+  manualIds: ReadonlySet<string>,
+  localPathReplicas: number | null,
+): PodBudget {
+  let renderedTotal = 0;
+  let jobPods = 0;
+  let manualPods = 0;
+  for (const app of apps) {
+    renderedTotal += app.pods;
+    jobPods += jobAndCronJobPods(app);
+    if (manualIds.has(app.appId)) manualPods += app.pods;
+  }
+  // Fall back to the chart's own single-replica shape when the manifest cannot
+  // be read — UNDER-counting the baseline would be the acquitting direction,
+  // so 1 (not 0) is the honest fallback for a Deployment this repo declares
+  // with `replicas: 1` today.
+  const localPath = localPathReplicas ?? 1;
+  const kubeSystemBaselinePods = KUBE_SYSTEM_ADDON_PODS + localPath;
+  return {
+    pods: renderedTotal - jobPods - manualPods + kubeSystemBaselinePods,
+    renderedTotal,
+    jobAndCronJobPods: jobPods,
+    manualSyncPods: manualPods,
+    kubeSystemBaselinePods,
+    localPathProvisionerReplicas: localPath,
+  };
+}
+
+export function podBudgetShortfallKey(pods: number, nodeCount: number, maxPods: number | null, host: string): string {
+  const budget = maxPods === null ? "unset" : String(maxPods);
+  return `${String(pods)}pods@${String(nodeCount)}node(s)>>${budget}pods@${host}`;
+}
+
+export function findPodBudget(
+  ledger: Ledger,
+  repoRoot = REPO_ROOT,
+  snapshotPath = DEFAULT_RESOURCE_REQUESTS_SNAPSHOT_PATH,
+): readonly Finding[] {
+  const snapshot = loadResourceRequestsSnapshot(snapshotPath, repoRoot);
+  if (snapshot === null) {
+    return [
+      {
+        check: "pod-budget",
+        severity: "blocker",
+        message:
+          `Pod count UNVERIFIED: no snapshot at ${snapshotPath}. Run ` +
+          `\`bun src/Core.TypeScript/cluster/rendered-resource-requests.ts --measure\` first — a pod-count ` +
+          `budget with no render to read is not a check.`,
+        detail: ["this finding is NOT acknowledgeable — an absent comparator is not debt, it is an absent check"],
+      },
+    ];
+  }
+  const profileMeasurement = snapshot.profiles.find((profile) => profile.profile === ledger.activeResourceProfile);
+  if (profileMeasurement === undefined) {
+    return [
+      {
+        check: "pod-budget",
+        severity: "blocker",
+        message:
+          `Pod count UNVERIFIED: ${snapshotPath} carries no "${ledger.activeResourceProfile}" rung. Known: ` +
+          `${snapshot.profiles.map((profile) => profile.profile).join(", ")}.`,
+        detail: ["this finding is NOT acknowledgeable — an absent comparator is not debt, it is an absent check"],
+      },
+    ];
+  }
+
+  const budget = computePodBudget(
+    profileMeasurement.apps,
+    manualSyncAppIds(repoRoot),
+    readLocalPathProvisionerReplicas(repoRoot),
+  );
+  const maxPods = readConfiguredMaxPods(repoRoot);
+  // The SERVER's flag is the comparator: on a single-node PoC the control
+  // plane is also the only kubelet scheduling pods. `agent` is checked
+  // separately below so a worker joining with a lower ceiling is not silent.
+  const configured = maxPods.server;
+  const findings: Finding[] = [];
+
+  if (configured === null) {
+    findings.push({
+      check: "pod-budget",
+      severity: "blocker",
+      message:
+        `Pod count UNVERIFIED: ${K3S_SERVER_NIX_PATH} sets no \`--kubelet-arg=max-pods=N\`, so the node runs the ` +
+        `kubelet default of 110 — below the measured steady-state floor of ${String(budget.pods)} pods ` +
+        `(${String(budget.renderedTotal)} rendered − ${String(budget.jobAndCronJobPods)} Job/CronJob − ` +
+        `${String(budget.manualSyncPods)} manual-sync + ${String(budget.kubeSystemBaselinePods)} kube-system ` +
+        `baseline). The tail of the sync waves would sit Pending with "Too many pods" and no check above this ` +
+        `one would go red.`,
+      detail: ["this finding is NOT acknowledgeable — an absent comparator is not debt, it is an absent check"],
+    });
+    return findings;
+  }
+
+  const totalBudget = configured * ledger.nodeCount;
+  if (budget.pods > totalBudget) {
+    const key = podBudgetShortfallKey(budget.pods, ledger.nodeCount, configured, K3S_SERVER_NIX_PATH);
+    if (!ledger.acknowledgedPodBudgetShortfall.includes(key)) {
+      findings.push({
+        check: "pod-budget",
+        severity: "blocker",
+        message:
+          `Steady-state pod count ${String(budget.pods)} exceeds the configured kubelet ceiling of ` +
+          `${String(configured)} x ${String(ledger.nodeCount)} node(s) = ${String(totalBudget)} by ` +
+          `${String(budget.pods - totalBudget)}. Pods past the line take "0/1 nodes are available: 1 Too many ` +
+          `pods" and stay Pending forever — a count limit, not a resource one; no amount of CPU/memory headroom ` +
+          `fixes it. Raise \`--kubelet-arg=max-pods\` on both k3s-server.nix and k3s-agent.nix, trim the ` +
+          `catalogue, or record the shortfall as debt.`,
+        detail: [
+          `rendered: ${String(budget.renderedTotal)} pods across ${String(profileMeasurement.apps.length)} Applications`,
+          `− Job/CronJob (terminal, excluded from max-pods admission): ${String(budget.jobAndCronJobPods)}`,
+          `− manual-sync Applications (never auto-applied): ${String(budget.manualSyncPods)}`,
+          `+ kube-system baseline (coredns + metrics-server + local-path-provisioner): ${String(budget.kubeSystemBaselinePods)}`,
+          `= ${String(budget.pods)} steady-state pods`,
+          `acknowledge with: ${key}`,
+        ],
+      });
+    }
+  }
+
+  if (maxPods.agent !== null && maxPods.agent !== configured) {
+    findings.push({
+      check: "pod-budget",
+      severity: "blocker",
+      message:
+        `${K3S_SERVER_NIX_PATH} sets max-pods=${String(configured)} and ${K3S_AGENT_NIX_PATH} sets ` +
+        `max-pods=${String(maxPods.agent)} — a worker joining with a different ceiling than the control plane ` +
+        `is a disagreement nobody stated. Set the same value on both.`,
+      detail: [],
+    });
+  } else if (maxPods.agent === null) {
+    findings.push({
+      check: "pod-budget",
+      severity: "blocker",
+      message:
+        `${K3S_AGENT_NIX_PATH} sets no \`--kubelet-arg=max-pods=N\`. A worker that joins runs the kubelet ` +
+        `default of 110 while the control plane runs ${String(configured)} — set the same flag on both roles.`,
+      detail: ["this finding is NOT acknowledgeable — an absent comparator is not debt, it is an absent check"],
+    });
+  }
+
+  return findings;
 }
 
 // ---------------------------------------------------------------------------
@@ -1548,7 +2437,13 @@ export function findStorageProfileDrift(
     ];
   }
   const drift = verifyProfileApplied(catalogue, profile, repoRoot);
-  const cross = catalogue.claims.length === 0 ? [] : crossCheckClaims(catalogue, storageClaims, "longhorn", profile);
+  // The catalogue governs the METAL LONGHORN POOL, not one class name: since
+  // 2026-09-23 charts name capabilities, and two of them (`zeta-block-replicated`
+  // and `zeta-shared`) are bound to that one pool on metal. The set is DERIVED
+  // from the metal bindings in local-storage.nix rather than restated, so a
+  // capability rebound to another provider leaves the ladder's scope with it.
+  const cross =
+    catalogue.claims.length === 0 ? [] : crossCheckClaims(catalogue, storageClaims, metalPoolCapabilities(repoRoot), profile);
   const findings: Finding[] = [];
   if (drift.length > 0) {
     findings.push({
@@ -1828,16 +2723,32 @@ export function auditAll(
   const override =
     catalogue === null || !catalogue.profiles.includes(ledger.activeStorageProfile)
       ? null
-      : new Map<string, number>([["longhorn", profileTotalGib(catalogue, ledger.activeStorageProfile)]]);
+      : new Map<string, number>(
+          // The profile total is the whole governed POOL (rows on every class the
+          // metal Longhorn binding serves), credited to each budgeted class -- one
+          // today, `zeta-block-replicated`. Read from the ledger, never a literal.
+          ledger.budgetedStorageClasses.map((storageClass) => [
+            storageClass,
+            profileTotalGib(catalogue, ledger.activeStorageProfile),
+          ]),
+        );
   const findings = [
     ...findRootAppCollisions(collectRootAppIdentities(manifests), ledger.acknowledgedRootAppDuplicates),
     ...(catalogue === null ? [] : findStorageProfileDrift(ledger, catalogue, storageClaims, repoRoot)),
     ...findCapacityProvenance(storageClaims, ledger, measuredNodes, override),
+    ...findLonghornGeometry(ledger, measuredNodes, repoRoot, storageClaims),
     ...findStorageBudgetOverruns(storageClaims, ledger, override),
     ...findFalseRedundancy(replicaClaims, ledger),
     ...findLedgerFigureDrift(ledger, storageClaims, catalogue, ledgerPath, repoRoot),
     ...findResourceProfileDrift(ledger, resources, repoRoot),
     ...findComputeProvenance(ledger, measuredNodes, resources, repoRoot),
+    // Gated on `resources`, same as findComputeProvenance/findRungCoverage just
+    // above: a caller that supplied no resource catalogue (every synthetic-tree
+    // test in this file) has not wired the compute half of the audit at all, and
+    // pod budget is that same rung concept — a real repoRoot with no resources
+    // catalogue would itself be malformed, which `main()` already refuses via
+    // `loadResourceCatalogue` before `auditAll` is ever reached.
+    ...(resources === null ? [] : findPodBudget(ledger, repoRoot)),
     ...findRungCoverage(ledger, resources, repoRoot),
   ];
   return {
@@ -1901,6 +2812,8 @@ export function readLedger(path: string, repoRoot = REPO_ROOT): Ledger {
     // reading. A missing key can only make these checks louder, never quieter.
     acknowledgedComputeShortfall: parsed.acknowledgedComputeShortfall ?? [],
     acknowledgedRungBudgetGap: parsed.acknowledgedRungBudgetGap ?? [],
+    acknowledgedPodBudgetShortfall: parsed.acknowledgedPodBudgetShortfall ?? [],
+    acknowledgedLonghornGeometryShortfall: parsed.acknowledgedLonghornGeometryShortfall ?? [],
   };
 }
 
@@ -1963,6 +2876,235 @@ function printComputeSection(
   );
 }
 
+/**
+ * The INSTALLER-GEOMETRY half of the report — printed on EVERY run, green or not.
+ *
+ * Same reasoning as `printComputeSection`: a standing decision that only
+ * appears when it fails is a decision nobody revisits. And here it matters more
+ * than usual, because the number a reader is most likely to carry away from
+ * this report is the `Measured node capacity` line above — the sum of the block
+ * devices — which is NOT what the installer hands Longhorn. Printing the
+ * partitioned pool beside it is what stops the generous number being read as
+ * the operational one.
+ */
+function printLonghornGeometrySection(
+  ledger: Ledger,
+  nodes: readonly MeasuredNode[],
+  claims: readonly StorageClaim[],
+  reserves: readonly LonghornReserve[],
+  repoRoot = REPO_ROOT,
+): void {
+  console.log("\nLonghorn pool zeta-install.sh actually PARTITIONS (not the sum of the block devices):");
+  const demand = longhornPoolDemandGib(repoRoot, claims);
+  const tailGib = installerLonghornTailGib(repoRoot);
+  if (demand === null || tailGib === null) {
+    console.log("  UNVERIFIED — see findings (no render snapshot, no Longhorn-bound class, or no readable tail)");
+    return;
+  }
+  console.log(
+    `  roster demand: ${demand.perClass
+      .map((row) => `${row.storageClass} ${row.gib.toFixed(0)} GiB`)
+      .join(" + ")} = ${demand.totalGib.toFixed(0)} GiB` +
+      `   (per class: max(rendered, derived) — the two readings are blind in opposite directions)`,
+  );
+  const rootFloorGib = installerRootFloorGib(repoRoot);
+  console.log(
+    tailGib === LONGHORN1_TAIL_AUTO
+      ? `  LONGHORN1_TAIL=auto, root floor ${String(rootFloorGib ?? ROOT_FLOOR_GIB)} GiB — read from ` +
+          `${ZETA_INSTALL_SH_PATH}. On a SINGLE-DISK install the pool is\n  (disk − 1 GiB ESP − root floor): ` +
+          `root takes a COMPUTED floor and longhorn1 takes the rest. The root filesystem is never a Longhorn\n` +
+          `  data path, so whatever root over-reserves is not schedulable capacity.`
+      : `  LONGHORN1_TAIL default ${String(tailGib)} GiB, read from ${ZETA_INSTALL_SH_PATH} — a FIXED tail, so ` +
+          `on a SINGLE-DISK\n  install that is the WHOLE pool whatever the disk's size: ESP + root take the ` +
+          `rest and the root\n  filesystem is never a Longhorn data path.`,
+  );
+  console.log(
+    `  local-path PVC ceilings that also land on ROOT: ${LOCAL_PATH_ADVISORY_GIB} GiB — ADVISORY, NOT RESERVED,\n` +
+      `  and the first thing that fills root. The provisioner is \`mkdir -p\` with no quota, so a PVC there costs\n` +
+      `  the bytes WRITTEN; reserving the ceiling would starve the pool for bytes nobody has written.`,
+  );
+  const fraction = mostConservativeUsableFraction(reserves);
+  for (const node of nodes) {
+    const geometry = installerGeometryFor(node, tailGib, installerRootFloorGib(repoRoot));
+    if (geometry === null) {
+      console.log(`  ${node.hostname.padEnd(18)} UNMEASURED (no parsable hardware.storage in ${node.path})`);
+      continue;
+    }
+    const schedulable = Math.floor(geometry.rawGib * fraction) * ledger.nodeCount;
+    const over = demand.totalGib - schedulable;
+    console.log(
+      `  ${node.hostname.padEnd(18)} ${geometry.tailGib} GiB tail + [${geometry.dataDiskGib.join(", ")}] whole ` +
+        `= ${geometry.rawGib} GiB raw x ${(fraction * 100).toFixed(0)}% x ${ledger.nodeCount} node(s) ` +
+        `= ${schedulable} GiB  ` +
+        (over > 0 ? `SHORT by ${over} GiB` : `fits, ${-over} GiB spare`),
+    );
+  }
+  console.log(
+    "  Boot disk assumed to be whichever choice MAXIMISES the pool, among the choices the installer would not\n" +
+      "  refuse — no registration records which device was booted. Falling short under the most generous\n" +
+      "  reading convicts; clearing it proves nothing.",
+  );
+}
+
+/**
+ * The bring-up note, with the binding mode READ from `local-storage.nix`
+ * instead of restated in prose.
+ *
+ * WHY THIS IS A FUNCTION AND NOT A STRING (WP28, 2026-09-24). Until this
+ * change the line printed on every run said:
+ *
+ *   "Longhorn's StorageClass is volumeBindingMode Immediate, so any PVC that
+ *    gets applied provisions with zero pods, and a manual-sync app is one
+ *    `argocd app sync` from being counted."
+ *
+ * That is FALSE, and it has never been true of the class it names.
+ * `full-ai-cluster/nixos/modules/local-storage.nix` binds all three capability
+ * classes `volumeBindingMode: WaitForFirstConsumer` — `zeta-block-local`,
+ * `zeta-block-replicated` and `zeta-shared` alike — and `git log -L` on that
+ * block shows `zeta-block-replicated` was CREATED that way by #17576 ("charts
+ * name a storage capability, never a provider"). The prose described the older
+ * provider-named `longhorn` class and was carried across the rename without
+ * being re-checked.
+ *
+ * It is the worst place for a stale claim: this file's entire job is refusing
+ * unchecked assertions, and this particular assertion was PRINTED to every
+ * reader on every run. It measurably misled one — the premise "Longhorn prices
+ * ceilings, local-path prices use" was built on it, and is false under
+ * WaitForFirstConsumer because an unconsumed PVC reserves nothing either way.
+ *
+ * So the fix is not a better sentence. A sentence can rot again; a value read
+ * out of the authoritative file cannot. `metalStorageBindings()` already parses
+ * `local-storage.nix` for `storage-capabilities.ts`, so this costs one import
+ * and no new parser.
+ *
+ * WHAT DOES NOT CHANGE: bring-up is still a REPORT and never a discount. Under
+ * WaitForFirstConsumer the reason is different — an applied PVC waits for a
+ * schedulable consumer rather than provisioning at once — but a manual-sync app
+ * is still one `argocd app sync` and one schedulable pod away from being
+ * counted, and sizing a node for the smaller number is still a bet.
+ */
+export function printedBringUpNote(repoRoot = REPO_ROOT): string {
+  const modes = [...new Set(metalStorageBindings(repoRoot).map((binding) => binding.bindingMode))].sort((a, b) =>
+    stringCompare(a, b),
+  );
+  // UNKNOWN, not a default. If the bindings cannot be read, saying nothing
+  // about the mode is honest; naming one would be the same defect again.
+  const measured =
+    modes.length === 0
+      ? "volumeBindingMode could not be read from " + METAL_STORAGE_BINDINGS_SOURCE
+      : `volumeBindingMode ${modes.join(" / ")} (read from ${METAL_STORAGE_BINDINGS_SOURCE})`;
+  return (
+    "  Bring-up is the subset whose Application is actually applied on a fresh sync. It is a REPORT, never a\n" +
+    `  discount: this cluster's StorageClasses are ${measured},\n` +
+    "  so an applied PVC waits for a schedulable consumer rather than provisioning at once — but a manual-sync\n" +
+    "  app is still one `argocd app sync` and one schedulable pod away from being counted."
+  );
+}
+
+/**
+ * The declared/schedulable split over the metal Longhorn pool.
+ *
+ * 081M397QHX8087G0R003DQSY0B. `declaredGib` is what the roster asks for and
+ * keeps the exit code; the bounds are what the CURRENTLY REGISTERED fleet could
+ * ever be asked for. See `schedulable-demand.ts` for why there are three
+ * verdicts rather than two, and why nothing is provable today.
+ *
+ * `null` when the pool's classes or the render snapshot cannot be read — the
+ * same absent-comparator refusal the rest of this file makes.
+ */
+export function longhornSchedulableDemand(
+  repoRoot = REPO_ROOT,
+  claims: readonly StorageClaim[] | null = null,
+  nodes: readonly MeasuredNode[] | null = null,
+): SchedulableDemand | null {
+  const pool = new Set(metalPoolCapabilities(repoRoot));
+  if (pool.size === 0) return null;
+  const vendorIds = pciVendorIds(repoRoot);
+  const labelKey = vendorIds === null ? null : gpuLabelKey(repoRoot);
+  const measured = nodes ?? collectMeasuredNodes(repoRoot, DEFAULT_REGISTRATIONS_ROOT);
+  const evidence =
+    vendorIds === null
+      ? []
+      : measured.map((node) =>
+          gpuEvidenceOf(
+            { hostname: node.hostname, path: node.path, gpu: node.gpu ?? null, gpus: node.gpus ?? null },
+            vendorIds,
+          ),
+        );
+  const selected: SelectedClaim[] = [];
+  for (const claim of claims ?? defaultStorageClaims(repoRoot)) {
+    if (!pool.has(claim.storageClass)) continue;
+    selected.push({
+      app: claim.app,
+      path: claim.path,
+      storageClass: claim.storageClass,
+      gib: claim.gibibytes * claim.replicas,
+      selector: claim.nodeSelector ?? [],
+    });
+  }
+  return splitDemand(selected, evidence, labelKey, longhornPoolDemandGib(repoRoot, claims)?.totalGib ?? null);
+}
+
+/**
+ * The DECLARED vs SCHEDULABLE half of the report — printed on EVERY run.
+ *
+ * Both numbers, side by side, with every excluded app NAMED and the reason it
+ * was excluded. A smaller number appearing with no explanation is how a gate
+ * quietly stops meaning what its readers think it means.
+ */
+function printSchedulableSection(repoRoot: string, claims: readonly StorageClaim[], nodes: readonly MeasuredNode[]): void {
+  console.log("\nDECLARED vs SCHEDULABLE-ON-REGISTERED-HARDWARE (Longhorn pool):");
+  const split = longhornSchedulableDemand(repoRoot, claims, nodes);
+  if (split === null) {
+    console.log("  UNVERIFIED — the pool's classes could not be read from local-storage.nix");
+    return;
+  }
+  console.log(`  declared                       ${split.declaredGib.toFixed(0).padStart(5)} GiB   <- KEEPS THE EXIT CODE`);
+  console.log(`  proven unschedulable           ${split.unschedulableGib.toFixed(0).padStart(5)} GiB`);
+  console.log(`  UNDECIDABLE from registrations ${split.undecidableGib.toFixed(0).padStart(5)} GiB`);
+  console.log(
+    split.exact
+      ? `  schedulable                    ${split.lowerBoundGib.toFixed(0).padStart(5)} GiB   (exact — nothing undecidable)`
+      : `  schedulable                    ${split.lowerBoundGib.toFixed(0)}–${split.upperBoundGib.toFixed(0)} GiB   (a RANGE, because the undecidable rows could go either way)`,
+  );
+  for (const row of split.rows) {
+    console.log(`    ${row.gib.toFixed(0).padStart(4)} GiB  ${row.app}  [${row.selector}]  ${row.verdict.kind.toUpperCase()}`);
+    console.log(`             ${row.verdict.kind === "satisfied" ? `by ${row.verdict.by.join(", ")}` : row.verdict.why}`);
+  }
+  console.log(
+    "  This is a property of the CURRENTLY REGISTERED FLEET, not a permanent fact: a node joining tomorrow\n" +
+      "  with a matching GPU makes those claims schedulable with no manifest edit at all. So the exit code\n" +
+      "  stays on DECLARED until the split is exact, exactly as the bring-up subset is reported never discounted.",
+  );
+}
+
+/** The pod-count half of the report — printed on EVERY run, same reasoning as `printComputeSection`. */
+function printPodBudgetSection(ledger: Ledger, repoRoot = REPO_ROOT): void {
+  console.log("\nPod count — the kubelet's --max-pods ceiling is a COUNT limit, independent of CPU/memory:");
+  const snapshot = loadResourceRequestsSnapshot(DEFAULT_RESOURCE_REQUESTS_SNAPSHOT_PATH, repoRoot);
+  const profileMeasurement = snapshot?.profiles.find((profile) => profile.profile === ledger.activeResourceProfile);
+  if (snapshot === null || profileMeasurement === undefined) {
+    console.log(`  UNVERIFIED — see findings (no "${ledger.activeResourceProfile}" rung in the snapshot)`);
+    return;
+  }
+  const budget = computePodBudget(
+    profileMeasurement.apps,
+    manualSyncAppIds(repoRoot),
+    readLocalPathProvisionerReplicas(repoRoot),
+  );
+  console.log(
+    `  ${String(budget.renderedTotal)} rendered − ${String(budget.jobAndCronJobPods)} Job/CronJob − ` +
+      `${String(budget.manualSyncPods)} manual-sync + ${String(budget.kubeSystemBaselinePods)} kube-system ` +
+      `baseline = ${String(budget.pods)} steady-state pods`,
+  );
+  const maxPods = readConfiguredMaxPods(repoRoot);
+  const configuredLabel = maxPods.server === null ? "UNSET (kubelet default 110)" : String(maxPods.server);
+  console.log(
+    `  configured: server=${configuredLabel} agent=${maxPods.agent === null ? "UNSET" : String(maxPods.agent)} ` +
+      `x ${String(ledger.nodeCount)} node(s)`,
+  );
+}
+
 function main(argv: readonly string[]): void {
   if (argv.includes("-h") || argv.includes("--help")) {
     console.error(
@@ -2022,6 +3164,7 @@ function main(argv: readonly string[]): void {
         `storage profile=${profile}, resource rung=${ledger.activeResourceProfile}`,
     );
     printComputeSection(ledger, report.measuredNodes, resources);
+    printPodBudgetSection(ledger, REPO_ROOT);
     console.log("\nStorage profile ladder (declared = size x pods over every longhorn claim):");
     for (const name of catalogue.profiles) {
       const declared = profileTotalGib(catalogue, name);
@@ -2031,11 +3174,7 @@ function main(argv: readonly string[]): void {
           (name === profile ? "   <- ACTIVE (ledger.activeStorageProfile)" : ""),
       );
     }
-    console.log(
-      "  Bring-up is the subset whose Application is actually applied on a fresh sync. It is a REPORT, never a\n" +
-        "  discount: Longhorn's StorageClass is volumeBindingMode Immediate, so any PVC that gets applied\n" +
-        "  provisions with zero pods, and a manual-sync app is one `argocd app sync` from being counted.",
-    );
+    console.log(printedBringUpNote(REPO_ROOT));
     console.log("\nDerived per-node storage requirement (sum of declared PVC capacity x replicas):");
     const floor = verifiedNodeCapacity(report.measuredNodes);
     const rendered = readRenderedTotals();
@@ -2121,6 +3260,8 @@ function main(argv: readonly string[]): void {
         );
       }
     }
+    printLonghornGeometrySection(ledger, report.measuredNodes, report.storageClaims, report.longhornReserves);
+    printSchedulableSection(REPO_ROOT, report.storageClaims, report.measuredNodes);
     // Acknowledged shortfalls suppress the exit code, never the print. A
     // silently-acknowledged oversubscription is the same vacuity as an
     // aspirational comparator, one layer down.
