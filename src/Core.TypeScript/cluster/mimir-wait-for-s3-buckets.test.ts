@@ -29,11 +29,12 @@
 // Hermetic: manifests and a stubbed shell. No network, no cluster.
 
 import { describe, expect, test } from "bun:test";
-import { spawnSync } from "node:child_process";
 import { chmodSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { delimiter, join, resolve } from "node:path";
 import { parse } from "yaml";
+
+import { spawnShellDeclared } from "../io/safe-io";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const APPS = join(REPO_ROOT, "full-ai-cluster/k8s/applications");
@@ -229,9 +230,12 @@ describe("behaviour: the script, run under sh against a stub curl", () => {
       ].join("\n"),
       true,
     );
-    const res = spawnSync("sh", ["-c", script], {
-      encoding: "utf8",
-      timeout: 30_000,
+    // The thing under test IS a shell script -- the mimir init container runs `sh -c <probe>`
+    // against seaweedfs. Driving it under `sh` with a stub `curl`/`sleep`/`date` on PATH is the
+    // only way to exercise its real control flow, so the command line genuinely is the contract.
+    const res = spawnShellDeclared("sh", script, {
+      reason: "exercises the init container's own `sh -c` S3-bucket wait probe against stub binaries",
+      timeoutMs: 30_000,
       env: {
         ...process.env,
         PATH: `${dir}${delimiter}${process.env.PATH ?? ""}`,
@@ -240,7 +244,12 @@ describe("behaviour: the script, run under sh against a stub curl", () => {
         BLOB_STORE_SECRET_KEY: "not-a-real-secret",
       },
     });
-    return { code: res.status, out: `${res.stdout}${res.stderr}` };
+    if (!res.ok) {
+      // A spawn failure or timeout surfaces as a non-zero give-up, carrying the error text so the
+      // behavioural assertions see the same shape a real give-up produces.
+      return { code: 1, out: res.error.message };
+    }
+    return { code: res.value.status, out: `${res.value.stdout}${res.value.stderr}` };
   }
 
   test("both buckets already there -> exits 0 having waited for nothing", () => {
