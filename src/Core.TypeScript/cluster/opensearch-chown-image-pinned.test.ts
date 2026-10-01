@@ -39,10 +39,12 @@ describe("opensearch: the root chown init container is pinned", () => {
     expect(isFloatingTag("1.38.0")).toBe(false);
   });
 
-  test("the Application sets persistence.imageTag to a pinned release, and names the image", () => {
+  test("the Application sets persistence.imageTag to a pinned release (and leaves the image name at the chart's busybox)", () => {
     const app = parse(readFileSync(join(REPO_ROOT, "full-ai-cluster/k8s/applications/opensearch/Application.yaml"), "utf8")) as unknown;
     const values = dig(app, "spec", "source", "helm", "valuesObject");
     expect(isFloatingTag(dig(values, "persistence", "imageTag"))).toBe(false);
-    expect(dig(values, "persistence", "image")).toBe("busybox");
+    // Naming the image here would put an untagged `image: busybox` in front of the textual
+    // provenance scan, which reads it as `latest` and demands a measurement of it.
+    expect(dig(values, "persistence", "image")).toBeUndefined();
   });
 });

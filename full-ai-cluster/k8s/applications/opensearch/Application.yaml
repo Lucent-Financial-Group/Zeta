@@ -210,7 +210,11 @@ spec:
           # image running as root on every node this lands on, and its digest changes under
           # you between two first boots. 1.38.0 is the tag kube-prometheus-stack's grafana
           # init already pulls, so it also costs no extra Docker Hub pull.
-          image: busybox
+          #
+          # ONLY THE TAG IS SET, and that is deliberate: `persistence.image` already defaults
+          # to busybox, and spelling `image: busybox` here would make image-source-provenance's
+          # textual `image:` scan read an UNTAGGED reference (= latest) that it would then have
+          # to measure -- the pin would be reported as the thing it removes.
           imageTag: 1.38.0
           size: 20Gi
           # zeta-local-path, NOT longhorn. A derived index does not earn a
