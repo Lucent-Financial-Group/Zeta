@@ -5763,10 +5763,8 @@ if [ "${ZETA_LB_POOL_SOURCE:-unset}" = "esp" ] || [ "${ZETA_LB_POOL_SOURCE:-unse
   echo "  LOADBALANCER RANGE: ${ZETA_LB_POOL_START} .. ${ZETA_LB_POOL_STOP} (source: ${ZETA_LB_POOL_SOURCE})"
   echo "    Cilium hands these to Services of type LoadBalancer; keep them out of your router's DHCP range."
   echo "      sudo k3s kubectl get ciliumloadbalancerippool zeta-lb-pool"
-  if [[ "${ZETA_LB_POOL_START}" != "192.168.1.240" ]] || [[ "${ZETA_LB_POOL_STOP}" != "192.168.1.250" ]]; then
-    echo "    NOTE: GitLab's LAN Gateway is still pinned to 192.168.1.250 in full-ai-cluster/k8s/applications/gitlab/."
-    echo "    Outside that address it stays <pending> until that pin follows this range (docs/ops/INSTALL-TIME-CONFIG.md, row 3)."
-  fi
+  echo "    GitLab on the LAN: http://${ZETA_LB_POOL_STOP}/  (the range's LAST address; set once the 'gitlab' Application exists:"
+  echo "      sudo k3s kubectl -n kube-system logs job/gitlab-lan-address)"
   echo
 elif [[ "${ZETA_ROLE:-}" != "joiner" ]]; then
   echo "  LOADBALANCER RANGE: NOT SET. No pool was applied, so every Service of type LoadBalancer"

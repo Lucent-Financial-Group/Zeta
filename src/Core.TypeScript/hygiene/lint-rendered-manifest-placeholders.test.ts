@@ -41,6 +41,8 @@ describe("each pattern catches the defect it names", () => {
     ["CHANGEME", { password: "CHANGEME" }, "change-me value"],
     ["a :placeholder image tag", { image: "ghcr.io/org/op:placeholder" }, "image tag :placeholder"],
     ["an UNRENDERED install-time token", { email: "@ZETA_ACME_EMAIL@" }, "unrendered install-time token"],
+    ["an RFC 5737 documentation address (a sentinel must be named, not shipped silently)", { addresses: [{ type: "IPAddress", value: "192.0.2.250" }] }, "RFC 5737 documentation address"],
+    ["RFC 5737 198.51.100/24 and 203.0.113/24 too", { a: "198.51.100.7", b: "203.0.113.9" }, "RFC 5737 documentation address"],
   ];
   for (const [name, doc, pattern] of MUTANTS) {
     test(name, () => {

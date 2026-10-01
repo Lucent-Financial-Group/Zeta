@@ -454,9 +454,9 @@ listeners (`gitlab.<domain>`, `registry.<domain>`, one certificate each), the `g
 `gitlab-registry-public` HTTPRoutes, and Job `gitlab-public-hosts`, which merge-patches the
 `gitlab` Application's `spec.source.helm.parameters` so GitLab's external URL is
 `https://gitlab.<domain>` (`zeta-root` ignores exactly that field). UNSET: GitLab is LAN-only at
-**`http://192.168.1.250/`** — its own hostname-less `gitlab-lan` Gateway pinned to the last
-address of `cilium-lb-ipam/ip-pool.yaml`; the registry is the same address (`/v2/`). Adjusting
-the pool means adjusting that pin (see `gitlab/Application.yaml`).
+**`http://<last address of the resolved LB range>/`** (§11) — its own hostname-less `gitlab-lan`
+Gateway pinned to that address; the registry is the same address (`/v2/`). The address is no longer
+in git: Job `gitlab-lan-address` (in `cilium-lb-ipam-pool`) merge-patches three valuesObject leaves.
 
 **The operator step when SET** (also printed in the installer's completion banner):
 
@@ -512,10 +512,16 @@ detection, not injection, because the Cilium CIDRs live in git (see `cluster-ide
 ships `/etc/zeta-cluster-identity.json` so the pre-wipe check knows the cluster name; after the clone
 the check repeats against the cloned tree's own copy.
 
-**Known gap.** GitLab's LAN Gateway is still pinned to the literal `192.168.1.250`
-(`applications/gitlab/Application.yaml`). On any LAN whose range does not contain it, that Gateway
-stays `<pending>` while the portal's `zeta-gateway` is correct; the installer says so. Row 6 of the
-inventory — the gitlab lane owns it.
+**GitLab follows the range** (inventory row 6). `applications/gitlab/Application.yaml` holds no real
+address: its three LAN-address leaves (`global.hosts.gitlab.name`, `global.hosts.registry.name`,
+`global.zeta.lanAddress`) carry the RFC 5737 documentation sentinel `192.0.2.250`, and the `gitlab-lan`
+Gateway READS `global.zeta.lanAddress` through the runner subchart's `tpl`. With a range resolved, Job
+`gitlab-lan-address` merge-patches those three leaves to the range's LAST address (LB-IPAM allocates
+lowest-first, so the pin does not race automatic allocations); `zeta-root` ignores exactly those
+paths. It writes `valuesObject` leaves while `gitlab-public-hosts` writes `parameters`, so the two
+Jobs cannot clobber each other, and with a public domain also set its helm parameters outrank these
+hosts values. UNSET keeps the sentinel: `gitlab-lan` stays `<pending>`, loudly, on an address no
+network can route.
 
 **Not verified here:** nothing in §11 has been booted (no nix, no QEMU); see
 `docs/ops/INSTALL-TIME-CONFIG.md` "Not verified".

@@ -224,12 +224,25 @@ describe("(d) GitLab follows the install-time public domain", () => {
     expect(kinds(pub, "Job").map(name)).toEqual(["gitlab-public-hosts"]);
   });
 
-  test("root ignores exactly the patched field on Application/gitlab, so selfHeal does not revert it", () => {
+  test("root ignores exactly the patched fields on Application/gitlab, so selfHeal does not revert them", () => {
     const root = parseYaml(readFileSync(join(REPO_ROOT, ROOT_APPLICATION), "utf8")) as {
       spec: { ignoreDifferences?: unknown; syncPolicy: { syncOptions: string[] } };
     };
+    // The public-TLS parameters, plus the three valuesObject leaves the LoadBalancer-range Job
+    // writes (cluster/lb-ipam-pool.test.ts (e) pins that half and that the two are disjoint).
     expect(root.spec.ignoreDifferences).toEqual([
-      { group: "argoproj.io", kind: "Application", name: "gitlab", namespace: "argocd", jsonPointers: [GITLAB_APPLICATION_PARAMETERS_POINTER] },
+      {
+        group: "argoproj.io",
+        kind: "Application",
+        name: "gitlab",
+        namespace: "argocd",
+        jsonPointers: [
+          GITLAB_APPLICATION_PARAMETERS_POINTER,
+          "/spec/source/helm/valuesObject/global/hosts/gitlab/name",
+          "/spec/source/helm/valuesObject/global/hosts/registry/name",
+          "/spec/source/helm/valuesObject/global/zeta/lanAddress",
+        ],
+      },
     ]);
     expect(root.spec.syncPolicy.syncOptions).toContain("RespectIgnoreDifferences=true");
   });

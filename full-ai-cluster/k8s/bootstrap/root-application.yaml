@@ -46,6 +46,14 @@ spec:
   # report that as drift nor selfHeal it away. With no public domain the field is simply
   # absent and gitlab/Application.yaml's valuesObject (the LAN default) applies.
   # 081M3K253BR087G0R001151P2A; pinned by cluster/public-tls.test.ts (d).
+  #
+  # AND THREE KEYS OF ITS valuesObject: the GitLab LAN address. It is the last address of the
+  # LoadBalancer range the installer resolved (docs/ops/INSTALL-TIME-CONFIG.md row 6), which only
+  # the node knows, so `cilium-lb-ipam-pool` (k8s/lb-ipam/) merge-patches exactly these three
+  # leaves -- a merge patch merges objects key by key, so it touches nothing else in
+  # valuesObject -- and root must neither report that as drift nor selfHeal it back to the
+  # sentinel. Disjoint from the parameters above, so the two Jobs can never clobber each other.
+  # Pinned by cluster/lb-ipam-pool.test.ts.
   ignoreDifferences:
     - group: argoproj.io
       kind: Application
@@ -53,6 +61,9 @@ spec:
       namespace: argocd
       jsonPointers:
         - /spec/source/helm/parameters
+        - /spec/source/helm/valuesObject/global/hosts/gitlab/name
+        - /spec/source/helm/valuesObject/global/hosts/registry/name
+        - /spec/source/helm/valuesObject/global/zeta/lanAddress
   syncPolicy:
     automated:
       prune: true

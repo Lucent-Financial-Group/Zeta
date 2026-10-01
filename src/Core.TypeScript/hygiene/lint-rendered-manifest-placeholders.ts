@@ -56,6 +56,9 @@ export const PLACEHOLDER_PATTERNS: readonly PlaceholderPattern[] = [
   { name: "change-me value", re: /\bchange-?me\b|\breplace-?me\b/i },
   { name: "image tag :placeholder", re: /:placeholder\b/i },
   { name: "unrendered install-time token", re: /@ZETA_[A-Z0-9_]+@/ },
+  // RFC 5737 documentation addresses are NEVER a real endpoint: where one appears in an applied
+  // manifest it is a sentinel for "nothing was resolved here", and must be named as such.
+  { name: "RFC 5737 documentation address", re: /\b(192\.0\.2|198\.51\.100|203\.0\.113)\.\d{1,3}\b/ },
 ];
 
 export interface Finding {
@@ -186,6 +189,16 @@ export const KNOWN_PLACEHOLDERS: readonly KnownPlaceholder[] = [
     reason:
       "`gitlab.invalid` is a DELIBERATE never-resolves sentinel for chart-assembled names this install neither runs nor exposes (pages, smartcard, minio, mail sender); the value that matters is global.hosts.gitlab.name. Tracked in docs/ops/INSTALL-TIME-CONFIG.md; it is the one entry here that is a documented sentinel rather than a forgotten value.",
   },
+  ...[".spec.source.helm.valuesObject.global.hosts.gitlab.name", ".spec.source.helm.valuesObject.global.hosts.registry.name", ".spec.source.helm.valuesObject.global.zeta.lanAddress"].map(
+    (path): KnownPlaceholder => ({
+      origin: "full-ai-cluster/k8s/applications/gitlab/Application.yaml",
+      path,
+      pattern: "RFC 5737 documentation address",
+      owner: "installer (docs/ops/INSTALL-TIME-CONFIG.md row 6)",
+      reason:
+        "192.0.2.250 is the DELIBERATE 'no LoadBalancer range was resolved' sentinel for GitLab's LAN address: an RFC 5737 documentation address no network can route. The installer-resolved range's last address replaces it (cilium-lb-ipam-pool's gitlab-lan-address Job; pinned by cluster/lb-ipam-pool.test.ts and gitlab-exposure.test.ts). Replaces the old literal 192.168.1.250, which was a home subnet's address applied on every LAN.",
+    }),
+  ),
   {
     origin: "full-ai-cluster/k8s/applications/hat-system/deployment.yaml",
     path: ".spec.template.spec.containers[0].image",
