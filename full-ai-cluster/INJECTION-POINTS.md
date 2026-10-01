@@ -173,14 +173,14 @@ NixOS module (declarative reader) + iter/backlog tag.
 | ----------------------- | ------------------------------------------------------------------------------------------------- |
 | **Stage**               | Cluster console at install time → typed twice                                                     |
 | **Content class**       | **Secret material** (NEVER on USB ESP)                                                            |
-| **Operator-driven via** | `read -s` prompt in `zeta-install.sh`; Enter to skip → keeps `zeta-change-me` default             |
+| **Operator-driven via** | `read -s` prompt in `zeta-install.sh`; Enter to skip → a RANDOM one-time password is minted (below) |
 | **Hash mechanism**      | `mkpasswd -m sha-512 -s` (sha512crypt; reads from stdin to avoid argv exposure)                   |
 | **Backed by file**      | `/mnt/etc/zeta/initial-hashedpassword` (chmod 0600, chown root:root)                              |
 | **NixOS reader module** | `full-ai-cluster/nixos/modules/initial-password.nix`                                              |
 | **Iter / backlog**      | iter-5.3 (+ 081KSGS9H0008QG0R00120EEHM Bug 3b runtime-injection fix)                              |
 | **Reader entry point**  | `builtins.readFile` → `users.users.zeta.hashedPassword`                                           |
 | **Why console-only**    | Per constitutional rail above; password shouldn't transit Mac keychain OR USB ESP                 |
-| **Fallback hash**       | sha512crypt of `zeta-change-me` (BACKWARD-COMPAT; rotate via `passwd zeta` after first SSH login) |
+| **No password typed**   | **minted per install** (24 lowercase base32 chars from `/dev/urandom`), shown ONCE on `/dev/console` + `/dev/tty1` and never on the tee'd stdout (so not in the log copied onto the node); hash written as above plus marker `/etc/zeta/initial-password-minted`; applied ONCE (state file) so a later `passwd zeta` is never reverted. Not shown anywhere -> account LOCKED (`/etc/zeta/console-password-locked`). The shared `zeta-change-me` default is retired for installer-built nodes (docs/ops/INSTALL-TIME-CONFIG.md row 19). `initial-password.nix` still carries it as the build-time default for a system built WITHOUT the installer |
 
 ### 4. WiFi credentials
 
@@ -458,10 +458,17 @@ listeners (`gitlab.<domain>`, `registry.<domain>`, one certificate each), the `g
 Gateway pinned to that address; the registry is the same address (`/v2/`). The address is no longer
 in git: Job `gitlab-lan-address` (in `cilium-lb-ipam-pool`) merge-patches three valuesObject leaves.
 
+**Forgejo rides them too** (docs/ops/INSTALL-TIME-CONFIG.md row 28). Its chart renders
+`DOMAIN` / `ROOT_URL` / `SSH_DOMAIN` = `git.example.com` when nothing sets them, and nothing did.
+UNSET: they are its in-cluster Service names (`forgejo-http.forgejo.svc:3000`). SET: a fifth listener
+`git.<domain>` with its own certificate, the `forgejo-public` route, and Job `forgejo-public-hosts`,
+which merge-patches the `forgejo` Application's helm parameters to `https://git.<domain>/` (`zeta-root`
+ignores exactly that field). Same shape as GitLab above, a separate Job scoped to Application/forgejo.
+
 **The operator step when SET** (also printed in the installer's completion banner):
 
 1. **DNS:** an `A` record `portal.<domain>` → your public IP (and `gitlab.<domain>`,
-   `registry.<domain>` → the same IP to publish GitLab).
+   `registry.<domain>`, `git.<domain>` → the same IP to publish GitLab / Forgejo).
 2. **Router:** forward TCP **80** and **443** to the public gateway's LoadBalancer IP —
    `sudo k3s kubectl -n zeta-platform get gateway zeta-public-gateway -o jsonpath='{.status.addresses[0].value}'`.
 3. Watch `sudo k3s kubectl -n zeta-platform get certificate portal-tls` go Ready. HTTP-01
