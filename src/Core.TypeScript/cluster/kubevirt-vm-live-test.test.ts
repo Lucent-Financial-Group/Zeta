@@ -36,6 +36,23 @@ describe("manifests the lane applies", () => {
     expect(dv.spec.storage.storageClassName).toBe(scratch);
     expect(dv.spec.source).toEqual({ blank: {} });
   });
+
+  test("the importer check asks for immediate binding, because HonorWaitForFirstConsumer parks the other kind", () => {
+    // run 36859944232: a blank DataVolume on a WaitForFirstConsumer class sat in phase
+    // WaitForFirstConsumer for 420s -- correct behaviour, so the lane must not wait for Succeeded on it.
+    const cr = readFileSync(join(REPO_ROOT, "full-ai-cluster/k8s/applications/cdi/cdi-cr.yaml"), "utf8");
+    expect(cr).toContain("HonorWaitForFirstConsumer");
+    const immediate = parseYaml(blankDataVolumeManifest("ns", "zeta-block-local", "a", true)) as any;
+    expect(immediate.metadata.annotations["cdi.kubevirt.io/storage.bind.immediate.requested"]).toBe("true");
+    const parked = parseYaml(blankDataVolumeManifest("ns", "zeta-block-local", "b", false)) as any;
+    expect(parked.metadata.annotations).toBeUndefined();
+  });
+
+  test("the VM consumes a WaitForFirstConsumer DataVolume, so Running proves that path too", () => {
+    const vmi = parseYaml(cirrosVmiManifest("ns")) as any;
+    expect(vmi.spec.volumes.find((v: any) => v.name === "datadisk").dataVolume.name).toBe("live-wffc");
+    expect(vmi.spec.domain.devices.disks.map((d: any) => d.name)).toEqual(["rootdisk", "datadisk"]);
+  });
 });
 
 describe("the Windows template the dry-run is judged against", () => {

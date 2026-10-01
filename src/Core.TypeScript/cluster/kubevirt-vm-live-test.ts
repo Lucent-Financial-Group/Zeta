@@ -45,11 +45,22 @@ export const WINDOWS_TEMPLATE_PATH = "full-ai-cluster/k8s/examples/kubevirt-wind
 /** Upstream's own tiny demo guest -- the image KubeVirt's docs and e2e use. ~15 MiB. */
 export const CIRROS_IMAGE = "quay.io/kubevirt/cirros-container-disk-demo:v1.8.4";
 
-export function blankDataVolumeManifest(namespace: string, storageClass: string): string {
+/**
+ * A blank DataVolume. `bindImmediately` matters and is the thing run 36859944232 taught: with the
+ * `HonorWaitForFirstConsumer` feature gate cdi-cr.yaml enables, a DataVolume on a WaitForFirstConsumer
+ * class (zeta-block-local is one) sits in phase WaitForFirstConsumer until a pod wants its PVC --
+ * which is the design, not a stall. So the importer is exercised by asking for immediate binding, and
+ * the WaitForFirstConsumer path is exercised separately by giving a VM a DataVolume to consume.
+ */
+export function blankDataVolumeManifest(namespace: string, storageClass: string, name = "live-blank", bindImmediately = true): string {
   return stringifyYaml({
     apiVersion: "cdi.kubevirt.io/v1beta1",
     kind: "DataVolume",
-    metadata: { name: "live-blank", namespace },
+    metadata: {
+      name,
+      namespace,
+      ...(bindImmediately ? { annotations: { "cdi.kubevirt.io/storage.bind.immediate.requested": "true" } } : {}),
+    },
     spec: {
       source: { blank: {} },
       storage: { accessModes: ["ReadWriteOnce"], storageClassName: storageClass, resources: { requests: { storage: "1Gi" } } },
@@ -64,12 +75,23 @@ export function cirrosVmiManifest(namespace: string): string {
     metadata: { name: "live-cirros", namespace, labels: { "kubevirt.io/domain": "live-cirros" } },
     spec: {
       domain: {
-        devices: { disks: [{ name: "rootdisk", disk: { bus: "virtio" } }], interfaces: [{ name: "default", masquerade: {} }] },
+        devices: {
+          disks: [
+            { name: "rootdisk", disk: { bus: "virtio" } },
+            { name: "datadisk", disk: { bus: "virtio" } },
+          ],
+          interfaces: [{ name: "default", masquerade: {} }],
+        },
         resources: { requests: { memory: "128Mi" } },
       },
       networks: [{ name: "default", pod: {} }],
       terminationGracePeriodSeconds: 0,
-      volumes: [{ name: "rootdisk", containerDisk: { image: CIRROS_IMAGE } }],
+      volumes: [
+        { name: "rootdisk", containerDisk: { image: CIRROS_IMAGE } },
+        // A DataVolume on a WaitForFirstConsumer class: the VM is its first consumer, so reaching
+        // Running proves CDI's WaitForFirstConsumer handling end to end.
+        { name: "datadisk", dataVolume: { name: "live-wffc" } },
+      ],
     },
   });
 }
@@ -123,6 +145,7 @@ function diagnostics(kube: Kube, ns: string): void {
   for (const [title, args] of [
     ["vmi", ["-n", ns, "get", "vmi", "-o", "yaml"]],
     ["datavolume", ["-n", ns, "get", "datavolume,pvc,pods", "-o", "wide"]],
+    ["datavolume yaml", ["-n", ns, "get", "datavolume", "-o", "yaml"]],
     ["events", ["-n", ns, "get", "events", "--sort-by=.lastTimestamp"]],
     ["kubevirt pods", ["-n", "kubevirt", "get", "pods", "-o", "wide"]],
     ["cdi pods", ["-n", "cdi", "get", "pods", "-o", "wide"]],
@@ -165,7 +188,7 @@ async function main(): Promise<void> {
     if (nsr.code !== 0 && !nsr.out.includes("AlreadyExists")) throw new Error(`namespace: ${nsr.out}`);
 
     // 1. CDI end to end.
-    const dv = kube.run(["apply", "-f", "-"], blankDataVolumeManifest(ns, "zeta-block-local"));
+    const dv = kube.run(["apply", "-f", "-"], blankDataVolumeManifest(ns, "zeta-block-local", "live-blank", true));
     if (dv.code !== 0) throw new Error(`blank DataVolume was rejected: ${dv.out}`);
     await waitFor("DataVolume live-blank Succeeded", 420, () => {
       const o = kube.json(["-n", ns, "get", "datavolume", "live-blank"]);
@@ -187,6 +210,8 @@ async function main(): Promise<void> {
     // 3. A VM boots.
     const kvm = kube.run(["get", "kubevirt", "kubevirt", "-n", "kubevirt", "-o", "jsonpath={.spec.configuration.developerConfiguration.useEmulation}"]).out;
     console.log(`KubeVirt useEmulation=${kvm || "unset"}`);
+    const wffc = kube.run(["apply", "-f", "-"], blankDataVolumeManifest(ns, "zeta-block-local", "live-wffc", false));
+    if (wffc.code !== 0) throw new Error(`WaitForFirstConsumer DataVolume was rejected: ${wffc.out}`);
     const vmi = kube.run(["apply", "-f", "-"], cirrosVmiManifest(ns));
     if (vmi.code !== 0) throw new Error(`cirros VMI was rejected: ${vmi.out}`);
     const node = await waitFor("VMI live-cirros Running", 900, () => {
@@ -195,7 +220,8 @@ async function main(): Promise<void> {
       if (phase === "Failed") throw new Error(`VMI failed: ${JSON.stringify(o?.status?.conditions ?? [])}`);
       return phase === "Running" ? `DONE:${String(o?.status?.nodeName ?? "?")}` : `phase=${phase || "?"}`;
     });
-    prove(`a cirros containerDisk VM reached phase Running on node ${node} (useEmulation=${kvm || "unset"})`);
+    const wffcPhase = String(kube.json(["-n", ns, "get", "datavolume", "live-wffc"])?.status?.phase ?? "?");
+    prove(`a cirros containerDisk VM reached phase Running on node ${node} (useEmulation=${kvm || "unset"}), consuming a WaitForFirstConsumer DataVolume now in phase ${wffcPhase}`);
     console.log(`\nALL PROVED (${proved.length}):\n  - ${proved.join("\n  - ")}`);
   } catch (e) {
     console.log(`\nFAILED: ${e instanceof Error ? e.message : String(e)}`);
