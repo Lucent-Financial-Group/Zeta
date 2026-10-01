@@ -64,6 +64,16 @@ spec:
         - /spec/source/helm/valuesObject/global/hosts/gitlab/name
         - /spec/source/helm/valuesObject/global/hosts/registry/name
         - /spec/source/helm/valuesObject/global/zeta/lanAddress
+    # Forgejo, the same shape (docs/ops/INSTALL-TIME-CONFIG.md row 28): its public URL is the
+    # helm parameters `platform-public-tls`'s Job `forgejo-public-hosts` merge-patches in when an
+    # install-time public domain is set; with none the field is absent and the in-cluster URL in
+    # forgejo/Application.yaml applies. Pinned by cluster/forgejo-public.test.ts.
+    - group: argoproj.io
+      kind: Application
+      name: forgejo
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/helm/parameters
   syncPolicy:
     automated:
       prune: true

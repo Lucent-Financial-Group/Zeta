@@ -221,7 +221,8 @@ describe("(d) GitLab follows the install-time public domain", () => {
     const role = kinds(pub, "Role").find((r) => name(r) === "gitlab-public-hosts");
     const patchRules = ((role?.["rules"] ?? []) as Array<Record<string, unknown>>).filter((r) => (r["verbs"] as string[]).includes("patch"));
     expect(patchRules).toEqual([{ apiGroups: ["argoproj.io"], resources: ["applications"], resourceNames: ["gitlab"], verbs: ["patch"] }]);
-    expect(kinds(pub, "Job").map(name)).toEqual(["gitlab-public-hosts"]);
+    // Two Jobs now, one per git host, each scoped to ITS Application (forgejo-public.test.ts pins the other).
+    expect(kinds(pub, "Job").map(name)).toEqual(["gitlab-public-hosts", "forgejo-public-hosts"]);
   });
 
   test("root ignores exactly the patched fields on Application/gitlab, so selfHeal does not revert them", () => {
@@ -242,6 +243,14 @@ describe("(d) GitLab follows the install-time public domain", () => {
           "/spec/source/helm/valuesObject/global/hosts/registry/name",
           "/spec/source/helm/valuesObject/global/zeta/lanAddress",
         ],
+      },
+      // Forgejo's public URL parameters (cluster/forgejo-public.test.ts pins that half).
+      {
+        group: "argoproj.io",
+        kind: "Application",
+        name: "forgejo",
+        namespace: "argocd",
+        jsonPointers: [GITLAB_APPLICATION_PARAMETERS_POINTER],
       },
     ]);
     expect(root.spec.syncPolicy.syncOptions).toContain("RespectIgnoreDifferences=true");
