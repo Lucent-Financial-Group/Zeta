@@ -823,8 +823,8 @@
         },
         {
           "appId": "full-ai-cluster/mimir",
-          "cpuMillis": 435,
-          "memoryMib": 3296,
+          "cpuMillis": 437,
+          "memoryMib": 3328,
           "pods": 20,
           "workloads": [
             {
@@ -836,8 +836,8 @@
             {
               "workload": "Deployment/mimir-gateway",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 2,
+              "memoryMib": 32
             },
             {
               "workload": "Deployment/mimir-overrides-exporter",
@@ -940,6 +940,7 @@
             "full-ai-cluster/mimir/alertmanager",
             "full-ai-cluster/mimir/compactor",
             "full-ai-cluster/mimir/distributor",
+            "full-ai-cluster/mimir/gateway",
             "full-ai-cluster/mimir/ingester",
             "full-ai-cluster/mimir/kafka",
             "full-ai-cluster/mimir/overrides_exporter",
@@ -2153,8 +2154,8 @@
         },
         {
           "appId": "full-ai-cluster/mimir",
-          "cpuMillis": 2610,
-          "memoryMib": 6148,
+          "cpuMillis": 2612,
+          "memoryMib": 6180,
           "pods": 20,
           "workloads": [
             {
@@ -2166,8 +2167,8 @@
             {
               "workload": "Deployment/mimir-gateway",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 2,
+              "memoryMib": 32
             },
             {
               "workload": "Deployment/mimir-overrides-exporter",
@@ -2270,6 +2271,7 @@
             "full-ai-cluster/mimir/alertmanager",
             "full-ai-cluster/mimir/compactor",
             "full-ai-cluster/mimir/distributor",
+            "full-ai-cluster/mimir/gateway",
             "full-ai-cluster/mimir/ingester",
             "full-ai-cluster/mimir/kafka",
             "full-ai-cluster/mimir/overrides_exporter",
