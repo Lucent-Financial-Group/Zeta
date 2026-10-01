@@ -50,12 +50,36 @@
 // ---------------------------------
 // Some declared capacity provisions nothing on a fresh sync (a manual-sync
 // Application, or a PVC manifest no Application reaches). That is REPORTED,
-// never DISCOUNTED. Longhorn's StorageClass is volumeBindingMode: Immediate
-// (hardcoded in longhorn-1.7.2/templates/storageclass.yaml), so an applied PVC
-// provisions its replica with zero consuming pods; what keeps the capacity off
-// the disk is the Application never being applied, and that is one
-// `argocd app sync` away from being false. Convicting on the bring-up subset
-// would be a gate that passes today and fails the first time someone ran it.
+// never DISCOUNTED.
+//
+// CORRECTED 2026-09-24 (WP28, 081M393B9TB087G0R000Y529Z8). This paragraph used
+// to read "Longhorn's StorageClass is volumeBindingMode: Immediate (hardcoded
+// in longhorn-1.7.2/templates/storageclass.yaml), so an applied PVC provisions
+// its replica with zero consuming pods." That sentence is TRUE OF A CLASS
+// NOTHING IN THIS ROSTER CLAIMS ON. The chart's own `longhorn` class is indeed
+// Immediate, but applications/longhorn/Application.yaml sets
+// `persistence.defaultClass: false`, and every claim in the tree names a
+// CAPABILITY class instead -- `zeta-block-replicated`, `zeta-shared`,
+// `zeta-block-local` -- all three of which
+// full-ai-cluster/nixos/modules/local-storage.nix binds
+// `volumeBindingMode: WaitForFirstConsumer`. `git log -L` on that block shows
+// `zeta-block-replicated` was CREATED that way by #17576 ("charts name a
+// storage capability, never a provider"); it has never been Immediate. The
+// prose described the pre-rename provider-named class and was carried across
+// the rename without being re-checked.
+//
+// THE CONCLUSION SURVIVES THE CORRECTION, which is the test of whether it was
+// real. Under WaitForFirstConsumer an applied PVC waits for a schedulable
+// consumer instead of provisioning at once, so bring-up is still not a
+// discount -- it is one `argocd app sync` AND one schedulable pod away from
+// being false, rather than one sync away. Convicting on the bring-up subset
+// would still be a gate that passes today and fails the first time someone
+// ran it.
+//
+// The auditor no longer restates the mode in prose at all: it READS it out of
+// local-storage.nix at print time (`printedBringUpNote` in
+// single-node-readiness.ts), because a sentence can rot again and a parsed
+// value cannot. That file is authoritative; this comment is commentary.
 
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
@@ -388,6 +412,49 @@ export function loadCatalogue(path = DEFAULT_CATALOGUE_PATH, repoRoot = REPO_ROO
 // Arithmetic
 // ---------------------------------------------------------------------------
 
+/**
+ * The STORAGE profile a RESOURCE rung's staged tree gets, or `null` when the rung
+ * keeps the committed sizes.
+ *
+ * Two ladders, one mapping. The resource rung (`dev` / `metal`) is what
+ * `--serve-tree` stages; the storage ladder (`ci` .. `large`) is how big the
+ * governed PVCs are. `storageProfileForResourceRung` in the catalogue joins them
+ * -- today only `dev -> ci` -- so the dev lane's staged tree carries dev-sized
+ * disks while the committed tree, which metal syncs, keeps its active profile.
+ *
+ * REFUSES a mapping that names a rung the resource catalogue lacks or a storage
+ * profile the ladder lacks: either would be a mapping that can never fire, which
+ * reads as coverage and is none.
+ */
+export function storageProfileForResourceRung(
+  rung: string,
+  path = DEFAULT_CATALOGUE_PATH,
+  repoRoot = REPO_ROOT,
+): string | null {
+  const parsed = JSON.parse(readFileSync(resolve(repoRoot, path), "utf8")) as {
+    storageProfileForResourceRung?: unknown;
+    resourceProfiles?: unknown;
+    profiles?: unknown;
+  };
+  const mapping = parsed.storageProfileForResourceRung;
+  if (mapping === undefined) return null;
+  if (typeof mapping !== "object" || mapping === null || Array.isArray(mapping)) {
+    throw new Error(`${path}: storageProfileForResourceRung must be an object of resource rung -> storage profile`);
+  }
+  const rungs = Array.isArray(parsed.resourceProfiles) ? (parsed.resourceProfiles as unknown[]) : [];
+  const storage = Array.isArray(parsed.profiles) ? (parsed.profiles as unknown[]) : [];
+  for (const [key, value] of Object.entries(mapping as Record<string, unknown>)) {
+    if (!rungs.includes(key)) {
+      throw new Error(`${path}: storageProfileForResourceRung names resource rung "${key}", which resourceProfiles lacks`);
+    }
+    if (typeof value !== "string" || !storage.includes(value)) {
+      throw new Error(`${path}: storageProfileForResourceRung.${key} = ${String(value)} is not a storage profile`);
+    }
+  }
+  const chosen = (mapping as Record<string, unknown>)[rung];
+  return typeof chosen === "string" ? chosen : null;
+}
+
 /** GiB a claim costs under `profile`: declared size x pod count. */
 export function claimGib(claim: ProfileClaim, profile: string): number {
   const size = claim.sizes[profile];
@@ -559,15 +626,23 @@ export interface ExtractedClaim {
 export function crossCheckClaims(
   catalogue: ProfileCatalogue,
   extracted: readonly ExtractedClaim[],
-  storageClass: string,
+  /**
+   * The class, or the SET of classes, the catalogue governs. A set since
+   * 2026-09-23: charts name capabilities, and more than one capability can be
+   * bound to the one metal pool the catalogue budgets (single-node-readiness
+   * passes `metalPoolCapabilities()`).
+   */
+  storageClasses: string | readonly string[],
   profile: string,
 ): readonly ProfileFinding[] {
+  const governed: readonly string[] = typeof storageClasses === "string" ? [storageClasses] : storageClasses;
+  const storageClass = governed.join("|");
   const byCoordinate = new Map<string, ProfileClaim>();
   for (const claim of catalogue.claims) byCoordinate.set(`${claim.path} ${claim.storageClassField}`, claim);
   const matched = new Set<string>();
   const findings: ProfileFinding[] = [];
   for (const claim of extracted) {
-    if (claim.storageClass !== storageClass) continue;
+    if (!governed.includes(claim.storageClass)) continue;
     const key = `${claim.path} ${claim.field}`;
     const row = byCoordinate.get(key);
     if (row === undefined) {
@@ -1125,10 +1200,10 @@ export function applicationDirs(repoRoot = REPO_ROOT): readonly string[] {
   const dirs: string[] = [];
   for (const entry of readdirSync(base, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue;
-    if (existsSync(resolve(base, entry.name, "Application.yaml"))) {
-      dirs.push(entry.name);
-      continue;
-    }
+    if (existsSync(resolve(base, entry.name, "Application.yaml"))) dirs.push(entry.name);
+    // NOT `continue` after a parent Application: `temporal/postgres` (2026-09-27)
+    // nests under a directory that has its own Application.yaml, and the root glob
+    // reaches both. Skipping the children of an Application directory hid it.
     for (const nested of readdirSync(resolve(base, entry.name), { withFileTypes: true })) {
       if (!nested.isDirectory()) continue;
       if (existsSync(resolve(base, entry.name, nested.name, "Application.yaml"))) {
@@ -1206,7 +1281,10 @@ export function metalAppliedDirs(repoRoot = REPO_ROOT): readonly string[] | null
         .map((entry) => entry.trim().replace(/\/\*\*$/, ""))
         .filter((entry) => entry.length > 0),
     );
-    return applicationDirs(repoRoot).filter((dir) => !excluded.has(dir));
+    // `<dir>/**` also drops nested Applications (`temporal/postgres` under `temporal/**`).
+    return applicationDirs(repoRoot).filter(
+      (dir) => !excluded.has(dir) && ![...excluded].some((e) => dir.startsWith(`${e}/`)),
+    );
   }
   return null;
 }

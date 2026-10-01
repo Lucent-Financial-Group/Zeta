@@ -127,7 +127,7 @@ export const ORDER_ADJUDICATION_PENDING: ReadonlyMap<string, string> = new Map([
       "non-core apiVersions and mapping each custom kind to its installing Application. It was the ONLY " +
       "missing edge that class found across all 47 Applications, and service-DNS derivation cannot see it. " +
       "`platform/monitoring.yaml` ships a monitoring.coreos.com/v1 ServiceMonitor and PrometheusRule, both " +
-      "applied (`monitoring` is one of the 15 names in the Application's own directory.include glob), while " +
+      "applied (`monitoring` is one of the 14 names in the Application's own directory.include glob), while " +
       "kube-prometheus-stack installs those CRDs at wave 0 against platform's -20. " +
       "THIS ONE DEGRADES DIFFERENTLY FROM ITS TWO SIBLINGS, which is why it is registered separately rather " +
       "than folded in: a Gateway with no pool is ADMITTED and simply address-less, and a PVC with no " +
@@ -151,15 +151,24 @@ export const ORDER_ADJUDICATION_PENDING: ReadonlyMap<string, string> = new Map([
       "platform permanently non-Healthy, wedging every later wave behind it forever. The order registration " +
       "below is UNCHANGED and still correct to keep: the wave NUMBERS still disagree (kube-prometheus-stack " +
       "still reconciles after platform), which is exactly what this registry tracks; what changed is that the " +
-      "disagreement can no longer fail the sync outright.",
+      "disagreement can no longer fail the sync outright. " +
+      "CORRECTION 2026-09-27: 'ArgoCD's retry does converge it' above was an assumption, and the first cluster " +
+      "to run this Application refuted it. SkipDryRunOnMissingResource defers only the dry run; the real apply " +
+      "is still rejected while the CRD is absent. WP11 installed-disk run 36221053730 ended with `platform` " +
+      "OutOfSync/Degraded, 'one or more synchronization tasks completed unsuccessfully (retried 5 times)': the " +
+      "default retry budget ran out before kube-prometheus-stack registered the CRD, and ArgoCD never " +
+      "re-attempts an automated sync of a revision that already failed. REPAIR (5) APPLIED: platform's " +
+      "syncPolicy.retry is now unbounded (limit -1, backoff capped at 5m). The wave inversion stays registered " +
+      "here because the numbers still disagree.",
   ],
   [
     "platform -> longhorn",
     "The portal StatefulSet's PVC is Longhorn-backed but `platform` syncs at -20 and longhorn at -15, so the " +
       "PVC pends until Longhorn lands. This is fact #6 of vault/TOPOLOGY.md repeating on a second Application: " +
       "there it was MEASURED (`PVCs pend in the interim`) and repaired by moving vault to the bootstrap " +
-      "`zeta-local-path` StorageClass. Two repairs are available here -- move platform after longhorn, or move " +
-      "the portal volume to zeta-local-path -- and they differ in the durability guarantee for the Room/event " +
+      "`zeta-local-path` StorageClass (now the `zeta-block-local` capability). Two repairs are available here -- " +
+      "move platform after longhorn, or move the portal volume from `zeta-block-replicated` to `zeta-block-local` " +
+      "-- and they differ in the durability guarantee for the Room/event " +
       "log, which is a design call for the maintainer, not a mechanical renumber.",
   ],
   [

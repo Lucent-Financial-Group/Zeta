@@ -463,6 +463,35 @@
               echo "$status" | tee "$out"
             '';
 
+          # Properties of the BOOTSTRAP IMAGE PRELOAD module (WP34,
+          # 081M3BZ111D087G0R000YBMKRY) -- that every node imports it, that it
+          # owns the directory k3s reads airgap archives from, that its status
+          # unit runs BEFORE k3s, and that a MISSING archive is loud and
+          # NON-FATAL. That last pair is the whole point: silent absence is the
+          # defect class the work item exists to remove, and a hard failure over
+          # a missing optimisation would be a new way to brick a working
+          # install.
+          #
+          # NOT a VM test and NOT a boot test -- it says nothing about whether
+          # any ISO carries the archive, nor whether the image names inside it
+          # match what the charts render. That is
+          # src/Core.TypeScript/cluster/bootstrap-preload-blackhole.ts, which
+          # boots k3s with the unmirrored registries blackholed and refuses to
+          # report a result without a red negative control.
+          #
+          # Costs no VM, and its assertions fire during EVALUATION -- so
+          # `nix flake check --no-build` already runs it.
+          k3s-bootstrap-image-preload-model =
+            let
+              report = import ./nixos/tests/k3s-bootstrap-image-preload-eval-test.nix {
+                inherit pkgs;
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "k3s-bootstrap-image-preload-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
           # Properties of the TPM-SEAL desired-state model — the module that
           # answers "what can the nix installer pre-stage for a hardware-backed
           # auto-unseal", and the gate that stops it from deciding seal-key
@@ -664,6 +693,33 @@
           # nixos/tests/k3s-control-plane-platform-fixes.nix.
           k3s-control-plane-platform-fixes =
             import ./nixos/tests/k3s-control-plane-platform-fixes.nix { inherit pkgs; };
+
+          # WP25 (081M38G8NGC087G0R001GEGEDK). Boots a real k3s server,
+          # truncates every file under /var/lib/rancher/k3s/agent to 0 bytes
+          # (the exact state run 35927439681 measured on the real installed
+          # disk), restarts k3s, and asserts it reaches active + /readyz
+          # again -- proving the self-heal ExecStartPre in
+          # nixos/modules/k3s-agent-tls-self-heal.nix actually recovers a
+          # real node, not just a fixture directory (that half is
+          # src/Core.TypeScript/hygiene/k3s-agent-tls-self-heal.test.ts).
+          # Hermetic. See nixos/tests/k3s-agent-tls-self-heal.nix.
+          k3s-agent-tls-self-heal =
+            import ./nixos/tests/k3s-agent-tls-self-heal.nix { inherit pkgs; };
+
+          # 081M39CR74D087G0R002BEG2G4. Boots a real k3s server and proves the
+          # two halves of the stillborn-datastore guard that fixture tests
+          # structurally cannot reach: (1) the sentinel unit's DEFAULT readyz
+          # command really succeeds against a real k3s from inside its real
+          # systemd unit -- if it did not, no sentinel would ever be written
+          # and every healthy datastore would look stillborn to the recovery
+          # script, inverting the guard into the data loss it exists to
+          # prevent; and (2) a real, already-served datastore presented with a
+          # WRONG TOKEN reproduces the same ambiguous fatal a stillborn one
+          # does, and SURVIVES it. The decision logic itself is pinned over
+          # fixtures in src/Core.TypeScript/hygiene/k3s-datastore-bootstrap-recovery.test.ts.
+          # Hermetic. See nixos/tests/k3s-datastore-bootstrap-sentinel.nix.
+          k3s-datastore-bootstrap-sentinel =
+            import ./nixos/tests/k3s-datastore-bootstrap-sentinel.nix { inherit pkgs; };
 
           # TWO-NODE: an agent configured by nixos/modules/k3s-agent.nix joins
           # a server configured by nixos/modules/k3s-server.nix on one shared

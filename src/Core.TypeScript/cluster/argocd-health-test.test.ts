@@ -27,7 +27,7 @@ import {
   buildPlan,
   classifyApplications,
   classifySmokeApplications,
-  devLonghornStorageClassAliasDeclared,
+  devBoundStorageCapabilities,
   discoverExpectedApplications,
   DEV_EXCLUDED_REASONS,
   auditDevExclusionReasons,
@@ -39,6 +39,7 @@ import {
   mergeArgoCdTimeoutDiagnostics,
   restartingContainersFromPodsJson,
   parseApplicationList,
+  parseUnhealthyResources,
   formatHealthWaitProgress,
   confirmedDegradedTerminalFailure,
   degradedApplicationNames,
@@ -486,11 +487,13 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     }
   });
 
-  // Title qualified on this branch: dev now applies a StorageClass NAMED
-  // longhorn, so the rule this test pins is the one that still holds when no
-  // such class exists. Both halves matter and neither replaces the other.
-  test("isExcludedFromIncludedProof catches Longhorn in child manifests when dev has no such class", () => {
-    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-longhorn-"));
+  // The storage rule, since 2026-09-23: charts name a CAPABILITY, dev binds some
+  // of them, and an Application requesting one dev does not bind is excluded.
+  const NONE: ReadonlySet<string> = new Set();
+  const DEV_RWO: ReadonlySet<string> = new Set(["zeta-block-replicated", "zeta-block-local"]);
+
+  test("isExcludedFromIncludedProof catches a class in child manifests that dev does not bind", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-class-"));
     try {
       const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/demo");
       mkdirSync(appDir, { recursive: true });
@@ -500,34 +503,57 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
       );
       writeFileSync(
         join(appDir, "statefulset.yaml"),
-        "spec:\n  volumeClaimTemplates:\n    - spec:\n        storageClassName: longhorn\n",
+        "spec:\n  volumeClaimTemplates:\n    - spec:\n        storageClassName: zeta-block-replicated\n",
       );
       const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
-      expect(isExcludedFromIncludedProof("demo", appText, appDir, false)).toBe(true);
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, NONE)).toBe(true);
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, DEV_RWO)).toBe(false);
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
   });
 
   /**
-   * 081M0JXF6MS087G0R001HC34TM — the longhorn rule is CONDITIONAL on substrate,
-   * not deleted. These four tests pin both branches plus the RWX carve-out;
-   * without the pair, "we made those apps testable" would be indistinguishable
-   * from "we stopped checking".
+   * 081M0JXF6MS087G0R001HC34TM, generalised — the storage rule is CONDITIONAL on
+   * substrate, not deleted. Both branches plus the RWX carve-out; without the
+   * pair, "we made those apps testable" would be indistinguishable from "we
+   * stopped checking".
    */
-  test("the longhorn rule stops applying once dev declares a StorageClass by that name", () => {
-    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-alias-on-"));
+  test("the storage rule follows the SET of bound capabilities, one name at a time", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-bound-"));
     try {
       const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/demo");
       mkdirSync(appDir, { recursive: true });
       writeFileSync(
         join(appDir, "Application.yaml"),
-        "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: demo\nspec:\n  source:\n    helm:\n      values: |\n        storageClass: longhorn\n",
+        "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: demo\nspec:\n  source:\n    helm:\n      valuesObject:\n        a:\n          storageClass: zeta-block-replicated\n        b:\n          storageClass: zeta-block-local\n",
       );
       const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
       // Same Application, same manifest text -- only the substrate answer moves.
-      expect(isExcludedFromIncludedProof("demo", appText, appDir, false)).toBe(true);
-      expect(isExcludedFromIncludedProof("demo", appText, appDir, true)).toBe(false);
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, NONE)).toBe(true);
+      // ONE of the two bound is not enough: the unbound claim would still pend.
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, new Set(["zeta-block-local"]))).toBe(true);
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, DEV_RWO)).toBe(false);
+    } finally {
+      rmSync(repoRoot, { recursive: true, force: true });
+    }
+  });
+
+  test("a PROVIDER-named class is never bound in dev, so it stays excluded even with every capability bound", () => {
+    // The old alias made `longhorn` bindable in dev. That door is closed: dev
+    // binds capability names only, so a manifest regressing to a provider name
+    // drops out of the proof (and storage-capabilities.ts refuses it outright).
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-provider-"));
+    try {
+      const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/demo");
+      mkdirSync(appDir, { recursive: true });
+      writeFileSync(
+        join(appDir, "Application.yaml"),
+        "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: demo\nspec: {}\n",
+      );
+      writeFileSync(join(appDir, "pvc.yaml"), "kind: PersistentVolumeClaim\nspec:\n  storageClassName: longhorn\n");
+      const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, DEV_RWO)).toBe(true);
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
@@ -536,14 +562,13 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
   test("a ReadWriteMany claim stays excluded regardless of which class it names", () => {
     // The access mode is the hazard, not the class name: EVERY dev class is
     // rancher.io/local-path, which is RWO-only. So the RWX rule must gate on its
-    // own, not nested inside the longhorn branch -- otherwise an RWX claim
-    // against zeta-local-path, against kind's default, or against no class at
-    // all sails through and hangs.
+    // own, not nested inside the class rule -- otherwise an RWX claim against a
+    // bound capability, or against no class at all, sails through and hangs.
     const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-rwx-"));
     try {
       const claims = [
-        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: longhorn\n",
-        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: zeta-local-path\n",
+        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: zeta-block-replicated\n",
+        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: zeta-block-local\n",
         "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n",
       ];
       for (const [index, claim] of claims.entries()) {
@@ -555,76 +580,64 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
         );
         writeFileSync(join(appDir, "cache-pvc.yaml"), claim);
         const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
-        expect(isExcludedFromIncludedProof("demo", appText, appDir, true), claim).toBe(true);
+        expect(isExcludedFromIncludedProof("demo", appText, appDir, DEV_RWO), claim).toBe(true);
       }
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
   });
 
-  test("devLonghornStorageClassAliasDeclared fails CLOSED on absent, wrong-kind and wrong-name manifests", () => {
-    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-alias-parse-"));
+  test("devBoundStorageCapabilities fails CLOSED per file: absent, wrong kind, wrong name, provider-bound", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-bind-parse-"));
     const manifestDir = join(repoRoot, "full-ai-cluster/dev-cluster/manifests");
-    const manifest = join(manifestDir, "longhorn.yaml");
+    const replicated = join(manifestDir, "zeta-block-replicated.yaml");
+    const local = join(manifestDir, "zeta-block-local.yaml");
+    const sc = (name: string, provisioner: string) =>
+      `apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: ${name}\nprovisioner: ${provisioner}\n`;
     try {
       mkdirSync(manifestDir, { recursive: true });
       // Absent.
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      expect([...devBoundStorageCapabilities(repoRoot)]).toEqual([]);
       // Present but not a StorageClass.
-      writeFileSync(manifest, "kind: ConfigMap\nmetadata:\n  name: longhorn\n");
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // A StorageClass under a different name -- claims nothing about `longhorn`.
-      writeFileSync(
-        manifest,
-        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: not-longhorn\nprovisioner: rancher.io/local-path\n",
-      );
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // A StorageClass with no provisioner binds to nothing.
-      writeFileSync(manifest, "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\n");
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      writeFileSync(replicated, "kind: ConfigMap\nmetadata:\n  name: zeta-block-replicated\n");
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
+      // A StorageClass under a name other than the file's capability binds nothing charts ask for.
+      writeFileSync(replicated, sc("longhorn", "rancher.io/local-path"));
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
+      expect(devBoundStorageCapabilities(repoRoot).has("longhorn")).toBe(false);
+      // No provisioner binds to nothing.
+      writeFileSync(replicated, "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: zeta-block-replicated\n");
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
       // THE FAIL-OPEN THAT WOULD OTHERWISE BITE: right name, right kind, but
-      // bound to the real Longhorn driver, which a kind node cannot run. An edit
-      // "restoring parity" this way would unlock ten Applications onto a class
-      // that provisions nothing, and every PVC would pend.
-      writeFileSync(
-        manifest,
-        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\nprovisioner: driver.longhorn.io\n",
-      );
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // Unparseable.
-      writeFileSync(manifest, "kind: StorageClass\n\tname: longhorn\n  : :\n");
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // Multi-document: `parseYaml` throws on `---` separators rather than
-      // silently taking the first document, so this lands in the catch.
-      writeFileSync(
-        manifest,
-        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\nprovisioner: rancher.io/local-path\n---\nkind: ConfigMap\n",
-      );
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // The real shape.
-      writeFileSync(
-        manifest,
-        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\nprovisioner: rancher.io/local-path\n",
-      );
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(true);
+      // bound to the real Longhorn driver, which a kind node cannot run.
+      writeFileSync(replicated, sc("zeta-block-replicated", "driver.longhorn.io"));
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
+      // Multi-document: `parseYaml` throws on `---` rather than taking the first.
+      writeFileSync(replicated, `${sc("zeta-block-replicated", "rancher.io/local-path")}---\nkind: ConfigMap\n`);
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
+      // The real shape -- and each file answers only for its own capability.
+      writeFileSync(replicated, sc("zeta-block-replicated", "rancher.io/local-path"));
+      expect([...devBoundStorageCapabilities(repoRoot)]).toEqual(["zeta-block-replicated"]);
+      writeFileSync(local, sc("zeta-block-local", "rancher.io/local-path"));
+      expect([...devBoundStorageCapabilities(repoRoot)].sort()).toEqual(["zeta-block-local", "zeta-block-replicated"]);
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
   });
 
-  test("the shipped tree declares the dev longhorn alias — the assertions above rest on it", () => {
-    // Not decoration. Every one of the ten newly-asserted Applications is
-    // asserted BECAUSE this returns true against the real repo. If the manifest
-    // is deleted or renamed, this goes red here rather than silently reverting
-    // ten Applications to unasserted, which `auditAppliedButUnasserted` would
-    // then report as unexplained drift instead of as the intended state.
-    expect(devLonghornStorageClassAliasDeclared()).toBe(true);
+  test("the shipped tree binds both RWO capabilities in dev, and never zeta-shared", () => {
+    // Not decoration. Every storage-backed Application is asserted BECAUSE this
+    // holds against the real repo. If a binding file is deleted or renamed, this
+    // goes red here rather than silently reverting those Applications to
+    // unasserted.
+    expect([...devBoundStorageCapabilities()].sort()).toEqual(["zeta-block-local", "zeta-block-replicated"]);
   });
 
-  test("longhorn stays glob-excluded from the dev catalog, so the alias cannot collide", () => {
-    // The alias is a cluster-scoped object named `longhorn`. If the Longhorn
-    // chart were ever admitted to the dev catalog it would create a second
-    // object of that name and the two would fight. This is the guard.
+  test("longhorn stays glob-excluded from the dev catalog -- the chart itself needs block devices", () => {
+    // Until 2026-09-23 this guarded a NAME collision: dev's `longhorn` alias vs
+    // the chart's own `longhorn` class. The alias is gone (dev binds capability
+    // names), so no collision is possible; what keeps the chart out is that it
+    // needs real block devices + open-iscsi, which the QEMU test covers.
     expect(rootDevCatalogExcludedDirs().has("longhorn")).toBe(true);
   });
 
@@ -728,7 +741,12 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
    * This test stays as the cheap structural pin; the reach-vs-roster
    * comparison and its registry live in `app-of-apps-discovery.ts`.
    */
-  test("the depth-1 discovery gap stays exactly one known Application", () => {
+  // WAS "the depth-1 discovery gap stays exactly one known Application", which
+  // pinned gmod as INVISIBLE to the harness. Discovery walks depth 2 now
+  // (`application-dirs.ts`), so the pin flips: gmod is visible, and it is held
+  // out of the proof by its written DEV_EXCLUDED_REASONS entry rather than by
+  // the harness never looking.
+  test("the one depth-2 Application is visible to the harness and held out by its reason", () => {
     const appsDir = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/applications");
     const nested = readdirSync(appsDir, { withFileTypes: true })
       .filter((entry) => entry.isDirectory())
@@ -741,9 +759,17 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
       )
       .sort();
 
-    expect(nested).toEqual(["game-hosting/gmod"]);
-    // And it is genuinely invisible to the harness today.
-    expect(discoverExpectedApplications().some((app) => app.name === "gmod")).toBe(false);
+    // `temporal/postgres` joined 2026-09-27: temporal's CNPG database, nested so the
+    // `temporal/**` exclude defers it with its only consumer. Held out by INHERITING
+    // temporal's reason (the parent-directory rule in isExcludedFromIncludedProof),
+    // not by a second entry that could drift from the first.
+    expect(nested).toEqual(["game-hosting/gmod", "temporal/postgres"]);
+    const gmod = discoverExpectedApplications().find((app) => app.name === "gmod");
+    expect(gmod?.dir).toBe("game-hosting/gmod");
+    expect(gmod?.excludedFromDev).toBe(true);
+    const pg = discoverExpectedApplications().find((app) => app.name === "temporal-postgres");
+    expect(pg?.dir).toBe("temporal/postgres");
+    expect(pg?.excludedFromDev).toBe(true);
   });
 
   test("metadata.name is read by a YAML parser, not by first-name-wins line scanning", () => {
@@ -1729,11 +1755,16 @@ describe("DEV_EXCLUDED_REASONS", () => {
     expect(reason).not.toContain("Please specify cassandra port");
   });
 
-  test("the temporal reason names both live blockers, not the retired one", () => {
+  test("the temporal reason records the CockroachDB blockers as RETIRED, and by what", () => {
     const reason = DEV_EXCLUDED_REASONS.get("temporal") ?? "";
-    // (1) visibility schema, (2) TLS-only CockroachDB with no material here.
+    // 2026-09-27: (1) visibility schema and (2) TLS-only CockroachDB were live
+    // blockers; both stores moved to a CNPG PostgreSQL. The history stays named,
+    // and the reason must say they are retired rather than still claim them.
     expect(reason).toContain("btree_gin");
     expect(reason).toContain("`tls.enabled: true` with the selfSigner");
+    expect(reason).toContain("ARE RETIRED");
+    expect(reason).toContain("temporal-postgres");
+    expect(reason).not.toContain("LIFTS WHEN: the CRDB CA is distributed");
   });
 
   test("the correction records that it was the author's own stale reason", () => {
@@ -1879,8 +1910,14 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
       // (1000m at metal, 250m at dev). The citations move with the ladder because
       // that is what they are for -- prose that did not follow is the drift
       // `reason-truth.ts` catches, and it caught exactly this pair today.
-      "[cite: lane-cpu metal 7390 over]",
-      "[cite: lane-cpu dev 1715 fits]",
+      // 7390 -> 8140 and 1715 -> 1990 on 2026-09-25: the ArgoCD control plane was
+      // PRICED (081M3BQ5GX6087G0R003N44WMZ). All five of its components had
+      // declared nothing at any rung, so the lane totals had never included the
+      // GitOps engine that drives the lane. Same discipline as the pair above --
+      // the citations move with the ladder, and `reason-truth.ts` caught this one
+      // too, which is the third time that mechanism has found the drift first.
+      "[cite: lane-cpu metal 8140 over]",
+      "[cite: lane-cpu dev 1990 fits]",
     ]) {
       expect(reason).toContain(cited);
     }
@@ -2071,6 +2108,92 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     expect(rule.managedFieldsManagers).toBeUndefined();
     // Without this the ignored fields are still PUSHED on every sync, rotating
     // the cluster credential for no reason.
+    expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("RespectIgnoreDifferences=true");
+  });
+
+  /**
+   * CILIUM (WP26, 081M38GCTFX087G0R003MMTXJE). Same drift class as weaviate
+   * above -- the chart self-signs `cilium-ca` / `hubble-relay-client-certs` /
+   * `hubble-server-certs` fresh on every `helm template` render, which kept
+   * the Application Progressing on a self-heal loop (MEASURED offline via a
+   * two-render diff, and live via the application-controller's own log on
+   * run 35965954133 -- see the Application's comment). The ignore rule must
+   * stay scoped to exactly these three Secrets' data keys: widening it to
+   * `data` as a whole or dropping a Secret name would hide real drift on
+   * objects this same chart also renders (ConfigMaps, RBAC, the DaemonSet/
+   * Deployment specs) that must keep being compared.
+   */
+  test("cilium's ignore rule is KEPT and stays scoped to its three self-signed TLS Secrets", () => {
+    const document = parseYaml(readApp("cilium")) as {
+      spec?: {
+        ignoreDifferences?: readonly {
+          group?: string;
+          kind?: string;
+          name?: string;
+          jsonPointers?: readonly string[];
+          jqPathExpressions?: readonly string[];
+          managedFieldsManagers?: readonly string[];
+        }[];
+        syncPolicy?: { syncOptions?: readonly string[] };
+      };
+    };
+    const rules = document.spec?.ignoreDifferences ?? [];
+    expect(rules.length).toBe(3);
+    const byName = new Map(rules.map((r) => [r.name, r]));
+    expect(byName.get("cilium-ca")?.kind).toBe("Secret");
+    expect(byName.get("cilium-ca")?.jsonPointers).toEqual(["/data/ca.crt", "/data/ca.key"]);
+    expect(byName.get("hubble-relay-client-certs")?.jsonPointers).toEqual(["/data/ca.crt", "/data/tls.crt", "/data/tls.key"]);
+    expect(byName.get("hubble-server-certs")?.jsonPointers).toEqual(["/data/ca.crt", "/data/tls.crt", "/data/tls.key"]);
+    // No escape hatches, same discipline as weaviate's rule.
+    for (const rule of rules) {
+      expect(rule.jqPathExpressions).toBeUndefined();
+      expect(rule.managedFieldsManagers).toBeUndefined();
+    }
+    expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("RespectIgnoreDifferences=true");
+    // Cilium's own reasons for ServerSideApply (multiple field managers on
+    // the CNI's shared resources) are unrelated to this fix -- it must stay.
+    expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("ServerSideApply=true");
+  });
+
+  /**
+   * SEAWEEDFS (081M39EMBRW087G0R001RHMEDJ). Third instance of the same
+   * class: `templates/sftp/sftp-secret.yaml` mints fresh SFTP credentials +
+   * an ed25519 private key on every render (MEASURED offline, two-render
+   * diff). The release name is `blob-store-seaweedfs` (set explicitly in
+   * this Application's `helm.releaseName`), so the rendered Secret's name
+   * carries that prefix -- pinned here so a release-name rename does not
+   * silently leave the ignore rule pointed at a Secret that no longer
+   * exists (which would read as Synced/Healthy while quietly no longer
+   * protecting anything).
+   */
+  test("seaweedfs's ignore rule is KEPT and stays scoped to its SFTP credential Secret", () => {
+    const document = parseYaml(readApp("seaweedfs")) as {
+      spec?: {
+        ignoreDifferences?: readonly {
+          group?: string;
+          kind?: string;
+          name?: string;
+          jsonPointers?: readonly string[];
+          jqPathExpressions?: readonly string[];
+          managedFieldsManagers?: readonly string[];
+        }[];
+        syncPolicy?: { syncOptions?: readonly string[] };
+      };
+    };
+    const rules = document.spec?.ignoreDifferences ?? [];
+    expect(rules.length).toBe(1);
+    const rule = rules[0]!;
+    expect(rule.kind).toBe("Secret");
+    expect(rule.name).toBe("blob-store-seaweedfs-sftp-secret");
+    expect(rule.jsonPointers).toEqual([
+      "/data/admin_password",
+      "/data/readonly_password",
+      "/data/public_user_password",
+      "/data/seaweedfs_sftp_config",
+      "/data/seaweedfs_sftp_ssh_private_key",
+    ]);
+    expect(rule.jqPathExpressions).toBeUndefined();
+    expect(rule.managedFieldsManagers).toBeUndefined();
     expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("RespectIgnoreDifferences=true");
   });
 });
@@ -2669,6 +2792,35 @@ describe("081KSXN940008QG0R000SCP2H1 soak phase -- does it crash-loop after the 
       );
       expect(failure?.message).not.toContain("[");
     });
+
+    // 2026-09-23: 12 of 18 `included` failures since the soak phase landed were
+    // Applications flipping during the soak, and the `Synced/Progressing` ones --
+    // argo-rollouts, the most frequent -- named NO resource, because nothing was
+    // out of sync. `status.resources[].health` carries the answer; this reads it.
+    test("names the UNHEALTHY resource for a Synced/Progressing flip that has nothing out of sync", () => {
+      const failure = soakRegressionFailure(
+        [],
+        [
+          {
+            name: "argo-rollouts",
+            ok: false,
+            syncStatus: "Synced",
+            healthStatus: "Progressing",
+            unhealthyResources: ["Deployment/argo-rollouts Progressing: Waiting for rollout to finish"],
+          },
+        ],
+      );
+      expect(failure?.message).toContain(
+        "argo-rollouts left Healthy/Synced (Synced/Progressing) {unhealthy: Deployment/argo-rollouts Progressing: Waiting for rollout to finish}",
+      );
+    });
+
+    test("omits the unhealthy block when unhealthyResources is absent or empty", () => {
+      for (const extra of [{}, { unhealthyResources: [] }]) {
+        const failure = soakRegressionFailure([], [{ name: "keda", ok: false, syncStatus: "Synced", healthStatus: "Progressing", ...extra }]);
+        expect(failure?.message).not.toContain("{unhealthy");
+      }
+    });
   });
 
   describe("startupRestartEntries -- attributed to an app, sorted, excludes healthy containers", () => {
@@ -3015,6 +3167,30 @@ describe("081M23BCR90087G0R002GYP7TE a failed sync is never reconciled", () => {
       ]);
     });
 
+    // The carry step, pinned. Without this, classifyApplications could drop the
+    // field and every parser test would stay green while the soak message went
+    // back to naming no resource -- the very gap unhealthyResources closes.
+    test("unhealthyResources survives from the snapshot into the verdict", () => {
+      const snapshots = parseApplicationList(
+        JSON.stringify({
+          items: [
+            {
+              metadata: { name: "argo-rollouts" },
+              status: {
+                sync: { status: "Synced" },
+                health: { status: "Progressing" },
+                resources: [
+                  { kind: "Deployment", name: "argo-rollouts", health: { status: "Progressing", message: "rolling" } },
+                ],
+              },
+            },
+          ],
+        }),
+      );
+      const verdicts = classifyApplications([{ ...autoSync, name: "argo-rollouts", dir: "argo-rollouts" }], snapshots);
+      expect(verdicts[0]?.unhealthyResources).toEqual(["Deployment/argo-rollouts Progressing: rolling"]);
+    });
+
     test("a Synced-only resource list produces NO outOfSyncResources field, not an empty array", () => {
       const snapshots = parseApplicationList(
         JSON.stringify({
@@ -3120,5 +3296,63 @@ describe("RWX detected from the rendered snapshot", () => {
   test("silence is reported, not read as clearance", () => {
     const root = snapshotFixture([{ appId: "full-ai-cluster/covered", accessModes: ["ReadWriteOnce"] }]);
     expect(appsTheRenderIsSilentAbout(["covered", "uncovered"], root)).toEqual(["uncovered"]);
+  });
+});
+
+describe("parseUnhealthyResources -- which resources are not Healthy, read from status.resources[].health", () => {
+  const status = (resources: unknown[]): Record<string, unknown> => ({ resources });
+
+  test("names a non-Healthy resource with its health message", () => {
+    expect(
+      parseUnhealthyResources(
+        status([{ kind: "Deployment", name: "argo-rollouts", health: { status: "Progressing", message: "Waiting for rollout to finish" } }]),
+      ),
+    ).toEqual(["Deployment/argo-rollouts Progressing: Waiting for rollout to finish"]);
+  });
+
+  test("Healthy resources, and resources ArgoCD assigns no health (CRDs), are not reported", () => {
+    expect(
+      parseUnhealthyResources(
+        status([
+          { kind: "Deployment", name: "ok", health: { status: "Healthy" } },
+          { kind: "CustomResourceDefinition", name: "rollouts.argoproj.io", status: "OutOfSync" },
+        ]),
+      ),
+    ).toEqual([]);
+  });
+
+  test("a health status with no message still names the resource", () => {
+    expect(parseUnhealthyResources(status([{ kind: "StatefulSet", name: "s", health: { status: "Degraded" } }]))).toEqual([
+      "StatefulSet/s Degraded",
+    ]);
+  });
+
+  test("ordinal-sorted and deterministic", () => {
+    expect(
+      parseUnhealthyResources(
+        status([
+          { kind: "Deployment", name: "b", health: { status: "Progressing" } },
+          { kind: "Deployment", name: "a", health: { status: "Progressing" } },
+        ]),
+      ),
+    ).toEqual(["Deployment/a Progressing", "Deployment/b Progressing"]);
+  });
+
+  test("parseApplicationList carries it onto the snapshot", () => {
+    const [snap] = parseApplicationList(
+      JSON.stringify({
+        items: [
+          {
+            metadata: { name: "argo-rollouts" },
+            status: {
+              sync: { status: "Synced" },
+              health: { status: "Progressing" },
+              resources: [{ kind: "Deployment", name: "argo-rollouts", health: { status: "Progressing", message: "rolling" } }],
+            },
+          },
+        ],
+      }),
+    );
+    expect(snap?.unhealthyResources).toEqual(["Deployment/argo-rollouts Progressing: rolling"]);
   });
 });

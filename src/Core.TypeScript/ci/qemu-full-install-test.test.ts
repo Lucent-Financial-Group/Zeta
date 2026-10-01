@@ -6,8 +6,14 @@ import { DEFAULT_QEMU_PASSPHRASE, DEFAULT_QEMU_WIFI_PASSWORD } from "../zflash/t
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
   assertFirstBootProvisioningContract,
-  INSTALL_SH_FINAL_FAILURE_MARKER,
-  INSTALL_SH_START_MARKER,
+  assertDevToolchainContract,
+  BUN_BOOTSTRAP_FAILED_MARKER,
+  classifyDevToolchain,
+  DEV_TOOLCHAIN_DEFERRED_MARKER,
+  DEV_TOOLCHAIN_FAILED_MARKER,
+  DEV_TOOLCHAIN_START_MARKER,
+  DEV_TOOLCHAIN_SUCCEEDED_MARKER,
+  LEGACY_INSTALL_SH_PRE_REBOOT_MARKER,
   assertGeneratedNodeHostnameContract,
   assertUefiKeyfilePhase1Contract,
   assertUefiKeyfilePickerContract,
@@ -16,9 +22,33 @@ import {
   assertUefiKeyfileRestoreWrongPassphraseContract,
   assertUsbISerialPhase1Contract,
   assertWifiEspPhase1Contract,
+  assertEspFirstbootConfWasRead,
+  describeQcowAllocation,
+  gib,
+  parseQcowSizes,
+  qcowAllocationIsConcerning,
+  RUNNER_DISK_EXHAUSTED_FLOOR_BYTES,
+  runnerDiskExhaustionReason,
+  assertNothingToHealAfterGracefulShutdown,
+  ESP_CONF_SCAN_PREFIX,
+  espConfScanOutcome,
+  bootMediumShape,
+  assertWp11VerdictUnitEnabled,
+  ESP_PROBE_NO_HOSTNAME,
+  ESP_PROBE_NO_PUBKEY,
+  WP11_ESP_MARKER_ABSENT,
+  WP11_ESP_MARKER_FOUND,
+  WP11_VERDICT_UNIT_ENABLED,
+  wp11PreconditionFailure,
   buildQemuDiskBootArgsPure,
   buildQemuInstallArgsPure,
   buildQemuK3sVerifyBootArgsPure,
+  SELF_HEAL_AGENT_DIR_ABSENT,
+  SELF_HEAL_CLEAR_AGENT_DIR,
+  SELF_HEAL_CLEAR_NODE_PASSWORD,
+  SELF_HEAL_PREFIX,
+  SELF_HEAL_REMOVING_PREFIX,
+  selfHealRemovedPaths,
   detectInstalledLoginPrompt,
   detectPhase2Success,
   detectUnexpectedControlPlaneLogin,
@@ -803,68 +833,96 @@ describe("qemu-full-install-test phase 3 first-session markers", () => {
   });
 });
 
-// ── 081KZETP6AT: first-boot provisioning contract ─────────────────────────────
-describe("assertFirstBootProvisioningContract (081KZETP6AT)", () => {
-  it("passes when install.sh never emitted a final failure", () => {
-    const serial = [
-      "[iter-5.5.0] running tools/setup/install.sh (target runtime + declarative agent CLI bootstrap)...",
-      "[iter-5.5.0] ── DONE — first login will have: install.sh-managed runtimes",
-    ].join("\n");
+// ── 081M3K23YCP087G0R003BVDS1P: provisioning contract, split across the reboot ──
+describe("assertFirstBootProvisioningContract — the installer's half (081M3K23YCP087G0R003BVDS1P)", () => {
+  const deferred = `[iter-5.5.0] ${DEV_TOOLCHAIN_DEFERRED_MARKER} (runs after first boot; follow with: journalctl -u zeta-dev-toolchain -f)`;
+
+  it("passes when the installer deferred the toolchain and bun bootstrapped", () => {
+    const serial = [deferred, "[iter-5.5.0]   bun bootstrap ok"].join("\n");
     expect(assertFirstBootProvisioningContract(serial).ok).toBe(true);
   });
 
-  it("passes when a transient failure was RECOVERED by the retry (retry must stay green)", () => {
-    // Attempt 1 failed, attempt 2 succeeded -> no final-failure marker. This is
-    // exactly the transient case the backoff exists to absorb; it must not fail.
+  it("FAILS when the installer ran install.sh pre-reboot again (the ~30-minute silent console)", () => {
     const serial = [
+      deferred,
       "[iter-5.5.0] running tools/setup/install.sh (target runtime + declarative agent CLI bootstrap)...",
-      "[iter-5.5.0]   install.sh attempt 1/3 FAILED rc=1 — retrying in 12s (081KZETP6AT transient-blip backoff)",
-      "[iter-5.5.0]   install.sh succeeded on attempt 2/3 (081KZETP6AT transient-blip recovered by retry)",
-    ].join("\n");
-    expect(assertFirstBootProvisioningContract(serial).ok).toBe(true);
-  });
-
-  it("FAILS when install.sh exhausted every retry (the false green this closes)", () => {
-    // Verbatim shape from run 31323533516, where scenario 2 reported PASS while
-    // the toolchain install had failed all three attempts.
-    const serial = [
-      "[iter-5.5.0] running tools/setup/install.sh (target runtime + declarative agent CLI bootstrap)...",
-      "[iter-5.5.0]   install.sh attempt 1/3 FAILED rc=1 — retrying in 12s",
-      "[iter-5.5.0]   install.sh attempt 2/3 FAILED rc=1 — retrying in 24s",
-      "[iter-5.5.0]   WARN: install.sh FAILED rc=1 after 3 attempts — runtimes/agent CLIs may be partial",
     ].join("\n");
     const result = assertFirstBootProvisioningContract(serial);
     expect(result.ok).toBe(false);
-    if (!result.ok) {
-      expect(result.reason).toContain("PARTIALLY");
-      expect(result.reason).toContain("nix-ld");
+    if (!result.ok) expect(result.reason).toContain("BEFORE the reboot");
+  });
+
+  it("FAILS when the bun bootstrap failed — every TypeScript helper after it is dead", () => {
+    const serial = [deferred, "[iter-5.5.0]   WARN: bun bootstrap TIMED OUT after 600s -- ..."].join("\n");
+    const result = assertFirstBootProvisioningContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toContain("nix-ld");
+  });
+
+  it("a serial with NO deferral line at all FAILS (assertion must acquit, not only convict)", () => {
+    const result = assertFirstBootProvisioningContract("ZETA CLUSTER NODE INSTALL COMPLETE\n");
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toContain("never reached the dev-toolchain step");
+  });
+});
+
+describe("classifyDevToolchain / assertDevToolchainContract — the installed disk's half", () => {
+  it("distinguishes the three terminal states plus an unconcluded run", () => {
+    expect(classifyDevToolchain("boot\nlogin:")).toBe("did-not-run");
+    expect(classifyDevToolchain(`${DEV_TOOLCHAIN_START_MARKER} (tools/setup/install.sh ...)`)).toBe("running");
+    expect(
+      classifyDevToolchain(`${DEV_TOOLCHAIN_START_MARKER}\n${DEV_TOOLCHAIN_SUCCEEDED_MARKER} on attempt 1/3`),
+    ).toBe("succeeded");
+    expect(
+      classifyDevToolchain(`${DEV_TOOLCHAIN_START_MARKER}\n${DEV_TOOLCHAIN_FAILED_MARKER} rc=1 after 3 attempts`),
+    ).toBe("failed");
+  });
+
+  it("a retried-then-recovered run is SUCCEEDED (the retry exists so transient faults self-heal)", () => {
+    const serial = [
+      DEV_TOOLCHAIN_START_MARKER,
+      "zeta-dev-toolchain: attempt 1/3 FAILED rc=1",
+      `${DEV_TOOLCHAIN_SUCCEEDED_MARKER} on attempt 2/3`,
+    ].join("\n");
+    expect(assertDevToolchainContract(serial).ok).toBe(true);
+  });
+
+  it("only SUCCEEDED passes — running and did-not-run are not passes", () => {
+    for (const serial of ["login:", DEV_TOOLCHAIN_START_MARKER, `${DEV_TOOLCHAIN_FAILED_MARKER} result=timeout`]) {
+      const r = assertDevToolchainContract(serial);
+      expect(r.ok).toBe(false);
     }
   });
 });
 
-// Kira (PR #10196): the two markers above are literals duplicated from
-// zeta-install.sh with nothing tying them to their producer. Reword the shell
-// echo and the contract silently becomes a test that can never fail — the exact
-// defect class the contract exists to close, reintroduced one level up. These
-// bind the constants to the actual script.
-describe("provisioning markers stay coupled to zeta-install.sh (081KZETP6AT)", () => {
+// Kira (PR #10196): the markers above are literals duplicated from their
+// producers with nothing tying them together. Reword an echo and the contract
+// silently becomes a test that can never fail — the exact defect class the
+// contract exists to close, reintroduced one level up. These bind the constants
+// to the actual scripts.
+describe("provisioning markers stay coupled to their producers (081M3K23YCP087G0R003BVDS1P)", () => {
   const installScript = readFileSync(
     resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
     "utf8",
   );
+  const devToolchainScript = readFileSync(
+    resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh"),
+    "utf8",
+  );
 
-  it("zeta-install.sh still emits the START marker the contract requires", () => {
-    expect(installScript).toContain(INSTALL_SH_START_MARKER);
+  it("zeta-install.sh emits the deferral and the bun-bootstrap failure markers", () => {
+    expect(installScript).toContain(DEV_TOOLCHAIN_DEFERRED_MARKER);
+    expect(installScript).toContain(BUN_BOOTSTRAP_FAILED_MARKER);
   });
 
-  it("zeta-install.sh still emits the final-failure marker the contract matches", () => {
-    expect(installScript).toContain(INSTALL_SH_FINAL_FAILURE_MARKER);
+  it("zeta-install.sh no longer emits the pre-reboot install.sh start line", () => {
+    expect(installScript).not.toContain(LEGACY_INSTALL_SH_PRE_REBOOT_MARKER);
   });
 
-  it("a serial with NO install.sh step at all FAILS (assertion must acquit, not only convict)", () => {
-    const result = assertFirstBootProvisioningContract("ZETA CLUSTER NODE INSTALL COMPLETE\n");
-    expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.reason).toContain("never reached the install.sh step");
+  it("zeta-dev-toolchain.sh emits all three states", () => {
+    expect(devToolchainScript).toContain(DEV_TOOLCHAIN_START_MARKER);
+    expect(devToolchainScript).toContain(DEV_TOOLCHAIN_SUCCEEDED_MARKER);
+    expect(devToolchainScript).toContain(DEV_TOOLCHAIN_FAILED_MARKER);
   });
 });
 
@@ -1231,7 +1289,7 @@ describe("WP11 — installed-disk first-boot k3s verify", () => {
     expect(parsed.reason).toContain("unparsable");
   });
 
-  it("summarize: overall PASS only when all six verdicts pass, including every helm chart", () => {
+  it("summarize: overall PASS only when all seven verdicts pass, including every helm chart", () => {
     const passing: K3sFirstBootVerifyVerdict = {
       bootedMultiUser: { ok: true, elapsedSeconds: 1 },
       k3sServiceActive: { ok: true, elapsedSeconds: 30 },
@@ -1245,8 +1303,28 @@ describe("WP11 — installed-disk first-boot k3s verify", () => {
       },
       rootLanded: { ok: true, verdict: "landed", elapsedSeconds: 600 },
       noBadPods: { ok: true, pods: [], elapsedSeconds: 900 },
+      rosterConverged: {
+        ok: true,
+        apps: [
+          { bucket: "converged", name: "redis", detail: "sync=Synced health=Healthy" },
+          { bucket: "excluded-manual-sync", name: "cdi", detail: "declares zeta.io/sync-policy: manual" },
+        ],
+        elapsedSeconds: 1800,
+        appCount: 2,
+        convergedCount: 1,
+        unconvergedCount: 0,
+        excludedCount: 1,
+        undecidableCount: 0,
+        unattributedPodCount: 0,
+        samples: 12,
+        rootSyncStatus: "Synced",
+        k3sActive: true,
+      },
     };
     expect(summarizeK3sFirstBootVerifyVerdict(passing).ok).toBe(true);
+    // The exclusion is PRINTED. An exclusion nobody can see is how a verdict
+    // becomes decorative (081M3BEGSQR087G0R003610CGB).
+    expect(summarizeK3sFirstBootVerifyVerdict(passing).lines.join("\n")).toContain("[excluded-manual-sync] cdi");
 
     const oneChartIncomplete: K3sFirstBootVerifyVerdict = {
       ...passing,
@@ -1273,6 +1351,37 @@ describe("WP11 — installed-disk first-boot k3s verify", () => {
     const badPodSummary = summarizeK3sFirstBootVerifyVerdict(badPodPresent);
     expect(badPodSummary.ok).toBe(false);
     expect(badPodSummary.lines.join("\n")).toContain("CrashLoopBackOff");
+
+    // 081M3BEGSQR087G0R003610CGB — verdict 7 gates the overall result, and an
+    // Application that did not converge is NAMED with its last Sync+Health
+    // state rather than reduced to a count.
+    const rosterFailed: K3sFirstBootVerifyVerdict = {
+      ...passing,
+      rosterConverged: {
+        ...(passing.rosterConverged as NonNullable<K3sFirstBootVerifyVerdict["rosterConverged"]>),
+        ok: false,
+        apps: [{ bucket: "unconverged", name: "temporal", detail: "sync=OutOfSync health=Progressing msg=-" }],
+        convergedCount: 0,
+        unconvergedCount: 1,
+        excludedCount: 0,
+      },
+    };
+    const rosterSummary = summarizeK3sFirstBootVerifyVerdict(rosterFailed);
+    expect(rosterSummary.ok).toBe(false);
+    expect(rosterSummary.lines.join("\n")).toContain("[unconverged] temporal");
+    expect(rosterSummary.lines.join("\n")).toContain("health=Progressing");
+
+    // ABSENT must read as a FAILURE, never as a pass. The module emitting the
+    // verdict block ships with this parser, so a missing verdict 7 on a live
+    // run means the unit stopped before reaching it.
+    // The key is OMITTED, never set to `undefined` — `exactOptionalPropertyTypes`
+    // is on, and the distinction is the point: an omitted key is what an older
+    // verdict JSON, or a unit that stopped before emitting verdict 7, actually
+    // parses to.
+    const { rosterConverged: _absentRoster, ...rosterAbsent } = passing;
+    const absentSummary = summarizeK3sFirstBootVerifyVerdict(rosterAbsent);
+    expect(absentSummary.ok).toBe(false);
+    expect(absentSummary.lines.join("\n")).toContain("ABSENT");
   });
 
   it("has its own serial separator, distinct from phase 2/2b", () => {
@@ -1310,5 +1419,616 @@ describe("WP11 — installed-disk first-boot k3s verify", () => {
       "utf8",
     );
     expect(common).toContain("./zeta-first-boot-k3s-verify.nix");
+  });
+});
+
+// ── WP27 (081M392JR97087G0R003QAFH0Y) ──────────────────────────────────────
+
+describe("WP27 — QMP socket wiring into the QEMU argv", () => {
+  const qmpArg = "unix:/tmp/zeta/qmp-phase2.sock,server=on,wait=off";
+
+  it("adds -qmp to the disk-boot argv when a socket path is given", () => {
+    const args = buildQemuDiskBootArgsPure(
+      "/tmp/disk.qcow2",
+      "/tmp/serial.log",
+      "/usr/share/OVMF/OVMF_CODE.fd",
+      "/tmp/OVMF_VARS.fd",
+      false,
+      undefined,
+      "/tmp/zeta/qmp-phase2.sock",
+    );
+    expect(args).toContain("-qmp");
+    expect(args).toContain(qmpArg);
+  });
+
+  it("adds -qmp to the WP11 phase-3 argv when a socket path is given", () => {
+    const args = buildQemuK3sVerifyBootArgsPure(
+      "/tmp/disk.qcow2",
+      "/tmp/serial.log",
+      "/usr/share/OVMF/OVMF_CODE.fd",
+      "/tmp/OVMF_VARS.fd",
+      false,
+      "/tmp/zeta/qmp-phase3.sock",
+    );
+    expect(args).toContain("-qmp");
+    expect(args).toContain("unix:/tmp/zeta/qmp-phase3.sock,server=on,wait=off");
+  });
+
+  it("adds -qmp to the installer argv when a socket path is given", () => {
+    const args = buildQemuInstallArgsPure(
+      { kind: "iso", path: "/tmp/zeta.iso" },
+      "/tmp/disk.qcow2",
+      "/tmp/serial.log",
+      false,
+      "/usr/share/OVMF/OVMF_CODE.fd",
+      "/tmp/OVMF_VARS.fd",
+      "/tmp/zeta/qmp-phase1.sock",
+    );
+    expect(args).toContain("-qmp");
+    expect(args).toContain("unix:/tmp/zeta/qmp-phase1.sock,server=on,wait=off");
+  });
+
+  it("leaves the argv byte-identical when no socket path is given", () => {
+    const without = buildQemuDiskBootArgsPure(
+      "/tmp/disk.qcow2",
+      "/tmp/serial.log",
+      "/usr/share/OVMF/OVMF_CODE.fd",
+      "/tmp/OVMF_VARS.fd",
+      false,
+    );
+    expect(without).not.toContain("-qmp");
+    expect(without.join(" ")).not.toContain("qmp");
+  });
+});
+
+describe("WP27 — after a graceful phase-2 shutdown there must be nothing to heal", () => {
+  const CLEAN_SERIAL =
+    `${SELF_HEAL_CLEAR_AGENT_DIR}\n` +
+    `${SELF_HEAL_CLEAR_NODE_PASSWORD}\n` +
+    "[   12.334] k3s.service: Started Lightweight Kubernetes.\n";
+
+  it("is INERT (not a pass, not a failure) when WP25's self-heal is absent from the ISO", () => {
+    // PR #17608 is unmerged; until an ISO carries that script there is no marker
+    // to assert on, and inventing a pass would be exactly the vacuity this
+    // assertion exists to prevent.
+    const verdict = assertNothingToHealAfterGracefulShutdown("ordinary boot serial, no self-heal\n", "graceful");
+    expect(verdict.status).toBe("inert");
+    expect(verdict.ok).toBe(true);
+    expect(verdict.reason).toContain("17608");
+    expect(verdict.reason).toContain("INERT");
+  });
+
+  it("passes when the self-heal ran and reported both targets clear", () => {
+    const verdict = assertNothingToHealAfterGracefulShutdown(CLEAN_SERIAL, "graceful");
+    expect(verdict.status).toBe("clean");
+    expect(verdict.ok).toBe(true);
+  });
+
+  it("accepts an agent dir that does not exist yet as 'nothing to heal'", () => {
+    const verdict = assertNothingToHealAfterGracefulShutdown(
+      `${SELF_HEAL_AGENT_DIR_ABSENT}\n${SELF_HEAL_CLEAR_NODE_PASSWORD}\n`,
+      "graceful",
+    );
+    expect(verdict.status).toBe("clean");
+    expect(verdict.ok).toBe(true);
+  });
+
+  it("FAILS when a graceful shutdown was still followed by zero-length removals", () => {
+    // The falsifier's whole point: the teardown claims the disk was synced, and
+    // the self-heal proves it was not.
+    const serial =
+      `${SELF_HEAL_REMOVING_PREFIX} /var/lib/rancher/k3s/agent/client-kubelet.key\n` +
+      `${SELF_HEAL_REMOVING_PREFIX} /etc/rancher/node/password\n` +
+      "[zeta-k3s-agent-tls-self-heal]   removed 2 zero-length file(s)\n";
+    const verdict = assertNothingToHealAfterGracefulShutdown(serial, "graceful");
+    expect(verdict.ok).toBe(false);
+    expect(verdict.status).toBe("healed");
+    expect(verdict.reason).toContain("client-kubelet.key");
+    expect(verdict.reason).toContain("/etc/rancher/node/password");
+  });
+
+  it("does NOT convict when phase 2 was killed rather than shut down", () => {
+    // Asserting a clean disk after a crash would be an assertion about a
+    // precondition that did not hold. It reports the path instead.
+    const serial = `${SELF_HEAL_REMOVING_PREFIX} /var/lib/rancher/k3s/agent/client-kubelet.key\n`;
+    for (const path of ["sigterm", "sigkill", "already-exited"] as const) {
+      const verdict = assertNothingToHealAfterGracefulShutdown(serial, path);
+      expect(verdict.ok).toBe(true);
+      expect(verdict.status).toBe("precondition-absent");
+      expect(verdict.reason).toContain(path);
+    }
+  });
+
+  it("does NOT convict when phase 2's guest exited on its own before teardown", () => {
+    const verdict = assertNothingToHealAfterGracefulShutdown(CLEAN_SERIAL, undefined);
+    expect(verdict.status).toBe("precondition-absent");
+    expect(verdict.ok).toBe(true);
+  });
+
+  it("refuses to pass on SILENCE — the unit ran, removed nothing, and said nothing", () => {
+    const verdict = assertNothingToHealAfterGracefulShutdown(
+      `${SELF_HEAL_PREFIX} starting\n`,
+      "graceful",
+    );
+    expect(verdict.ok).toBe(false);
+    expect(verdict.status).toBe("indeterminate");
+    expect(verdict.reason).toContain("Silence is not a pass");
+  });
+
+  it("extracts every removed path, in serial order", () => {
+    const serial =
+      `${SELF_HEAL_REMOVING_PREFIX} /a/one.key\nnoise\n${SELF_HEAL_REMOVING_PREFIX} /b/two.crt\n`;
+    expect(selfHealRemovedPaths(serial)).toEqual(["/a/one.key", "/b/two.crt"]);
+  });
+
+  it("keeps the duplicated markers coherent with the producer WHEN it is present", () => {
+    // These literals are duplicated from full-ai-cluster/nixos/modules/
+    // k3s-agent-tls-self-heal.sh (WP25, PR #17608). That file is not on main
+    // yet, so this check is itself inert-but-present: it verifies coherence
+    // once the producer lands and never fails for its absence. The `inert`
+    // status above is what keeps that honest in the meantime.
+    const producer = resolve(
+      import.meta.dir,
+      "../../../full-ai-cluster/nixos/modules/k3s-agent-tls-self-heal.sh",
+    );
+    // One syscall, one answer: an `existsSync` guard here would be a
+    // check-then-use race (lint-check-then-use-file-races / CWE-367), and the
+    // question being asked — "has WP25's producer landed yet?" — is exactly the
+    // kind whose answer can change between the two calls.
+    let sh: string;
+    try {
+      sh = readFileSync(producer, "utf8");
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
+      // Producer absent: PR #17608 is unmerged. The constants stand on their own
+      // until it lands, and `status: "inert"` above is what keeps that honest.
+      expect(SELF_HEAL_PREFIX).toBe("[zeta-k3s-agent-tls-self-heal]");
+      return;
+    }
+    expect(sh).toContain("removing zero-length file:");
+    expect(sh).toContain("clear: no zero-length files under $AGENT_DIR");
+    expect(sh).toContain("clear: $NODE_PASSWORD_FILE is absent or non-empty");
+    // The defaults the constants above hardcode.
+    expect(sh).toContain('AGENT_DIR="${ZETA_K3S_AGENT_DIR:-/var/lib/rancher/k3s/agent}"');
+    expect(sh).toContain('NODE_PASSWORD_FILE="${ZETA_K3S_NODE_PASSWORD_FILE:-/etc/rancher/node/password}"');
+  });
+});
+
+// -- WP11 precondition + the Longhorn-undersized ESP override -----------------
+
+describe("WP11 — a run that measured NOTHING must not report as a timeout", () => {
+  const HEALTHY =
+    `${WP11_ESP_MARKER_FOUND}\n` +
+    `${WP11_VERDICT_UNIT_ENABLED} (installed-disk first-boot verdict unit)\n`;
+
+  it("says nothing is wrong when the marker was found", () => {
+    expect(wp11PreconditionFailure(HEALTHY)).toBeNull();
+    expect(assertWp11VerdictUnitEnabled(HEALTHY).ok).toBe(true);
+  });
+
+  it("convicts on the guest's own 'no marker on boot USB ESP' line", () => {
+    const reason = wp11PreconditionFailure(`${WP11_ESP_MARKER_ABSENT}\n`);
+    expect(reason).not.toBeNull();
+    expect(reason).toContain("nothing about k3s was measured");
+    expect(reason).toContain("must never look like a run that measured something and was slow");
+  });
+
+  it("distinguishes 'the whole ESP was lost' from 'only this marker is missing'", () => {
+    // Run 35965945581: the guest also reported no pubkey and no injected
+    // hostname, so the finding is the ESP probe, not the WP11 bake. Reporting
+    // the narrow shape there would send the next reader to the wrong producer.
+    const wholeEspLost = wp11PreconditionFailure(
+      `${ESP_PROBE_NO_PUBKEY}\n${ESP_PROBE_NO_HOSTNAME}\n${WP11_ESP_MARKER_ABSENT}\n`,
+    );
+    expect(wholeEspLost).toContain("WHOLE BOOT-USB ESP PROBE CAME BACK EMPTY");
+    expect(wholeEspLost).toContain("not at k3s");
+
+    const markerOnly = wp11PreconditionFailure(`${WP11_ESP_MARKER_ABSENT}\n`);
+    expect(markerOnly).toContain("Only the WP11 marker is missing");
+    expect(markerOnly).not.toContain("WHOLE BOOT-USB ESP PROBE");
+  });
+
+  it("the pubkey line ALONE is enough to widen the diagnosis", () => {
+    const reason = wp11PreconditionFailure(`${ESP_PROBE_NO_PUBKEY}\n${WP11_ESP_MARKER_ABSENT}\n`);
+    expect(reason).toContain("WHOLE BOOT-USB ESP PROBE CAME BACK EMPTY");
+  });
+
+  it("REFUSES to pass on silence — neither the found line nor the absent line", () => {
+    // A serial truncated before the WP11 block leaves both lines missing. A
+    // check that only looks for the bad line passes here, which is the vacuity
+    // class: absence of bad news read as good news.
+    const verdict = assertWp11VerdictUnitEnabled("install ran, serial cut short\n");
+    expect(verdict.ok).toBe(false);
+    if (!verdict.ok) {
+      expect(verdict.reason).toContain("NEITHER");
+      expect(verdict.reason).toContain("passing on that silence");
+    }
+  });
+
+  it("refuses a 'found' line that was never followed by the write", () => {
+    // Found-but-not-written is a real intermediate state (mkdir/tee could fail),
+    // and it is the one that still lets phase 3 wait 75 minutes for nothing.
+    const verdict = assertWp11VerdictUnitEnabled(`${WP11_ESP_MARKER_FOUND}\n`);
+    expect(verdict.ok).toBe(false);
+  });
+
+  it("convicts on the LOST INJECTED HOSTNAME even when the WP11 marker survived", () => {
+    // A second observable of the same condition. The harness always bakes a
+    // hostname for a USB-image lane, so a guest that generated a random one
+    // installed a node whose identity nobody chose — and the phase-2 login
+    // contract downstream would then assert against that random name and pass.
+    const reason = wp11PreconditionFailure(
+      `${ESP_PROBE_NO_HOSTNAME}\n${WP11_ESP_MARKER_FOUND}\n${WP11_VERDICT_UNIT_ENABLED}\n`,
+    );
+    expect(reason).not.toBeNull();
+    expect(reason).toContain("lost the INJECTED HOSTNAME");
+    expect(reason).toContain("caught one observable earlier");
+  });
+
+  it("stays silent on a healthy serial that carries neither symptom", () => {
+    // The falsifier for the widening above: it must not fire on the good case.
+    expect(wp11PreconditionFailure(HEALTHY)).toBeNull();
+  });
+
+  it("keeps the duplicated markers coherent with zeta-install.sh", () => {
+    const sh = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
+      "utf8",
+    );
+    // Byte-identical producers. Reword the shell and this test names the drift,
+    // instead of the predicate above quietly becoming one that cannot fire.
+    expect(sh).toContain(WP11_ESP_MARKER_FOUND);
+    expect(sh).toContain(WP11_ESP_MARKER_ABSENT);
+    expect(sh).toContain(WP11_VERDICT_UNIT_ENABLED);
+    expect(sh).toContain("no operator SSH pubkey found on boot USB ESP");
+    expect(sh).toContain("no zeta-hostname.txt on USB ESP");
+  });
+});
+
+describe("WP27 — the Longhorn-undersized override is staged on the ESP, never in the ISO", () => {
+  // THE TEST THAT USED TO BE HERE COULD NOT FAIL FOR THE RIGHT REASON. It
+  // asserted `expect(sh).toContain("ZETA_ALLOW_LONGHORN_UNDERSIZED")` — a
+  // statement about a file in THIS repo, not about a value reaching a guest.
+  // Run 35985197702 bailed on the very refusal the override exists to spare,
+  // with that assertion green. The end-to-end contract below replaced it; what
+  // survives here is the half a static check can honestly make.
+  it("every link in the chain is present in its own producer", () => {
+    const sh = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
+      "utf8",
+    );
+    const firstBoot = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh"),
+      "utf8",
+    );
+    // The installer reads it...
+    expect(sh).toContain("ZETA_ALLOW_LONGHORN_UNDERSIZED");
+    // ...and first-boot must EXPORT it, not merely set it. A sourced value
+    // reaches that shell and not the zeta-install child, which is a knob that
+    // turns and is not connected.
+    expect(firstBoot).toContain("export ZETA_ALLOW_LONGHORN_UNDERSIZED");
+    // ...and the scan must be able to report a miss, or a broken chain is
+    // indistinguishable from a lane that staged nothing.
+    expect(firstBoot).toContain(ESP_CONF_SCAN_PREFIX);
+    // Presence in three files is still not arrival in a guest. That is what
+    // `assertEspFirstbootConfWasRead` is for, and why this test is no longer
+    // the only thing standing behind this feature.
+  });
+
+  it("the ISO's own firstboot conf does NOT carry it — that would delete the guard", () => {
+    // The ESP conf travels with ONE flashed image. /etc/zeta-firstboot.conf
+    // ships on every USB cut from the ISO, so a value there would clear the
+    // pre-wipe Longhorn refusal for real operator installs too.
+    const isoConf = resolve(
+      import.meta.dir,
+      "../../../full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix",
+    );
+    let conf: string;
+    try {
+      conf = readFileSync(isoConf, "utf8");
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
+      return;
+    }
+    expect(conf).not.toContain("ZETA_ALLOW_LONGHORN_UNDERSIZED");
+  });
+});
+
+describe("WP27 — the staged ESP conf must be OBSERVED to arrive", () => {
+  const READ = `${ESP_CONF_SCAN_PREFIX} esp-conf=esp:/dev/sda2 tried=/dev/sda1(no-vfat),/dev/sda2\n`;
+  const MISSED = `${ESP_CONF_SCAN_PREFIX} esp-conf=none tried=/dev/sda1(no-vfat),/dev/sda2(no-conf)\n`;
+
+  it("parses the outcome and the candidate list the guest tried", () => {
+    expect(espConfScanOutcome(READ)).toEqual({
+      outcome: "esp:/dev/sda2",
+      tried: "/dev/sda1(no-vfat),/dev/sda2",
+    });
+    expect(espConfScanOutcome(MISSED)).toEqual({
+      outcome: "none",
+      tried: "/dev/sda1(no-vfat),/dev/sda2(no-conf)",
+    });
+  });
+
+  it("passes when the guest reports reading the ESP conf", () => {
+    const verdict = assertEspFirstbootConfWasRead(READ);
+    expect(verdict.ok).toBe(true);
+    if (verdict.ok) expect(verdict.outcome).toBe("esp:/dev/sda2");
+  });
+
+  it("FAILS on exactly the shape run 35985197702 produced", () => {
+    // Staged on the ESP, guest read the ISO's own conf, every staged value
+    // silently dropped, and the run went on to bail on the refusal the
+    // override was meant to spare it.
+    const verdict = assertEspFirstbootConfWasRead(MISSED);
+    expect(verdict.ok).toBe(false);
+    if (!verdict.ok) {
+      expect(verdict.reason).toContain("esp-conf=none");
+      // The message must send the reader at the guest, not at the bake — the
+      // host side is proven and saying otherwise costs another run.
+      expect(verdict.reason).toContain("The host side is not the suspect");
+      expect(verdict.reason).toContain("(no-conf)");
+    }
+  });
+
+  it("reports an ISO with no instrumentation as ITS OWN case, not as 'not found'", () => {
+    // An old ISO and a broken scan are different findings; only one of them is
+    // a defect in this change, and folding them together is how a rebuild need
+    // gets misread as a regression.
+    const verdict = assertEspFirstbootConfWasRead("ordinary first-boot serial\n");
+    expect(verdict.ok).toBe(false);
+    if (!verdict.ok) expect(verdict.reason).toContain("predates the scan instrumentation");
+    expect(espConfScanOutcome("ordinary first-boot serial\n")).toBeNull();
+  });
+
+  it("an empty candidate list is reported as an empty list", () => {
+    const verdict = assertEspFirstbootConfWasRead(
+      `${ESP_CONF_SCAN_PREFIX} esp-conf=no-block-devices-matched tried=<none>\n`,
+    );
+    expect(verdict.ok).toBe(false);
+    if (!verdict.ok) expect(verdict.reason).toContain("no-block-devices-matched");
+  });
+});
+
+describe("081M3B7Z38Q087G0R003F9X7HM — the boot medium must be a partition, never the whole disk", () => {
+  // The real line from nightly 36297481926 (initial-format lane), verbatim in shape.
+  const HEALTHY =
+    `${ESP_CONF_SCAN_PREFIX} esp-conf=none tried=/dev/disk/by-label/EFIBOOT->/dev/sda2(no-conf),` +
+    "/dev/sda1(no-vfat:vfat=fsconfig___failed:_/dev/sda1:_Can_t_open_blockdev._|mtools=start-lba-0-not-a-partition)" +
+    " boot-medium=/dev/sda1\n";
+  const COIN_FLIP_LOST = `${ESP_CONF_SCAN_PREFIX} esp-conf=none tried=/dev/sda2(no-vfat:vfat=x) boot-medium=/dev/sda\n`;
+
+  it("the partition shape passes", () => {
+    expect(bootMediumShape(HEALTHY)).toEqual({ kind: "partition", device: "/dev/sda1" });
+    expect(bootMediumShape(`${ESP_CONF_SCAN_PREFIX} esp-conf=none tried= boot-medium=/dev/nvme0n1p1\n`).kind).toBe(
+      "partition",
+    );
+  });
+
+  it("the whole-disk shape — the measured failure — is convicted", () => {
+    expect(bootMediumShape(COIN_FLIP_LOST)).toEqual({ kind: "whole-disk", device: "/dev/sda" });
+    expect(bootMediumShape(`${ESP_CONF_SCAN_PREFIX} esp-conf=none tried= boot-medium=/dev/nvme0n1\n`).kind).toBe(
+      "whole-disk",
+    );
+  });
+
+  it("no line, an unmounted /iso, or an unrecognised device is DID-NOT-RUN, never a pass or a fail", () => {
+    expect(bootMediumShape("ordinary serial\n").kind).toBe("not-reported");
+    expect(
+      bootMediumShape(`${ESP_CONF_SCAN_PREFIX} esp-conf=none tried= boot-medium=<not-mounted-at-/iso>\n`).kind,
+    ).toBe("not-reported");
+    expect(bootMediumShape(`${ESP_CONF_SCAN_PREFIX} esp-conf=none tried= boot-medium=/dev/mapper/x\n`).kind).toBe(
+      "not-reported",
+    );
+  });
+
+  it("the ISO really carries the rule this check falsifies, in BOTH udev stages", () => {
+    const nix = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/nixos/modules/install-label-single-device.nix"),
+      "utf8",
+    );
+    expect(nix).toContain('ENV{DEVTYPE}=="disk"');
+    expect(nix).toContain("ENV{ID_FS_LABEL}==\"${config.isoImage.volumeID}\"");
+    expect(nix).toContain('OPTIONS+="link_priority=-100"');
+    expect(nix).toContain("boot.initrd.services.udev.rules = zetaInstallLabelOnePartition;");
+    expect(nix).toContain("services.udev.extraRules = zetaInstallLabelOnePartition;");
+    // The mount itself must go through the single-claimant symlink, not by-label
+    // (install-medium-selection.test.ts shows by-label races the systemd initrd).
+    expect(nix).toContain('fileSystems."/iso".device = lib.mkForce "/dev/disk/zeta-install-medium";');
+    expect(nix).toContain('SYMLINK+="disk/zeta-install-medium"');
+    const installer = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix"),
+      "utf8",
+    );
+    expect(installer).toContain("../modules/install-label-single-device.nix");
+  });
+});
+
+describe("WP27 — a role-less ESP conf must NOT claim the role was declared", () => {
+  it("zeta-first-boot.sh moves ZETA_ROLE_SOURCE only when the conf declares a role", () => {
+    const sh = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh"),
+      "utf8",
+    );
+    // `esp:` on the ROLE source is read as "a human chose this role", and a
+    // declared role skips bootstrap-or-join discovery outright. Now that an ESP
+    // conf can carry values that say nothing about the role, claiming `esp:`
+    // for one of those would turn discovery off via an unrelated knob.
+    expect(sh).toContain("grep -qE '^[[:space:]]*ZETA_ROLE=' \"$conf\"");
+    // And the conf's own arrival is reported separately from the role's
+    // provenance, because they are now two different facts.
+    expect(sh).toContain("ZETA_ESP_CONF=\"esp:$part\"");
+  });
+});
+
+describe("WP27 — the qcow2 sparseness claim is measured, not asserted", () => {
+  const GiB = 1024 ** 3;
+
+  it("parses qemu-img's two sizes and keeps them separate", () => {
+    // virtual-size is what the GUEST sees; actual-size is what the RUNNER
+    // pays. The whole disk-size decision rests on the gap between them, so
+    // neither is ever inferred from the other.
+    const parsed = parseQcowSizes(
+      JSON.stringify({ "virtual-size": 1400 * GiB, "actual-size": 18 * GiB, format: "qcow2" }),
+    );
+    expect(parsed).toEqual({ virtualBytes: 1400 * GiB, actualBytes: 18 * GiB });
+  });
+
+  it("returns null rather than a wrong number on unparseable output", () => {
+    expect(parseQcowSizes("not json")).toBeNull();
+    expect(parseQcowSizes(JSON.stringify({ "virtual-size": "1400G" }))).toBeNull();
+    expect(parseQcowSizes(JSON.stringify(null))).toBeNull();
+  });
+
+  it("reports the ratio that IS the sparseness claim", () => {
+    const line = describeQcowAllocation(
+      "after phase 1 (install)",
+      { virtualBytes: 1400 * GiB, actualBytes: 18 * GiB },
+      60 * GiB,
+    );
+    expect(line).toContain("virtual=1400.0 GiB");
+    expect(line).toContain("allocated=18.0 GiB");
+    expect(line).toContain("1.29% of virtual");
+    expect(line).toContain("runner free: 60.0 GiB");
+  });
+
+  it("says free space is UNKNOWN rather than omitting the clause", () => {
+    // "no headroom line" and "headroom is fine" must not look the same — that
+    // is the shape this whole work item has been chasing all night.
+    const line = describeQcowAllocation("x", { virtualBytes: GiB, actualBytes: GiB }, null);
+    expect(line).toContain("runner free space: unknown");
+  });
+
+  it("flags the eager-allocation world and stays quiet in the sparse one", () => {
+    const sparse = { virtualBytes: 1400 * GiB, actualBytes: 18 * GiB };
+    const eager = { virtualBytes: 1400 * GiB, actualBytes: 900 * GiB };
+    expect(qcowAllocationIsConcerning(sparse, 60 * GiB)).toBe(false);
+    expect(qcowAllocationIsConcerning(eager, 60 * GiB)).toBe(true);
+    // Unknown free space cannot convict: the comparison has no second operand.
+    expect(qcowAllocationIsConcerning(eager, null)).toBe(false);
+  });
+
+  it("formats GiB without pretending to precision it does not have", () => {
+    expect(gib(0)).toBe("0.0 GiB");
+    expect(gib(1536 * 1024 * 1024)).toBe("1.5 GiB");
+  });
+});
+
+// 081M3NB0PAG087G0R000JQQCF4. MEASURED, run 36420588893: the WP11 guest's serial
+// stopped at `roster progress t=331s` and nothing followed for 70 minutes. The
+// job log carries `You are running out of disk space ... Free space left: 0 MB`
+// at 14:17:12 -- six minutes into phase 3, i.e. the same half-minute. QEMU's
+// default for a virtio drive is werror=enospc: a guest write that hits ENOSPC on
+// the HOST stops the whole VM, so the guest printed nothing because it was
+// paused, not frozen. Phase 1 had started with 14.3 GiB free (54.9 GiB earlier in
+// the same job) because the two B0891 lanes left ~38 GiB of images behind.
+describe("WP11 — a full RUNNER disk is named, never a 75-minute silent 'freeze'", () => {
+  const MiB = 1024 ** 2;
+  const GiB = 1024 ** 3;
+
+  it("names ENOSPC-paused guest when the runner has less than the floor left", () => {
+    const reason = runnerDiskExhaustionReason("phase 3 (WP11)", 0, "/tmp/zeta-q");
+    expect(reason).not.toBeNull();
+    expect(reason).toContain("phase 3 (WP11)");
+    expect(reason).toContain("RUNNER DISK EXHAUSTED");
+    expect(reason).toContain("/tmp/zeta-q");
+    expect(reason).toContain("werror");
+    expect(runnerDiskExhaustionReason("x", RUNNER_DISK_EXHAUSTED_FLOOR_BYTES - 1, "/d")).not.toBeNull();
+  });
+
+  it("is silent with headroom, and unknown free space cannot convict", () => {
+    expect(runnerDiskExhaustionReason("x", RUNNER_DISK_EXHAUSTED_FLOOR_BYTES, "/d")).toBeNull();
+    expect(runnerDiskExhaustionReason("x", 14 * GiB, "/d")).toBeNull();
+    expect(runnerDiskExhaustionReason("x", null, "/d")).toBeNull();
+  });
+
+  it("the floor is small enough to only fire when a write can no longer land", () => {
+    expect(RUNNER_DISK_EXHAUSTED_FLOOR_BYTES).toBeGreaterThanOrEqual(64 * MiB);
+    expect(RUNNER_DISK_EXHAUSTED_FLOOR_BYTES).toBeLessThanOrEqual(1 * GiB);
+  });
+
+  const workflow = readFileSync(
+    resolve(import.meta.dir, "../../../.github/workflows/build-ai-cluster-iso.yml"),
+    "utf8",
+  );
+
+  it("the B0891 lanes' disk images are reclaimed BEFORE the WP11 step, after their logs upload", () => {
+    const reclaim = workflow.indexOf("- name: Reclaim B0891 disk images before WP11");
+    const retentionLogs = workflow.indexOf("- name: Upload 081KSNY2Z0008QG0R0008PN7RQ retention serial logs");
+    const pathForkLogs = workflow.indexOf("- name: Upload 081KSNY2Z0008QG0R0008PN7RQ path-fork serial logs");
+    const wp11 = workflow.indexOf("- name: WP11 — installed-disk first-boot k3s verify");
+    expect(reclaim).toBeGreaterThan(-1);
+    expect(retentionLogs).toBeGreaterThan(-1);
+    expect(pathForkLogs).toBeGreaterThan(-1);
+    expect(reclaim).toBeGreaterThan(retentionLogs);
+    expect(reclaim).toBeGreaterThan(pathForkLogs);
+    expect(reclaim).toBeLessThan(wp11);
+    const step = workflow.slice(reclaim, wp11);
+    expect(step).toMatch(/if:\s*always\(\)/);
+    expect(step).toContain("b0891-retention-run");
+    expect(step).toContain("b0891-path-fork-run");
+    // The serial logs are the evidence those lanes produce; only images go.
+    expect(step).toContain("! -name '*.log'");
+    expect(step).toContain("df -h");
+  });
+});
+
+describe("WP27 — the QEMU disk is sized so BOTH Longhorn gates pass on the arithmetic", () => {
+  it("re-derives the floor from zeta-install.sh's own constants", () => {
+    const sh = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
+      "utf8",
+    );
+    const num = (name: string): number => {
+      const m = sh.match(new RegExp(`^${name}=(\\d+)$`, "m"));
+      if (m === null || m[1] === undefined) throw new Error(`${name} not found in zeta-install.sh`);
+      return Number(m[1]);
+    };
+    const esp = num("ZETA_ESP_GIB");
+    const rootFloor = num("ZETA_ROOT_FLOOR_GIB");
+    const demand = num("ZETA_LONGHORN_DEMAND_GIB");
+    const usablePercent = num("ZETA_LONGHORN_USABLE_PERCENT");
+
+    // Gate 2 (the capacity verdict): schedulable = tail * usable% / 100, and
+    // `ok` needs schedulable >= demand.
+    const tailNeeded = Math.ceil((demand * 100) / usablePercent);
+    const diskNeeded = esp + rootFloor + tailNeeded;
+
+    const harness = readFileSync(resolve(import.meta.dir, "qemu-full-install-test.ts"), "utf8");
+    const m = harness.match(/^const QEMU_DISK_SIZE_GB = (\d+);$/m);
+    expect(m).not.toBeNull();
+    const configured = Number(m?.[1]);
+
+    // The point of deriving rather than hardcoding: if the roster grows, or
+    // the root floor moves, THIS test goes red instead of a 90-minute lane.
+    expect(configured).toBeGreaterThanOrEqual(diskNeeded);
+
+    // And gate 1 (the pre-wipe disk-size bail) is implied by gate 2 — a disk
+    // that satisfies the demand necessarily clears ESP + floor + 1 — but it is
+    // asserted so a future change that relaxes gate 2 cannot silently
+    // reintroduce the bail that started this.
+    expect(configured).toBeGreaterThanOrEqual(esp + rootFloor + 1);
+
+    // Integer truncation is real: assert the ACTUAL schedulable, not the ideal.
+    const tail = configured - esp - rootFloor;
+    expect(Math.floor((tail * usablePercent) / 100)).toBeGreaterThanOrEqual(demand);
+  });
+
+  it("no longer stages the Longhorn override — the lanes test the real path", () => {
+    const harness = readFileSync(resolve(import.meta.dir, "qemu-full-install-test.ts"), "utf8");
+    // Comments are stripped first, deliberately. The removal is DOCUMENTED in
+    // a comment that names the option, so a naive `toContain` would match the
+    // explanation of why it is gone and fail on the correct tree — a check
+    // that fires on the thing it is supposed to approve of.
+    const code = harness
+      .replace(/\/\*[\s\S]*?\*\//gu, "")
+      .split(/\r?\n/u)
+      .map((line) => line.replace(/\/\/.*$/u, ""))
+      .join("\n");
+    // A lane running under ZETA_ALLOW_LONGHORN_UNDERSIZED=1 measures the one
+    // path a real USB install should never take.
+    expect(code).not.toContain("allowLonghornUndersized");
+    // And the falsifier for the stripper itself: something that IS live code
+    // must survive it, or this test would pass on an empty string.
+    expect(code).toContain("const QEMU_DISK_SIZE_GB");
   });
 });

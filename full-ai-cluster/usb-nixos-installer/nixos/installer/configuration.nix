@@ -15,6 +15,12 @@
     # and mise's prebuilt toolchains (bun/node/python/rust/java/dotnet) cannot
     # execve without an interpreter — the deterministic first-boot failure.
     ../modules/foreign-binaries.nix
+    # 081M3B7Z38Q087G0R003F9X7HM: the isohybrid whole disk and its LBA-0
+    # partition 1 both carry ZETA_INSTALL; /iso mounts through a udev symlink
+    # only the partition (or an optical/unpartitioned medium) ever claims, so the
+    # mount can no longer take the whole disk O_EXCL and lock the ESP (where
+    # zflash's injections live) out -- whatever order udev processes them in.
+    ../modules/install-label-single-device.nix
   ];
 
   networking.hostName = "zeta-installer";
@@ -356,15 +362,28 @@
   # be exercised by the real install path before merge, and a USB flashed on
   # day X installs whatever main is on day Y.
   #
-  # `self.rev` is a standard flake attribute (see NixOS's own
-  # `system.nixos.revision = self.rev or self.dirtyRev or "unknown"`
-  # convention) — the exact commit `nix build .#installer-iso` evaluated
-  # from, with NO impure env lookup and NO extra build input. It is only
-  # absent when the flake was evaluated from a DIRTY git tree (uncommitted
-  # changes) — i.e. a hand-built ISO from a local checkout — in which case
-  # `self ? rev` is false and this ships "unknown", which zeta-install.sh's
-  # repo-pin block treats exactly like no pin at all (today's behaviour,
-  # unchanged).
+  # `self.rev` is a standard flake attribute — the exact commit
+  # `nix build .#installer-iso` evaluated from, with NO impure env lookup.
+  # It is absent whenever the git tree is DIRTY, and the release build is
+  # ALWAYS dirty: the workflow `git add -f`s the WP34 bootstrap image
+  # archive so the flake can see it. That shipped `unknown` here, which
+  # zeta-install.sh's validator refuses as junk (`invalid-format` ->
+  # fail-closed), so EVERY CI-built ISO aborted its install unless a test
+  # harness happened to write an ESP `/zeta-repo-pin` over it (nightly
+  # 36297481926, 2026-09-27: `ZETA_ISO_COMMIT='unknown' is not a 40-hex git
+  # commit`). An earlier version of this comment claimed `unknown` was
+  # treated like no pin; the validator never did that.
+  #
+  # So the fallback order is:
+  #   1. `self.rev` — clean tree.
+  #   2. `preload/iso-commit` — written and staged by the workflow ONLY after
+  #      it asserts the preload archive is the tree's ONLY difference from
+  #      HEAD, so the source nix evaluates IS that commit. Never committed.
+  #   3. "" — a genuinely dirty hand build. The validator classifies empty as
+  #      `no-pin` (install default-branch HEAD, logged), which is the honest
+  #      outcome: no commit exists that this ISO was built from.
+  # Never `self.dirtyRev`: it would pin a hand build carrying local code
+  # changes to a commit that does not contain them.
   #
   # `zeta-first-boot.sh` sources this file the same way it sources
   # `/etc/zeta-firstboot.conf` above (see :45-60), and an ESP-written
@@ -380,7 +399,14 @@
     # at `nix build .#installer-iso` time. Sourced as bash by
     # zeta-first-boot.sh, in preference order BELOW an ESP-written
     # /zeta-repo-pin override.
-    ZETA_ISO_COMMIT=${self.rev or "unknown"}
+    ZETA_ISO_COMMIT=${
+      let
+        stagedCommit = ../../preload/iso-commit;
+      in
+      self.rev or (
+        if builtins.pathExists stagedCommit then lib.trim (builtins.readFile stagedCommit) else ""
+      )
+    }
   '';
 
   # Marker file: presence enables the first-boot service. Absent on the
@@ -477,6 +503,57 @@
     volumeID = lib.mkForce "ZETA_INSTALL";
     makeEfiBootable = true;
     makeUsbBootable = true;
+
+    # WP34 (081M3BZ111D087G0R000YBMKRY) — THE BOOTSTRAP CONTAINER IMAGES.
+    #
+    # ~1.0 GB of OCI layout carrying the 25 images the first-boot roster needs
+    # before ArgoCD exists. `zeta-install.sh` copies it onto the target at
+    # /var/lib/rancher/k3s/agent/images/, where k3s imports it into containerd
+    # BEFORE attempting any pull. Twenty-one of the twenty-five sit on
+    # registries the pull-through mirror does not cover, so without it a spent
+    # rate limit on quay.io or ghcr.io is an ImagePullBackOff on a box nobody
+    # is SSH'd into. See nixos/modules/k3s-bootstrap-image-preload.nix.
+    #
+    # BUILT BY CI AND STAGED INTO THE FLAKE SOURCE — not committed, and not
+    # fetched by nix. Each alternative was ruled out for a measured reason:
+    #
+    #   - COMMITTING it would put a 1 GB binary in a tree whose verification
+    #     discipline is that proofs are text (`no-binary-in-proof-lineage`).
+    #   - A nix FIXED-OUTPUT derivation needs an output hash for content that is
+    #     fetched, and that hash cannot be produced without running the fetch —
+    #     so the first landing would carry a placeholder, i.e. a build broken by
+    #     construction.
+    #   - FETCHING AT INSTALL TIME would pull from the same rate-limited
+    #     registries on the operator's machine, which moves the failure earlier
+    #     rather than removing it and throws away the verify-in-CI property that
+    #     is the entire point.
+    #
+    # ABSENT ON A LOCAL BUILD, AND NOT SILENTLY. `builtins.pathExists` is false
+    # when a developer runs `nix build .#installer-iso` without building the
+    # archive first, and the ISO is then built without it — correct for a dev
+    # ISO, and REPORTED by the `lib.warn` below rather than left to be inferred
+    # from a smaller file. The release-side guarantee is not this predicate: it
+    # is the workflow step that builds the archive before `nix build` runs at
+    # all, plus `src/Core.TypeScript/ci/audit-installer-iso-content.ts`, which
+    # looks inside the built ISO.
+    contents =
+      let
+        archive = ../../preload/zeta-bootstrap-images.tar;
+      in
+      if builtins.pathExists archive then
+        [
+          {
+            source = archive;
+            target = "/zeta/zeta-bootstrap-images.tar";
+          }
+        ]
+      else
+        lib.warn (
+          "zeta: no bootstrap container-image archive at usb-nixos-installer/preload/ -- this ISO will install "
+          + "nodes that PULL every bootstrap image on first boot. Fine for a local build; a release must run "
+          + "`bun src/Core.TypeScript/cluster/bootstrap-image-preload.ts --build-archive` first (the "
+          + "build-ai-cluster-iso workflow does)."
+        ) [ ];
   };
 
   environment.etc."zeta-install.md".text = ''

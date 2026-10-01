@@ -27,8 +27,13 @@
 #      ZETA_AUTO_CONFIRM=WIPE also skips iter-5.3 password,
 #      081KSKBP80008QG0R003AX2A69.3b passphrase, gh-auth, vendor logins.
 #   5. Wipe + partition:
-#        BOOT disk: ESP 1G + root (max — fills disk) + longhorn1 (1G tail);
-#        no fixed root cap; layout is chosen at install-time partition (Step 4)
+#        BOOT disk: ESP 1G + root (a COMPUTED FLOOR, 120G) + longhorn1 (the
+#        REST of the disk). WP28 inverted this: root used to fill the disk and
+#        longhorn1 got a fixed 1G tail, so a 1 TiB single-disk install handed
+#        Longhorn ONE GIBIBYTE against a roster declaring ~943G of
+#        driver.longhorn.io PVCs. The root floor is the whole roster's unpacked
+#        container images (73G) + OS/swap/logs (30G) x 1.15.
+#        LONGHORN1_TAIL=<size> overrides and root then takes what is left.
 #        DATA disks: each becomes a single longhorn{2..N} whole-disk
 #   6. Format (FAT32 ESP + ext4 root + ext4 longhorn{1..N})
 #   7. Mount per the standard /mnt/var/lib/longhorn-disk{1..N} layout
@@ -66,8 +71,19 @@ echo
 REPO_URL="${REPO_URL:-https://github.com/Lucent-Financial-Group/Zeta}"
 HOST="${1:-}"
 STORAGE_BACKEND="${STORAGE_BACKEND:-longhorn}"
-# Minimum longhorn1 slice at the disk tail (root takes everything between ESP and this).
-LONGHORN1_TAIL="${LONGHORN1_TAIL:-1G}"
+# The longhorn1 slice at the boot disk's tail.
+#
+# WP28 (081M393B9TB087G0R000Y529Z8): "auto" INVERTS the old layout. It used to
+# default to 1G, with root taking everything between the ESP and that tail --
+# so a 1 TiB single-disk install handed Longhorn ONE GIBIBYTE against a roster
+# declaring ~943 GiB of driver.longhorn.io PVCs, and the rest of the disk was
+# not spent but simply unreachable, because the root filesystem is never a
+# Longhorn data path. Under "auto" ROOT gets a computed floor
+# (ZETA_ROOT_FLOOR_GIB, below) and longhorn1 gets the REST.
+#
+# An explicit size (>=1G, <=1T) still overrides, and root then takes what is
+# left; the operator owns the floor decision in that case.
+LONGHORN1_TAIL="${LONGHORN1_TAIL:-auto}"
 # WP21 (081M35C7NJR087G0R002S4R654): the commit to check out after cloning
 # $REPO_URL, and the operator override that lets a checkout failure proceed
 # on the default branch anyway instead of aborting. See the ZETA-REPO-PIN
@@ -130,6 +146,37 @@ zeta_repo_pin_decide_on_failure() {
 }
 # ZETA-REPO-PIN-END --------------------------------------
 
+# ZETA-BOUNDED-STEP-BEGIN -------------------------------------------
+# 081M3HPNSY5087G0R002QAVCEJ: every network-bound step AFTER the wipe gets an
+# overall wall-clock bound, so a hang becomes a NAMED failure instead of an
+# install that sits forever with nothing on screen. `nixos-install` already
+# bounds each DOWNLOAD (connect/stalled timeouts); nothing bounded the RUN, and
+# the post-wipe `git clone` had no bound and no GIT_TERMINAL_PROMPT=0 at all.
+#
+# $1 = step name (for the message), $2 = seconds, rest = the command.
+# Returns the command's own rc, or 124 on timeout (after printing a line that
+# names the step and the bound). --kill-after: a child that ignores SIGTERM is
+# killed 30 s later, so the bound is a bound.
+# Shell-parity tested in src/Core.TypeScript/installer/bounded-step-shell-parity.test.ts.
+zeta_bounded_step() {
+  local name="$1" secs="$2" rc=0
+  shift 2
+  timeout --kill-after=30 "$secs" "$@" || rc=$?
+  # 124 = timeout sent TERM; 137 = the --kill-after KILL (128+9).
+  if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
+    echo "TIMEOUT: ${name} did not finish within ${secs}s -- stopped (rc=${rc})." >&2
+    return 124
+  fi
+  return "$rc"
+}
+# ZETA-BOUNDED-STEP-END ---------------------------------------------
+
+# Overridable bounds. Generous on purpose: they exist to turn a HANG into a
+# named failure, not to race a slow-but-progressing link. nixos-install may
+# build from source when the cache is flaky (`--option fallback true`).
+ZETA_CLONE_TIMEOUT_SECS="${ZETA_CLONE_TIMEOUT_SECS:-900}"
+ZETA_NIXOS_INSTALL_TIMEOUT_SECS="${ZETA_NIXOS_INSTALL_TIMEOUT_SECS:-10800}"
+
 # Operator-facing prompts run only on an interactive console session.
 # ZETA_AUTO_CONFIRM=WIPE (first-boot / QEMU CI via zeta-first-boot.sh) and
 # non-TTY stdin both suppress them — iter-5.3 password, 081KSKBP80008QG0R003AX2A69.3b passphrase,
@@ -153,12 +200,20 @@ size_spec_to_bytes() {
   esac
 }
 
-LONGHORN1_TAIL_BYTES="$(size_spec_to_bytes "$LONGHORN1_TAIL")"
-if (( LONGHORN1_TAIL_BYTES < 1024 * 1024 * 1024 )); then
-  bail "LONGHORN1_TAIL=$LONGHORN1_TAIL too small (need >= 1G for longhorn1 tail)"
-fi
-if (( LONGHORN1_TAIL_BYTES > 1024 * 1024 * 1024 * 1024 )); then
-  bail "LONGHORN1_TAIL=$LONGHORN1_TAIL too large (max 1T tail slice)"
+# "auto" cannot be sized until the BOOT disk is known, so it is left EMPTY here
+# and resolved in Step 2 once it is. Empty is the sentinel, and the resolver
+# below is the only thing that fills it -- an explicit size keeps its existing
+# bounds unchanged.
+if [[ "$LONGHORN1_TAIL" == "auto" ]]; then
+  LONGHORN1_TAIL_BYTES=""
+else
+  LONGHORN1_TAIL_BYTES="$(size_spec_to_bytes "$LONGHORN1_TAIL")"
+  if (( LONGHORN1_TAIL_BYTES < 1024 * 1024 * 1024 )); then
+    bail "LONGHORN1_TAIL=$LONGHORN1_TAIL too small (need >= 1G for longhorn1 tail)"
+  fi
+  if (( LONGHORN1_TAIL_BYTES > 1024 * 1024 * 1024 * 1024 )); then
+    bail "LONGHORN1_TAIL=$LONGHORN1_TAIL too large (max 1T tail slice)"
+  fi
 fi
 
 # /dev/nvme0n1 → /dev/nvme0n1p1; /dev/sda → /dev/sda1.
@@ -197,6 +252,354 @@ assert_boot_disk_large_enough() {
     bail "BOOT disk $disk too small for ESP 1G + root + longhorn1 ${LONGHORN1_TAIL} (need >= $(( (min_total_bytes + 1024*1024*1024 - 1) / (1024*1024*1024) ))G, have $(lsblk -d -n -o SIZE "$disk"))"
   fi
 }
+
+# ZETA-LONGHORN-CAPACITY-BEGIN -----------------------------------
+# WP28 (081M393B9TB087G0R000Y529Z8) — pure decision functions for the
+# pre-wipe Longhorn capacity refusal, checked for parity against the
+# TypeScript oracle src/Core.TypeScript/installer/longhorn-capacity-preflight.ts
+# by src/Core.TypeScript/installer/longhorn-capacity-preflight-shell-parity.test.ts.
+# No IO here; the `blockdev` reads and the `bail` happen at the call site,
+# which runs alongside assert_boot_disk_large_enough — BEFORE the wipe.
+#
+# THE DEFECT THIS CLOSES: on a single-disk install this script gives Longhorn
+# exactly LONGHORN1_TAIL (1G by default) and nothing else — ESP + root take the
+# rest of the boot disk, and the root filesystem is never a Longhorn data path
+# (nixos/modules/longhorn-disks.nix derives `dataDisks` from the
+# /var/lib/longhorn-disk* mountpoints this script creates). The committed
+# roster declares ~943 GiB of driver.longhorn.io PVCs against it, so fifteen
+# Applications' PVCs pend forever on a cluster that otherwise comes up. Nothing
+# caught it because every CI lane rebinds zeta-block-replicated to
+# rancher.io/local-path (full-ai-cluster/dev-cluster/manifests/), and the
+# readiness auditor's capacity check compares against the sum of every BLOCK
+# DEVICE rather than against what this script actually partitions.
+#
+# Integer GiB throughout, and every clamp rounds capacity DOWN: a junk reading
+# must not manufacture headroom, and a fractional GiB must not acquit.
+
+# min(storageOverProvisioningPercentage, 100 - storageMinimalAvailablePercentage)
+# with both at the chart defaults k8s/applications/longhorn/Application.yaml
+# leaves in place (100 and 25; longhorn-1.7.2/values.yaml ~214/~216). Pinned to
+# the deployed Application by longhorn-capacity-preflight.test.ts.
+ZETA_LONGHORN_USABLE_PERCENT=75
+
+# The committed roster's driver.longhorn.io-class demand, GiB. Measured
+# 2026-09-24; see COMMITTED_LONGHORN_DEMAND_GIB in the TS oracle for the
+# derivation. Recomputed from the render snapshot on every run of
+# src/Core.TypeScript/cluster/single-node-readiness.ts, which REFUSES when the
+# roster has moved past this number — so it cannot go stale quietly.
+ZETA_LONGHORN_DEMAND_GIB=943
+
+# What the installer actually REFUSES at: the demand the CURRENTLY REGISTERED
+# fleet could ever be asked for, GiB. 081M397QHX8087G0R003DQSY0B.
+#
+# Equal to the declared total today, and that is the point rather than an
+# oversight. 400 GiB of the 943 belongs to ollama and vllm, both
+# `nodeSelector: zeta.io/gpu: nvidia`, and every checked-in ClusterNode records
+# an Intel adapter -- but under the old `lspci ... | head -1` capture those
+# records establish what IS present and never what is NOT, so the exclusion is
+# UNDECIDABLE and an unproven exclusion must not shrink the number a gate
+# convicts on.
+#
+# One node re-registering under the fixed capture (spec.hardware.gpus, every
+# display device) makes it provable, the split becomes exact at 543, and this
+# constant drops. single-node-readiness.ts REFUSES while the two disagree.
+#
+# BOTH are printed. Convicting on one while showing only the other is how a
+# number stops meaning what its reader thinks it means.
+ZETA_LONGHORN_SCHEDULABLE_GIB=943
+
+# A positive whole number, or 0. Negative, fractional and non-numeric all
+# collapse to 0 so both sides of the parity refuse junk identically.
+zeta_clamp_gib() {
+  case "$1" in
+    ''|*[!0-9]*) echo 0 ;;
+    *) if [ "$1" -gt 0 ] 2>/dev/null; then echo "$1"; else echo 0; fi ;;
+  esac
+}
+
+# Bytes -> whole GiB, floored.
+zeta_bytes_to_gib() {
+  local bytes
+  bytes="$(zeta_clamp_gib "$1")"
+  echo $(( bytes / 1073741824 ))
+}
+
+# Raw Longhorn capacity this installer provisions: the longhorn1 TAIL off the
+# boot disk (never the root filesystem) plus every non-boot internal disk whole.
+# Usage: zeta_provisioned_longhorn_gib <tail_gib> [<data_disk_gib> ...]
+zeta_provisioned_longhorn_gib() {
+  local total d
+  total="$(zeta_clamp_gib "$1")"
+  shift
+  for d in "$@"; do
+    total=$(( total + $(zeta_clamp_gib "$d") ))
+  done
+  echo "$total"
+}
+
+# GiB Longhorn will actually place out of a raw pool, floored.
+zeta_schedulable_longhorn_gib() {
+  local raw pct
+  raw="$(zeta_clamp_gib "$1")"
+  pct="$(zeta_clamp_gib "$2")"
+  if [ "$raw" -eq 0 ] || [ "$pct" -eq 0 ]; then
+    echo 0
+    return
+  fi
+  echo $(( raw * pct / 100 ))
+}
+
+# "ok" | "override" | "undersized". FAIL CLOSED: a pool that cannot hold the
+# roster aborts the install unless the operator named the exact override
+# literal, because a cluster that comes up half-started and leaves someone
+# reading PVC events is strictly worse than a refusal with the numbers on
+# screen — and at this point nothing has been wiped yet.
+zeta_longhorn_capacity_verdict() {
+  local schedulable="$1" demand="$2" override="$3"
+  if [ "$schedulable" -ge "$demand" ] 2>/dev/null; then
+    echo "ok"
+    return
+  fi
+  if [ "$override" = "1" ]; then
+    echo "override"
+    return
+  fi
+  echo "undersized"
+}
+# --- WP28 root floor / auto tail (081M393B9TB087G0R000Y529Z8) --------
+# EVERY CONSTANT HERE IS GiB (binary, 1024^3). The measurement they come from
+# is published in GB (decimal, 10^9) and converted in the TS oracle with the
+# arithmetic shown. Mixing the two in a capacity floor is the Mars Climate
+# Orbiter class; keep them in GiB.
+
+# (73 GiB unpacked images for the WHOLE roster + 30 GiB OS/swap/nix/logs)
+# x 1.15 safety = 118.45 -> 120. The 73 is image-footprint.measured.json's
+# `all` cohort, 77.69 GB x 10^9 / 1024^3 = 72.35 GiB rounded up. That x2.67
+# unpack ratio is a MEASURED OVER-ESTIMATE for the two images that dominate
+# (a CI pull found x1.77 and x2.35), so this term is HIGH -- which on the
+# ROOT side is the SAFE direction: root gets more than it needs and Longhorn
+# gets less than it could, costing capacity and causing no failure. The same
+# ratio on the DEMAND side of a capacity check would be the ACQUITTING
+# direction and is not used there.
+ZETA_ROOT_FLOOR_GIB=120
+
+# The ESP: `sgdisk -n "1:0:+1G"` below.
+ZETA_ESP_GIB=1
+
+# The smallest longhorn1 tail this installer will create, GiB.
+#
+# Reached ONLY under ZETA_ALLOW_LONGHORN_UNDERSIZED=1, on a boot disk too small
+# for the root floor. It is the pre-WP28 layout -- a minimum tail, root takes
+# the rest -- kept as a named fallback rather than as a default, because as a
+# DEFAULT it is the exact defect WP28 exists to close: a 1 TiB disk handing
+# Longhorn one gibibyte. As an explicitly-named fallback on a 40 GiB virtual
+# disk it is the only layout that installs at all.
+#
+# It also matches the lower bound an explicit LONGHORN1_TAIL already has, so
+# there is one minimum in this file rather than two that agree by coincidence.
+ZETA_LONGHORN_MIN_TAIL_GIB=1
+
+# Declared local-path PVC capacity that also lands on ROOT. ADVISORY, NOT
+# RESERVED, and not part of the root floor: local-storage.nix binds
+# zeta-block-local WaitForFirstConsumer and the provisioner's helper is
+# `mkdir -m 0777 -p "$VOL_DIR"` -- a directory with no quota -- so a PVC there
+# consumes the bytes WRITTEN and nothing more. Reserving it would starve the
+# Longhorn pool for bytes nobody has written. It is PRINTED because it is
+# still the first thing that fills root.
+ZETA_LOCAL_PATH_ADVISORY_GIB=230
+
+# The longhorn1 tail for a boot disk of <disk_gib>, under LONGHORN1_TAIL=auto:
+# root takes a computed FLOOR and longhorn1 takes the REST.
+#
+# THE DEFECT THIS REPLACES: the tail was a fixed 1G and root took everything
+# else, so a 1 TiB single-disk install gave Longhorn ONE GIBIBYTE and root
+# ~930 of which it needs ~120. The remainder was not spent, it was simply not
+# reachable -- the root filesystem is never a Longhorn data path.
+#
+# 0 means REFUSE, not "use 1": a tail clamped to 1 would be the old defect
+# wearing a computation. The caller bails with the numbers printed.
+zeta_auto_longhorn1_tail_gib() {
+  local disk floor tail
+  disk="$(zeta_clamp_gib "$1")"
+  floor="$(zeta_clamp_gib "$2")"
+  if [ "$disk" -eq 0 ] || [ "$floor" -eq 0 ]; then
+    echo 0
+    return
+  fi
+  tail=$(( disk - ZETA_ESP_GIB - floor ))
+  if [ "$tail" -ge 1 ]; then
+    echo "$tail"
+  else
+    echo 0
+  fi
+}
+
+# ZETA-LONGHORN-CAPACITY-END ------------------------------------
+
+# ZETA-PUBLIC-TLS-BEGIN ------------------------------------------
+# 081M3JG74G0087G0R001XJC837 — the two public-TLS settings, resolved at the START
+# of the install. Pure functions plus one resolver; checked for parity against
+# src/Core.TypeScript/installer/public-endpoint.ts by
+# src/Core.TypeScript/installer/public-endpoint-shell-parity.test.ts.
+#
+# THE DEFECT THIS CLOSES: the platform Application applied Let's Encrypt issuers
+# with `email: you@example.com` and routes for `portal.example.com`. Nobody edits
+# a file in a generic installer, so every install shipped them, the ACME account
+# was refused, and ArgoCD's health wait on the issuers blocked the whole platform.
+# Nothing in the repo carries a default any more; the values come from here.
+#
+# RESOLUTION ORDER, and nothing else:
+#   1. ZETA_ACME_EMAIL + ZETA_PUBLIC_DOMAIN from the ESP /zeta-firstboot.conf
+#      (zflash --acme-email / --public-domain; zeta-first-boot.sh exports them);
+#   2. otherwise ASK — before any disk work, so nobody waits through the long
+#      part of the install to meet a question;
+#   3. otherwise (Enter, EOF, no TTY, no keypress) UNSET: no public TLS, and a
+#      platform that still syncs Healthy on the LAN.
+# An ESP value that fails validation is REFUSED loudly and treated as absent;
+# half a pair is never applied.
+
+# RFC 2606 §2/§3 reserved names, plus RFC 6762 `.local`. Never a public endpoint,
+# and the ACME CA refuses every one of them.
+zeta_public_domain_validate() {
+  local raw="$1" lower tld rest sld
+  local re='^([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?$'
+  if [ -z "$raw" ]; then
+    echo "empty"
+    return
+  fi
+  # portal.<domain> must still fit in 253.
+  if [ "${#raw}" -gt 246 ] || ! [[ "$raw" =~ $re ]]; then
+    echo "invalid-format"
+    return
+  fi
+  lower="${raw,,}"
+  tld="${lower##*.}"
+  case "$tld" in
+    test|example|invalid|localhost|local) echo "reserved"; return ;;
+  esac
+  rest="${lower%.*}"
+  sld="${rest##*.}.${tld}"
+  case "$sld" in
+    example.com|example.net|example.org) echo "reserved"; return ;;
+  esac
+  echo "valid"
+}
+
+# Deliberately narrower than RFC 5322: no quote, space, `$` or backtick can ever
+# reach a file this installer writes or a manifest the node renders.
+zeta_acme_email_validate() {
+  local raw="$1" d
+  local re='^([A-Za-z0-9._%+-]{1,64})@(.+)$'
+  if [ -z "$raw" ]; then
+    echo "empty"
+    return
+  fi
+  if ! [[ "$raw" =~ $re ]]; then
+    echo "invalid-format"
+    return
+  fi
+  d="$(zeta_public_domain_validate "${BASH_REMATCH[2]}")"
+  case "$d" in
+    valid) echo "valid" ;;
+    reserved) echo "reserved-domain" ;;
+    *) echo "invalid-format" ;;
+  esac
+}
+
+# zeta_public_tls_resolve <mode>
+#   mode: ask        prompt now (interactive zeta-install)
+#         gate:<N>   offer the prompt behind a single 'p' keypress for N seconds
+#                    (the first-boot path: a TTY, but the zero-typing default)
+#         none       never read stdin
+# Sets ZETA_PUBLIC_TLS_SOURCE (esp|prompt|unset), ZETA_PUBLIC_TLS_EMAIL,
+# ZETA_PUBLIC_TLS_DOMAIN (lowercased). Messages go to stderr.
+ZETA_PUBLIC_TLS_MAX_ATTEMPTS=5
+zeta_public_tls_resolve() {
+  local mode="$1" e d ev dv key n
+  ZETA_PUBLIC_TLS_SOURCE="unset"
+  ZETA_PUBLIC_TLS_EMAIL=""
+  ZETA_PUBLIC_TLS_DOMAIN=""
+  e="${ZETA_ACME_EMAIL:-}"
+  d="${ZETA_PUBLIC_DOMAIN:-}"
+  if [ -n "$e" ] || [ -n "$d" ]; then
+    ev="$(zeta_acme_email_validate "$e")"
+    dv="$(zeta_public_domain_validate "$d")"
+    if [ "$ev" = "valid" ] && [ "$dv" = "valid" ]; then
+      ZETA_PUBLIC_TLS_SOURCE="esp"
+      ZETA_PUBLIC_TLS_EMAIL="$e"
+      ZETA_PUBLIC_TLS_DOMAIN="${d,,}"
+      return 0
+    fi
+    echo "[public-tls] REFUSED the ESP values (email: ${ev}, domain: ${dv}). Both are required, and neither may be an RFC 2606 name. Ignoring them." >&2
+  fi
+  case "$mode" in
+    ask) ;;
+    gate:*)
+      echo "[public-tls] Press 'p' within ${mode#gate:}s to set up PUBLIC TLS (Let's Encrypt for portal.<your-domain>)." >&2
+      echo "[public-tls] Any other key, or waiting, installs LAN-only (no public hostname, no certificate)." >&2
+      key=""
+      read -r -n 1 -s -t "${mode#gate:}" key || key=""
+      if [ "${key,,}" != "p" ]; then
+        return 0
+      fi
+      ;;
+    *) return 0 ;;
+  esac
+  echo "[public-tls] Public TLS: the portal is published as portal.<domain> with a Let's Encrypt certificate." >&2
+  echo "[public-tls] Press Enter at either question to skip (LAN-only; nothing public is configured)." >&2
+  n=0
+  while :; do
+    e=""
+    read -r -p "[public-tls] ACME contact email (Let's Encrypt expiry notices): " e || e=""
+    [ -z "$e" ] && return 0
+    ev="$(zeta_acme_email_validate "$e")"
+    [ "$ev" = "valid" ] && break
+    echo "[public-tls]   rejected (${ev}): need local@domain.tld; example.com/.test/.invalid/.localhost/.example are refused." >&2
+    n=$((n + 1))
+    [ "$n" -ge "$ZETA_PUBLIC_TLS_MAX_ATTEMPTS" ] && return 0
+  done
+  n=0
+  while :; do
+    d=""
+    read -r -p "[public-tls] Public base domain (portal.<domain> will be served), e.g. yourdomain.net: " d || d=""
+    [ -z "$d" ] && return 0
+    dv="$(zeta_public_domain_validate "$d")"
+    [ "$dv" = "valid" ] && break
+    echo "[public-tls]   rejected (${dv}): need a DNS name with 2+ labels; RFC 2606 names are refused." >&2
+    n=$((n + 1))
+    [ "$n" -ge "$ZETA_PUBLIC_TLS_MAX_ATTEMPTS" ] && return 0
+  done
+  ZETA_PUBLIC_TLS_SOURCE="prompt"
+  ZETA_PUBLIC_TLS_EMAIL="$e"
+  ZETA_PUBLIC_TLS_DOMAIN="${d,,}"
+  return 0
+}
+# ZETA-PUBLIC-TLS-END --------------------------------------------
+
+# ── Step 0.5: public TLS settings (081M3JG74G0087G0R001XJC837) ────
+# Asked HERE, before disk enumeration, so the operator meets the question at the
+# start of the install rather than after the long work. A joiner does not ask:
+# the public endpoint is a property of the cluster its founder already decided.
+if [[ "${ZETA_ROLE:-}" == "joiner" ]]; then
+  ZETA_PUBLIC_TLS_MODE="none"
+elif zeta_install_prompts_enabled; then
+  ZETA_PUBLIC_TLS_MODE="ask"
+elif [[ -t 0 ]]; then
+  ZETA_PUBLIC_TLS_MODE="gate:${PUBLIC_TLS_PROMPT_SECS:-15}"
+else
+  ZETA_PUBLIC_TLS_MODE="none"
+fi
+echo
+echo "[public-tls] ── public TLS (ACME email + public domain) ──"
+zeta_public_tls_resolve "$ZETA_PUBLIC_TLS_MODE"
+if [ "$ZETA_PUBLIC_TLS_SOURCE" = "unset" ]; then
+  echo "[public-tls] UNSET — LAN-only platform: no ClusterIssuer, no Certificate, no public hostname."
+  echo "[public-tls]   (to add it later: write /etc/zeta/acme-email + /etc/zeta/public-domain on the node,"
+  echo "[public-tls]    then sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#<host>)"
+else
+  echo "[public-tls] SET (source: ${ZETA_PUBLIC_TLS_SOURCE}) — portal.${ZETA_PUBLIC_TLS_DOMAIN}, ACME contact ${ZETA_PUBLIC_TLS_EMAIL}"
+fi
+echo
 
 # ── Step 1: enumerate internal disks ──────────────────────────────
 # Fixed (RM=0), writable (RO=0), type=disk, NOT USB. Includes NVMe,
@@ -280,16 +683,59 @@ for d in "${SORTED[@]}"; do
   [[ "$d" != "$BOOT_DISK" ]] && DATA_DISKS+=("$d")
 done
 
+# WP28 (081M393B9TB087G0R000Y529Z8): resolve LONGHORN1_TAIL=auto now that the
+# BOOT disk is known. Root gets a computed floor; longhorn1 gets the rest.
+if [[ -z "$LONGHORN1_TAIL_BYTES" ]]; then
+  boot_gib="$(zeta_bytes_to_gib "$(blockdev --getsize64 "$BOOT_DISK")")"
+  auto_tail_gib="$(zeta_auto_longhorn1_tail_gib "$boot_gib" "$ZETA_ROOT_FLOOR_GIB")"
+  if [[ "$auto_tail_gib" -lt 1 ]]; then
+    # The disk cannot hold ESP + root floor + a 1 GiB minimum tail.
+    #
+    # ONE OVERRIDE COVERS BOTH GATES, and that is deliberate. This refusal and
+    # the pool refusal below are the SAME claim measured at two points -- "this
+    # disk cannot hold the committed roster" -- so an operator who has already
+    # said `ZETA_ALLOW_LONGHORN_UNDERSIZED=1` has answered both. A second env
+    # var would make them name the same fact twice, and the second one would be
+    # the one nobody sets.
+    #
+    # The fallback is the MINIMUM tail with root taking the rest -- the
+    # pre-WP28 layout -- because on a disk this small that is the only layout
+    # that installs at all. It is the right shape for a lane testing install
+    # MECHANICS on a deliberately small virtual disk, and the wrong shape for a
+    # real cluster, which is exactly why it costs a named override.
+    if [[ "${ZETA_ALLOW_LONGHORN_UNDERSIZED:-}" == "1" ]]; then
+      auto_tail_gib="$ZETA_LONGHORN_MIN_TAIL_GIB"
+      echo
+      echo "BOOT disk $BOOT_DISK is ${boot_gib} GiB — too small for the ${ZETA_ROOT_FLOOR_GIB} GiB root floor."
+      echo "  Proceeding on ZETA_ALLOW_LONGHORN_UNDERSIZED=1 with a MINIMUM ${ZETA_LONGHORN_MIN_TAIL_GIB} GiB longhorn1 tail;"
+      echo "  root takes the rest. The committed roster will NOT fit and its PVCs will pend."
+      echo "  This is debt you named, not a cleared check."
+    else
+      bail "BOOT disk $BOOT_DISK is ${boot_gib} GiB, which cannot hold ESP ${ZETA_ESP_GIB} GiB + root floor ${ZETA_ROOT_FLOOR_GIB} GiB + a 1 GiB minimum longhorn1 tail (need >= $((ZETA_ESP_GIB + ZETA_ROOT_FLOOR_GIB + 1)) GiB). The root floor is the whole roster's unpacked container images (73 GiB) plus OS/swap/logs (30 GiB) with a 1.15 safety factor. Nothing has been wiped. Three remedies: (1) use a larger boot disk; (2) set LONGHORN1_TAIL explicitly to take the floor decision yourself (>=1G, <=1T), accepting that root may not hold every image; (3) install anyway on a MINIMUM ${ZETA_LONGHORN_MIN_TAIL_GIB} GiB tail with ZETA_ALLOW_LONGHORN_UNDERSIZED=1, accepting that the roster's PVCs will pend — which is what the QEMU install lanes do, because their virtual disk is sized for install mechanics rather than for the roster."
+    fi
+  fi
+  LONGHORN1_TAIL="${auto_tail_gib}G"
+  LONGHORN1_TAIL_BYTES=$(( auto_tail_gib * 1024 * 1024 * 1024 ))
+  echo
+  echo "Longhorn tail computed from the BOOT disk (LONGHORN1_TAIL=auto):"
+  echo "  boot disk                         ${boot_gib} GiB"
+  echo "  - ESP                             ${ZETA_ESP_GIB} GiB"
+  echo "  - root floor                      ${ZETA_ROOT_FLOOR_GIB} GiB   (73 GiB images all-cohort + 30 GiB OS, x1.15)"
+  echo "  = longhorn1                       ${auto_tail_gib} GiB"
+  echo "  local-path PVC ceilings on root   ${ZETA_LOCAL_PATH_ADVISORY_GIB} GiB   ADVISORY, NOT RESERVED — the first thing that fills root"
+  echo "  Set LONGHORN1_TAIL=<size> to override (>=1G, <=1T); root then takes what is left."
+fi
+
 echo
-echo "About to FULL-WIPE the following disks:"
-echo "  BOOT: $BOOT_DISK   (ESP 1G + root max + longhorn1 ${LONGHORN1_TAIL} tail)"
+echo "About to FULL-WIPE the BOOT disk:"
+echo "  BOOT: $BOOT_DISK   (ESP 1G + root ${ZETA_ROOT_FLOOR_GIB}G floor + longhorn1 ${LONGHORN1_TAIL})"
 if [[ ${#DATA_DISKS[@]} -eq 0 ]]; then
   echo "  DATA: (none — single-disk install; only longhorn1 on boot disk)"
 else
-  data_i=2
+  # 081M3K3DVBA087G0R002XTMMVW: a CANDIDATE, not a verdict. Step 2.55 below
+  # adopts an extra disk only when it probes blank or the operator consents.
   for d in "${DATA_DISKS[@]}"; do
-    echo "  DATA: $d   (whole disk → longhorn${data_i})"
-    data_i=$((data_i + 1))
+    echo "  DATA candidate: $d   (adopted as a whole-disk Longhorn path ONLY if blank or consented — decided after the probe below)"
   done
 fi
 echo
@@ -878,6 +1324,203 @@ zeta_pf_ext4_used_bytes() {
   echo $(( (bcount - bfree) * bsz ))
 }
 
+# ── WP29 MITIGATION (081M39CJP96087G0R001T4J2R3) — NOT A FIX ─────────────
+#
+# Read-only mount of a FAT ESP, with THREE attempts instead of one.
+#
+# blkid parses the FAT superblock in USERSPACE; `mount -t vfat` additionally
+# needs the kernel driver AND its NLS charset modules. "Label readable, mount
+# refused" -- which is what run 36044770870's guest reported for EVERY
+# candidate, `/dev/disk/by-label/EFIBOOT` included -- is the signature of a
+# kernel-side capability problem, not a data problem. That reading survives
+# every measurement taken: both ISOs put the ESP at LBA 268, the pre-WP29
+# detector resolves 137_216 through the MBR branch on both, and replaying the
+# bake on the failing ISO yields a clean, mountable, byte-exact ESP.
+#
+# Two causes fit, and they are told apart ON SIGHT by what this records:
+#   - NLS charset unavailable -> `FAT-fs: IO charset iso8859-1 not found` /
+#     `codepage cp437 not found` as -EINVAL. Attempt 3 names a charset
+#     explicitly and may succeed where attempt 1 was refused.
+#   - a device-level read error -> all three fail, each with the kernel's own
+#     words. Three errors instead of one is strictly more information.
+#
+# Under the first cause this turns a lost install into a completed one plus a
+# diagnostic; under the second it costs two syscalls and buys evidence. It is
+# a MITIGATION: it explains nothing and does not close the work item.
+#
+# Attempt 2 drops `-t vfat` and lets the kernel autodetect, which is also the
+# only attempt that could mount something that is NOT FAT (this probe walks
+# iso9660 partitions too), so its success is accepted ONLY after the mounted
+# type is confirmed FAT. With no way to confirm, the attempt counts as failed:
+# an unconfirmable mount is not a pass.
+#
+# Sets ZETA_FAT_MOUNT_VIA (the attempt that worked) and ZETA_FAT_MOUNT_WHY
+# (one token per refusal, space-free so callers can print it inline).
+ZETA_FAT_MOUNT_VIA=""
+ZETA_FAT_MOUNT_WHY=""
+zeta_squeeze_mount_error() {
+  local squeezed
+  # WP29, second pass: strip util-linux's `mount: <mountpoint>: ` prefix FIRST.
+  # Measured on run 36073981145 (picker lane): the 64-char cap spent 36 of its
+  # characters on `mount:_/tmp/zeta-boot-esp:_` and cut the kernel's actual
+  # answer at `Can_t_o` -- the truncation ate exactly the half worth keeping.
+  # The mountpoint is ours and constant; the tail is the evidence.
+  squeezed="$(printf '%s' "${1:-}" | head -1 | sed 's|^mount: [^:]*: ||' | tr -c 'A-Za-z0-9._/=:-' '_' | cut -c1-72)" || :
+  printf '%s' "${squeezed:-no-stderr}"
+}
+
+# ── WP29 RUNG 4: READ THE ESP WITHOUT OPENING THE PARTITION AT ALL ───────
+#
+# ROOT CAUSE, measured on run 36073981145 and reproduced locally end to end.
+# An isohybrid ISO's partition 1 starts at LBA 0 and spans the whole image, so
+# `/dev/sda` and `/dev/sda1` expose the SAME iso9660 filesystem with the SAME
+# `ZETA_INSTALL` label. `/dev/disk/by-label/ZETA_INSTALL` therefore resolves to
+# whichever udev processed last. When it resolves to the WHOLE DISK, the boot
+# medium is mounted from `/dev/sda`, which holds that device O_EXCL -- and
+# every partition of it becomes unopenable for the rest of the install:
+#
+#   picker lane:  sda1 AND sda2 = `fsconfig system call failed: Can't open blockdev`
+#   four others:  sda1 = openable (iso9660, not FAT), sda2 = mounted
+#
+# Same ISO, same run, minutes apart. Local proof with a real isohybrid image:
+# `mount -t vfat` on the partition succeeds with the whole disk unclaimed and
+# is refused with `already mounted or mount point busy` once `mount <disk>` is
+# held. Rungs 1-3 all lose, because all three open the partition.
+#
+# NOT A CI DEFECT. A real USB stick is the same isohybrid image with the same
+# LBA-0 partition 1, the same duplicate label and the same udev race, so on
+# metal this silently costs the operator their injected SSH pubkeys, their
+# chosen hostname and their wifi credentials, and the node comes up as
+# `node-<6hex>` with no indication why.
+#
+# THE CLAIM NEVER CLEARS -- `/iso` stays mounted for the whole install -- so
+# waiting was never an option; the rung has to route around it.
+#
+# WHY MTOOLS AND NOT `losetup -r`: both avoid the exclusive claim, and mtools
+# is the smaller answer. `mcopy -i <wholedisk>@@<offset>` needs no mount, no
+# loop device to allocate and release, and no kernel FAT driver at all -- it is
+# the exact inverse of how the ESP was WRITTEN (`mcopy -i img@@offset` on the
+# host), and `mtools` ships in this ISO's systemPackages beside `util-linux`.
+# Verified working while the claim is held, on a real isohybrid image.
+#
+# THE OFFSET IS DERIVED, NEVER CONSTANT. This work item began with a fallback
+# constant that was wrong and could not disagree with itself; a second constant
+# would be the same mistake. `lsblk -bno START` reads sysfs, so it needs no
+# open of the partition -- which is the whole point, since the partition is
+# what cannot be opened. Unreadable => REFUSE, never guess. Zero (the LBA-0
+# alias) or a whole-disk candidate => look the ESP up BY TYPE among the parent
+# disk's partitions (081M3B7Z38Q087G0R003F9X7HM) -- still derived, never assumed.
+#
+# READ-ONLY BY CONSTRUCTION: this materialises a COPY of the ESP onto a fresh
+# tmpfs at the caller's mountpoint. Every consumer keeps working on a path and
+# the caller's `umount` still unmounts. Writes to it would NOT reach the ESP;
+# no read-only consumer writes, and the `rw` ledger mount is a different
+# function that is deliberately untouched.
+zeta_esp_copy_out_mtools() {
+  local part="$1" mnt="$2" start disk offset err devtype alias=""
+  # 081M3B7Z38Q087G0R003F9X7HM: a candidate that IS the boot medium's alias --
+  # the whole disk, or the isohybrid partition 1 at LBA 0 that spans it -- is
+  # not an ESP, but the ESP is INSIDE it. Measured on nightly run 36297481926:
+  # `/dev/sda1(...|mtools=start-lba-0-not-a-partition)` with boot-medium
+  # `/dev/sda1`, i.e. this rung refused the one candidate whose parent disk
+  # holds the ESP. Resolve the parent and read the ESP partition's own offset
+  # out of sysfs/udev instead of refusing.
+  devtype="$(lsblk -dnro TYPE "$part" 2>/dev/null | head -1 | tr -cd 'a-z')" || devtype=""
+  if [ "$devtype" = "disk" ]; then
+    alias="whole-disk"
+    disk="$(lsblk -dnro KNAME "$part" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9._-')" || disk=""
+  else
+    start="$(lsblk -bno START "$part" 2>/dev/null | head -1 | tr -cd '0-9')" || start=""
+    case "$start" in
+      "" | *[!0-9]*)
+        ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=no-partition-start-in-sysfs"
+        return 1
+        ;;
+    esac
+    offset=$(( start * 512 ))
+    # A partition at LBA 0 is the whole-disk alias, not an ESP -- `@@0` would
+    # read the iso9660 at the front of the image. Its PARENT still holds the ESP.
+    [ "$offset" -le 0 ] && alias="lba-0"
+    disk="$(lsblk -bno PKNAME "$part" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9._-')" || disk=""
+  fi
+  if [ -z "$disk" ]; then
+    ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=no-parent-disk-in-sysfs"
+    return 1
+  fi
+  if [ -n "$alias" ]; then
+    # The ESP partition's start, by TYPE, from the parent's partition list:
+    # MBR 0xEF or the GPT ESP GUID. lsblk takes both from sysfs/the udev
+    # database, so this opens nothing the boot medium's claim could refuse.
+    # First match only; zero/unreadable starts are skipped, never guessed.
+    start="$(lsblk -bnro START,PARTTYPE "/dev/${disk}" 2>/dev/null | awk '
+      { t = tolower($2) }
+      (t == "0xef" || t == "c12a7328-f81f-11d2-ba4b-00a0c93ec93b") && $1 ~ /^[0-9]+$/ && $1 > 0 { print $1; exit }
+    ')" || start=""
+    case "$start" in
+      "" | *[!0-9]*)
+        ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=${alias}-alias-no-esp-partition-on-/dev/${disk}"
+        return 1
+        ;;
+    esac
+    offset=$(( start * 512 ))
+  fi
+  if ! sudo mount -t tmpfs -o size=16m,mode=0700 zeta-esp-copyout "$mnt" 2>/dev/null; then
+    ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=tmpfs-mount-failed"
+    return 1
+  fi
+  # Exit status only. mtools warns `Could not get geometry of device` on a
+  # whole-disk read and still exits 0; treating stderr as failure would refuse
+  # a working read. A non-FAT offset makes mcopy exit non-zero (`init ::
+  # non DOS media`), so success here implies a real FAT at that offset.
+  if err="$(sudo mcopy -s -n -o -i "/dev/${disk}@@${offset}" "::/" "$mnt/" 2>&1 >/dev/null)"; then
+    # Say when the ESP was reached THROUGH an alias: the candidate name the
+    # caller records is then not the ESP's own device, and a reader of the
+    # scan line has to be able to tell.
+    ZETA_FAT_MOUNT_VIA="mtools-copy:/dev/${disk}@@${offset}${alias:+:from-${alias}-alias}"
+    return 0
+  fi
+  sudo umount "$mnt" 2>/dev/null || true
+  ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=$(zeta_squeeze_mount_error "$err")"
+  return 1
+}
+zeta_mount_fat_ro() {
+  local part="$1" mnt="$2" err fstype
+  ZETA_FAT_MOUNT_VIA=""
+  ZETA_FAT_MOUNT_WHY=""
+
+  if err="$(sudo mount -t vfat -o ro "$part" "$mnt" 2>&1 >/dev/null)"; then
+    ZETA_FAT_MOUNT_VIA="vfat"
+    return 0
+  fi
+  ZETA_FAT_MOUNT_WHY="vfat=$(zeta_squeeze_mount_error "$err")"
+
+  if err="$(sudo mount -o ro "$part" "$mnt" 2>&1 >/dev/null)"; then
+    fstype="$(findmnt -n -o FSTYPE "$mnt" 2>/dev/null)" || fstype=""
+    case "$fstype" in
+      vfat|msdos)
+        ZETA_FAT_MOUNT_VIA="auto-${fstype}"
+        return 0
+        ;;
+      *)
+        sudo umount "$mnt" 2>/dev/null || true
+        ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|auto=mounted-as-${fstype:-unknown}-not-FAT"
+        ;;
+    esac
+  else
+    ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|auto=$(zeta_squeeze_mount_error "$err")"
+  fi
+
+  if err="$(sudo mount -t vfat -o ro,iocharset=ascii,codepage=437 "$part" "$mnt" 2>&1 >/dev/null)"; then
+    ZETA_FAT_MOUNT_VIA="vfat-ascii"
+    return 0
+  fi
+  ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|ascii=$(zeta_squeeze_mount_error "$err")"
+
+  # Rung 4 -- the only one that does not open the partition. See the header.
+  zeta_esp_copy_out_mtools "$part" "$mnt" && return 0
+  return 1
+}
+
 # $1=partition. Read-only mount, look for the Zeta ESP payload, unmount.
 # Prints "<hascreds01>|<factor>|<hasefi01>" or nothing when not mountable.
 # NEVER reads the CONTENT of zeta-creds.enc. Presence and the recorded factor
@@ -885,7 +1528,7 @@ zeta_pf_ext4_used_bytes() {
 zeta_pf_probe_esp() {
   local part="$1" hascreds hasefi factor
   sudo mkdir -p "$ZETA_PROBE_MOUNT" 2>/dev/null || return 1
-  sudo mount -t vfat -o ro "$part" "$ZETA_PROBE_MOUNT" 2>/dev/null || return 1
+  zeta_mount_fat_ro "$part" "$ZETA_PROBE_MOUNT" || return 1
   hascreds=0; hasefi=0; factor="-"
   if sudo test -f "$ZETA_PROBE_MOUNT/zeta-creds.enc"; then hascreds=1; fi
   if sudo test -d "$ZETA_PROBE_MOUNT/EFI/ZETA"; then hasefi=1; fi
@@ -1002,6 +1645,109 @@ for d in "$BOOT_DISK" "${DATA_DISKS[@]+"${DATA_DISKS[@]}"}"; do
   echo "$d|$(zeta_pf_classify < "$ZETA_PF_FACTDIR/$(echo "$d" | tr "/" "_")")" >> "$ZETA_PF_DISPFILE"
 done
 echo
+
+# ── Step 2.55: consent for EXTRA (non-boot) disks (081M3K3DVBA087G0R002XTMMVW) ──
+#
+# MEASURED on the 2026-09-27 bare-metal reinstall (node-5b2dfa, two 931 GiB
+# NVMe): the installer put the OS + longhorn1 on one drive and WIPED THE WHOLE
+# OTHER DRIVE as /var/lib/longhorn-disk2 without asking. The documented intent
+# ("this installer formats every non-boot internal disk whole as
+# longhorn2..N", the capacity refusal's remedy (1)) is kept for what it was
+# written for -- a BLANK drive the operator added for capacity. A drive that
+# already carries a partition table, filesystems or labels is somebody's data
+# until someone says otherwise, and the boot-disk choice is not that someone.
+#
+# Consent, cheapest first:
+#   ZETA_LONGHORN_EXTRA_DISKS  env or ESP /zeta-firstboot.conf: a comma/space
+#                              list of device paths and/or SERIALS (serials
+#                              survive nvme0/nvme1 renumbering between boots),
+#                              or `all`, or `none`.
+#   a keypress                 on a real terminal: `y` within
+#                              ZETA_EXTRA_DISK_PROMPT_SECS (30) adopts that one
+#                              disk; any other key or the timeout leaves it.
+# Default for a non-blank disk with no consent: LEFT UNTOUCHED -- not wiped, not
+# partitioned, not mounted, and dropped from the R7 wipe scope below.
+#
+# ZETA-EXTRA-DISK-BEGIN -- pure decisions, no I/O. Shell-parity tested in
+# src/Core.TypeScript/installer/extra-disk-consent-shell-parity.test.ts.
+#
+# $1 = the consent list, $2 = device path, $3 = device serial ("" if unknown).
+# stdout: "yes" (named or `all`), "none" (the list says `none`), or "no".
+zeta_extra_disk_consent() {
+  local list="$1" dev="$2" serial="$3" tok
+  for tok in ${list//,/ }; do
+    case "$tok" in
+      all) echo "yes"; return 0 ;;
+      none) echo "none"; return 0 ;;
+    esac
+    [ "$tok" = "$dev" ] && { echo "yes"; return 0; }
+    [ -n "$serial" ] && [ "$tok" = "$serial" ] && { echo "yes"; return 0; }
+  done
+  echo "no"
+}
+# $1 = R6 disposition (blank | prior-zeta-install | foreign-data |
+#      indeterminate | installer-medium), $2 = consent (yes|no|none),
+# $3 = interactive (1 when a human can answer a prompt, else 0).
+# stdout: adopt | skip | ask.
+zeta_extra_disk_decision() {
+  local disp="$1" consent="$2" interactive="$3"
+  # The medium we booted from is never an install target, consent or not.
+  [ "$disp" = "installer-medium" ] && { echo "skip"; return 0; }
+  [ "$consent" = "none" ] && { echo "skip"; return 0; }
+  [ "$consent" = "yes" ] && { echo "adopt"; return 0; }
+  # Blank = no partition table, no partitions, no labels: nothing to lose. This
+  # is the documented adopt-every-extra-disk intent, scoped to where it is safe.
+  [ "$disp" = "blank" ] && { echo "adopt"; return 0; }
+  # Anything else carries structure (or could not be read, which is not blank).
+  if [ "$interactive" = "1" ]; then echo "ask"; else echo "skip"; fi
+}
+# ZETA-EXTRA-DISK-END
+
+ZETA_LONGHORN_EXTRA_DISKS="${ZETA_LONGHORN_EXTRA_DISKS:-}"
+ZETA_EXTRA_DISK_PROMPT_SECS="${ZETA_EXTRA_DISK_PROMPT_SECS:-30}"
+ZETA_EXTRA_DISKS_SKIPPED=""
+if [[ ${#DATA_DISKS[@]} -gt 0 ]]; then
+  echo "── Extra disks (non-boot): adopted as Longhorn data ONLY with consent or when blank ──"
+  ZETA_EXTRA_INTERACTIVE=0
+  [ -t 0 ] && ZETA_EXTRA_INTERACTIVE=1
+  KEPT_DATA=()
+  for d in "${DATA_DISKS[@]}"; do
+    d_disp="$(sed -n "s#^${d}|##p" "$ZETA_PF_DISPFILE" | head -1)"
+    d_serial="$(lsblk -d -n -o SERIAL "$d" 2>/dev/null | tr -d '[:space:]')"
+    d_model="$(lsblk -d -n -o MODEL "$d" 2>/dev/null | tr -s ' ')"
+    d_size="$(lsblk -d -n -o SIZE "$d" 2>/dev/null | tr -d ' ')"
+    d_consent="$(zeta_extra_disk_consent "$ZETA_LONGHORN_EXTRA_DISKS" "$d" "$d_serial")"
+    d_decision="$(zeta_extra_disk_decision "${d_disp:-indeterminate}" "$d_consent" "$ZETA_EXTRA_INTERACTIVE")"
+    echo "  $d  ${d_size:-?}  ${d_model:-?}  serial=${d_serial:-?}  probe=${d_disp:-indeterminate}  consent=${d_consent}"
+    if [ "$d_decision" = "ask" ]; then
+      echo "    This disk ALREADY CARRIES DATA (findings above). Adopting it as Longhorn storage"
+      echo "    WIPES THE WHOLE DISK. Press 'y' within ${ZETA_EXTRA_DISK_PROMPT_SECS}s to wipe and adopt it;"
+      echo "    any other key, or the timeout, leaves it untouched."
+      d_key=""
+      read -r -n 1 -s -t "$ZETA_EXTRA_DISK_PROMPT_SECS" d_key 2>/dev/null || d_key=""
+      echo
+      case "$d_key" in y|Y) d_decision="adopt" ;; *) d_decision="skip" ;; esac
+    fi
+    if [ "$d_decision" = "adopt" ]; then
+      echo "    -> ADOPT: whole disk becomes a Longhorn data disk (wiped)"
+      KEPT_DATA+=("$d")
+    else
+      echo "    -> LEFT UNTOUCHED: not wiped, not partitioned, not mounted"
+      ZETA_EXTRA_DISKS_SKIPPED="${ZETA_EXTRA_DISKS_SKIPPED} $d"
+      # Out of the R7 wipe scope too: a disk we will not touch must neither be
+      # listed as wiped nor flip the cancel default with its foreign data.
+      sed -i "\#^${d}|#d" "$ZETA_PF_DISPFILE"
+    fi
+  done
+  DATA_DISKS=("${KEPT_DATA[@]+"${KEPT_DATA[@]}"}")
+  if [ -n "$ZETA_EXTRA_DISKS_SKIPPED" ]; then
+    echo "  To adopt a left disk without typing: ZETA_LONGHORN_EXTRA_DISKS=<device-or-serial>[,...]"
+    echo "  (or =all) in the environment or on the USB ESP /zeta-firstboot.conf, then re-run."
+    echo "  If the Longhorn capacity check below refuses, that is the usual reason."
+  fi
+  echo
+fi
+
 # ── Step 2.6: circuit breaker (R9, filed P0 2026-06-09) ───────────
 #
 # Aaron: "reformat-with-broken-remembered -> infinite destructive loop,
@@ -1436,6 +2182,60 @@ fi
 # Validate BOOT disk fits the layout before any destructive work.
 assert_boot_disk_large_enough "$BOOT_DISK"
 
+# WP28 (081M393B9TB087G0R000Y529Z8): refuse a Longhorn pool that cannot hold
+# the committed roster — BEFORE the wipe, with the arithmetic on screen.
+#
+# The pool this installer provisions is the longhorn1 TAIL off the boot disk
+# plus every non-boot internal disk whole. It is NOT the sum of the block
+# devices, and on a single-disk box it is LONGHORN1_TAIL regardless of how big
+# that disk is: ESP + root take the remainder, and the root filesystem is never
+# a Longhorn data path.
+assert_longhorn_pool_holds_the_roster() {
+  local tail_gib raw_gib schedulable verdict d data_gib
+  local -a data_sizes=()
+  tail_gib="$(zeta_bytes_to_gib "$LONGHORN1_TAIL_BYTES")"
+  for d in "${DATA_DISKS[@]:-}"; do
+    [[ -n "$d" ]] || continue
+    data_gib="$(zeta_bytes_to_gib "$(blockdev --getsize64 "$d")")"
+    data_sizes+=("$data_gib")
+  done
+  raw_gib="$(zeta_provisioned_longhorn_gib "$tail_gib" "${data_sizes[@]:-}")"
+  schedulable="$(zeta_schedulable_longhorn_gib "$raw_gib" "$ZETA_LONGHORN_USABLE_PERCENT")"
+  verdict="$(zeta_longhorn_capacity_verdict "$schedulable" "$ZETA_LONGHORN_SCHEDULABLE_GIB" "${ZETA_ALLOW_LONGHORN_UNDERSIZED:-}")"
+
+  # Printed on EVERY install, green or not. A standing decision that only
+  # appears when it fails is a decision nobody revisits.
+  echo
+  echo "Longhorn pool this install provisions (the partitions, not the disks):"
+  echo "  longhorn1 tail on $BOOT_DISK      ${tail_gib} GiB   (LONGHORN1_TAIL=${LONGHORN1_TAIL})"
+  if [[ ${#data_sizes[@]} -eq 0 ]]; then
+    echo "  whole non-boot disks                0 GiB   (single-disk install)"
+  else
+    local i=0
+    for d in "${DATA_DISKS[@]}"; do
+      echo "  longhorn$((i + 2)) whole disk $d   ${data_sizes[$i]} GiB"
+      i=$((i + 1))
+    done
+  fi
+  echo "  raw pool                          ${raw_gib} GiB"
+  echo "  x ${ZETA_LONGHORN_USABLE_PERCENT}% Longhorn will place       ${schedulable} GiB"
+  echo "  committed roster DECLARES         ${ZETA_LONGHORN_DEMAND_GIB} GiB  (driver.longhorn.io classes)"
+  echo "  SCHEDULABLE on registered nodes   ${ZETA_LONGHORN_SCHEDULABLE_GIB} GiB  <- the refusal is measured against THIS"
+
+  case "$verdict" in
+    ok) echo "  verdict: fits, $((schedulable - ZETA_LONGHORN_SCHEDULABLE_GIB)) GiB spare" ;;
+    override)
+      echo "  verdict: UNDERSIZED by $((ZETA_LONGHORN_SCHEDULABLE_GIB - schedulable)) GiB — proceeding on ZETA_ALLOW_LONGHORN_UNDERSIZED=1 override"
+      echo "  those PVCs will pend. This is debt you named, not a cleared check."
+      ;;
+    *)
+      bail "Longhorn would get ${schedulable} GiB schedulable (raw ${raw_gib} GiB x ${ZETA_LONGHORN_USABLE_PERCENT}%) but the committed roster declares ${ZETA_LONGHORN_DEMAND_GIB} GiB of driver.longhorn.io PVCs — short by $((ZETA_LONGHORN_DEMAND_GIB - schedulable)) GiB. Nothing has been wiped. Three remedies, cheapest first: (1) ADD A SECOND INTERNAL DISK — this installer formats every non-boot internal disk whole as longhorn2..N, so one more drive is the usual fix and needs no flags; (2) raise the boot disk's Longhorn slice, e.g. LONGHORN1_TAIL=$(( (ZETA_LONGHORN_DEMAND_GIB * 100 / ZETA_LONGHORN_USABLE_PERCENT) + 1 ))G (bounds: >=1G, <=1T, and root still needs what is left); (3) install anyway and accept that those PVCs pend, with ZETA_ALLOW_LONGHORN_UNDERSIZED=1."
+      ;;
+  esac
+  echo
+}
+assert_longhorn_pool_holds_the_roster
+
 # ── Step 2.9: the cancel window (R7, 2026-06-09) ──────────────────
 #
 # Aaron: "it should NOT ask before format; it should ask to CANCEL for a
@@ -1663,9 +2463,35 @@ echo "[preflight] UEFI mode confirmed (/sys/firmware/efi present)."
 # most common failure -- no working network at all.
 echo "[preflight] checking the repository is reachable before anything is destroyed ..."
 if ! GIT_TERMINAL_PROMPT=0 timeout 60 git ls-remote "$REPO_URL" HEAD >/dev/null 2>&1; then
-  bail "cannot reach $REPO_URL (git ls-remote failed or timed out after 60s). The install clones this repo AFTER wiping every disk in scope, so proceeding would destroy the current system and then fail with nothing bootable. Fix networking first -- the role prompt offers nmtui, or configure from the shell and re-run. Nothing has been wiped."
+  bail "cannot reach $REPO_URL (git ls-remote failed or timed out after 60s). The install clones this repo AFTER wiping every disk in scope, so proceeding would destroy the current system and then fail with nothing bootable. Fix networking first -- the role prompt offers nmtui, or configure from the shell and re-run. If networking looks fine, check the clock: TLS fails on a skewed clock, and this machine reads $(date -u +%Y-%m-%dT%H:%M:%SZ) UTC. Nothing has been wiped."
 fi
 echo "[preflight] repository reachable ($REPO_URL)."
+
+# ── B6: the binary cache is the SECOND network dependency, also after the wipe ──
+#
+# 081M3BWJ96T087G0R0028WT3S3 (first-boot dependency inventory). The paragraph
+# above says it plainly: a network that reaches GitHub but not cache.nixos.org
+# still fails after the wipe. `nixos-install` below runs with `fallback true`,
+# so an unreachable cache does not refuse -- it turns into building the whole
+# closure from source, each download bounded but the total not, and the only
+# thing the operator sees is a Nix error or a build that never ends, on a disk
+# that has already been wiped. Same shape as B3/B4, so the same answer: probe
+# before anything is destroyed and say which dependency it was.
+#
+# nix-cache-info is the substituter's own handshake file (a few bytes). The
+# escape hatch mirrors ZETA_ALLOW_REPO_DRIFT: set ZETA_ALLOW_NO_BINARY_CACHE=1
+# to proceed on a from-source build deliberately, and the log records that you
+# did. A missing curl is a probe that DID NOT RUN, reported as such, never a pass.
+ZETA_BINARY_CACHE_URL="${ZETA_BINARY_CACHE_URL:-https://cache.nixos.org}"
+if ! command -v curl >/dev/null 2>&1; then
+  echo "[preflight] binary-cache probe DID NOT RUN: curl is not on PATH. This is a check that did not run, NOT a check that passed." >&2
+elif timeout 30 curl -fsS --connect-timeout 10 --max-time 20 -o /dev/null "$ZETA_BINARY_CACHE_URL/nix-cache-info" 2>/dev/null; then
+  echo "[preflight] binary cache reachable ($ZETA_BINARY_CACHE_URL)."
+elif [ "${ZETA_ALLOW_NO_BINARY_CACHE:-}" = "1" ]; then
+  echo "[preflight] WARNING: $ZETA_BINARY_CACHE_URL is unreachable and ZETA_ALLOW_NO_BINARY_CACHE=1 is set -- proceeding; nixos-install will build from source and may take hours." >&2
+else
+  bail "cannot reach the Nix binary cache $ZETA_BINARY_CACHE_URL (GET /nix-cache-info failed or timed out). GitHub is reachable, but nixos-install downloads the system closure from this cache AFTER wiping every disk in scope; without it every package builds from source, which fails or runs for hours on a machine that no longer has an OS. Fix the network path to $ZETA_BINARY_CACHE_URL (proxy, firewall, DNS) and re-run, or set ZETA_ALLOW_NO_BINARY_CACHE=1 to accept a from-source build. Nothing has been wiped."
+fi
 
 # ── Step 3: wipe every disk in scope ──────────────────────────────
 for d in "$BOOT_DISK" "${DATA_DISKS[@]}"; do
@@ -1862,8 +2688,18 @@ if [[ -z "$HOST" ]]; then
   echo "Selected: $HOST"
 fi
 
-echo "Cloning $REPO_URL ..."
-sudo git clone "$REPO_URL" /mnt/etc/zeta
+echo "Cloning $REPO_URL ... (bounded ${ZETA_CLONE_TIMEOUT_SECS}s)"
+# 081M3HPNSY5087G0R002QAVCEJ: bounded, and GIT_TERMINAL_PROMPT=0 so a credential
+# prompt fails instead of waiting on a keyboard nobody is at. `sudo env` because
+# sudo's env_reset would drop a plain GIT_TERMINAL_PROMPT= prefix.
+zeta_clone_rc=0
+zeta_bounded_step "repo clone ($REPO_URL -> /mnt/etc/zeta)" "$ZETA_CLONE_TIMEOUT_SECS" \
+  sudo env GIT_TERMINAL_PROMPT=0 git clone "$REPO_URL" /mnt/etc/zeta || zeta_clone_rc=$?
+if [ "$zeta_clone_rc" -eq 124 ]; then
+  bail "the repo clone did not finish within ${ZETA_CLONE_TIMEOUT_SECS}s (${REPO_URL}). The disks are ALREADY WIPED. The network reached ${REPO_URL} seconds ago in the preflight, so this is a stall mid-transfer, not 'no network'. Remedy: check the link, then re-run the install (the wipe repeats; nothing on these disks is lost that was not already lost); raise the bound with ZETA_CLONE_TIMEOUT_SECS=<seconds> on a slow link."
+elif [ "$zeta_clone_rc" -ne 0 ]; then
+  bail "the repo clone failed (rc=${zeta_clone_rc}, ${REPO_URL}) -- see git's output above. The disks are ALREADY WIPED. Remedy: check connectivity and that ${REPO_URL} is reachable, then re-run the install."
+fi
 
 # ── WP21 (081M35C7NJR087G0R002S4R654): pin the checkout to the ISO/flash commit ──
 #
@@ -2013,6 +2849,21 @@ fi
 
 # Try 2: probe likely-USB block devices for a FAT partition with the pubkey.
 # Skip BOOT_DISK + DATA_DISKS (install targets).
+#
+# WP29 (081M39CJP96087G0R001T4J2R3) — RECORD WHY EACH MOUNT REFUSED.
+#
+# This loop discarded `mount`'s stderr, so a partition that carries a
+# readable FAT label and still will not mount produced the same silence as
+# a partition that is genuinely not FAT. Measured on run 36044770870: the
+# guest's earlier zeta-first-boot scan reported EVERY candidate as
+# `(no-vfat)` -- including `/dev/disk/by-label/EFIBOOT`, a symlink that only
+# exists because blkid HAD parsed that boot sector -- and this probe then
+# missed the pubkey, iter-5.2 missed the hostname and WP11 missed its
+# marker. The kernel said why, once per attempt, and nothing kept it.
+#
+# ZETA_ESP_MOUNT_ERRORS collects one `part=reason` per refusal and is
+# printed in the not-found branch below. Nothing here changes control flow.
+ZETA_ESP_MOUNT_ERRORS=""
 if [ -z "$PUBKEY_FILE" ]; then
   echo "[iter-4.2]   not in mounted FS; probing USB partitions ..."
   for dev in /dev/sd? /dev/nvme?n? /dev/vd? /dev/mmcblk?; do
@@ -2031,13 +2882,24 @@ if [ -z "$PUBKEY_FILE" ]; then
         *) part="${dev}${partsfx}" ;;
       esac
       [ -b "$part" ] || continue
-      if sudo mount -t vfat -o ro "$part" "$PROBE_MOUNT" 2>/dev/null; then
+      if zeta_mount_fat_ro "$part" "$PROBE_MOUNT"; then
+        # Name the attempt that carried it. `vfat` is the healthy shape;
+        # anything else means attempt 1 was refused and the WP29 mitigation
+        # is what kept this install from losing every ESP injection.
+        [ "$ZETA_FAT_MOUNT_VIA" = "vfat" ] || {
+          echo "[iter-4.2]   NOTE: $part mounted via '$ZETA_FAT_MOUNT_VIA', NOT plain 'mount -t vfat'."
+          echo "[iter-4.2]         first attempt(s) refused: $ZETA_FAT_MOUNT_WHY"
+          echo "[iter-4.2]         (WP29 081M39CJP96087G0R001T4J2R3 — this is a mitigation firing, not a healthy run)"
+        }
         if [ -f "$PROBE_MOUNT/zeta-authorized-keys.pub" ]; then
           PUBKEY_FILE="$PROBE_MOUNT/zeta-authorized-keys.pub"
           BOOT_ESP_PART="$part"
           break 2
         fi
         sudo umount "$PROBE_MOUNT" 2>/dev/null || true
+      else
+        ZETA_ESP_MOUNT_ERRORS="${ZETA_ESP_MOUNT_ERRORS}${ZETA_ESP_MOUNT_ERRORS:+
+}    ${part}: ${ZETA_FAT_MOUNT_WHY}"
       fi
     done
   done
@@ -2345,6 +3207,20 @@ else
   echo "=== [iter-4.2] DIAGNOSTICS ==="
   echo "reason: no operator SSH pubkey found on boot USB ESP"
   echo
+  # WP29 (081M39CJP96087G0R001T4J2R3): the kernel's own words for every
+  # partition that refused a vfat mount. "no ESP mount was even attempted"
+  # (nothing matched the device globs) and "the ESP was there and the kernel
+  # would not mount it" used to produce byte-identical diagnostics; they do
+  # not any more. `lsblk` below says what exists, this says what happened.
+  echo "--- vfat mount refusals during the probe ---"
+  if [ -n "$ZETA_ESP_MOUNT_ERRORS" ]; then
+    printf '%s\n' "$ZETA_ESP_MOUNT_ERRORS"
+  else
+    echo "    (none — no candidate partition refused a mount, so the probe"
+    echo "     either matched no partitions at all or mounted them and found"
+    echo "     no zeta-authorized-keys.pub; see lsblk below)"
+  fi
+  echo
   echo "--- external block devices ---"
   ls /dev/sd? /dev/nvme?n? /dev/vd? /dev/mmcblk? 2>/dev/null || echo "(none)"
   echo
@@ -2546,7 +3422,11 @@ echo "[iter-5.2] ── probing boot USB for injected hostname ──"
 # still had it mounted, was found). No-op if the ESP was never found (BOOT_ESP_PART empty) or is
 # already mounted. Unmounted once after the iter-5-wifi probe.
 if [ -n "$BOOT_ESP_PART" ] && [ -b "$BOOT_ESP_PART" ]; then
-  sudo mount -t vfat -o ro "$BOOT_ESP_PART" "$PROBE_MOUNT" 2>/dev/null || true
+  # WP29: same three-attempt ladder as the iter-4.2 probe that found this
+  # partition. Re-mounting with the single `-t vfat` attempt would lose the
+  # ESP again at iter-5.2/iter-5-wifi on exactly the runs the mitigation is
+  # for -- the probe would succeed and every later reader would still fail.
+  zeta_mount_fat_ro "$BOOT_ESP_PART" "$PROBE_MOUNT" || true
 fi
 HOSTNAME_DST="/mnt/etc/zeta/cluster-node-id"
 HOSTNAME_FILE=""
@@ -2633,6 +3513,20 @@ else
   fi
 fi
 echo
+
+# ── Step 6.64: persist the public-TLS settings (081M3JG74G0087G0R001XJC837) ──
+# Resolved at Step 0.5 (ESP -> prompt -> unset). Written ONLY when set, as two
+# public-identifier files the NixOS module injected-public-tls.nix reads at
+# evaluation time; their absence IS the unset state, so nothing is written for it.
+if [ "${ZETA_PUBLIC_TLS_SOURCE:-unset}" != "unset" ]; then
+  sudo mkdir -p /mnt/etc/zeta
+  printf '%s\n' "$ZETA_PUBLIC_TLS_EMAIL" | sudo tee /mnt/etc/zeta/acme-email >/dev/null
+  printf '%s\n' "$ZETA_PUBLIC_TLS_DOMAIN" | sudo tee /mnt/etc/zeta/public-domain >/dev/null
+  sudo chmod 0644 /mnt/etc/zeta/acme-email /mnt/etc/zeta/public-domain
+  echo "[public-tls] wrote /mnt/etc/zeta/acme-email + /mnt/etc/zeta/public-domain (portal.${ZETA_PUBLIC_TLS_DOMAIN})"
+else
+  echo "[public-tls] unset — no /mnt/etc/zeta/acme-email or public-domain written (LAN-only platform)"
+fi
 
 # ── Step 6.65: persist the node ZetaId (2026-08-23) ───────────────
 #
@@ -3058,7 +3952,23 @@ zeta_self_reg_compose_node_yaml() {
   CPU_MODEL=$(grep 'model name' /proc/cpuinfo 2>/dev/null | head -1 | cut -d: -f2- | sed 's/^[[:space:]]*//' | sed 's/"//g' || echo "")
   MEM_TOTAL=$(free -h --si 2>/dev/null | awk '/Mem:/{print $2}' || echo "")
   CPU_CORES=$(nproc 2>/dev/null || echo "")
+  # WP28 (081M397QHX8087G0R003DQSY0B): capture EVERY display device, not the first.
+  #
+  # `head -1` recorded one line, and a box with integrated Intel graphics plus a
+  # discrete NVIDIA card records the Intel one -- it sits at 00:02.0 and sorts
+  # first -- while the NVIDIA card is simply absent from the registration. So
+  # the record established what IS present and could never establish what is
+  # NOT, which makes "no registered node has an NVIDIA GPU" unprovable from the
+  # committed fleet. That matters because
+  # src/Core.TypeScript/cluster/schedulable-demand.ts wants to EXCLUDE claims
+  # whose workload can never be placed, and an exclusion shrinks the demand a
+  # capacity gate convicts on -- so it has to be proven, not inferred.
+  #
+  # GPU_LINE is kept for `spec.hardware.gpu` so existing readers and existing
+  # registrations are unaffected; GPU_LINES adds `spec.hardware.gpus`, whose
+  # PRESENCE is what marks a registration as a complete enumeration.
   GPU_LINE=$(lspci -nn 2>/dev/null | grep -iE 'vga|3d|display' | head -1 | sed 's/"//g' || echo "")
+  GPU_LINES=$(lspci -nn 2>/dev/null | grep -iE 'vga|3d|display' | sed 's/"//g' | awk 'NF{print "      - \"" $0 "\""}' || echo "")
   IP_ADDR=$(ip -4 -o addr 2>/dev/null | awk '/inet/ && !/lo/{print $4; exit}' || echo "")
   MAC_ADDR=$(ip -o link 2>/dev/null | awk '/state UP/ && !/lo/{for(i=1;i<=NF;i++) if($i=="link/ether"){print $(i+1); exit}}' || echo "")
   STORAGE_LINES=$(lsblk -ndo NAME,SIZE,TYPE -e7 2>/dev/null | awk '$3=="disk" && $2!="0B"{print "      - \"/dev/" $1 " " $2 "\""}' || echo "")
@@ -3098,6 +4008,12 @@ spec:
     cores: $CPU_CORES"
   [ -n "$GPU_LINE" ] && NODE_YAML="$NODE_YAML
     gpu: \"$GPU_LINE\""
+  # `gpus` present == this registration enumerates ALL display devices. Its
+  # ABSENCE is meaningful and is what older registrations carry, so nothing
+  # backfills it.
+  [ -n "$GPU_LINES" ] && NODE_YAML="$NODE_YAML
+    gpus:
+$GPU_LINES"
   [ -n "$STORAGE_LINES" ] && NODE_YAML="$NODE_YAML
     storage:
 $STORAGE_LINES"
@@ -3344,6 +4260,10 @@ maybe_symlink /mnt/etc/zeta/cluster-join-server-url /etc/zeta/cluster-join-serve
 # is loud but is not the install anyone wanted. Symlinked so evaluation sees
 # what the installed system will see.
 maybe_symlink /mnt/etc/zeta/k3s-join-token /etc/zeta/k3s-join-token
+# 081M3JG74G0087G0R001XJC837: injected-public-tls.nix reads both at evaluation
+# time, so without these the ACME Application would silently not render.
+maybe_symlink /mnt/etc/zeta/acme-email /etc/zeta/acme-email
+maybe_symlink /mnt/etc/zeta/public-domain /etc/zeta/public-domain
 
 # 081KSNY2Z0008QG0R0008PN7RQ QEMU phase-3: non-interactive CI installs enable boot-time first-session
 # demo (systemd oneshot tees markers to ttyS0; qemu-full-install-test asserts them).
@@ -3405,19 +4325,89 @@ echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 # but UNBLOCKS the install instead of looping on the same 5 files.
 # Full reproducibility work (closure-baking, Cachix mirror, extra-substituters)
 # tracked at 081KSGS9H0008QG0R003X5Y2A5.
-sudo nixos-install \
+#
+# 081M3HPNSY5087G0R002QAVCEJ: the per-download bounds above do not bound the
+# RUN -- a flake input fetch from github: (not baked into the ISO) or a
+# from-source fallback build can still stall the whole install with nothing on
+# screen. The overall bound turns that into a named failure.
+echo "[nixos-install] bounded ${ZETA_NIXOS_INSTALL_TIMEOUT_SECS}s overall (ZETA_NIXOS_INSTALL_TIMEOUT_SECS)"
+zeta_nixos_install_rc=0
+zeta_bounded_step "nixos-install ($HOST)" "$ZETA_NIXOS_INSTALL_TIMEOUT_SECS" \
+  sudo nixos-install \
   --impure \
   --option fallback true \
   --option connect-timeout 10 \
   --option stalled-download-timeout 60 \
   --option download-attempts 3 \
   --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" \
-  --no-root-password
+  --no-root-password || zeta_nixos_install_rc=$?
+if [ "$zeta_nixos_install_rc" -eq 124 ]; then
+  bail "nixos-install did not finish within ${ZETA_NIXOS_INSTALL_TIMEOUT_SECS}s. The usual causes are a stalled github: flake-input fetch (flake inputs are not baked into the ISO) or a from-source fallback build after cache.nixos.org downloads kept failing -- the last lines above say which. Remedy: check the link and re-run the install; on a slow link raise the bound with ZETA_NIXOS_INSTALL_TIMEOUT_SECS=<seconds>."
+elif [ "$zeta_nixos_install_rc" -ne 0 ]; then
+  bail "nixos-install failed (rc=${zeta_nixos_install_rc}) -- Nix's own error is above."
+fi
 
 # Explicit cleanup at end (defense-in-depth; trap also handles this on
 # success OR failure exit paths).
 cleanup_symlinks
 trap - EXIT
+
+# ── Step 6.93b: WP34 — copy the bootstrap container images off the ISO ────────
+#
+# 081M3BZ111D087G0R000YBMKRY. The installed node's very first boot pulls 134
+# container images across EIGHT registries, and the pull-through mirror covers
+# ONE of them (docker.io, 48/134, 36%). The 25 images the BOOTSTRAP roster
+# needs -- cilium, cert-manager, spire, trust-manager, external-secrets, argocd,
+# local-path -- are 21/25 on registries the mirror does NOT cover. If quay.io or
+# ghcr.io is down, or this operator's NAT has spent its per-source-IP budget on
+# somebody else's pulls, those charts never come up and the only explanation the
+# operator gets is an ImagePullBackOff on a box nobody is SSH'd into.
+#
+# The ISO carries them (isoImage.contents in
+# usb-nixos-installer/nixos/installer/configuration.nix). k3s imports every
+# archive in /var/lib/rancher/k3s/agent/images/ into containerd at agent startup
+# BEFORE any pull is attempted, so this copy is the whole mechanism.
+#
+# WHY A COPY AND NOT A NIX STORE PATH: this installer runs `nixos-install
+# --flake /mnt/etc/zeta/full-ai-cluster#$HOST` against a fresh GIT CLONE, and a
+# clone cannot contain a 1 GB tarball. The full reasoning, including why a
+# fixed-output derivation and an install-time fetch were both rejected, is in
+# nixos/modules/k3s-bootstrap-image-preload.nix.
+#
+# NON-FATAL BY DESIGN, AND NEVER SILENT. A node with a working network installs
+# perfectly well without this, so a missing or unreadable archive must not abort
+# an install that is otherwise complete -- that would turn a reliability
+# improvement into a new way to lose a machine. But absence is announced here
+# AND on every subsequent boot by
+# zeta-bootstrap-image-preload-status.service, which writes a named
+# PRESENT/ABSENT verdict to /run. The failure this whole work item is about is a
+# step that did not happen and left no record; a skip nobody prints would be
+# that failure wearing this feature's clothes.
+ZETA_PRELOAD_SRC="/iso/zeta/zeta-bootstrap-images.tar"
+ZETA_PRELOAD_DST_DIR="/mnt/var/lib/rancher/k3s/agent/images"
+if [ -s "$ZETA_PRELOAD_SRC" ]; then
+  echo "[wp34] staging the bootstrap container images from the ISO ..."
+  if sudo mkdir -p "$ZETA_PRELOAD_DST_DIR" \
+    && sudo cp "$ZETA_PRELOAD_SRC" "$ZETA_PRELOAD_DST_DIR/zeta-bootstrap-images.tar"; then
+    echo "[wp34] staged $(du -h "$ZETA_PRELOAD_SRC" | cut -f1) to ${ZETA_PRELOAD_DST_DIR#/mnt}/zeta-bootstrap-images.tar"
+    echo "[wp34] k3s will import these before pulling anything, so the bootstrap charts"
+    echo "[wp34] come up even if quay.io / ghcr.io / registry.k8s.io are unreachable."
+    echo "[wp34] NOTE: this covers the BOOTSTRAP roster only. The ~109 ArgoCD catalog"
+    echo "[wp34] images still pull from eight registries -- the cluster comes UP offline,"
+    echo "[wp34] it does not CONVERGE offline."
+  else
+    echo "[wp34] WARNING: could not copy the bootstrap image archive to $ZETA_PRELOAD_DST_DIR."
+    echo "[wp34] The install continues. This node will PULL every bootstrap image on first"
+    echo "[wp34] boot; on a spent registry rate limit that is an ImagePullBackOff, not a"
+    echo "[wp34] refusal. Check disk space on /mnt and the boot-time verdict in"
+    echo "[wp34] /run/zeta-bootstrap-image-preload.status."
+  fi
+else
+  echo "[wp34] no bootstrap image archive on this ISO ($ZETA_PRELOAD_SRC absent or empty)."
+  echo "[wp34] The install continues. This node will PULL every bootstrap image on first boot."
+  echo "[wp34] An ISO built by the build-ai-cluster-iso workflow carries one; a locally built"
+  echo "[wp34] ISO does not unless the archive was built before 'nix build .#installer-iso'."
+fi
 
 # ── Step 6.94: 081KSKBP80008QG0R003AX2A69.3a cred-picker stub ───────────────────────────
 # The actual picker invocation lives at Step 6.95-picker (below) which
@@ -3464,19 +4454,58 @@ ZETA_HOME=/mnt/home/zeta
 # P0 fix (PR #5388 Copilot review): resolve zeta UID/GID from the
 # INSTALLED system rather than hardcoding 1000:100 — if another user
 # is created first or NixOS module config changes, hardcoded IDs would
-# chown files to the wrong owner. chroot reads /mnt/etc/passwd via the
-# installed system's id binary which is authoritative.
-ZETA_UID=$(sudo chroot /mnt id -u zeta 2>/dev/null || echo "")
-ZETA_GID=$(sudo chroot /mnt id -g zeta 2>/dev/null || echo "")
-if [ -z "$ZETA_UID" ] || [ -z "$ZETA_GID" ]; then
-  echo "[iter-5.5.0]   WARN: could not resolve zeta UID/GID from /mnt via chroot;"
+# chown files to the wrong owner.
+#
+# 081M3K16QKA087G0R002GT2F8X: read the installed system's account database as
+# a FILE. The previous `sudo chroot /mnt id -u zeta` could never succeed on
+# NixOS: a chroot resolves `id` through PATH, and every PATH entry the live ISO
+# carries (/run/current-system/sw/bin, /run/wrappers/bin) is a /run path that
+# does not exist inside /mnt until the installed system BOOTS -- /run is a tmpfs
+# populated at activation. So every install on real metal printed the WARN
+# below and guessed 1000:100. The guess happened to be right, which is exactly
+# why nobody noticed that the resolution was dead.
+#
+# nixos-install's activation has already written /mnt/etc/passwd by the time
+# this runs -- it is the same activation that created /mnt/home/zeta, which the
+# block below gates on. The home directory's own ownership is the second
+# witness: NixOS createHome chowns it to the user.
+# ZETA-HOME-IDS-BEGIN -- pure: reads two paths, no globals, no side effects.
+# Shell-parity tested in src/Core.TypeScript/installer/home-ownership-shell-parity.test.ts.
+zeta_resolve_home_ids() {
+  # $1 = passwd file, $2 = the user's home dir, $3 = user name.
+  # stdout: "<uid> <gid> <source>"; rc 1 when neither witness resolves.
+  _zr_uid=""; _zr_gid=""
+  if [ -r "$1" ]; then
+    _zr_line=$(awk -F: -v u="$3" '$1 == u { print $3 " " $4; exit }' "$1" 2>/dev/null)
+    _zr_uid=${_zr_line%% *}; _zr_gid=${_zr_line##* }
+  fi
+  case "$_zr_uid:$_zr_gid" in
+    :*|*:|*[!0-9:]*) ;;
+    *) echo "$_zr_uid $_zr_gid passwd"; return 0 ;;
+  esac
+  if [ -d "$2" ]; then
+    _zr_line=$(stat -c '%u %g' "$2" 2>/dev/null)
+    _zr_uid=${_zr_line%% *}; _zr_gid=${_zr_line##* }
+    case "$_zr_uid:$_zr_gid" in
+      :*|*:|*[!0-9:]*) ;;
+      # A root-owned home is not a witness for the user -- it is the bug itself.
+      0:*) ;;
+      *) echo "$_zr_uid $_zr_gid home-dir"; return 0 ;;
+    esac
+  fi
+  return 1
+}
+# ZETA-HOME-IDS-END
+if ZETA_IDS=$(zeta_resolve_home_ids /mnt/etc/passwd "$ZETA_HOME" zeta); then
+  read -r ZETA_UID ZETA_GID ZETA_IDS_SOURCE <<<"$ZETA_IDS"
+  echo "[iter-5.5.0]   resolved zeta UID:GID = $ZETA_UID:$ZETA_GID (from the installed system's $ZETA_IDS_SOURCE)"
+else
+  echo "[iter-5.5.0]   WARN: could not resolve zeta UID/GID from /mnt/etc/passwd or $ZETA_HOME;"
   echo "[iter-5.5.0]   falling back to NixOS defaults (1000:100). If the installed"
   echo "[iter-5.5.0]   system uses different IDs, post-reboot file ownership may"
-  echo "[iter-5.5.0]   need correction via 'sudo chown -R zeta:users ~/.{config,bun,Zeta}'"
+  echo "[iter-5.5.0]   need correction via 'sudo chown -R zeta:users /home/zeta'"
   ZETA_UID=1000
   ZETA_GID=100
-else
-  echo "[iter-5.5.0]   resolved zeta UID:GID = $ZETA_UID:$ZETA_GID (via chroot id zeta)"
 fi
 
 if [ -d "$ZETA_HOME" ]; then
@@ -3499,103 +4528,59 @@ if [ -d "$ZETA_HOME" ]; then
   # .mise.toml). Subsequent 6.95d block is a no-op if directory exists.
   if [ ! -d "$ZETA_HOME/Zeta" ]; then
     echo "[iter-5.5.0] pre-cloning Zeta repo to $ZETA_HOME/Zeta..."
-    sudo -u "#$ZETA_UID" git clone https://github.com/Lucent-Financial-Group/Zeta.git "$ZETA_HOME/Zeta" 2>&1 | tail -3 || \
-      echo "[iter-5.5.0]   WARN: clone failed — target runtime/agent bootstrap cannot run; can retry post-reboot"
+    # Bounded (081M3BWJ96T087G0R0028WT3S3): git has no default network timeout, so
+    # a route that accepts SYN and never replies would stall the install here
+    # forever with nothing on screen. 600s is generous for a full clone.
+    timeout 600 sudo -u "#$ZETA_UID" env GIT_TERMINAL_PROMPT=0 git clone https://github.com/Lucent-Financial-Group/Zeta.git "$ZETA_HOME/Zeta" 2>&1 | tail -3 || \
+      echo "[iter-5.5.0]   WARN: clone of github.com/Lucent-Financial-Group/Zeta failed or timed out after 600s — target runtime/agent bootstrap cannot run; can retry post-reboot"
   fi
 
-  # 6.95a-bootstrap — invoke the canonical install entry from the
-  # pre-cloned repo. tools/setup/install.sh is the single install graph
-  # dev laptops + CI runners + devcontainers use (GOVERNANCE §24), now
-  # extended to installed-target bootstrap from the live ISO.
+  # 6.95a-bootstrap — 081M3K23YCP087G0R003BVDS1P: the DEV TOOLCHAIN is no
+  # longer installed here. tools/setup/install.sh at tier full (~18 mise
+  # toolchains, several GB) ran at this point BEFORE the reboot -- up to three
+  # unbounded attempts, output hidden behind `| tail -40`. On the 2026-09-27
+  # bare-metal reinstall that held a silent console for ~30 minutes, and none of
+  # it is needed for k3s, ArgoCD or the roster. It now runs on the INSTALLED
+  # system after first boot, in the background, niced and idle-IO, bounded:
+  # zeta-dev-toolchain.service (full-ai-cluster/nixos/modules/zeta-dev-toolchain.nix),
+  # which keeps the durable log, the PARTIAL-PROVISION marker, the retry and
+  # the ZETA-INSTALL-FAILURE-CAUSE classifier this block used to carry. The
+  # canonical install entry is unchanged: install.sh with
+  # ZETA_INSTALL_NIXOS_MODE=installed ZETA_INSTALL_FULL=1, reading
+  # tools/setup/manifests/from-bun-global and tools/setup/manifests/from-installer.
   #
-  # Important: this shell still runs in the LIVE ISO namespace where
-  # /etc/NIXOS + /iso or /run/initramfs are present. Without the explicit
-  # ZETA_INSTALL_NIXOS_MODE=installed override, install.sh intentionally
-  # routes to the live-USB guard and exits 2. The override is scoped to
-  # this target-runtime bootstrap call only; direct operator calls to
-  # install.sh on the live ISO still get the safety guard.
-  #
-  # ZETA_INSTALL_FULL=1 opts into the one-liner registry even when the
-  # install is launched non-interactively (first-boot flow), so the
-  # installed system picks up the same declarative agent CLI surface as
-  # an interactive dev shell.
+  # What DOES still happen here, bounded: `mise install bun`, and nothing else.
+  # This block's own helpers (bao consume, seal-path detect, the wifi-ESP -> NM
+  # converter, the iSerial probe, the UEFI keyfile writer, the credential
+  # picker) are TypeScript run under the repo-pinned bun, and so are the
+  # installed system's creds-restore / creds-to-k8s units, which resolve bun
+  # from ~/.local/share/mise/installs/bun/ on the node's very first boot --
+  # before the background toolchain could possibly have finished. One tool, a
+  # few tens of MB, 600s bound; a failure is named and non-fatal, and each
+  # helper already reports "bun not on PATH" in its own words.
   if [ -d "$ZETA_HOME/Zeta" ]; then
-    echo "[iter-5.5.0] running tools/setup/install.sh (target runtime + declarative agent CLI bootstrap)..."
+    echo "[iter-5.5.0] dev toolchain DEFERRED to zeta-dev-toolchain.service (runs after first boot; follow with: journalctl -u zeta-dev-toolchain -f)"
+    echo "[iter-5.5.0] bootstrapping ONLY the repo-pinned bun (bounded 600s) for this installer's helpers and the first-boot credential units..."
     ZETA_TARGET_PATH="/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/bin:/usr/bin:/bin"
-    # NON-FATAL BY DESIGN — but this script runs under `set -euo pipefail` (line 29), so
-    # an UNGUARDED failing pipeline trips errexit and ABORTS zeta-install.sh right here,
-    # before the rc-capture / WARN / PARTIAL-PROVISION marker below can run. That is
-    # exactly what turned this intended-non-fatal step into a first-boot HARD FAIL
-    # (`[zeta-first-boot] Install failed`) and reded build-iso from 2026-08-01: #9937
-    # removed the old `| tail -10 || echo WARN` whose `||` had been suppressing errexit
-    # for this pipeline. Scope errexit OFF around the pipeline only (the same
-    # subshell-local pattern used for node-registration above), capture the REAL
-    # install.sh rc via PIPESTATUS[0], then restore errexit. `tail -40` (was -10) keeps
-    # enough of the mise/toolchain error to diagnose WHY install.sh fails (the separate
-    # latent bug 081KZETP6AT08QG0R003MG1VYN).
-    # 081KZETP6AT diagnosis instrumentation: the first-boot install.sh failure is INTERMITTENT
-    # (fails rc=1 some runs, succeeds others) and the last capture had NO `mise ERROR` line, so the
-    # cause is not necessarily mise and can sit ABOVE tail's window. Two additive changes (no
-    # success-path behavior change): (1) MISE_VERBOSE=1 so a mise-side failure is fully explained;
-    # (2) tee the FULL output to a durable log and, on failure, grep the actual error lines to the
-    # console (which reaches the CI serial log) so the rc=1 cause is captured regardless of source
-    # or position. Remove the extra grep once the root cause is fixed.
     set +e
     sudo -u "#$ZETA_UID" mkdir -p "$ZETA_HOME/.zeta" 2>/dev/null || true
-    install_log="$ZETA_HOME/.zeta/install-sh-firstboot.log"
-    # 081KZETP6AT: the first-boot install.sh fails rc=1 INTERMITTENTLY (~1 in 4 dispatch runs) —
-    # a transient network/toolchain-fetch blip in mise's toolchain download, not a deterministic
-    # bug (the same code succeeds on the other runs). tools/setup/install.sh is idempotent (mise
-    # trust/install and bun installs are upserts — discipline #6), so a re-run after a short
-    # backoff clears a transient blip without side effects. Retry up to 3 attempts with linear
-    # backoff; only the FINAL failure takes the non-fatal WARN + diag + PARTIAL-PROVISION path.
-    # This is deliberately scoped to the first-boot path — the shared tools/setup/install.sh (also
-    # consumed by CI runners + devcontainers, GOVERNANCE §24) is left untouched.
-    install_rc=1
-    install_max_attempts=3
-    install_attempt=1
-    while [ "$install_attempt" -le "$install_max_attempts" ]; do
-      { echo "=== 081KZETP6AT install.sh attempt ${install_attempt}/${install_max_attempts} @ $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
-        sudo -u "#$ZETA_UID" \
-          HOME="$ZETA_HOME" \
-          BUN_INSTALL="$ZETA_HOME/.bun" \
-          PATH="$ZETA_TARGET_PATH" \
-          ZETA_INSTALL_NIXOS_MODE=installed \
-          ZETA_INSTALL_FULL=1 \
-          MISE_VERBOSE=1 \
-          bash -c "cd $ZETA_HOME/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh" 2>&1
-      } | sudo -u "#$ZETA_UID" tee -a "$install_log" | tail -40
-      install_rc=${PIPESTATUS[0]}
-      [ "$install_rc" -eq 0 ] && break
-      if [ "$install_attempt" -lt "$install_max_attempts" ]; then
-        install_backoff=$((install_attempt * 12))
-        echo "[iter-5.5.0]   install.sh attempt ${install_attempt}/${install_max_attempts} FAILED rc=$install_rc — retrying in ${install_backoff}s (081KZETP6AT transient-blip backoff)"
-        sleep "$install_backoff"
-      fi
-      install_attempt=$((install_attempt + 1))
-    done
+    # ZETA-BUN-BOOTSTRAP-BEGIN
+    timeout --kill-after=15 600 sudo -u "#$ZETA_UID" \
+      HOME="$ZETA_HOME" \
+      PATH="$ZETA_TARGET_PATH" \
+      MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
+      MISE_YES=1 \
+      bash -c "cd $ZETA_HOME/Zeta && mise install bun" 2>&1 | tail -15
+    bun_bootstrap_rc=${PIPESTATUS[0]}
+    # ZETA-BUN-BOOTSTRAP-END
     set -e
-      # Non-fatal is right: a node that boots without agent CLIs is still recoverable, and
-      # hard-failing a first-boot install is worse. But "do not fail" and "do not notice"
-      # are different instructions — #9937's rc-capture + marker (below) keep the "notice".
-      if [ "$install_rc" -ne 0 ]; then
-        echo "[iter-5.5.0]   WARN: install.sh FAILED rc=$install_rc after ${install_max_attempts} attempts — runtimes/agent CLIs may be partial; retry post-reboot via 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh'"
-        # 081KZETP6AT: surface the actual error lines from the FULL log (verbose output can bury the
-        # failure above tail's window). Regardless of whether the cause is mise, bun, nix, or a script.
-        echo "[iter-5.5.0]   --- install.sh error lines (081KZETP6AT diag) ---"
-        grep -iE 'error|fatal|fail|cannot|not found|no such|denied|refused|traceback|exit code|command not' "$install_log" 2>/dev/null | tail -40 || true
-        echo "[iter-5.5.0]   --- end install.sh error lines (full log at ~/.zeta/install-sh-firstboot.log) ---"
-        # Durable marker, not just a line that scrolls past on a first-boot console. The
-        # full tier carries k3d/kubectl/helm (.mise.full.toml, base tier has none), so
-        # without it this node cannot host the ARC runners — and that must be discoverable
-        # ON the node, not only in whichever terminal happened to be watching.
-        sudo -u "#$ZETA_UID" mkdir -p "$ZETA_HOME/.zeta" 2>/dev/null || true
-        printf 'install.sh rc=%s after %s attempts at %s\nPARTIAL PROVISION: agent CLIs and/or the full mise tier (k3d/kubectl/helm) may be absent.\nretry: cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh\n' \
-          "$install_rc" "$install_max_attempts" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-          | sudo -u "#$ZETA_UID" tee "$ZETA_HOME/.zeta/PARTIAL-PROVISION" >/dev/null 2>&1 || true
-      elif [ "$install_attempt" -gt 1 ]; then
-        echo "[iter-5.5.0]   install.sh succeeded on attempt ${install_attempt}/${install_max_attempts} (081KZETP6AT transient-blip recovered by retry)"
-      fi
+    if [ "$bun_bootstrap_rc" -eq 0 ]; then
+      echo "[iter-5.5.0]   bun bootstrap ok"
+    elif [ "$bun_bootstrap_rc" -eq 124 ]; then
+      echo "[iter-5.5.0]   WARN: bun bootstrap TIMED OUT after 600s -- installer helpers below will report 'bun not on PATH'; zeta-dev-toolchain.service installs it after first boot"
+    else
+      echo "[iter-5.5.0]   WARN: bun bootstrap FAILED rc=$bun_bootstrap_rc -- installer helpers below will report 'bun not on PATH'; zeta-dev-toolchain.service installs it after first boot"
+    fi
   fi
 
   # install.sh owns the manifest-driven agent CLI installs. Keep the
@@ -3607,7 +4592,7 @@ if [ -d "$ZETA_HOME" ]; then
   # ── 081M1W1NCDT087G0R002H3VG6Y: named bao bun consume ──────────
   #
   # Pickup exported both names (or neither) before bun existed.
-  # tools/setup/install.sh has now run; bun/mise may be on PATH.
+  # The bounded bun bootstrap (6.95a) has run; bun may be on PATH.
   # Invoke firstboot-bao-env.ts the same way wifi/iserial helpers
   # run. Epoch is named installer-iso here (this block runs on the
   # live ISO after nixos-install into /mnt). Do not infer epoch
@@ -4117,7 +5102,20 @@ if [ -d "$ZETA_HOME" ]; then
   # install needs .mise.toml). This sub-step is intentionally empty
   # since the clone moved up.
 
-  echo "[iter-5.5.0] ── DONE — first login will have: install.sh-managed runtimes + declarative agent CLIs on PATH; ~/Zeta cloned (via 6.95a-bootstrap); ~/.config/{gh,claude} populated when available; ~/.bun/bin on PATH ──"
+  # 081M3K16QKA087G0R002GT2F8X: ownership by CONSTRUCTION, not by remembering.
+  # Steps above that write under $ZETA_HOME as root (sudo mkdir, cp, tee) each
+  # have to remember their own chown, and one that forgets leaves a root-owned
+  # path in the operator's home that fails much later as a Permission denied
+  # nobody can trace back here. One recursive sweep AFTER the last write makes
+  # "everything under ~zeta is zeta's" true whichever step forgot. Modes are not
+  # touched, so the go-rwx the credential steps set survives.
+  # home-ownership-shell-parity.test.ts pins this as the LAST write under
+  # $ZETA_HOME in this script.
+  # ZETA-HOME-OWNERSHIP-SWEEP
+  sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME"
+  echo "[iter-5.5.0] ownership sweep: everything under ${ZETA_HOME#/mnt} is now $ZETA_UID:$ZETA_GID"
+
+  echo "[iter-5.5.0] ── DONE — ~/Zeta cloned (via 6.95a-bootstrap); ~/.config/{gh,claude} populated when available; ~/.bun/bin on PATH; runtimes + agent CLIs arrive via zeta-dev-toolchain.service after first boot ──"
 else
   echo "[iter-5.5.0] $ZETA_HOME absent; skipping (nixos-install ordering changed?)"
 fi
@@ -4185,6 +5183,43 @@ else
   echo "    4. Verify SSH from your workstation:"
   echo "       ssh zeta@\$(hostname)"
 fi
+echo
+# 081M3JG74G0087G0R001XJC837 — the public-TLS operator step, only when SET.
+if [ "${ZETA_PUBLIC_TLS_SOURCE:-unset}" != "unset" ]; then
+  echo "  PUBLIC TLS: portal.${ZETA_PUBLIC_TLS_DOMAIN} (ACME contact ${ZETA_PUBLIC_TLS_EMAIL})"
+  echo "    The certificate CANNOT issue until you do both of these:"
+  echo "      1. DNS: an A record  portal.${ZETA_PUBLIC_TLS_DOMAIN}  ->  your public IP"
+  echo "      2. Router: forward TCP 80 and 443 to the public gateway's LoadBalancer IP:"
+  echo "           sudo k3s kubectl -n zeta-platform get gateway zeta-public-gateway -o jsonpath='{.status.addresses[0].value}'"
+  echo "    Until then 'platform-public-tls' reads Progressing; the rest of the platform"
+  echo "    is unaffected (it is a separate Application). Watch it with:"
+  echo "      sudo k3s kubectl -n zeta-platform get certificate portal-tls"
+  echo
+else
+  echo "  PUBLIC TLS: not configured (LAN-only). The portal is on the zeta-gateway"
+  echo "    LoadBalancer IP, port 80, any hostname. See INJECTION-POINTS.md §10 to add it."
+  echo
+fi
+# 081M3K23YCP087G0R003BVDS1P — say where the dev toolchain went, so an operator
+# who logs in to a node with no dotnet/go/claude yet is not left guessing.
+echo "  DEV TOOLCHAIN: continues in the BACKGROUND after first boot (mise toolchains +"
+echo "    agent CLIs, several GB; niced so k3s comes first). It is not needed for the"
+echo "    cluster to come up. Follow it with:"
+echo "      journalctl -u zeta-dev-toolchain -f"
+echo "    Done when ~/.zeta/dev-toolchain.ok exists; ~/.zeta/PARTIAL-PROVISION means"
+echo "    it failed (named cause in the journal). Retry: sudo systemctl start zeta-dev-toolchain"
+echo
+# 081M3BKQFNC087G0R003MDGSAX — some Applications CANNOT converge without a human,
+# by design (OpenBao's init ceremony, an external API key). They declare
+# `zeta.io/sync-policy: converges-only-after-an-operator-action` with the action in
+# `zeta.io/sync-policy-reason`. The list is read off the LIVE cluster rather than
+# printed from here, so this banner cannot drift from the declarations.
+echo "  OPERATOR ACTIONS — the cluster does NOT fully converge without them:"
+echo "    Some Applications are synced automatically and then wait on YOU"
+echo "    (e.g. the OpenBao init ceremony, an external LLM API key). Until"
+echo "    you act they read Progressing/Degraded; that is expected, not a crash."
+echo "    List them, each with the action and the doc that describes it:"
+echo '      sudo k3s kubectl -n argocd get applications -o custom-columns='"'"'NAME:.metadata.name,POLICY:.metadata.annotations.zeta\.io/sync-policy,ACTION:.metadata.annotations.zeta\.io/sync-policy-reason'"'"' | grep -e NAME -e converges-only-after-an-operator-action'
 echo
 echo "================================================================"
 echo

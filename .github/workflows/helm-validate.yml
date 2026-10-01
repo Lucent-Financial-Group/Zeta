@@ -354,6 +354,33 @@ jobs:
           helm version --short
           kubeconform -v
 
+      - name: GitLab required upgrade path (PR only; the chart's own runcheck, old chart-info in, run offline)
+        # ADDED 2026-09-27. full-ai-cluster/k8s/applications/gitlab/Application.yaml
+        # disables the chart's in-cluster upgrade check (its pre-upgrade hook deadlocks
+        # ArgoCD's first sync -- upgrade-only-hook-first-sync.ts). In GitOps an upgrade
+        # only happens through a PR that moves the chart pin, so the check runs HERE:
+        # render the base pin's chart-info and the head pin's `runcheck`, execute the
+        # script offline with the old chart-info, and let its exit status decide.
+        # Downgrades fail too (the script itself allows them -- measured). Prints
+        # PASSED / FAILED / NOT APPLICABLE; exit 2 means it did not run.
+        #
+        # The base is the PR's base commit, fetched shallowly: the checkout above is
+        # depth 1, so without the fetch `git show <base>:...` has nothing to read.
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$BASE_SHA"
+          bun src/Core.TypeScript/cluster/gitlab-upgrade-path-guard.ts --base "$BASE_SHA"
+
+      - name: Prove the GitLab upgrade-path guard can go red (skip-a-stop, legal bump, unchanged, downgrade)
+        # Real Application.yaml with only targetRevision rewritten: 8.7.0 -> 8.11.0 and
+        # -> 9.0.0 FAIL on the chart's own message, -> 8.8.0 PASSES, unchanged is NOT
+        # APPLICABLE without rendering, -> 8.6.0 FAILS as a downgrade. helm is on PATH
+        # (confirmed above), so the chart-script half runs rather than skipping.
+        run: bun test src/Core.TypeScript/cluster/gitlab-upgrade-path-guard.test.ts
+
       - name: Chart pins + helm template + kubeconform
         # RETRY WITHOUT SWALLOWING THE EXIT CODE. Upstream Helm repos are third
         # parties and do occasionally 5xx; three attempts absorb that. Note what
@@ -569,6 +596,54 @@ jobs:
         # unacknowledged findings, same assertion the step above makes by exit
         # code, restated as a structured `bun test` failure.
         run: bun test src/Core.TypeScript/cluster/liveness-kill-budget.test.ts
+
+      - name: Chart render determinism (render every Application TWICE and compare)
+        # ADDED WP28, 2026-09-24 (081M397QHX8087G0R003DQSY0B follow-on). A chart
+        # whose render differs from ITSELF is non-deterministic by construction:
+        # ArgoCD diffs a fresh render against live state on every sync, sees a
+        # difference that is not a drift, re-applies, and under `selfHeal: true`
+        # the workload churns forever -- on any cluster, including the one that
+        # boots off the USB installer. Nothing in this repo could see that class.
+        #
+        # MEASURED over 49 Applications: 45 stable, 4 unstable, 0 unmeasured.
+        # Three charts mint a Secret at template time (cilium's CA and two hubble
+        # cert pairs, seaweedfs's sftp secret, weaviate's basic-auth) and gitlab
+        # emits a test-runner Pod with a random name. The baseline carries those
+        # four BY DOCUMENT, not by app, and the check goes red in BOTH directions:
+        # a new unstable document, and a baseline row that has been FIXED (a
+        # stale row has stopped constraining, so the next regression there
+        # passes).
+        #
+        # Lives in THIS job because helm is confirmed on PATH above and the chart
+        # archives are already warm in .helm-render-cache -- the second render of
+        # each Application costs a template, not a pull.
+        run: bun src/Core.TypeScript/cluster/chart-render-determinism.ts
+
+      - name: Prove the determinism census can go red (hermetic falsifiers)
+        # The classifier is PURE, so this half needs no helm: it drives the
+        # secret-vs-identity split, the order-independence property, the
+        # both-directions baseline comparison, and the paired-suffix wildcard
+        # whose FIRST version was itself non-deterministic (it required a digit
+        # in helm's random suffix; `jjcvk` has none, so the baseline it wrote
+        # went red against the very next run).
+        run: bun test src/Core.TypeScript/cluster/chart-render-determinism.test.ts
+
+      - name: Adopted releases agree on IMMUTABLE fields (k3s bootstrap vs ArgoCD Application)
+        # ADDED 2026-09-27 (081M3HYPQCR087G0R003C2VPRS). k3s installs cilium,
+        # cert-manager, argocd, external-secrets, trust-manager, spire and
+        # spire-crds from k8s/bootstrap at first boot; an Application then adopts
+        # each release. If the two renders differ on a field the API server will
+        # not update (a StatefulSet's volumeClaimTemplates/selector/serviceName, a
+        # Deployment selector, a Service clusterIP, a non-hook Job template) the
+        # Application can NEVER sync. Measured on dispatch 36333824468: spire at
+        # 5Gi (bootstrap) vs 512Mi (dev-rung override) -> "StatefulSet.apps
+        # spire-server is invalid: spec: Forbidden", retried forever. Renders
+        # every pair against the committed tree AND the dev tree the first-boot
+        # replica serves. `--apply-all-overrides` is the negative control.
+        run: bun src/Core.TypeScript/cluster/adoption-immutable-fields.ts
+
+      - name: Prove the adoption check can go red (hermetic falsifiers)
+        run: bun test src/Core.TypeScript/cluster/adoption-immutable-fields.test.ts
 
       - name: Image resolvability (offline, snapshot-gated) — every image the first-boot roster + Applications pull
         # ADDED 2026-09-22. Renders the SAME first-boot roster + Applications this

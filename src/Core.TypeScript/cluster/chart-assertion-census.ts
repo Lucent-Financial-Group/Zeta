@@ -137,7 +137,7 @@ NEVER_APPLIED_COVERAGE.set("cilium-lb-ipam", {
 NEVER_APPLIED_COVERAGE.set("longhorn", {
   coveredBy: null,
   reason:
-    "a kind node has no second disk to give it. The dev lane substitutes a StorageClass NAMED longhorn over rancher.io/local-path, so PVCs bind and the CONSUMERS are asserted -- the chart itself is not, and no job renders or applies it",
+    "a kind node has no second disk to give it. Charts request the capability `zeta-block-replicated`, which dev binds to rancher.io/local-path, so PVCs bind and the CONSUMERS are asserted with no Longhorn in the lane -- the chart itself is not, and no CI job applies it (the NixOS QEMU test longhorn-volume-binds.nix does)",
 });
 
 NEVER_APPLIED_COVERAGE.set("ollama", {
@@ -159,6 +159,12 @@ NEVER_APPLIED_COVERAGE.set("gitlab", {
 NEVER_APPLIED_COVERAGE.set("temporal", {
   coveredBy: null,
   reason: "excluded on lane cost; nothing renders or applies it in CI",
+});
+
+NEVER_APPLIED_COVERAGE.set("temporal/postgres", {
+  coveredBy: null,
+  reason:
+    "temporal's CNPG database (2026-09-27), nested under `temporal/` so the `temporal/**` exclude defers it with its only consumer -- applying a database for an app the lane never runs would buy 512Mi of nothing. Offline checks cover its wiring (temporal-datastore.test.ts); no CI job applies it",
 });
 
 NEVER_APPLIED_COVERAGE.set("platform", {

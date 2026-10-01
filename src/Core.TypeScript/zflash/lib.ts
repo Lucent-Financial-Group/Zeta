@@ -12,6 +12,8 @@ import {
 } from "./firstboot-role.ts";
 import { planFirstbootConfWithNamedBaoElf, type NamedBaoElfAsk } from "./firstboot-bao-elf.ts";
 import { isFullGitCommitSha } from "../installer/repo-pin.ts";
+import { LONGHORN_UNDERSIZED_OVERRIDE_ENV } from "../installer/longhorn-capacity-preflight.ts";
+import { planPublicEndpoint, renderPublicEndpointConfLines, type PublicEndpoint } from "../installer/public-endpoint.ts";
 
 /**
  * RFC1123 hostname regex.
@@ -265,6 +267,37 @@ export interface FileBackedZflashImagePlanInput {
    */
   readonly qemuK3sFirstBootVerifyMarker?: boolean;
   /**
+   * WP27 (081M392JR97087G0R003QAFH0Y): append
+   * `ZETA_ALLOW_LONGHORN_UNDERSIZED='1'` to the ESP `/zeta-firstboot.conf`,
+   * creating that file when no firstboot role asked for one.
+   *
+   * WHY IT IS A FLASH-TIME KNOB AND NOT AN ISO ONE. #17611/#17614 added a
+   * pre-wipe refusal: the installer bails when the provisioned Longhorn pool
+   * cannot hold the committed roster. A QEMU lane has ONE virtual disk of
+   * 40 or 64 GiB BY DESIGN -- it tests install MECHANICS, not capacity -- so
+   * `disk - 1 GiB ESP - the root floor` computes to 0 schedulable GiB and the
+   * refusal is correct and fires on every run. Baking the override into the
+   * ISO's own `/etc/zeta-firstboot.conf` would clear the guard for every
+   * operator install cut from that ISO, which is the guard deleting itself.
+   * On the ESP it travels with ONE flashed image, the one a test harness made.
+   *
+   * The consumer is `zeta-first-boot.sh`, which already sources the ESP conf
+   * (`zeta_source_esp_firstboot_conf`) and EXPORTS this name so it reaches the
+   * `zeta-install.sh` child -- a value merely sourced reaches that shell and
+   * not the child, which is a knob that turns and is not connected.
+   */
+  readonly allowLonghornUndersized?: boolean;
+  /**
+   * 081M3JG74G0087G0R001XJC837: the public-TLS pair (zflash `--acme-email` /
+   * `--public-domain`), appended to the ESP `/zeta-firstboot.conf` as
+   * `ZETA_ACME_EMAIL` / `ZETA_PUBLIC_DOMAIN`. Step 1 of the installer's
+   * resolution order (ESP -> prompt -> unset); `zeta-first-boot.sh` sources and
+   * EXPORTS the pair. Re-validated here, so a reserved (RFC 2606) or malformed
+   * pair is refused even when handed in without the CLI. Omitted -> no line at
+   * all, and the installer asks at the start of the install instead.
+   */
+  readonly publicEndpoint?: PublicEndpoint;
+  /**
    * WP21 (081M35C7NJR087G0R002S4R654): when set, writes `/zeta-repo-pin`
    * (`ZETA_ISO_COMMIT='<commit>'`) so the booting node checks out this exact
    * commit after cloning $REPO_URL, overriding whatever this ISO was built
@@ -383,10 +416,48 @@ function isFatBpbSector(sector: Buffer): boolean {
 }
 
 /**
- * Locate the FAT ESP byte offset inside an isohybrid installer image head.
- * Mirrors flash-and-inject.ts MBR scan + LBA-276 fallback used on real USB bakes.
+ * Where {@link detectIsohybridEspOffset}'s answer came from, and whether
+ * anything confirmed it.
+ *
+ * - `mbr` — an 0xEF partition entry pointed here AND a FAT BPB was read at
+ *   that offset. Two independent facts agreed.
+ * - `fallback-confirmed` — no usable 0xEF entry, but a FAT BPB *is* present at
+ *   the LBA-276 fallback. The guess was checked and held.
+ * - `fallback-unconfirmed` — **nothing was verified.** No 0xEF entry resolved
+ *   and no FAT BPB was found at the fallback, either because the head buffer
+ *   was too short to reach it or because those bytes are not a boot sector.
+ *   The offset is a constant, not a measurement.
  */
-export function detectIsohybridEspOffsetBytes(isoHead: Buffer): number {
+export type IsohybridEspOffsetSource = "mbr" | "fallback-confirmed" | "fallback-unconfirmed";
+
+export interface IsohybridEspOffset {
+  readonly offsetBytes: number;
+  readonly source: IsohybridEspOffsetSource;
+}
+
+/**
+ * Locate the FAT ESP byte offset inside an isohybrid installer image head, and
+ * SAY whether anything confirmed it.
+ *
+ * 081M39CJP96087G0R001T4J2R3 (WP29) — the previous shape of this scan ended:
+ *
+ *     if (headIsLongEnough && isFatBpbSector(...)) return fallback;
+ *     return fallback;
+ *
+ * Two branches, one value. The `isFatBpbSector` guard could not change the
+ * answer, so it was a check that cannot fail: every caller received a bare
+ * number and had no way to ask whether it had been verified or merely
+ * assumed. That matters because the head passed in is bounded —
+ * `resolveEspOffsetBytesForIso` sized it at exactly `fallback + 512`, so an
+ * ESP whose start LBA is past 276 fails `isoHead.length >= partOffset + 512`,
+ * the MBR branch is skipped silently, and the constant is returned for an
+ * image it does not describe.
+ *
+ * The numbers are unchanged. What is new is `source`, so a caller can refuse
+ * to bake against an offset nothing confirmed instead of writing there and
+ * reading its own writes back as proof.
+ */
+export function detectIsohybridEspOffset(isoHead: Buffer): IsohybridEspOffset {
   if (isoHead.length >= 512) {
     const mbr = isoHead.subarray(0, 512);
     for (let partition = 0; partition < 4; partition++) {
@@ -396,7 +467,7 @@ export function detectIsohybridEspOffsetBytes(isoHead: Buffer): number {
       if (type === 0xef && startLba > 0) {
         const partOffset = startLba * 512;
         if (isoHead.length >= partOffset + 512 && isFatBpbSector(isoHead.subarray(partOffset, partOffset + 512))) {
-          return partOffset;
+          return { offsetBytes: partOffset, source: "mbr" };
         }
       }
     }
@@ -404,9 +475,20 @@ export function detectIsohybridEspOffsetBytes(isoHead: Buffer): number {
 
   const fallback = ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES;
   if (isoHead.length >= fallback + 512 && isFatBpbSector(isoHead.subarray(fallback, fallback + 512))) {
-    return fallback;
+    return { offsetBytes: fallback, source: "fallback-confirmed" };
   }
-  return fallback;
+  return { offsetBytes: fallback, source: "fallback-unconfirmed" };
+}
+
+/**
+ * Locate the FAT ESP byte offset inside an isohybrid installer image head.
+ * Mirrors flash-and-inject.ts MBR scan + LBA-276 fallback used on real USB bakes.
+ *
+ * Byte-identical behaviour to before {@link detectIsohybridEspOffset} existed;
+ * prefer that one when you can act on an unconfirmed answer.
+ */
+export function detectIsohybridEspOffsetBytes(isoHead: Buffer): number {
+  return detectIsohybridEspOffset(isoHead).offsetBytes;
 }
 
 /**
@@ -574,6 +656,59 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
       ok: false,
       error: "namedBaoElf requires firstbootRole; bao names with no role conf are never read",
     };
+  }
+
+  // 081M3JG74G0087G0R001XJC837 -- the public-TLS pair, appended to the ONE
+  // /zeta-firstboot.conf exactly as the WP27 override below is, and ordered
+  // before it so that override stays the conf's last line.
+  if (input.publicEndpoint !== undefined) {
+    const pe = planPublicEndpoint(input.publicEndpoint);
+    if (!pe.ok) return { ok: false, error: pe.error };
+    if (pe.value !== null) {
+      const lines = renderPublicEndpointConfLines(pe.value);
+      const existing = espWrites.findIndex((w) => w.destination === ZETA_FIRSTBOOT_CONF_ESP_DESTINATION);
+      if (existing >= 0) {
+        const prior = espWrites[existing];
+        if (prior === undefined || prior.content === undefined) {
+          return {
+            ok: false,
+            error: `publicEndpoint cannot append to ${ZETA_FIRSTBOOT_CONF_ESP_DESTINATION}: that ESP write has no inline content`,
+          };
+        }
+        espWrites[existing] = { ...prior, content: prior.content + lines };
+      } else {
+        espWrites.push({ content: lines, destination: ZETA_FIRSTBOOT_CONF_ESP_DESTINATION });
+      }
+    }
+  }
+
+  // WP27 -- the Longhorn-undersized override, appended to whatever
+  // /zeta-firstboot.conf this plan already has (role-driven or not) so there is
+  // exactly ONE conf on the ESP and `zeta_source_esp_firstboot_conf` cannot pick
+  // the wrong one. Ordered after the role block for the same reason that block
+  // is ordered last: a plan that does not ask for this stays byte-identical.
+  if (input.allowLonghornUndersized === true) {
+    const line = `${LONGHORN_UNDERSIZED_OVERRIDE_ENV}='1'
+`;
+    const existing = espWrites.findIndex((w) => w.destination === ZETA_FIRSTBOOT_CONF_ESP_DESTINATION);
+    if (existing >= 0) {
+      const prior = espWrites[existing];
+      // `sourcePath` writes carry no inline content to append to. The conf is
+      // always a content write (firstboot-role.ts renders it), so this is a
+      // refusal rather than a silent skip -- appending nothing would look like
+      // the override landed.
+      if (prior === undefined || prior.content === undefined) {
+        return {
+          ok: false,
+          error:
+            `allowLonghornUndersized cannot append ${LONGHORN_UNDERSIZED_OVERRIDE_ENV} to ` +
+            `${ZETA_FIRSTBOOT_CONF_ESP_DESTINATION}: that ESP write has no inline content`,
+        };
+      }
+      espWrites[existing] = { ...prior, content: prior.content + line };
+    } else {
+      espWrites.push({ content: line, destination: ZETA_FIRSTBOOT_CONF_ESP_DESTINATION });
+    }
   }
 
   if (espWrites.length === 0) {

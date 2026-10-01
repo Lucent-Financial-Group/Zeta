@@ -19,7 +19,9 @@ import {
   type NamedBaoElfAsk,
 } from "./firstboot-bao-elf.ts";
 import { railFindingsForEspWrites } from "./injection-rail.ts";
+import { planPublicEndpoint, type PublicEndpoint } from "../installer/public-endpoint.ts";
 import type {
+  FileBackedEspWrite,
   FileBackedZflashImageExecution,
   FileBackedZflashImageExecutionFeedback,
   FileBackedZflashImageExecutor,
@@ -54,8 +56,12 @@ export interface FileBackedZflashCliOptions {
   readonly qemuBakeTestCredMarker?: boolean;
   /** WP11 QEMU only: write `/zeta-qemu-k3s-first-boot-verify` (public marker). */
   readonly qemuK3sFirstBootVerifyMarker?: boolean;
+  /** WP27: append `ZETA_ALLOW_LONGHORN_UNDERSIZED='1'` to the ESP firstboot conf. See lib.ts. */
+  readonly allowLonghornUndersized?: boolean;
   /** WP21 (081M35C7NJR087G0R002S4R654): full 40-hex commit sha for `/zeta-repo-pin`. See lib.ts. */
   readonly repoPinCommit?: string;
+  /** 081M3JG74G0087G0R001XJC837: `--acme-email` + `--public-domain`, validated. See lib.ts. */
+  readonly publicEndpoint?: PublicEndpoint;
 }
 
 export type FileBackedZflashCliParseResult =
@@ -82,6 +88,21 @@ export interface FileBackedZflashCliRunDeps {
    * only worth having if it is READ. See `injection-rail.ts`.
    */
   readonly warn?: (line: string) => void;
+  /**
+   * Where the post-bake read-back's SUCCESS line goes
+   * (081M39CJP96087G0R001T4J2R3).
+   *
+   * Defaults to stderr, deliberately: `main()` writes
+   * `ZFLASH_QEMU_RETENTION_BOOT_IMAGE=...` to stdout and callers parse that,
+   * so a new stdout line would be a wire-format change wearing a log's
+   * clothes.
+   *
+   * It exists because refusing the bad case is only half the discipline. A
+   * bake that verified everything and a bake that verified nothing printed the
+   * same thing — nothing — so "was this image actually checked, and how?" was
+   * unanswerable from a log.
+   */
+  readonly log?: (line: string) => void;
 }
 
 export type FileBackedZflashCliRunResult =
@@ -112,7 +133,10 @@ const USAGE =
   "  --bind-uefi-keyfile-marker   write /zeta-bind-uefi-keyfile (guest persist-opt-in; not default)\n" +
   "  --qemu-creds-passphrase-file <path>  write /zeta-qemu-creds-passphrase from a file (QEMU; not argv)\n" +
   "  --qemu-bake-test-cred-marker write /zeta-qemu-bake-test-cred (QEMU restore probe bake; not default)\n" +
-  "  --qemu-k3s-first-boot-verify-marker  write /zeta-qemu-k3s-first-boot-verify (WP11 QEMU-only; not default)\n";
+  "  --qemu-k3s-first-boot-verify-marker  write /zeta-qemu-k3s-first-boot-verify (WP11 QEMU-only; not default)\n" +
+  "  --acme-email <addr>          public TLS: ACME contact, onto /zeta-firstboot.conf (requires --public-domain)\n" +
+  "  --public-domain <domain>     public TLS: base domain; the portal is published as portal.<domain>\n" +
+  "                               (omit both: the installer asks at the start of the install; Enter = no public TLS)\n";
 
 function resolveTestInfraPubkeyPath(): string {
   return resolveZetaTestInfraPubkeyFromZflashModule(import.meta.url);
@@ -212,6 +236,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   let qemuBakeTestCredMarker = false;
   let qemuK3sFirstBootVerifyMarker = false;
   let qemuCredsPassphraseFile: string | undefined;
+  let acmeEmailFlag: string | undefined;
+  let publicDomainFlag: string | undefined;
 
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]!;
@@ -250,7 +276,9 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       arg === "--join-token" ||
       arg === "--bao-load-site" ||
       arg === "--bao-path" ||
-      arg === "--qemu-creds-passphrase-file"
+      arg === "--qemu-creds-passphrase-file" ||
+      arg === "--acme-email" ||
+      arg === "--public-domain"
     ) {
       const value = requireValue(args, index, arg);
       if (typeof value !== "string") return { kind: "error", error: value.error };
@@ -275,6 +303,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       else if (arg === "--bao-load-site") baoLoadSiteFlag = value;
       else if (arg === "--bao-path") baoPathFlag = value;
       else if (arg === "--qemu-creds-passphrase-file") qemuCredsPassphraseFile = value;
+      else if (arg === "--acme-email") acmeEmailFlag = value;
+      else if (arg === "--public-domain") publicDomainFlag = value;
       else inlineStagingDirectory = value;
       index++;
       continue;
@@ -294,6 +324,12 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
     ...(joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath }),
   });
   if (!firstbootRole.ok) return { kind: "error", error: firstbootRole.error };
+
+  const publicEndpoint = planPublicEndpoint({
+    ...(acmeEmailFlag === undefined ? {} : { acmeEmail: acmeEmailFlag }),
+    ...(publicDomainFlag === undefined ? {} : { publicDomain: publicDomainFlag }),
+  });
+  if (!publicEndpoint.ok) return { kind: "error", error: publicEndpoint.error };
 
   const namedArgv: string[] = [];
   if (baoLoadSiteFlag !== undefined) namedArgv.push(`--bao-load-site=${baoLoadSiteFlag}`);
@@ -344,6 +380,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       ...(qemuBakeTestCredMarker ? { qemuBakeTestCredMarker: true } : {}),
       ...(qemuK3sFirstBootVerifyMarker ? { qemuK3sFirstBootVerifyMarker: true } : {}),
       ...(qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase }),
+      ...(publicEndpoint.value === null ? {} : { publicEndpoint: publicEndpoint.value }),
     },
   };
 }
@@ -361,6 +398,118 @@ function describeExecutionFeedback(error: FileBackedZflashImageExecutionFeedback
   }
   const output = error.stderr.length > 0 ? error.stderr : error.stdout;
   return `command failed (${formatCommand(error.command)}) with exit ${error.exitCode ?? "unknown"}: ${output || "no output"}`;
+}
+
+/**
+ * Read the baked ESP back and refuse anything the guest could not use.
+ *
+ * 081KZHJPJCF established the shape: `mcopy` can exit 0 without the file
+ * landing, so read the ESP back rather than trusting the writer. What it read
+ * back was `mdir -i <image>@@<offset> ::` — the ROOT DIRECTORY, and only its
+ * names.
+ *
+ * 081M39CJP96087G0R001T4J2R3 (WP29) MEASURED what that does and does not see,
+ * on the real 1.67 GiB installer ISO of run 36044770870 (ESP at LBA 268,
+ * 3 MiB, FAT12) baked through this exact path and then damaged on purpose:
+ *
+ *   image truncated to 1_000_000 bytes  ->  `mdir ::` EXIT 0. Check passes.
+ *   image truncated to 2_000_000 bytes  ->  `mdir ::` EXIT 0. Check passes.
+ *
+ * A FAT12 root directory lives at sector 11 — byte 5_632 of the ESP, about
+ * 143 KB into the image. `mdir ::` reads the boot sector and that one region
+ * and stops. It never follows a FAT chain and never touches the data area, so
+ * everything past ~143 KB could be missing and the bake still reports success.
+ * (The same experiment also falsified truncation as the CAUSE of this work
+ * item's `(no-vfat)`: a truncated image still mounts. The blindness is real;
+ * it is simply not what bit us.)
+ *
+ * So the read-back now does two things the listing cannot:
+ *
+ *  1. `mdir -/ ::` — RECURSIVE. Walks every directory cluster through the FAT,
+ *     including the ISO's own `EFI/BOOT/...`, so a filesystem that cannot be
+ *     traversed end to end fails here instead of in a guest 40 minutes later.
+ *  2. `mtype ::/<file>` per inline write — reads the bytes back through the
+ *     allocation chain into the data area and compares them to what was asked
+ *     for. This is the only check here that proves the DATA is retrievable
+ *     rather than merely indexed.
+ *
+ * Honest limit, because the same discipline applies to this function: every
+ * command addresses `<image>@@<espOffsetBytes>`, so a bake that wrote to the
+ * wrong offset verifies its own writes at the wrong offset and passes. That
+ * class is refused earlier, by `prepareBootImage`, which will not bake against
+ * an offset nothing confirmed. Nothing DOWNSTREAM of the write can catch it.
+ *
+ * Content is never echoed: `/zeta-wifi-credentials.json`,
+ * `/zeta-join-token` and `/zeta-qemu-creds-passphrase` are plaintext secrets
+ * on a FAT partition (see `railFindingsForEspWrites`), so a mismatch reports
+ * byte counts and the destination, never the bytes.
+ */
+function verifyBakedEspReadBack(
+  executor: FileBackedZflashImageExecutor,
+  imageSpecifier: string,
+  espWrites: readonly FileBackedEspWrite[],
+  log: (line: string) => void,
+): string | null {
+  const listing = executor.runCommand({
+    command: "mdir",
+    args: ["-i", imageSpecifier, "-/", "::"],
+  });
+  if (listing.exitCode !== 0) {
+    return (
+      `ESP write verification could not list the ESP after bake (mdir exit ` +
+      `${listing.exitCode ?? "unknown"}): ${listing.stderr || listing.stdout || "no output"}`
+    );
+  }
+  const listingText = listing.stdout ?? "";
+  const missing = espWrites
+    .map((write) => write.destination.replace(/^\/+/, ""))
+    .filter((name) => !listingText.includes(name));
+  if (missing.length > 0) {
+    return (
+      `ESP write verification failed — ${missing.length} planned file(s) absent from the ESP ` +
+      `after bake despite mcopy reporting success (silent drop, 081KZHJPJCF): ` +
+      `${missing.join(", ")}.\nESP listing:\n${listingText}`
+    );
+  }
+
+  let contentVerified = 0;
+  for (const write of espWrites) {
+    // Only inline writes: their expected bytes are in hand. A `sourcePath`
+    // write would need the source re-read (and may be binary), which is a
+    // different check; the recursive listing above still covers it.
+    if (write.content === undefined) continue;
+    const readBack = executor.runCommand({
+      command: "mtype",
+      args: ["-i", imageSpecifier, `::${write.destination}`],
+    });
+    if (readBack.exitCode !== 0) {
+      return (
+        `ESP write verification failed — ${write.destination} is listed on the ESP but its CONTENT ` +
+        `could not be read back (mtype exit ${readBack.exitCode ?? "unknown"}, 081M39CJP96087G0R001T4J2R3): ` +
+        `${readBack.stderr || "no output"}. A name in the directory with unreadable data behind it is ` +
+        `what the guest sees as a missing injection.`
+      );
+    }
+    const actual = readBack.stdout ?? "";
+    if (actual !== write.content) {
+      return (
+        `ESP write verification failed — ${write.destination} read back with different bytes than were ` +
+        `written (081M39CJP96087G0R001T4J2R3): planned ${write.content.length} byte(s), read ` +
+        `${actual.length} byte(s). Contents are not printed — some ESP destinations carry plaintext ` +
+        `secrets.`
+      );
+    }
+    contentVerified++;
+  }
+
+  // The good case, said out loud. Counts, not names: `/zeta-join-token` and
+  // friends are secrets, and this line goes in CI logs.
+  log(
+    `zflash: ESP read-back ok — ${espWrites.length} planned file(s) present in a RECURSIVE listing, ` +
+      `${contentVerified} of them byte-compared through the FAT chain (${espWrites.length - contentVerified} ` +
+      `source-file write(s) checked by presence only). Verified at ${imageSpecifier}.`,
+  );
+  return null;
 }
 
 export function runFileBackedZflashCli(
@@ -423,8 +572,10 @@ export function runFileBackedZflashCli(
     ...(options.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
     ...(options.qemuBakeTestCredMarker === true ? { qemuBakeTestCredMarker: true } : {}),
     ...(options.qemuK3sFirstBootVerifyMarker === true ? { qemuK3sFirstBootVerifyMarker: true } : {}),
+    ...(options.allowLonghornUndersized === true ? { allowLonghornUndersized: true } : {}),
     ...(options.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: options.qemuCredsPassphrase }),
     ...(options.repoPinCommit === undefined ? {} : { repoPinCommit: options.repoPinCommit }),
+    ...(options.publicEndpoint === undefined ? {} : { publicEndpoint: options.publicEndpoint }),
   };
   const planned = planFileBackedZflashImage(planInput);
   if (!planned.ok) return { ok: false, error: planned.error };
@@ -475,30 +626,15 @@ export function runFileBackedZflashCli(
   // override via deps.verifyEspWrites. Skipped when there are no ESP writes to verify.
   const shouldVerify = deps.verifyEspWrites ?? deps.executor === undefined;
   if (shouldVerify && planned.value.espWrites.length > 0) {
-    const listing = executor.runCommand({
-      command: "mdir",
-      args: ["-i", executionPlan.value.mtoolsImageSpecifier, "::"],
-    });
-    if (listing.exitCode !== 0) {
-      return {
-        ok: false,
-        error:
-          `ESP write verification could not list the ESP after bake (mdir exit ` +
-          `${listing.exitCode ?? "unknown"}): ${listing.stderr || listing.stdout || "no output"}`,
-      };
-    }
-    const listingText = listing.stdout ?? "";
-    const missing = planned.value.espWrites
-      .map((write) => write.destination.replace(/^\/+/, ""))
-      .filter((name) => !listingText.includes(name));
-    if (missing.length > 0) {
-      return {
-        ok: false,
-        error:
-          `ESP write verification failed — ${missing.length} planned file(s) absent from the ESP ` +
-          `after bake despite mcopy reporting success (silent drop, 081KZHJPJCF): ` +
-          `${missing.join(", ")}.\nESP listing:\n${listingText}`,
-      };
+    const failure = verifyBakedEspReadBack(
+      executor,
+      executionPlan.value.mtoolsImageSpecifier,
+      planned.value.espWrites,
+      deps.log ?? ((line: string) => process.stderr.write(`${line}
+`)),
+    );
+    if (failure !== null) {
+      return { ok: false, error: failure };
     }
   }
 

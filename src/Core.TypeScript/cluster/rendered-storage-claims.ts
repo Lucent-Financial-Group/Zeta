@@ -125,6 +125,7 @@ import {
 import { resolve, join, dirname } from "node:path";
 import { applicationDirs } from "./declared-cluster-trees.ts";
 import { spawnSync } from "node:child_process";
+import { DEFAULT_MAX_BYTES } from "../io/safe-io.ts";
 import { parseAllDocuments, stringify as yamlStringify } from "yaml";
 import { stringCompare } from "../collation/collation.ts";
 import { quantityToGib } from "./single-node-readiness.ts";
@@ -356,7 +357,16 @@ export interface RenderOptions {
   readonly kubeVersion?: string | undefined;
 }
 
-function defaultRunHelm(
+/**
+ * The ONE helm runner. Exported because it was cloned, and the clone rotted.
+ *
+ * `inert-valuesobject-keys.ts` carried a BYTE-IDENTICAL copy of this function,
+ * including the 1 MiB `maxBuffer` defect fixed here in #17622 -- so the fix
+ * landed in one of the two and the other kept silently dropping the six
+ * largest charts. Three hand-rolled clones of one helm invocation is why this
+ * class recurred; exporting it removes one of them outright.
+ */
+export function defaultRunHelm(
   helmBin: string,
   timeoutMs: number,
 ): (args: readonly string[], cwd: string) => { status: number; stdout: string; stderr: string } {
@@ -365,12 +375,38 @@ function defaultRunHelm(
       cwd,
       encoding: "utf8",
       timeout: timeoutMs,
+      // MEASURED 2026-09-24: without this, six charts are silently unrenderable.
+      //
+      // Node's default `maxBuffer` is 1 MiB. `helm template` on a large chart
+      // blows straight past it -- cloudnative-pg alone renders 1,272,266 bytes
+      // -- and spawnSync then KILLS the child with ENOBUFS. The six biggest
+      // charts in the tree (arc-controller, argo-rollouts, argocd,
+      // cloudnativepg, external-secrets, kube-prometheus-stack) all failed this
+      // way, and every consumer of this renderer quietly stopped seeing them:
+      // the storage-claims snapshot, image-footprint, image-resolvability and
+      // inert-valuesobject-keys alike.
+      //
+      // The cap is not removed, it is RAISED to the repo's own
+      // `DEFAULT_MAX_BYTES` (64 MiB, safe-io.ts). An unbounded child can hang
+      // the process on a runaway render; a 64x headroom over the largest chart
+      // measured cannot.
+      maxBuffer: DEFAULT_MAX_BYTES,
       env: { ...process.env, HELM_EXPERIMENTAL_OCI: "1" },
     });
+    // `result.error` FIRST, and the `??` chain below is why this is not a
+    // stylistic change. On ENOBUFS and on timeout, spawnSync sets `status` to
+    // null and leaves `stderr` as the EMPTY STRING rather than undefined -- so
+    // `result.stderr ?? result.error.message` never reached the message, and
+    // the caller reported `helm-template-failed` with an empty detail. A
+    // failure that cannot say why is the shape that cost a day here: the six
+    // charts above read as a chart defect for as long as nobody ran helm by
+    // hand.
+    const failure = result.error === undefined ? "" : `${result.error.name}: ${result.error.message}`;
+    const stderr = (result.stderr ?? "").trim() === "" ? failure : (result.stderr ?? "");
     return {
       status: result.status ?? 1,
       stdout: result.stdout ?? "",
-      stderr: result.stderr ?? (result.error === undefined ? "" : String(result.error.message)),
+      stderr,
     };
   };
 }
@@ -772,6 +808,38 @@ export function extractRenderedPvcs(
         gibibytes: shape.size === "" ? null : quantityToGib(shape.size),
         count: replicas,
       });
+    }
+
+    // CLOUDNATIVEPG `Cluster`. Same situation as the operator CRs above, different
+    // shape: the operator creates one PVC per instance (named `<cluster>-<n>`, RWO
+    // by default) from `spec.storage.{storageClass,size}`, and nothing in the
+    // manifest is a PersistentVolumeClaim. `spec.instances` is the count. Matched
+    // by apiVersion + kind because `spec.storage.size` alone is too generic a shape
+    // to mean "an operator will claim this". (`spec.walStorage`, a second volume
+    // per instance, is read the same way when present.)
+    const apiVersion = typeof doc["apiVersion"] === "string" ? doc["apiVersion"] : "";
+    if (kind === "Cluster" && apiVersion.split("/")[0] === "postgresql.cnpg.io") {
+      const instances = typeof spec["instances"] === "number" ? spec["instances"] : 1;
+      for (const [volume, field] of [
+        ["pgdata", "storage"],
+        ["pgwal", "walStorage"],
+      ] as const) {
+        const cnpgStorage = asRecord(spec[field]);
+        if (Object.keys(cnpgStorage).length === 0) continue;
+        const size = typeof cnpgStorage["size"] === "string" ? cnpgStorage["size"] : "";
+        out.push({
+          appId,
+          origin: "operatorStorageSpec",
+          name: `${volume}/${name}`,
+          workload: `${kind}/${name}`,
+          storageClassName: typeof cnpgStorage["storageClass"] === "string" ? cnpgStorage["storageClass"] : "",
+          accessModes: ["ReadWriteOnce"],
+          size,
+          gibibytes: size === "" ? null : quantityToGib(size),
+          count: instances,
+        });
+      }
+      continue;
     }
 
     const templates = spec["volumeClaimTemplates"];

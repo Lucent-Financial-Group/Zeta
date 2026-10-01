@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { parse as parseYaml } from "yaml";
 import { readFileSync } from "node:fs";
 import { buildRootDevCatalogManifest } from "../ports.ts";
 import {
@@ -309,6 +310,57 @@ describe("kind CI use case", () => {
    * that reads as "Cilium does not do LoadBalancer". Applying it after the
    * catalogue lets a LoadBalancer Service land with no pool.
    */
+  /**
+   * 081M388JAGM087G0R00054MXWN -- control-plane PARITY on kind --cni cilium.
+   * The included lane lifts the `cilium` Application; ArgoCD then reverts
+   * Cilium's `k8sServiceHost` to the metal name `control-plane`. Unless the kind
+   * node resolves that name (and the API cert carries it -- the profile half,
+   * pinned below) the agent init CrashLoops and the lane goes Degraded, which is
+   * what dispatch run 35929570637 measured. Pinned: the mapping is written into
+   * `<cluster>-control-plane`, BEFORE the catalogue can lift the Application;
+   * and kindnetd never gets it (it has no Cilium to adopt).
+   */
+  test("kind --cni cilium maps control-plane on the kind node before the catalogue; kindnetd does not", () => {
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), {
+      configPath: "/tmp/kind-cilium.yaml",
+      clusterName: "zeta-ci-cilium",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+      cni: "cilium",
+    });
+    const alias = log.findIndex((entry) => entry.startsWith("run:docker exec zeta-ci-cilium-control-plane sh -c ") && entry.includes("127.0.0.1 control-plane"));
+    expect(alias).toBeGreaterThan(-1);
+    const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
+    expect(alias).toBeLessThan(catalogAt);
+
+    const plain: string[] = [];
+    bringUpKindCiCluster(fakePorts(plain), {
+      configPath: "/tmp/kind.yaml",
+      clusterName: "zeta-ci",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+    });
+    expect(plain.some((entry) => entry.includes("127.0.0.1 control-plane"))).toBe(false);
+  });
+
+  test("the kind cilium profile SANs control-plane on the API server -- resolving the name is only half", () => {
+    const profile = readFileSync(
+      new URL("../../../../full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml", import.meta.url),
+      "utf8",
+    );
+    const docs = (parseYaml(profile) as { nodes?: { role?: string; kubeadmConfigPatches?: string[] }[] }).nodes ?? [];
+    const patches = docs.find((node) => node.role === "control-plane")?.kubeadmConfigPatches ?? [];
+    const cluster = patches.map((patch) => parseYaml(patch) as { kind?: string; apiServer?: { certSANs?: string[] } });
+    const sans = cluster.find((patch) => patch.kind === "ClusterConfiguration")?.apiServer?.certSANs ?? [];
+    expect(sans).toContain("control-plane");
+    // A kind merge patch REPLACES the list, so kind's own SANs must be restated or
+    // the host's kubeconfig (https://127.0.0.1:<port>) fails TLS -- the regression
+    // the first version of this patch shipped (live kind Cilium CNI, #17595).
+    expect(sans).toContain("localhost");
+    expect(sans).toContain("127.0.0.1");
+  });
+
   test("kind --cni cilium applies the LB-IPAM alias after Cilium helm and CRDs, before the catalogue", () => {
     const log: string[] = [];
     bringUpKindCiCluster(fakePorts(log), {
@@ -412,9 +464,11 @@ describe("kind CI use case", () => {
   /**
    * 081M0JXF6MS087G0R001HC34TM — THE WIRING FALSIFIER.
    *
-   * `isExcludedFromIncludedProof` stops excluding ten longhorn-backed
-   * Applications because `dev-cluster/manifests/longhorn.yaml` exists in the
-   * tree. That is a claim about the REPO. It only buys anything if bring-up
+   * `isExcludedFromIncludedProof` stops excluding every Application that names
+   * `zeta-block-replicated` / `zeta-block-local` because the dev binding
+   * manifests for those capabilities exist in the tree (they replaced the
+   * `longhorn.yaml` alias on 2026-09-23). That is a claim about the REPO. It
+   * only buys anything if bring-up
    * actually applies the file, and nothing about the repo-side claim can
    * detect a dropped `applyFileManifest` call. This test can: delete either
    * line from `applyDevStorageClassAliases` and it goes red.
@@ -424,7 +478,7 @@ describe("kind CI use case", () => {
    * exclusion was protecting against -- so the aliases must precede the
    * app-of-apps root, never merely accompany it.
    */
-  test("kind bring-up applies both dev alias StorageClasses BEFORE the app-of-apps root", () => {
+  test("kind bring-up applies both dev capability bindings BEFORE the app-of-apps root", () => {
     const log: string[] = [];
     bringUpKindCiCluster(fakePorts(log), {
       configPath: "/tmp/kind.yaml",
@@ -432,20 +486,45 @@ describe("kind CI use case", () => {
       gitRef: "main",
       gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
     });
-    const longhorn = `file:${devStorageAliasManifestPath("longhorn")}`;
-    const zetaLocalPath = `file:${devStorageAliasManifestPath("zetaLocalPath")}`;
-    expect(log).toContain(longhorn);
-    expect(log).toContain(zetaLocalPath);
+    const replicated = `file:${devStorageAliasManifestPath("blockReplicated")}`;
+    const local = `file:${devStorageAliasManifestPath("blockLocal")}`;
+    expect(log).toContain(replicated);
+    expect(log).toContain(local);
     const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
     expect(catalogAt).toBeGreaterThan(-1);
-    expect(log.indexOf(longhorn)).toBeLessThan(catalogAt);
-    expect(log.indexOf(zetaLocalPath)).toBeLessThan(catalogAt);
+    expect(log.indexOf(replicated)).toBeLessThan(catalogAt);
+    expect(log.indexOf(local)).toBeLessThan(catalogAt);
+  });
+
+  /**
+   * ONE DEFAULT, AS ON METAL. kind ships `standard` marked default; the dev
+   * binding marks `zeta-block-local` default too. Unless bring-up clears the
+   * stock mark, a class-less PVC binds whichever default is newest -- the
+   * ambiguity k3s-server.nix records on node-09485d. Asserted in BOTH
+   * directions: a stock class that exists is un-marked, and one that does not
+   * exist is left alone (a patch against an absent object would fail bring-up).
+   */
+  test("bring-up clears the stock default class that exists, and only that one", () => {
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log, ["storageclass/standard@-"]), {
+      configPath: "/tmp/kind.yaml",
+      clusterName: "zeta-ci",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+    });
+    const cleared = log.filter((entry) => entry.startsWith("patch:storageclass/"));
+    expect(cleared).toEqual([
+      'patch:storageclass/standard@-:{"metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}',
+    ]);
+    const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
+    expect(log.indexOf(cleared[0] ?? "")).toBeLessThan(catalogAt);
+    expect(log.indexOf(cleared[0] ?? "")).toBeGreaterThan(log.indexOf(`file:${devStorageAliasManifestPath("blockLocal")}`));
   });
 
   test("k3d bring-up applies the same aliases — the exclusion rule is provider-independent", () => {
     // `isExcludedFromIncludedProof` does not know which provider is running, so
-    // a `longhorn` class that exists only under kind would have the k3d lane
-    // asserting Applications it cannot bind.
+    // a capability bound only under kind would have the k3d lane asserting
+    // Applications it cannot bind.
     const log: string[] = [];
     bringUpK3dDevCluster(fakePorts(log), {
       configPath: "/tmp/k3d.yaml",
@@ -456,11 +535,11 @@ describe("kind CI use case", () => {
       gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
       env: {},
     });
-    const longhorn = `file:${devStorageAliasManifestPath("longhorn")}`;
-    expect(log).toContain(longhorn);
+    const replicated = `file:${devStorageAliasManifestPath("blockReplicated")}`;
+    expect(log).toContain(replicated);
     const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
     expect(catalogAt).toBeGreaterThan(-1);
-    expect(log.indexOf(longhorn)).toBeLessThan(catalogAt);
+    expect(log.indexOf(replicated)).toBeLessThan(catalogAt);
   });
 
   /**

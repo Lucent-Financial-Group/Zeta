@@ -8,7 +8,10 @@
 //   4. a stateful database         (TCP port + storage, cluster-only)
 // Plus the value-substitution and resolution rules each on their own.
 
-import { expect, test, describe } from "bun:test";
+import { expect, test, describe, afterAll } from "bun:test";
+import { readFileSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { API_VERSION } from "./types.ts";
 import {
   type Blueprint,
@@ -18,6 +21,7 @@ import {
   resolveValues,
   substitute,
 } from "./blueprint.ts";
+import { ICH777_IMAGE_PREFIX, ich777ContractViolations, sftpGateViolations } from "./steamcmd-contract.ts";
 
 // ── helpers ───────────────────────────────────────────────────────────
 function instance(name: string, spec: Deployable["spec"]): Deployable {
@@ -97,7 +101,7 @@ describe("game server blueprint (stateful, UDP, storage, sidecar, install)", () 
     const ss = one(objs, "StatefulSet");
     const vct = (ss.spec as any).volumeClaimTemplates;
     expect(vct[0].metadata.name).toBe("data");
-    expect(vct[0].spec.storageClassName).toBe("longhorn");
+    expect(vct[0].spec.storageClassName).toBe("zeta-block-replicated");
     expect(vct[0].spec.resources.requests.storage).toBe("20Gi");
   });
   test("install becomes an initContainer; main has templated args/env", () => {
@@ -291,18 +295,18 @@ describe("production fields: envFrom (Secret), probes, storageClassName", () => 
     });
   });
 
-  // (c) storageClassName overrides the longhorn default on the PVC / volumeClaimTemplate.
-  describe("storageClassName overrides the longhorn default", () => {
+  // (c) storageClassName overrides the zeta-block-replicated default on the PVC / volumeClaimTemplate.
+  describe("storageClassName overrides the zeta-block-replicated default", () => {
     test("StatefulSet volumeClaimTemplate uses the named class", () => {
       const db: Blueprint = {
         name: "pg",
         stateful: true,
         image: "postgres:16",
         storage: { size: "50Gi", mountPath: "/var/lib/postgresql/data" },
-        storageClassName: "zeta-local-path",
+        storageClassName: "zeta-block-local",
       };
       const ss = one(renderDeployable(db, instance("fast-db", { blueprint: "pg" })), "StatefulSet");
-      expect((ss.spec as any).volumeClaimTemplates[0].spec.storageClassName).toBe("zeta-local-path");
+      expect((ss.spec as any).volumeClaimTemplates[0].spec.storageClassName).toBe("zeta-block-local");
     });
     test("stateless PVC also honors the named class", () => {
       const cache: Blueprint = {
@@ -310,10 +314,10 @@ describe("production fields: envFrom (Secret), probes, storageClassName", () => 
         stateful: false,
         image: "redis:7",
         storage: { size: "5Gi", mountPath: "/data" },
-        storageClassName: "zeta-local-path",
+        storageClassName: "zeta-block-local",
       };
       const pvc = one(renderDeployable(cache, instance("kv", { blueprint: "cache" })), "PersistentVolumeClaim");
-      expect((pvc.spec as any).storageClassName).toBe("zeta-local-path");
+      expect((pvc.spec as any).storageClassName).toBe("zeta-block-local");
     });
   });
 
@@ -330,9 +334,9 @@ describe("production fields: envFrom (Secret), probes, storageClassName", () => 
     const objs = renderDeployable(legacy, instance("plain-db", { blueprint: "legacy-db" }));
     const main = () => (one(objs, "StatefulSet").spec as any).template.spec.containers[0];
 
-    test("longhorn stays the default storageClassName", () => {
+    test("zeta-block-replicated stays the default storageClassName", () => {
       const vct = (one(objs, "StatefulSet").spec as any).volumeClaimTemplates;
-      expect(vct[0].spec.storageClassName).toBe("longhorn");
+      expect(vct[0].spec.storageClassName).toBe("zeta-block-replicated");
     });
     test("no probes are rendered", () => {
       expect(main().readinessProbe).toBeUndefined();
@@ -361,5 +365,125 @@ describe("ownership + AI labels are stamped on every child", () => {
     for (const o of objs) {
       expect((o.metadata as any).labels["platform.zeta.io/admin"]).toBe("otto");
     }
+  });
+});
+
+/** The shipped Blueprint library, as Blueprint values. */
+function library(): Blueprint[] {
+  const docs = Bun.YAML.parse(readFileSync(new URL("../../k8s/applications/platform/blueprints.yaml", import.meta.url), "utf8")) as Array<{ metadata: { name: string }; spec: Omit<Blueprint, "name"> }>;
+  return docs.map((d) => ({ name: d.metadata.name, ...d.spec }) as Blueprint);
+}
+
+// ── ich777 SteamCMD blueprints: identity + image contract ───────────────
+// Workitems 081M3K1408D087G0R000WP4NDE (identity, PR #17721) and
+// 081M0QB1ZCV087G0R001P9YCPX (the steamcmd path).
+//
+// IDENTITY. PR #17708 fixed gmod's hand-written StatefulSet by forcing
+// runAsUser 1000, because cm2network/steamcmd owns its tree as uid 1000. The
+// controller-rendered `ghcr.io/ich777/steamcmd:*` Blueprints must NOT copy that:
+// their registry configs carry no `User`, so the process starts as root, and the
+// image's own `/opt/scripts/start.sh` does `usermod` / `groupmod` /
+// `chown -R ${UID}:${GID} ${DATA_DIR}` and then `su steam` to drop to UID=99,
+// GID=100. That drop REQUIRES starting as root. So the controller imposes NO
+// process identity: pod securityContext is exactly { fsGroup: 1000 }, and no
+// container carries a securityContext of its own.
+//
+// IMAGE CONTRACT. Read 2026-09-28 from the registry (config blob + every layer),
+// not from a README — ghcr.io/ich777/steamcmd, linux/amd64:
+//   garrysmod  index sha256:8b7aa732d5317ea6ea3cd0c53d599af9121fd438fa6c4c536e48cc1f2cb4bfc7
+//   unturned   index sha256:7aad70045a425c8f14262305b0f5e5d7832bc8e930be8b61c1c2e3e193972840
+//   both  Entrypoint ["/opt/scripts/start.sh"], no Cmd, no User
+//         Env DATA_DIR=/serverdata STEAMCMD_DIR=/serverdata/steamcmd
+//             SERVER_DIR=/serverdata/serverfiles GAME_ID=template
+//             GAME_NAME=template GAME_PARAMS=template GAME_PORT=27015
+//             VALIDATE= UID=99 GID=100
+//   layers: the only steamcmd-shaped path is the EMPTY directory
+//     `serverdata/steamcmd/` (beside `serverdata/serverfiles/`); `opt/` holds
+//     only `opt/scripts/start.sh` and `opt/scripts/start-server.sh`. There is
+//     no `/opt/steamcmd` and no steamcmd binary anywhere in the image.
+//   The two scripts extracted from the last layer are byte-identical (modulo
+//   CRLF) to the `garrysmod` / `unturned` branches of ich777/docker-steamcmd-server.
+// `start-server.sh` is what installs the game. If `${STEAMCMD_DIR}/steamcmd.sh`
+// is missing it wgets steamcmd_linux.tar.gz INTO `${STEAMCMD_DIR}` (it never
+// mkdirs it), runs `+force_install_dir ${SERVER_DIR} +app_update ${GAME_ID}`
+// (plus `validate` iff VALIDATE == "true"), then starts the server from
+// `${SERVER_DIR}`:
+//   garrysmod  srcds_run -game ${GAME_NAME} ${GAME_PARAMS} -console +port ${GAME_PORT}
+//   unturned   Unturned_Headless.x86_64 -nographics ${GAME_PARAMS} -port:${GAME_PORT} -sv
+// So, pinned below:
+//   * no `command` / `args` on main and no install initContainer — an override
+//     skips start.sh, steamcmd is never fetched, and nothing is installed;
+//   * GAME_ID is the Steam appid (never the image's `template`);
+//   * the PVC mounts at SERVER_DIR, not DATA_DIR: a volume over /serverdata
+//     would hide the image's `serverdata/steamcmd/` directory, and the wget
+//     into it would fail on a fresh volume.
+//
+// NOT pinned here (needs the network): that a future tag keeps this contract.
+// Re-read the image config and layers when bumping a tag.
+describe("ich777 SteamCMD blueprints: the image's own entrypoint installs the game (library data)", () => {
+  const steamcmd = library().filter((bp) => bp.image.startsWith(ICH777_IMAGE_PREFIX));
+  const EXPECT: Record<string, { appId: string; gamePort: string }> = {
+    gmod: { appId: "4020", gamePort: "27015" },
+    unturned: { appId: "1110390", gamePort: "27015" },
+  };
+
+  test("the library actually contains the ich777 SteamCMD blueprints (not vacuous)", () => {
+    expect(steamcmd.map((b) => b.name).sort()).toEqual(["gmod", "unturned"]);
+  });
+
+  for (const bp of steamcmd) {
+    test(`${bp.name}: satisfies the ich777 contract (steamcmd-contract.ts)`, () => {
+      const podSpec = (one(renderDeployable(bp, instance(`${bp.name}-srv`, { blueprint: bp.name })), "StatefulSet").spec as any).template.spec;
+      expect(ich777ContractViolations(podSpec, EXPECT[bp.name]!)).toEqual([]);
+    });
+  }
+
+  test("gmod: GAME_NAME is the srcds game directory", () => {
+    expect(steamcmd.find((b) => b.name === "gmod")?.env?.GAME_NAME).toBe("garrysmod");
+  });
+
+  // The helper must be able to fail: the pre-#17729 gmod shape trips it.
+  test("control: the pre-#17729 gmod shape is reported, not passed", () => {
+    const old: Blueprint = {
+      name: "gmod-old", stateful: true, image: "ghcr.io/ich777/steamcmd:garrysmod",
+      install: "/opt/steamcmd/steamcmd.sh +force_install_dir /data +login anonymous +app_update 4020 validate +quit",
+      command: ["/data/srcds_run"], storage: { size: "1Gi", mountPath: "/data" },
+    };
+    const podSpec = (one(renderDeployable(old, instance("old", { blueprint: "gmod-old" })), "StatefulSet").spec as any).template.spec;
+    expect(ich777ContractViolations(podSpec, { appId: "4020", gamePort: "27015" }).length).toBeGreaterThanOrEqual(5);
+  });
+});
+
+// ── atmoz/sftp sidecars are opt-in (library data, rendered) ──────────────
+// PR #17736 / workitem 081M3K57P0A087G0R000AZ486D; the full contract, the uid:gid
+// reasoning and the stub-based runner live in steamcmd-contract.ts.
+//   gmod/unturned: 99:100 (ich777 start.sh chowns DATA_DIR to UID=99 GID=100)
+//   arma-reforger: 1000:1000 (acemod image runs as root; SFTP is not served as root,
+//                  so the fsGroup — read via the group, write to game files NOT guaranteed)
+describe("atmoz/sftp sidecars are opt-in: idle without a key, start atmoz with a user spec once one exists", () => {
+  const withSftp = library().filter((bp) => (bp.sidecars ?? []).some((s) => s.image.startsWith("atmoz/sftp")));
+  const OWNER: Record<string, string> = { gmod: "99:100", unturned: "99:100", "arma-reforger": "1000:1000" };
+  const ROOT = mkdtempSync(join(tmpdir(), "bp-sftp-keys-")).replaceAll("\\", "/");
+  afterAll(() => rmSync(ROOT, { recursive: true, force: true }));
+
+  test("the library has the three atmoz/sftp sidecar blueprints (not vacuous)", () => {
+    expect(withSftp.map((b) => b.name).sort()).toEqual(["arma-reforger", "gmod", "unturned"]);
+  });
+
+  for (const bp of withSftp) {
+    test(`${bp.name}: opt-in gate, optional keys ConfigMap, key-only user zeta::${OWNER[bp.name]}`, async () => {
+      const podSpec = (one(renderDeployable(bp, instance(`${bp.name}-srv`, { blueprint: bp.name })), "StatefulSet").spec as any).template.spec;
+      expect(await sftpGateViolations(podSpec, `${bp.name}-srv`, `zeta::${OWNER[bp.name]}`, ROOT)).toEqual([]);
+    });
+  }
+
+  // The runner must be able to fail: a bare sidecar (the pre-#17736 shape) trips it.
+  test("control: the pre-#17736 bare sidecar is reported, not passed", async () => {
+    const bare: Blueprint = {
+      name: "bare", stateful: true, image: "x", storage: { size: "1Gi", mountPath: "/d" },
+      sidecars: [{ name: "sftp", image: "atmoz/sftp:alpine", mountDataAt: "/home/zeta/data" }],
+    };
+    const podSpec = (one(renderDeployable(bare, instance("bare", { blueprint: "bare" })), "StatefulSet").spec as any).template.spec;
+    expect((await sftpGateViolations(podSpec, "bare", "zeta::99:100", ROOT)).length).toBeGreaterThanOrEqual(3);
   });
 });

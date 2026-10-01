@@ -89,8 +89,15 @@ describe("081M0N90CHX087G0R0034C7NPT — the out-of-subset constructs the graph 
     // previously-undeclared platform -> kube-prometheus-stack CRD edge was added.
     // The node's existing `dependsOn: [...]` flow sequence was extended in place,
     // so flow-seq is unchanged at 29.
-    expect(folded).toBe(46);
-    expect(flowSeq).toBe(29);
+    // 46 -> 45 folded on 2026-09-27 (081M3JG74G0087G0R001XJC837): `platform`
+    // lost its `cert-manager: >-` citation with the edge itself -- the ACME
+    // issuers moved out of platform into the install-time platform-public-tls
+    // Application. flow-seq unchanged: dependsOn was shortened in place.
+    expect(folded).toBe(45);
+    // flow-seq 29 -> 30 on 2026-09-27: `temporal-postgres` added with
+    // `dependsOn: [cloudnativepg]`; folded unchanged at 45 (its citation +1, the
+    // retired `temporal -> cockroachdb` intent adjudication -1).
+    expect(flowSeq).toBe(30);
   });
 });
 
@@ -205,7 +212,8 @@ describe("081M0N90CHX087G0R0034C7NPT — ace agrees with the two tools that rout
     // yet — temporal's visibility layer cannot point here until its chart's
     // appVersion is >= 1.30.1; when that lifts the edge runs temporal ->
     // opensearch, not the reverse).
-    expect(graph.spec.dependsOn.length).toBe(49);
+    // 49 -> 50 on 2026-09-27: `temporal-postgres` (temporal's CNPG database).
+    expect(graph.spec.dependsOn.length).toBe(50);
   });
 
   test("ace, the yaml package, lane-partition and derive-sync-waves read the SAME nodes and edges", () => {
@@ -228,7 +236,8 @@ describe("081M0N90CHX087G0R0034C7NPT — ace agrees with the two tools that rout
 
     // 47 -> 48 on 2026-09-04: `keda` joined the tree (Aaron 2026-09-04).
     // 48 -> 49 on 2026-09-04: `opensearch` joined the tree, `dependsOn: []`.
-    expect(viaAce.nodes.length).toBe(49);
+    // 49 -> 50 on 2026-09-27: `temporal-postgres` joined.
+    expect(viaAce.nodes.length).toBe(50);
     expect(viaAce.edges.length).toBeGreaterThan(0);
 
     expect(viaAce).toEqual(viaYamlPkg);

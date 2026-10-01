@@ -85,8 +85,13 @@ const INACTIVE_SHELL_INVENTORY_PREFIXES: readonly string[] = ["db/", "docs/recov
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
   ".gemini/service/lior-loop.sh",
+  "full-ai-cluster/nixos/modules/k3s-agent-tls-self-heal.sh",
+  "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-recovery.sh",
+  "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-sentinel-write.sh",
   "full-ai-cluster/nixos/modules/k3s-datastore-preflight.sh",
   "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh",
+  "full-ai-cluster/nixos/modules/k3s-kubelet-reservations.sh",
+  "full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
   "githooks/pre-push",
@@ -130,6 +135,33 @@ const RETAINED_SHELL_CATEGORY_ORDER: readonly RetainedShellCategory[] = [
 export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedShellCategory>> = {
   ".gemini/service/install-lior-service.sh": "host-service wrappers",
   ".gemini/service/lior-loop.sh": "host-service wrappers",
+  // WP25 (081M38G8NGC087G0R001GEGEDK): a systemd `ExecStartPre` on
+  // systemd.services.k3s, on both k3s-server.nix and k3s-agent.nix. Removes
+  // zero-length files under /var/lib/rancher/k3s/agent before k3s starts --
+  // the self-heal for a truncated write from an unclean stop (a power cut
+  // mid-first-boot wedged k3s forever retrying "error loading key ...:
+  // <nil>", measured on run 35927439681). Same retained-shell edge as its
+  // two siblings below: it runs on the boot path, the node's closure
+  // carries no bun, and an ExecStartPre cannot wait for one. Kept as a
+  // tracked `.sh` rather than an inline Nix string so it stays on this
+  // inventory AND can be EXECUTED by
+  // `k3s-agent-tls-self-heal.test.ts`, which runs every branch in CI.
+  "full-ai-cluster/nixos/modules/k3s-agent-tls-self-heal.sh": "host-service wrappers",
+  // 081M39CR74D087G0R002BEG2G4: a systemd service ordered after k3s.service,
+  // polling `systemctl`/`journalctl` to recover a STILLBORN k3s datastore
+  // (one that has never completed bootstrap, e.g. a power cut in the first
+  // ~20s of first boot) while never touching one that has genuinely served.
+  // Same retained-shell edge as its siblings: it runs on the boot path, the
+  // node's closure carries no bun, and this decision logic must speak on
+  // metal with no harness present. Kept as a tracked `.sh` so it stays on
+  // this inventory AND can be EXECUTED by
+  // `k3s-datastore-bootstrap-recovery.test.ts`, which drives every branch
+  // (the has-served case above all) over fixtures in CI.
+  "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-recovery.sh": "host-service wrappers",
+  // The write side of the same guard: records that a datastore has EVER
+  // served, exactly once, only on a real `/readyz` success. Same
+  // retained-shell edge and same reason it stays a tracked `.sh`.
+  "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-sentinel-write.sh": "host-service wrappers",
   // A systemd `ExecStart` on a NixOS cluster node, ordered before k3s.service:
   // it refuses to let k3s start when a node provisioned to JOIN already holds a
   // datastore (k3s silently IGNORES every join argument in that state). The
@@ -150,6 +182,19 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // this inventory AND can be EXECUTED by
   // `lint-k3s-join-intent-preflight.test.ts`, which runs every branch in CI.
   "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh": "host-service wrappers",
+  // 081M3KC68TK087G0R002NT64S8: a oneshot ordered before k3s.service that sizes
+  // the kubelet's reservations to the booted node's MemTotal (a static
+  // reservation larger than a small node made the kubelet refuse to start).
+  // Same retained-shell edge: boot path, no bun in the node's closure. A
+  // tracked `.sh` so `k3s-process-protection.test.ts` EXECUTES it over node
+  // sizes from 2 GiB to 256 GiB in CI.
+  "full-ai-cluster/nixos/modules/k3s-kubelet-reservations.sh": "host-service wrappers",
+  // 081M3K23YCP087G0R003BVDS1P: zeta-dev-toolchain.service's ExecStart. It is
+  // the unit that INSTALLS bun (tools/setup/install.sh), so it cannot be bun;
+  // it moved the dev toolchain out of zeta-install.sh (already retained, same
+  // edge) to after first boot. A tracked `.sh` so
+  // `dev-toolchain-post-boot.test.ts` EXECUTES every branch in CI.
+  "full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh": "host-service wrappers",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh": "nixos installer",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh": "nixos installer",
   // 081KWN0JKJV retained Git-hook shell edge: installs/refuses commit-message

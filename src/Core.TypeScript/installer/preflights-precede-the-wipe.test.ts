@@ -71,6 +71,76 @@ describe("installer preflights run BEFORE anything is destroyed", () => {
     expect(clone).toBeGreaterThan(wipe);
   });
 
+  // WP28 (081M393B9TB087G0R000Y529Z8) — a third instance of the same class,
+  // and the first one that is not about the install FAILING.
+  //
+  //   B5  Longhorn capacity. The installer gives Longhorn the longhorn1 TAIL off
+  //       the boot disk (1G by default) plus every non-boot disk whole, and the
+  //       committed roster declares ~943 GiB of driver.longhorn.io PVCs against
+  //       it. On a single-disk box the pool is one gibibyte whatever the disk's
+  //       size. Nothing refused: the install SUCCEEDED, the cluster came up, and
+  //       fifteen Applications' PVCs pended forever while the operator read PVC
+  //       events to find out why.
+  //
+  // That is why it belongs here rather than in a post-install health check. The
+  // whole geometry is known before anything is wiped, so the honest moment to
+  // refuse is with the previous OS still on the disk — and the bail prints the
+  // arithmetic plus three remedies rather than a verdict.
+  it("B5: the Longhorn capacity check precedes the wipe", () => {
+    const capacity = firstCodeLine(/assert_longhorn_pool_holds_the_roster\b/);
+    expect(capacity).toBeLessThan(Number.POSITIVE_INFINITY);
+    expect(capacity).toBeLessThan(wipe);
+  });
+
+  it("B5: the check is CALLED, not merely defined", () => {
+    // A preflight that is defined and never invoked is the vacuity class in its
+    // purest form: it reads as protection, greps as present, and runs never.
+    // `firstCodeLine` finds the definition line too, so match the bare call.
+    const invocation = lines.findIndex((l) => /^assert_longhorn_pool_holds_the_roster\s*$/.test(l.trimEnd()));
+    expect(invocation).toBeGreaterThan(-1);
+    expect(invocation + 1).toBeLessThan(wipe);
+  });
+
+  it("B5: the partition step it protects is still AFTER the wipe", () => {
+    // Same shape as B4 above: if the longhorn1 partition were ever created
+    // before the wipe, this preflight would be redundant rather than wrong, and
+    // the reasoning recorded above would be stale.
+    const partition = firstCodeLine(/sgdisk\s+-n\s+"3:0:0"/);
+    expect(partition).toBeLessThan(Number.POSITIVE_INFINITY);
+    expect(partition).toBeGreaterThan(wipe);
+  });
+
+  // B6 (081M3BWJ96T087G0R0028WT3S3, first-boot dependency inventory). The binary
+  // cache is the second network dependency of an install. `nixos-install` runs
+  // with `fallback true`, so a cache that GitHub-reachable networks cannot reach
+  // does not refuse: it becomes an unbounded from-source build on a wiped disk.
+  it("B6: the binary-cache probe precedes the wipe", () => {
+    const probe = firstCodeLine(/curl\b.*nix-cache-info/);
+    expect(probe).toBeLessThan(Number.POSITIVE_INFINITY);
+    expect(probe).toBeLessThan(wipe);
+  });
+
+  it("B6: the hazard is real — nixos-install, which needs the cache, is AFTER the wipe", () => {
+    const install = firstCodeLine(/^\s*sudo nixos-install\b/);
+    expect(install).toBeLessThan(Number.POSITIVE_INFINITY);
+    expect(install).toBeGreaterThan(wipe);
+  });
+
+  it("B6: the binary-cache probe is bounded, refuses by name, and has a recorded escape hatch", () => {
+    const probeLine = lines.find((l) => {
+      const t = l.trimStart();
+      return !t.startsWith("#") && !/^(bail|echo|printf)\b/.test(t) && /curl\b.*nix-cache-info/.test(l);
+    });
+    expect(probeLine ?? "").toMatch(/\btimeout\s+\d+/);
+    expect(probeLine ?? "").toMatch(/--max-time\s+\d+/);
+    const refusal = lines.find((l) => /^\s*bail\b.*binary cache/.test(l));
+    expect(refusal).toBeDefined();
+    expect(refusal ?? "").toMatch(/Nothing has been wiped/);
+    expect(refusal ?? "").toMatch(/ZETA_ALLOW_NO_BINARY_CACHE=1/);
+    // A missing curl must be reported as a probe that did not run, never read as a pass.
+    expect(lines.some((l) => /binary-cache probe DID NOT RUN/.test(l))).toBe(true);
+  });
+
   it("the network probe cannot hang the zero-typing path", () => {
     // A black-hole route that accepts SYN and never replies, or a credential
     // prompt on a private URL, would otherwise stall here forever -- on the
