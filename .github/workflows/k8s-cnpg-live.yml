@@ -30,10 +30,6 @@
 name: k8s-cnpg-live
 
 on:
-  # TEMPORARY (removed before the PR is marked ready): a workflow file that is not yet on the
-  # default branch cannot be dispatched, so the proving branch triggers it on push.
-  push:
-    branches: [fix/postgres-shared-virt-live-lanes]
   workflow_dispatch:
     inputs:
       keep_going_note:
