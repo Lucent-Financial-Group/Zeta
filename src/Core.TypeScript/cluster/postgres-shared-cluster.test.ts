@@ -159,9 +159,11 @@ describe("credentials are minted with the role and handed out through a document
   const header = read(resolve(APPS, "postgres-shared/Application.yaml"));
 
   test("no password in the manifest, no superuser exposed, no pre-supplied secret", () => {
-    expect(JSON.stringify(cluster).toLowerCase()).not.toContain('"password"');
-    expect(cluster.spec.enableSuperuserAccess).not.toBe(true);
-    expect(cluster.spec.bootstrap.initdb.secret).toBeUndefined();
+    // POSITIVE form: the bootstrap carries exactly a database and its owner and nothing that could
+    // hold a credential (no `secret`, no `postInitSQL`); the operator mints the password.
+    expect(Object.keys(cluster.spec.bootstrap)).toEqual(["initdb"]);
+    expect(Object.keys(cluster.spec.bootstrap.initdb).sort()).toEqual(["database", "owner"]);
+    expect(cluster.spec.enableSuperuserAccess ?? false).toBe(false);
     expect(cluster.spec.bootstrap.initdb.owner).toBe(cluster.spec.bootstrap.initdb.database);
   });
 
@@ -315,8 +317,19 @@ describe("the backup principal can reach the backup bucket and NOTHING else on t
     const pg = identities().find((i) => i.name === "pgBackup")!;
     expect(script).toContain(`printf '%s' "${pg.credentials[0].accessKey}" > /work/PG_ACCESS_KEY_ID`);
     expect(script).toContain('printf \'%s\' "$PG_SECRET" > /work/PG_ACCESS_SECRET_KEY');
-    // Never an argv token or an echo.
-    expect(script).not.toMatch(/echo[^\n]*PG_SECRET/);
+    // Every line that mentions the secret is one of exactly these three uses -- a draw, a write to a
+    // tmpfs file, and the identities document -- so it is never an argv token, an env var or an echo.
+    const uses = script
+      .split("\n")
+      .filter((l) => l.includes("PG_SECRET"))
+      .map((l) => {
+        const t = l.trim();
+        if (t.startsWith("PG_SECRET=$(head -c 32 /dev/urandom")) return "draw";
+        if (t === 'printf \'%s\' "$PG_SECRET" > /work/PG_ACCESS_SECRET_KEY') return "tmpfs-file";
+        if (t.startsWith('{"identities"')) return "identities-document";
+        return `UNEXPECTED: ${t}`;
+      });
+    expect(uses).toEqual(["draw", "tmpfs-file", "identities-document"]);
   });
 });
 

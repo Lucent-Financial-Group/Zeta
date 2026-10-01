@@ -79,10 +79,13 @@ describe("it is highly available, to the extent one node allows, and says where 
 
 describe("credentials are minted with the role, never written down", () => {
   test("no password, no superuser access, no pre-supplied secret", () => {
-    const body = JSON.stringify(cluster);
-    expect(body.toLowerCase()).not.toContain('"password"');
+    // POSITIVE form (an absence assertion over the serialised manifest witnesses one rendering of a
+    // leak, never its absence -- audit-check-arity-nonequality R5): the bootstrap carries exactly a
+    // database and its owner, nothing that could hold a credential.
+    expect(Object.keys(cluster.spec.bootstrap)).toEqual(["initdb"]);
+    expect(Object.keys(cluster.spec.bootstrap.initdb).sort()).toEqual(["database", "owner"]);
     // enableSuperuserAccess defaults to false; a template must not turn it on.
-    expect(cluster.spec.enableSuperuserAccess).not.toBe(true);
+    expect(cluster.spec.enableSuperuserAccess ?? false).toBe(false);
     // `bootstrap.initdb.secret` would point at a Secret something else must mint.
     expect(cluster.spec.bootstrap.initdb.secret).toBeUndefined();
     expect(cluster.spec.bootstrap.initdb.owner).toBe(cluster.spec.bootstrap.initdb.database);
