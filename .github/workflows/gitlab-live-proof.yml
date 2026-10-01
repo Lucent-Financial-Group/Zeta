@@ -142,6 +142,8 @@ jobs:
           } | tee -a "$GITHUB_STEP_SUMMARY"
           # A sampler that outlives this step: one line per 30s of memory / swap / disk / load, so an
           # OOM or a full disk is visible in the log as a trend instead of as a mystery.
+          # The single quotes are the point: the inner shell, not this one, expands every `$`.
+          # shellcheck disable=SC2016
           nohup bash -c 'while true; do printf "%s | " "$(date +%T)"; free -m | awk "/Mem:/{printf \"mem used=%sMi avail=%sMi \", \$3, \$7} /Swap:/{printf \"swap used=%sMi \", \$3}"; printf "| disk avail=%s | load=%s\n" "$(df -BM --output=avail / | tail -1 | tr -d " ")" "$(cut -d" " -f1 /proc/loadavg)"; sleep 30; done' > "$RUNNER_TEMP/sampler.log" 2>&1 &
 
       - name: Bring up the lane, deploy GitLab, assert (a)-(f)
