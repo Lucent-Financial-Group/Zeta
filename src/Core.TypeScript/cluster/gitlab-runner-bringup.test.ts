@@ -32,7 +32,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { delimiter, join, resolve } from "node:path";
 import { parseAllDocuments, stringify as stringifyYaml } from "yaml";
@@ -214,6 +214,16 @@ echo "stub kubectl: unexpected invocation: $*" >&2
 exit 99
 `;
 
+/** One syscall, one answer: ENOENT is "the stub never wrote it", not a race to guard. */
+function readIfPresent(path: string): string | null {
+  try {
+    return readFileSync(path, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw e;
+  }
+}
+
 function runScript(script: string, scenario: Scenario, extraEnv: Record<string, string> = {}): Outcome {
   const dir = mkdtempSync(join(tmpdir(), "mint-stub-"));
   try {
@@ -247,8 +257,8 @@ function runScript(script: string, scenario: Scenario, extraEnv: Record<string, 
     return {
       exitCode: run.exitCode ?? -1,
       stdout: run.stdout.toString() + run.stderr.toString(),
-      execCalls: existsSync(countFile) ? Number(readFileSync(countFile, "utf8").trim()) : 0,
-      patch: existsSync(patchFile) ? (JSON.parse(readFileSync(patchFile, "utf8")) as Record<string, unknown>) : null,
+      execCalls: Number(readIfPresent(countFile)?.trim() ?? "0"),
+      patch: ((t) => (t === null ? null : (JSON.parse(t) as Record<string, unknown>)))(readIfPresent(patchFile)),
     };
   } finally {
     rmSync(dir, { recursive: true, force: true });
