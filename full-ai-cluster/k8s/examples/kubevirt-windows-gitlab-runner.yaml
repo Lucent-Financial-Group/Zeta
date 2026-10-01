@@ -1,0 +1,339 @@
+# A Windows guest on KubeVirt that registers itself as a GitLab runner on first boot --
+# the template, NOT a deployed workload. Runbook: docs/ops/WINDOWS-GITLAB-RUNNER.md.
+#
+# THIS FILE IS NOT APPLIED, AND IT IS DELIBERATELY NOT UNDER k8s/applications/. For the SAME
+# two reasons as kubevirt-windows-vm.yaml (read its header): ArgoCD's root reads only
+# `k8s/applications/*/Application.yaml`, so nothing ever syncs this; and every audit that
+# prices the cluster walks that tree for volume claims, so a 64Gi DataVolume inside it would be
+# counted as always-on demand that no sync provisions. OPT-IN BY CONSTRUCTION: the VM is
+# `runStrategy: Halted` and the image URL is a sentinel, so applying this file untouched starts
+# nothing and a fresh install never crash-loops over a Windows image it does not have.
+#
+# WE DO NOT SHIP OR DOWNLOAD WINDOWS. The operator supplies the image source and the licence.
+# The one `EDIT:` line is the DataVolume's source. Three ways to give it one (pick ONE, replace
+# the `source:` block):
+#     http:     { url: https://.../win2022-cloudbase-init.qcow2 }     # qcow2 / raw / .gz / .xz
+#     pvc:      { namespace: <ns>, name: <golden-windows-pvc> }       # CDI clone of a golden disk
+#     registry: { url: docker://<registry>/<windows-containerdisk> }  # a containerDisk image
+# ... or boot from a Windows installer ISO and install by hand, exactly as
+# kubevirt-windows-vm.yaml does (blank root disk + an `-iso` DataVolume + a CD-ROM first in the
+# boot order), then sysprep the result (see "WHAT THE IMAGE MUST CONTAIN").
+#
+# WHAT THE IMAGE MUST CONTAIN (the cluster cannot add any of it from outside):
+#   1. virtio drivers `viostor` (disk) and `NetKVM` (network). The root disk here is `virtio`
+#      and the NIC `virtio`; an image without them will not see its disk or have a network. The
+#      virtio-win driver ISO rides along as a CD-ROM (container disk, no PVC, same release as the
+#      vendored operator) so an image prepared by hand can install them from it. If you cannot,
+#      flip `bus: virtio` to `bus: sata` and `model: virtio` to `e1000e`.
+#   2. EITHER cloudbase-init (https://cloudbase.it/cloudbase-init/) with the config-drive
+#      metadata service (its default) -- runs the inline `userData` below on first boot;
+#      OR a generalized (sysprep /generalize) image -- Windows Setup then reads the
+#      `Unattend.xml` this file attaches as a sysprep CD-ROM. Both are wired; the one the image
+#      does not have is simply ignored.
+#   3. outbound HTTPS from the guest to download gitlab-runner.exe (see settings.json below; an
+#      air-gapped install changes `runnerExeUrl` to an internal mirror, the sha256 stays).
+#
+# HOW THE TOKEN GETS IN, and why this VM lives in the `gitlab` namespace. The runner's
+# authentication token is minted into Secret `gitlab-windows-runner-token` by
+# examples/gitlab-windows-runner-token.yaml (an in-cluster Rails call; no admin PAT). A Secret
+# is namespaced and KubeVirt can only attach one from the VM's own namespace, so the VM sits
+# beside it rather than copying a credential into a second namespace. The Secret becomes a
+# CD-ROM labelled ZETATOKEN whose file `runner-token` the bootstrap script reads. It never
+# appears in the VM spec, a ConfigMap, the script, or a log. (KubeVirt builds Secret/ConfigMap
+# disks when the VM STARTS: mint the token BEFORE starting the VM, or restart it after.)
+#
+# NETWORKING. Pod network, masquerade. The guest reaches GitLab through the same in-cluster
+# Service the Linux runner uses; because a Windows resolver does not walk the DHCP search list
+# the way a pod does, the URL is the FULLY QUALIFIED Service name. Two alternatives, both just a
+# `gitlabUrl` edit in settings.json: the Service's ClusterIP (`kubectl -n gitlab get svc
+# gitlab-webservice-default`), or the pinned LAN gateway address `http://<last LB-pool address>/`
+# (global.zeta.lanAddress; the `gitlab-lan` Gateway routes `/` to the same webservice).
+# `clone_url` is set to the same value so job checkouts stay in-cluster, as for the Linux runner.
+#
+# STORAGE. `zeta-block-local` by default, NOT the replicated class the sibling example uses:
+# a runner's disk is rebuildable from the image, so triplicating 64Gi (192Gi of the Longhorn
+# pool) buys durability nobody needs here. A local volume pins the VM to the node holding it.
+# Want the replicated class (the VM survives losing that node's disk, and may live-migrate)?
+# Change the one `storageClassName`; it is then charged to the pool at 3 replicas -- see
+# storage-profiles.json and check the pool has room BEFORE applying.
+# Not counted in the cluster's storage ledgers, on purpose (see the first paragraph): the
+# operator owns that arithmetic for an opt-in guest.
+#
+# SIZING: same shape and for the same reasons as kubevirt-windows-vm.yaml (memory request ==
+# limit, no CPU limit). 4 vCPU / 8Gi is a request against the node GitLab itself runs on
+# (~6 GiB of requests); on a single-node install this is the heaviest optional thing you can add.
+#
+# VALIDATED by the server-side dry-run in kubevirt-vm-live-test.ts (KubeVirt's and CDI's own
+# admission webhooks judge it). That proves the spec is valid. It does NOT prove a guest boots
+# or registers: no Windows image exists in CI.
+---
+# Everything the guest needs that is not a secret. Mounted as a CD-ROM labelled ZETABOOT.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: windows-runner-bootstrap
+  namespace: gitlab
+data:
+  settings.json: |
+    {
+      "gitlabUrl": "http://gitlab-webservice-default.gitlab.svc.cluster.local:8181",
+      "installDir": "C:\\GitLab-Runner",
+      "concurrent": 2,
+      "runnerExeUrl": "https://gitlab-runner-downloads.s3.amazonaws.com/v17.7.0/binaries/gitlab-runner-windows-amd64.exe",
+      "runnerExeSha256": "1754aa72202b8903c9f89c711a8e0f9232774eaa11c1962d47df172d07a69112"
+    }
+  # Idempotent and safe on every boot. Never prints the token; the transcript is
+  # C:\ProgramData\zeta\runner-bootstrap.log -- read it first when the runner does not appear.
+  bootstrap.ps1: |
+    $ErrorActionPreference = 'Stop'
+    $ProgressPreference = 'SilentlyContinue'
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    $zeta = 'C:\ProgramData\zeta'
+    New-Item -ItemType Directory -Force -Path $zeta | Out-Null
+    Start-Transcript -Path (Join-Path $zeta 'runner-bootstrap.log') -Append | Out-Null
+
+    function Find-Volume([string]$Label) {
+      for ($i = 0; $i -lt 60; $i++) {
+        $v = Get-Volume | Where-Object { $_.FileSystemLabel -eq $Label -and $_.DriveLetter } | Select-Object -First 1
+        if ($v) { return ($v.DriveLetter + ':\') }
+        Start-Sleep -Seconds 5
+      }
+      throw "no volume labelled $Label is attached"
+    }
+
+    $boot = Find-Volume 'ZETABOOT'
+    $settings = Get-Content (Join-Path $boot 'settings.json') -Raw | ConvertFrom-Json
+    $dir = $settings.installDir
+    $exe = Join-Path $dir 'gitlab-runner.exe'
+    $config = Join-Path $dir 'config.toml'
+
+    if ((Test-Path $config) -and (Select-String -Path $config -Pattern 'token = "glrt-' -Quiet)) {
+      Write-Host 'runner already registered; nothing to do'
+      Unregister-ScheduledTask -TaskName zeta-runner-bootstrap -Confirm:$false -ErrorAction SilentlyContinue
+      Stop-Transcript | Out-Null
+      exit 0
+    }
+
+    $tokenFile = Join-Path (Find-Volume 'ZETATOKEN') 'runner-token'
+    if (-not (Test-Path $tokenFile)) {
+      throw 'no runner-token on the ZETATOKEN volume: run the gitlab-windows-runner-token Job, then restart this VM'
+    }
+    $token = (Get-Content $tokenFile -Raw).Trim()
+    if ($token -notmatch '^glrt-') { throw 'runner-token is not a glrt- authentication token' }
+
+    New-Item -ItemType Directory -Force -Path $dir | Out-Null
+    if (-not (Test-Path $exe)) {
+      $tmp = "$exe.download"
+      $ok = $false
+      for ($i = 1; $i -le 30 -and -not $ok; $i++) {
+        try { Invoke-WebRequest -UseBasicParsing -Uri $settings.runnerExeUrl -OutFile $tmp; $ok = $true }
+        catch { Write-Host "download attempt $i failed: $($_.Exception.Message)"; Start-Sleep -Seconds 20 }
+      }
+      if (-not $ok) { throw 'could not download gitlab-runner.exe' }
+      $actual = (Get-FileHash -Algorithm SHA256 -Path $tmp).Hash.ToLowerInvariant()
+      if ($actual -ne $settings.runnerExeSha256.ToLowerInvariant()) {
+        Remove-Item $tmp -Force
+        throw "gitlab-runner.exe sha256 $actual does not match the pinned $($settings.runnerExeSha256)"
+      }
+      Move-Item $tmp $exe -Force
+    }
+
+    # Authentication-token registration: the tags, run-untagged and locked settings live on the
+    # runner RECORD (set when the token was minted), not on this command line -- GitLab refuses
+    # them alongside a glrt- token.
+    & $exe register --non-interactive --config $config --url $settings.gitlabUrl --clone-url $settings.gitlabUrl --token $token --executor shell --shell powershell
+    if ($LASTEXITCODE -ne 0) { throw "gitlab-runner register exited $LASTEXITCODE" }
+    (Get-Content $config) -replace '^concurrent = \d+', "concurrent = $($settings.concurrent)" | Set-Content $config -Encoding ASCII
+
+    if (-not (Get-Service gitlab-runner -ErrorAction SilentlyContinue)) {
+      & $exe install --working-directory $dir --config $config
+      if ($LASTEXITCODE -ne 0) { throw "gitlab-runner install exited $LASTEXITCODE" }
+    }
+    & $exe start
+    if ($LASTEXITCODE -ne 0) { throw "gitlab-runner start exited $LASTEXITCODE" }
+
+    Unregister-ScheduledTask -TaskName zeta-runner-bootstrap -Confirm:$false -ErrorAction SilentlyContinue
+    Write-Host 'gitlab-runner registered and started'
+    Stop-Transcript | Out-Null
+---
+# The sysprep path (image has no cloudbase-init). Attached as a KubeVirt `sysprep` volume, which
+# presents it as a CD-ROM Windows Setup scans for `Unattend.xml`. It runs in the `specialize`
+# pass, as SYSTEM and with no password anywhere, but the network is NOT up that early -- so it
+# only copies bootstrap.ps1 to local disk and schedules it at every startup; the script retries
+# its own download and removes the task once the runner is registered.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: windows-runner-sysprep
+  namespace: gitlab
+data:
+  Unattend.xml: |
+    <?xml version="1.0" encoding="utf-8"?>
+    <unattend xmlns="urn:schemas-microsoft-com:unattend">
+      <settings pass="specialize">
+        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <RunSynchronous>
+            <RunSynchronousCommand wcm:action="add">
+              <Order>1</Order>
+              <Description>zeta: schedule the GitLab runner bootstrap</Description>
+              <Path>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$v = Get-Volume | Where-Object { $_.FileSystemLabel -eq 'ZETABOOT' } | Select-Object -First 1; New-Item -ItemType Directory -Force C:\ProgramData\zeta | Out-Null; Copy-Item ($v.DriveLetter + ':\bootstrap.ps1') C:\ProgramData\zeta\bootstrap.ps1 -Force; schtasks /create /f /ru SYSTEM /sc onstart /tn zeta-runner-bootstrap /tr 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\ProgramData\zeta\bootstrap.ps1'"</Path>
+            </RunSynchronousCommand>
+          </RunSynchronous>
+        </component>
+      </settings>
+    </unattend>
+---
+# The Windows root disk, from a source YOU supply. EDIT the `url`.
+# The sentinel is RFC 2606 `.invalid`: it can never resolve, so an untouched apply fails the
+# import loudly (the importer pod backs off) instead of booting something unintended.
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: windows-runner-root
+  namespace: gitlab
+spec:
+  source:
+    http:
+      url: https://example.invalid/windows-server-2022-cloudbase-init.qcow2 # EDIT: your image
+  storage:
+    accessModes: [ ReadWriteOnce ]
+    storageClassName: zeta-block-local # see STORAGE above; zeta-block-replicated for 3-way
+    resources:
+      requests:
+        storage: 64Gi # EDIT: the image's virtual size or larger
+---
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: windows-runner
+  namespace: gitlab
+spec:
+  # `Halted` until the image has imported AND the token exists. Then
+  # `virtctl start windows-runner -n gitlab`; once the runner is online, set `Always` so a node
+  # reboot brings it back (bootstrap.ps1 is a no-op when already registered).
+  runStrategy: Halted
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: windows-runner
+    spec:
+      domain:
+        cpu:
+          cores: 4
+        memory:
+          guest: 8Gi
+        resources:
+          requests:
+            cpu: "4"
+            memory: 8Gi
+          limits:
+            memory: 8Gi
+        firmware:
+          bootloader:
+            efi:
+              secureBoot: false
+        features:
+          acpi: {}
+          apic: {}
+          hyperv:
+            relaxed: {}
+            vapic: {}
+            spinlocks:
+              spinlocks: 8191
+            vpindex: {}
+            runtime: {}
+            synic: {}
+            synictimer:
+              direct: {}
+            tlbflush: {}
+            ipi: {}
+            frequencies: {}
+            reset: {}
+        clock:
+          utc: {}
+          timer:
+            hpet:
+              present: false
+            pit:
+              tickPolicy: delay
+            rtc:
+              tickPolicy: catchup
+            hyperv: {}
+        devices:
+          disks:
+            - name: root
+              bootOrder: 1
+              disk:
+                bus: virtio
+            - name: virtio-win
+              cdrom:
+                bus: sata
+            - name: bootstrap
+              cdrom:
+                bus: sata
+            - name: runner-token
+              cdrom:
+                bus: sata
+            - name: sysprep
+              cdrom:
+                bus: sata
+            - name: cloudinitdisk
+              cdrom:
+                bus: sata
+          interfaces:
+            - name: default
+              masquerade: {}
+              model: virtio
+          inputs:
+            - type: tablet
+              bus: usb
+              name: tablet
+      networks:
+        - name: default
+          pod: {}
+      terminationGracePeriodSeconds: 300
+      volumes:
+        - name: root
+          dataVolume:
+            name: windows-runner-root
+        - name: virtio-win
+          containerDisk:
+            image: quay.io/kubevirt/virtio-container-disk:v1.8.4
+        - name: bootstrap
+          configMap:
+            name: windows-runner-bootstrap
+            volumeLabel: ZETABOOT
+        - name: runner-token
+          secret:
+            secretName: gitlab-windows-runner-token
+            volumeLabel: ZETATOKEN
+        - name: sysprep
+          sysprep:
+            configMap:
+              name: windows-runner-sysprep
+        # cloudbase-init's first-boot script, inline because it is not a secret: it only finds the
+        # two labelled CD-ROMs above and runs the bootstrap. `#ps1_sysnative` is cloudbase-init's
+        # 64-bit PowerShell header.
+        - name: cloudinitdisk
+          cloudInitConfigDrive:
+            userData: |
+              #ps1_sysnative
+              $v = Get-Volume | Where-Object { $_.FileSystemLabel -eq 'ZETABOOT' } | Select-Object -First 1
+              powershell.exe -NoProfile -ExecutionPolicy Bypass -File ($v.DriveLetter + ':\bootstrap.ps1')
+---
+# RDP for debugging (`virtctl vnc windows-runner -n gitlab` needs no Service). ClusterIP: an
+# internet-facing 3389 is the most-scanned port there is.
+apiVersion: v1
+kind: Service
+metadata:
+  name: windows-runner-rdp
+  namespace: gitlab
+spec:
+  type: ClusterIP
+  selector:
+    kubevirt.io/domain: windows-runner
+  ports:
+    - name: rdp
+      port: 3389
+      targetPort: 3389
+      protocol: TCP
