@@ -24,7 +24,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { delimiter, join, resolve } from "node:path";
 import { parseAllDocuments, parse as parseYaml } from "yaml";
@@ -529,7 +529,8 @@ describe("C2. what the guest installs and where it connects", () => {
 // ---------------------------------------------------------------------------
 
 describe("D. the runbook", () => {
-  const doc = existsSync(RUNBOOK) ? readFileSync(RUNBOOK, "utf8") : "";
+  // One read, no existence probe first: a missing runbook is a thrown ENOENT, which is the failure we want.
+  const doc = readFileSync(RUNBOOK, "utf8");
 
   test("exists", () => {
     expect(doc.length).toBeGreaterThan(2000);
