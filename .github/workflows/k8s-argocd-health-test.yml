@@ -77,6 +77,8 @@ on:
       - "full-ai-cluster/k8s/examples/kubevirt-windows-vm.yaml"
       - "full-ai-cluster/k8s/examples/kubevirt-windows-gitlab-runner.yaml"
       - "full-ai-cluster/k8s/examples/gitlab-windows-runner-token.yaml"
+      - "full-ai-cluster/k8s/examples/windows-runner-unattend/**"
+      - "src/Core.TypeScript/cluster/windows-runner-unattend-secret.ts"
       - "src/Core.TypeScript/cluster/gitlab-windows-runner.test.ts"
       # The Cilium CNI lane. `cilium-kind-lane.ts` DERIVES its roster from the
       # nix sources file, its probe device name from the nix preflight module,
@@ -225,6 +227,8 @@ on:
       - "full-ai-cluster/k8s/examples/kubevirt-windows-vm.yaml"
       - "full-ai-cluster/k8s/examples/kubevirt-windows-gitlab-runner.yaml"
       - "full-ai-cluster/k8s/examples/gitlab-windows-runner-token.yaml"
+      - "full-ai-cluster/k8s/examples/windows-runner-unattend/**"
+      - "src/Core.TypeScript/cluster/windows-runner-unattend-secret.ts"
       - "src/Core.TypeScript/cluster/gitlab-windows-runner.test.ts"
       # The Cilium CNI lane. `cilium-kind-lane.ts` DERIVES its roster from the
       # nix sources file, its probe device name from the nix preflight module,

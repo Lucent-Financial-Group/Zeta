@@ -6,32 +6,44 @@
 # `k8s/applications/*/Application.yaml`, so nothing ever syncs this; and every audit that
 # prices the cluster walks that tree for volume claims, so a 64Gi DataVolume inside it would be
 # counted as always-on demand that no sync provisions. OPT-IN BY CONSTRUCTION: the VM is
-# `runStrategy: Halted` and the image URL is a sentinel, so applying this file untouched starts
+# `runStrategy: Halted` and the ISO URL is a sentinel, so applying this file untouched starts
 # nothing and a fresh install never crash-loops over a Windows image it does not have.
 #
-# WE DO NOT SHIP OR DOWNLOAD WINDOWS. The operator supplies the image source and the licence.
-# The one `EDIT:` line is the DataVolume's source. Three ways to give it one (pick ONE, replace
-# the `source:` block):
-#     http:     { url: https://.../win2022-cloudbase-init.qcow2 }     # qcow2 / raw / .gz / .xz
-#     pvc:      { namespace: <ns>, name: <golden-windows-pvc> }       # CDI clone of a golden disk
-#     registry: { url: docker://<registry>/<windows-containerdisk> }  # a containerDisk image
-# ... or boot from a Windows installer ISO and install by hand, exactly as
-# kubevirt-windows-vm.yaml does (blank root disk + an `-iso` DataVolume + a CD-ROM first in the
-# boot order), then sysprep the result (see "WHAT THE IMAGE MUST CONTAIN").
+# THE DEFAULT, AND IT COSTS NOTHING: A MICROSOFT EVALUATION ISO. Recommended: Windows Server 2022
+# (or 2025) Evaluation, ~180 days, no product key. Alternative: Windows 11 Enterprise Evaluation,
+# ~90 days (needs Secure Boot + TPM on this VM, see kubevirt-windows-vm.yaml, and `w11` driver
+# folders in the answer file). WE DO NOT SHIP, FETCH OR REDISTRIBUTE WINDOWS. A HUMAN downloads the
+# ISO from the Microsoft Evaluation Center (https://www.microsoft.com/en-us/evalcenter), which
+# requires accepting Microsoft's evaluation terms and registering; that is not automatable and
+# not ours to do. Evaluation media is for evaluation: it expires, and Microsoft's terms do not
+# allow production use past the trial. Lasting CI needs a licence you hold. The runbook states
+# the limits plainly; read it before relying on this.
 #
-# WHAT THE IMAGE MUST CONTAIN (the cluster cannot add any of it from outside):
-#   1. virtio drivers `viostor` (disk) and `NetKVM` (network). The root disk here is `virtio`
-#      and the NIC `virtio`; an image without them will not see its disk or have a network. The
-#      virtio-win driver ISO rides along as a CD-ROM (container disk, no PVC, same release as the
-#      vendored operator) so an image prepared by hand can install them from it. If you cannot,
-#      flip `bus: virtio` to `bus: sata` and `model: virtio` to `e1000e`.
-#   2. EITHER cloudbase-init (https://cloudbase.it/cloudbase-init/) with the config-drive
-#      metadata service (its default) -- runs the inline `userData` below on first boot;
-#      OR a generalized (sysprep /generalize) image -- Windows Setup then reads the
-#      `Unattend.xml` this file attaches as a sysprep CD-ROM. Both are wired; the one the image
-#      does not have is simply ignored.
-#   3. outbound HTTPS from the guest to download gitlab-runner.exe (see settings.json below; an
-#      air-gapped install changes `runnerExeUrl` to an internal mirror, the sha256 stays).
+# HOW THE ISO REACHES THE CLUSTER (EDIT the `windows-runner-iso` DataVolume, pick ONE):
+#     http:   { url: https://files.example.internal/windows-server-2022-evaluation.iso }  # a URL YOU host
+#     upload: {}     # then: virtctl image-upload dv windows-runner-iso -n gitlab --no-create \
+#                    #         --image-path ./<the-iso> --uploadproxy-url https://127.0.0.1:18443 --insecure
+#                    # (with `kubectl -n cdi port-forward svc/cdi-uploadproxy 18443:443` running)
+#
+# HOW IT INSTALLS ITSELF. The Windows installer boots from the ISO CD-ROM onto the blank virtio root
+# disk and reads `Autounattend.xml` from the `sysprep` CD-ROM (Secret `windows-runner-unattend`,
+# rendered by src/Core.TypeScript/cluster/windows-runner-unattend-secret.ts so the Administrator
+# password never lives in git): evaluation media (NO product key, EULA acceptance, edition index),
+# the virtio disk driver from the virtio-win CD, GPT/UEFI partitions. On the first boots of the
+# installed system a startup task runs bootstrap.ps1, which installs the virtio network driver if
+# needed, downloads gitlab-runner.exe (version and sha256 pinned, verified before it runs) and
+# registers it by authentication token.
+#
+# NOT AN EVALUATION ISO? A PREPARED IMAGE (a sysprepped / cloudbase-init disk you built, or a licensed
+# image you hold) is the second mode: set the ROOT DataVolume's `source` to `http:` / `pvc:` /
+# `registry:` instead of `blank: {}`, and delete the `iso` disk, the `iso` volume and the
+# `windows-runner-iso` DataVolume. The cloudbase-init config drive and the `Unattend.xml` key of the
+# same Secret are what that path uses. See the runbook, "Prepared image".
+#
+# WHAT THE INSTALLED OR PREPARED IMAGE MUST HAVE (the cluster cannot add it from outside):
+#   1. virtio drivers `viostor` (disk) and `NetKVM` (network); the evaluation path loads them itself.
+#   2. outbound HTTPS from the guest to download gitlab-runner.exe (an air-gapped install changes
+#      `runnerExeUrl` in settings.json to an internal mirror; the sha256 stays).
 #
 # HOW THE TOKEN GETS IN, and why this VM lives in the `gitlab` namespace. The runner's
 # authentication token is minted into Secret `gitlab-windows-runner-token` by
@@ -51,13 +63,13 @@
 # `clone_url` is set to the same value so job checkouts stay in-cluster, as for the Linux runner.
 #
 # STORAGE. `zeta-block-local` by default, NOT the replicated class the sibling example uses:
-# a runner's disk is rebuildable from the image, so triplicating 64Gi (192Gi of the Longhorn
+# a runner's disk is rebuildable from the media, so triplicating 64Gi (192Gi of the Longhorn
 # pool) buys durability nobody needs here. A local volume pins the VM to the node holding it.
 # Want the replicated class (the VM survives losing that node's disk, and may live-migrate)?
 # Change the one `storageClassName`; it is then charged to the pool at 3 replicas -- see
 # storage-profiles.json and check the pool has room BEFORE applying.
 # Not counted in the cluster's storage ledgers, on purpose (see the first paragraph): the
-# operator owns that arithmetic for an opt-in guest.
+# operator owns that arithmetic for an opt-in guest. The ISO's 10Gi is a one-off on the same class.
 #
 # SIZING: same shape and for the same reasons as kubevirt-windows-vm.yaml (memory request ==
 # limit, no CPU limit). 4 vCPU / 8Gi is a request against the node GitLab itself runs on
@@ -84,6 +96,14 @@ data:
     }
   # Idempotent and safe on every boot. Never prints the token; the transcript is
   # C:\ProgramData\zeta\runner-bootstrap.log -- read it first when the runner does not appear.
+  #
+  # KEEPS THE SAME RUNNER ACROSS REBOOTS, REARMS AND EVALUATION-EXPIRY SHUTDOWNS. The runner's
+  # identity is the glrt- token in C:\GitLab-Runner\config.toml on the guest disk, and the Windows
+  # service starts automatically, so a reboot (including the forced one a lapsed evaluation causes)
+  # brings the same runner back with no registration. The step below that short-circuits on an
+  # existing token is what stops a reboot from registering again. If the DISK is rebuilt, the same
+  # Secret token registers a new MANAGER under the SAME runner record (GitLab 16+), so no new record
+  # is created and the tags / run-untagged contract is unchanged.
   bootstrap.ps1: |
     $ErrorActionPreference = 'Stop'
     $ProgressPreference = 'SilentlyContinue'
@@ -107,6 +127,17 @@ data:
     $exe = Join-Path $dir 'gitlab-runner.exe'
     $config = Join-Path $dir 'config.toml'
 
+    # Evaluation-expiry watchdog: REPORTS, never acts (see eval-watch.ps1). Registered whether or not the
+    # runner is, so it exists on an already-registered guest too.
+    $watch = Join-Path $boot 'eval-watch.ps1'
+    if (Test-Path $watch) {
+      Copy-Item $watch (Join-Path $zeta 'eval-watch.ps1') -Force
+      if (-not (Get-ScheduledTask -TaskName zeta-eval-watch -ErrorAction SilentlyContinue)) {
+        $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NoProfile -ExecutionPolicy Bypass -File C:\ProgramData\zeta\eval-watch.ps1'
+        Register-ScheduledTask -TaskName zeta-eval-watch -Action $action -Trigger (New-ScheduledTaskTrigger -Daily -At 3am) -User 'SYSTEM' -RunLevel Highest | Out-Null
+      }
+    }
+
     if ((Test-Path $config) -and (Select-String -Path $config -Pattern 'token = "glrt-' -Quiet)) {
       Write-Host 'runner already registered; nothing to do'
       Unregister-ScheduledTask -TaskName zeta-runner-bootstrap -Confirm:$false -ErrorAction SilentlyContinue
@@ -120,6 +151,15 @@ data:
     }
     $token = (Get-Content $tokenFile -Raw).Trim()
     if ($token -notmatch '^glrt-') { throw 'runner-token is not a glrt- authentication token' }
+
+    # A network driver the installer did not load would leave the guest with no adapter: install the
+    # virtio guest tools from the virtio-win CD (label virtio-win-*), then fall through to the retried download.
+    if (-not (Get-NetAdapter -ErrorAction SilentlyContinue)) {
+      $virtio = Get-Volume | Where-Object { $_.FileSystemLabel -like 'virtio-win*' -and $_.DriveLetter } | Select-Object -First 1
+      if ($virtio -and (Test-Path ($virtio.DriveLetter + ':\virtio-win-gt-x64.msi'))) {
+        Start-Process msiexec.exe -ArgumentList ('/i "' + $virtio.DriveLetter + ':\virtio-win-gt-x64.msi" /qn /norestart') -Wait
+      }
+    }
 
     New-Item -ItemType Directory -Force -Path $dir | Out-Null
     if (-not (Test-Path $exe)) {
@@ -155,37 +195,52 @@ data:
     Unregister-ScheduledTask -TaskName zeta-runner-bootstrap -Confirm:$false -ErrorAction SilentlyContinue
     Write-Host 'gitlab-runner registered and started'
     Stop-Transcript | Out-Null
+  # Runs daily as SYSTEM. REPORTS the evaluation clock, and does nothing about it: it never runs
+  # `slmgr /rearm` or any licensing method. Whether to extend an evaluation is the operator's decision
+  # under Microsoft's terms, not something a script should do quietly. Output: eval-watch.log, and a
+  # Warning in the Application event log (source zeta-eval-watch, id 4101) inside 14 days of expiry.
+  eval-watch.ps1: |
+    $ErrorActionPreference = 'Stop'
+    $zeta = 'C:\ProgramData\zeta'
+    $lic = Get-CimInstance -ClassName SoftwareLicensingProduct -Filter "ApplicationId='55c92734-d682-4d71-983e-d6ec3f16059f' AND PartialProductKey IS NOT NULL" | Select-Object -First 1
+    $service = Get-CimInstance -ClassName SoftwareLicensingService
+    $caption = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
+    $isEval = ($null -ne $lic) -and (($lic.Description -match 'EVAL') -or ($caption -match 'Evaluation'))
+    $days = if ($null -ne $lic) { [math]::Round(([int64]$lic.GracePeriodRemaining) / 1440, 1) } else { -1 }
+    Add-Content -Path (Join-Path $zeta 'eval-watch.log') -Value ('{0} os="{1}" evaluation={2} licenseStatus={3} daysRemaining={4} rearmsLeft={5}' -f (Get-Date -Format o), $caption, $isEval, $lic.LicenseStatus, $days, $service.RemainingWindowsReArmCount)
+    if ($isEval -and $days -ge 0 -and $days -lt 14) {
+      if (-not [System.Diagnostics.EventLog]::SourceExists('zeta-eval-watch')) { New-EventLog -LogName Application -Source 'zeta-eval-watch' }
+      Write-EventLog -LogName Application -Source 'zeta-eval-watch' -EventId 4101 -EntryType Warning -Message "The Windows evaluation on this CI runner expires in $days days. Plan a licensed image; see docs/ops/WINDOWS-GITLAB-RUNNER.md."
+    }
 ---
-# The sysprep path (image has no cloudbase-init). Attached as a KubeVirt `sysprep` volume, which
-# presents it as a CD-ROM Windows Setup scans for `Unattend.xml`. It runs in the `specialize`
-# pass, as SYSTEM and with no password anywhere, but the network is NOT up that early -- so it
-# only copies bootstrap.ps1 to local disk and schedules it at every startup; the script retries
-# its own download and removes the task once the runner is registered.
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: windows-runner-sysprep
-  namespace: gitlab
-data:
-  Unattend.xml: |
-    <?xml version="1.0" encoding="utf-8"?>
-    <unattend xmlns="urn:schemas-microsoft-com:unattend">
-      <settings pass="specialize">
-        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-          <RunSynchronous>
-            <RunSynchronousCommand wcm:action="add">
-              <Order>1</Order>
-              <Description>zeta: schedule the GitLab runner bootstrap</Description>
-              <Path>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$v = Get-Volume | Where-Object { $_.FileSystemLabel -eq 'ZETABOOT' } | Select-Object -First 1; New-Item -ItemType Directory -Force C:\ProgramData\zeta | Out-Null; Copy-Item ($v.DriveLetter + ':\bootstrap.ps1') C:\ProgramData\zeta\bootstrap.ps1 -Force; schtasks /create /f /ru SYSTEM /sc onstart /tn zeta-runner-bootstrap /tr 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\ProgramData\zeta\bootstrap.ps1'"</Path>
-            </RunSynchronousCommand>
-          </RunSynchronous>
-        </component>
-      </settings>
-    </unattend>
----
-# The Windows root disk, from a source YOU supply. EDIT the `url`.
+# The Windows installer ISO, from a source YOU supply (see HOW THE ISO REACHES THE CLUSTER).
 # The sentinel is RFC 2606 `.invalid`: it can never resolve, so an untouched apply fails the
 # import loudly (the importer pod backs off) instead of booting something unintended.
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: windows-runner-iso
+  namespace: gitlab
+  annotations:
+    # An ISO is read once; do not keep the importer pod around after it succeeds.
+    cdi.kubevirt.io/storage.deleteAfterCompletion: "true"
+    # zeta-block-local is WaitForFirstConsumer and cdi-cr.yaml honours it, so without this the import would
+    # wait for a pod that wants the PVC -- and the only such pod is the VM, which is Halted until the ISO is
+    # there. Bind now, so the import (or the upload) proceeds while the VM is still off.
+    cdi.kubevirt.io/storage.bind.immediate.requested: "true"
+spec:
+  source:
+    http:
+      url: https://example.invalid/windows-server-2022-evaluation.iso # EDIT: the ISO you downloaded and host (or `upload: {}`)
+  storage:
+    accessModes: [ ReadWriteOnce ]
+    storageClassName: zeta-block-local
+    resources:
+      requests:
+        storage: 10Gi
+---
+# The guest's root disk. Blank: the unattended install partitions it. (For a prepared image replace
+# `blank: {}` with `http:` / `pvc:` / `registry:` and drop the ISO pieces, see the header.)
 apiVersion: cdi.kubevirt.io/v1beta1
 kind: DataVolume
 metadata:
@@ -193,14 +248,13 @@ metadata:
   namespace: gitlab
 spec:
   source:
-    http:
-      url: https://example.invalid/windows-server-2022-cloudbase-init.qcow2 # EDIT: your image
+    blank: {}
   storage:
     accessModes: [ ReadWriteOnce ]
     storageClassName: zeta-block-local # see STORAGE above; zeta-block-replicated for 3-way
     resources:
       requests:
-        storage: 64Gi # EDIT: the image's virtual size or larger
+        storage: 64Gi
 ---
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
@@ -208,7 +262,7 @@ metadata:
   name: windows-runner
   namespace: gitlab
 spec:
-  # `Halted` until the image has imported AND the token exists. Then
+  # `Halted` until the ISO has imported, the Secrets exist (token AND unattend) and you mean it. Then
   # `virtctl start windows-runner -n gitlab`; once the runner is online, set `Always` so a node
   # reboot brings it back (bootstrap.ps1 is a no-op when already registered).
   runStrategy: Halted
@@ -231,6 +285,8 @@ spec:
         firmware:
           bootloader:
             efi:
+              # Server 2022/2025 boot without Secure Boot or a TPM. Windows 11 Enterprise Evaluation needs
+              # `secureBoot: true`, `features.smm.enabled: true` and `devices.tpm: {persistent: true}`.
               secureBoot: false
         features:
           acpi: {}
@@ -260,9 +316,16 @@ spec:
               tickPolicy: catchup
             hyperv: {}
         devices:
+          # ISO first for the install; the installer reboots into the installed disk (the ISO's "press
+          # any key" prompt times out to the next device). Do NOT press a key in the console then, or the
+          # install restarts. After the install, swap the two bootOrders (or remove `iso`) at leisure.
           disks:
-            - name: root
+            - name: iso
               bootOrder: 1
+              cdrom:
+                bus: sata
+            - name: root
+              bootOrder: 2
               disk:
                 bus: virtio
             - name: virtio-win
@@ -293,6 +356,9 @@ spec:
           pod: {}
       terminationGracePeriodSeconds: 300
       volumes:
+        - name: iso
+          dataVolume:
+            name: windows-runner-iso
         - name: root
           dataVolume:
             name: windows-runner-root
@@ -307,13 +373,15 @@ spec:
           secret:
             secretName: gitlab-windows-runner-token
             volumeLabel: ZETATOKEN
+        # Autounattend.xml (evaluation ISO install) and Unattend.xml (prepared image), from the Secret
+        # `bun src/Core.TypeScript/cluster/windows-runner-unattend-secret.ts` renders. NOT in this file.
         - name: sysprep
           sysprep:
-            configMap:
-              name: windows-runner-sysprep
-        # cloudbase-init's first-boot script, inline because it is not a secret: it only finds the
-        # two labelled CD-ROMs above and runs the bootstrap. `#ps1_sysnative` is cloudbase-init's
-        # 64-bit PowerShell header.
+            secret:
+              name: windows-runner-unattend
+        # cloudbase-init's first-boot script (a PREPARED image that has cloudbase-init), inline because it
+        # is not a secret: it only finds the two labelled CD-ROMs above and runs the bootstrap.
+        # `#ps1_sysnative` is cloudbase-init's 64-bit PowerShell header. Ignored by evaluation media.
         - name: cloudinitdisk
           cloudInitConfigDrive:
             userData: |

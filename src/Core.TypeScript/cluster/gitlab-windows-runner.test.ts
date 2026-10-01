@@ -29,6 +29,7 @@ import { tmpdir } from "node:os";
 import { delimiter, join, resolve } from "node:path";
 import { parseAllDocuments, parse as parseYaml } from "yaml";
 import { STORAGE_CAPABILITIES } from "./storage-capabilities.ts";
+import { passwordProblem, PASSWORD_PLACEHOLDER, renderUnattendSecret, SECRET_NAME, SECRET_NAMESPACE, xmlEscape } from "./windows-runner-unattend-secret.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const EXAMPLES = join(REPO_ROOT, "full-ai-cluster/k8s/examples");
@@ -36,6 +37,7 @@ const TOKEN_FILE = join(EXAMPLES, "gitlab-windows-runner-token.yaml");
 const VM_FILE = join(EXAMPLES, "kubevirt-windows-gitlab-runner.yaml");
 const GITLAB_APP = join(REPO_ROOT, "full-ai-cluster/k8s/applications/gitlab/Application.yaml");
 const RUNBOOK = join(REPO_ROOT, "docs/ops/WINDOWS-GITLAB-RUNNER.md");
+const UNATTEND_DIR = join(EXAMPLES, "windows-runner-unattend");
 
 type Doc = Record<string, any>;
 
@@ -356,10 +358,12 @@ describe("C. the Windows runner guest", () => {
   const configMaps = kindOf(vmDocs, "ConfigMap");
   const bootstrapCm = configMaps.find((c) => c.metadata.name === "windows-runner-bootstrap")!;
   const script = bootstrapCm.data["bootstrap.ps1"] as string;
+  const isoDv = (): Doc => kindOf(vmDocs, "DataVolume").find((d) => d.metadata.name === "windows-runner-iso")!;
+  const rootDv = (): Doc => kindOf(vmDocs, "DataVolume").find((d) => d.metadata.name === "windows-runner-root")!;
 
   test("OPT-IN by construction: Halted, an unresolvable image sentinel, outside the applications tree", () => {
     expect(vm.spec.runStrategy).toBe("Halted");
-    const dv = kindOf(vmDocs, "DataVolume")[0]!;
+    const dv = isoDv();
     expect(new URL(dv.spec.source.http.url).hostname.endsWith(".invalid")).toBe(true);
     for (const path of [VM_FILE, TOKEN_FILE]) expect(path.startsWith(join(REPO_ROOT, "full-ai-cluster/k8s/applications"))).toBe(false);
     // ArgoCD's root reads only applications/*/Application.yaml: nothing in that tree may name these.
@@ -372,8 +376,9 @@ describe("C. the Windows runner guest", () => {
     const text = readFileSync(VM_FILE, "utf8");
     // (the XML namespace `schemas.microsoft.com` in Unattend.xml is not a download; only `url:` fields count)
     expect(text).not.toMatch(/url:\s*\S*(microsoft\.com|windowsupdate|software-download)/i);
-    const source = kindOf(vmDocs, "DataVolume")[0]!.spec.source;
-    expect(Object.keys(source)).toEqual(["http"]);
+    expect(Object.keys(isoDv().spec.source)).toEqual(["http"]);
+    // the guest's own disk starts blank: the unattended install partitions it, nothing is pre-baked in git
+    expect(Object.keys(rootDv().spec.source)).toEqual(["blank"]);
     expect(text).toContain("EDIT");
   });
 
@@ -408,14 +413,20 @@ describe("C. the Windows runner guest", () => {
     for (const v of volumes) {
       if (v.dataVolume) expect(have.has(`DataVolume/${v.dataVolume.name}`)).toBe(true);
       if (v.configMap) expect(have.has(`ConfigMap/${v.configMap.name}`)).toBe(true);
-      if (v.sysprep) expect(have.has(`ConfigMap/${v.sysprep.configMap.name}`)).toBe(true);
       if (v.secret) expect(have.has(`Secret/${v.secret.secretName}`)).toBe(true);
     }
+    // The unattend Secret is the ONE object not defined in a file: it carries a password, so the render
+    // script creates it. The name the VM mounts must be the name the script renders.
+    const sysprep = volumes.find((v) => v.sysprep)!;
+    expect(sysprep.sysprep.secret.name).toBe(SECRET_NAME);
+    expect(SECRET_NAMESPACE).toBe("gitlab");
   });
 
-  test("the root disk boots first; the rest are CD-ROMs a Windows guest can read", () => {
+  test("the installer ISO boots first, the blank virtio root disk second; the rest are CD-ROMs a Windows guest can read", () => {
+    const iso = disks.find((d) => d.name === "iso")!;
     const root = disks.find((d) => d.name === "root")!;
-    expect(root.bootOrder).toBe(1);
+    expect(iso.bootOrder).toBe(1);
+    expect(root.bootOrder).toBe(2);
     expect(root.disk.bus).toBe("virtio");
     for (const d of disks.filter((x) => x.name !== "root")) expect(d.cdrom).toBeDefined();
   });
@@ -428,11 +439,11 @@ describe("C. the Windows runner guest", () => {
     expect(labelOf("bootstrap")).toBe("ZETABOOT");
     expect(labelOf("runner-token")).toBe("ZETATOKEN");
     const userData = volumes.find((v) => v.cloudInitConfigDrive)!.cloudInitConfigDrive.userData as string;
-    const unattend = configMaps.find((c) => c.metadata.name === "windows-runner-sysprep")!.data["Unattend.xml"] as string;
     expect(script).toContain("Find-Volume 'ZETABOOT'");
     expect(script).toContain("Find-Volume 'ZETATOKEN'");
     expect(userData).toContain("'ZETABOOT'");
-    expect(unattend).toContain("'ZETABOOT'");
+    // both answer files copy bootstrap.ps1 off the ZETABOOT volume
+    for (const f of ["Autounattend.xml", "Unattend.xml"]) expect(readFileSync(join(UNATTEND_DIR, f), "utf8")).toContain("'ZETABOOT'");
     // ISO 9660 volume labels: <= 32 chars, upper-case letters / digits / underscore
     for (const l of ["ZETABOOT", "ZETATOKEN"]) expect(l).toMatch(/^[A-Z0-9_]{1,32}$/);
     // the file the script reads is the key the token Job writes
@@ -440,11 +451,17 @@ describe("C. the Windows runner guest", () => {
   });
 
   test("storage: a CAPABILITY name (never a provider class), RWO, a sized claim; counted by the runbook, not priced as always-on demand", () => {
-    const dv = kindOf(vmDocs, "DataVolume")[0]!;
-    expect(STORAGE_CAPABILITIES as readonly string[]).toContain(dv.spec.storage.storageClassName);
-    expect(dv.spec.storage.accessModes).toEqual(["ReadWriteOnce"]);
-    expect(dv.spec.storage.resources.requests.storage).toMatch(/^\d+(Gi|Ti)$/);
-    expect(dv.spec.storage.resources.requests.storage).toBe("64Gi");
+    for (const dv of kindOf(vmDocs, "DataVolume")) {
+      expect(STORAGE_CAPABILITIES as readonly string[]).toContain(dv.spec.storage.storageClassName);
+      expect(dv.spec.storage.accessModes).toEqual(["ReadWriteOnce"]);
+      expect(dv.spec.storage.resources.requests.storage).toMatch(/^\d+(Gi|Ti)$/);
+    }
+    expect(rootDv().spec.storage.resources.requests.storage).toBe("64Gi");
+    // the ISO is read once and its importer cleaned up, as in kubevirt-windows-vm.yaml
+    expect(isoDv().metadata.annotations["cdi.kubevirt.io/storage.deleteAfterCompletion"]).toBe("true");
+    // zeta-block-local is WaitForFirstConsumer and the VM is Halted until the ISO exists: without an immediate
+    // bind the import (or upload) would wait for a pod that can only be the VM (the lesson of CI run 36859944232).
+    expect(isoDv().metadata.annotations["cdi.kubevirt.io/storage.bind.immediate.requested"]).toBe("true");
   });
 
   test("the virtio driver CD is pinned to the SAME KubeVirt release as the vendored operator", () => {
@@ -564,5 +581,197 @@ describe("D. the runbook", () => {
   test("documents adding ANY extra runner without a reflash", () => {
     expect(doc).toMatch(/^## .*extra runner/im);
     for (const needle of ["RUNNER_TAGS", "RUN_UNTAGGED", "privileged", "group", "/api/v4/user/runners"]) expect(doc).toContain(needle);
+  });
+
+  test("makes the FREE evaluation path the default, and says what a human must do and where the ISO goes", () => {
+    for (const needle of [
+      "Windows Server 2022",
+      "Evaluation",
+      "Evaluation Center",
+      "180 days",
+      "Windows 11 Enterprise Evaluation",
+      "90 days",
+      "windows-runner-unattend",
+      "windows-runner-unattend-secret.ts",
+      "Autounattend.xml",
+      "virtctl image-upload",
+      "--no-create",
+      "cdi-uploadproxy",
+      "WINDOWS_ADMIN_PASSWORD",
+    ]) {
+      expect(doc).toContain(needle);
+    }
+    expect(doc).toMatch(/^## .*[Ff]ree/m);
+    expect(doc).toMatch(/human step/i);
+  });
+
+  test("states the evaluation limits plainly: expiry, hourly shutdown, rearm, evaluation-only terms, and that an OEM licence does not move into a VM", () => {
+    for (const needle of ["expir", "shut", "slmgr", "/rearm", "rearm count", "production", "OEM", "licence you hold", "keeps the same", "glrt-"]) {
+      expect(doc.toLowerCase()).toContain(needle.toLowerCase());
+    }
+    expect(doc).toMatch(/^## .*[Ll]imits/m);
+  });
+
+  test("links Microsoft only at the Evaluation Center landing page: no download URL it cannot vouch for", () => {
+    const urls = [...doc.matchAll(/https?:\/\/[^\s)>`'"]+/g)].map((m) => m[0]);
+    const microsoft = urls.filter((u) => /microsoft\.com|windowsupdate|software-download/i.test(u));
+    expect([...new Set(microsoft)]).toEqual(["https://www.microsoft.com/en-us/evalcenter"]);
+    expect(urls.filter((u) => /\.iso(\b|$)/i.test(u))).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// E. Evaluation media: the unattended install, its Secret, and the expiry watchdog
+// ---------------------------------------------------------------------------
+
+/** The answer file with its comments removed: prose inside a comment must not satisfy (or trip) a structural check. */
+const stripXmlComments = (xml: string): string => xml.replace(/<!--[\s\S]*?-->/g, "");
+
+/** A tiny well-formedness check: balanced element tags, and no `--` inside a comment (illegal XML). */
+function xmlProblems(xml: string): string[] {
+  const problems: string[] = [];
+  for (const c of xml.matchAll(/<!--([\s\S]*?)-->/g)) if (c[1]!.includes("--")) problems.push("`--` inside a comment");
+  const stack: string[] = [];
+  for (const m of stripXmlComments(xml).replace(/<\?[\s\S]*?\?>/g, "").matchAll(/<(\/?)([A-Za-z][\w:.-]*)([^>]*?)(\/?)>/g)) {
+    const [, closing, name, , selfClosing] = m;
+    if (selfClosing === "/") continue;
+    if (closing === "/") {
+      if (stack.pop() !== name) problems.push(`unbalanced </${name}>`);
+    } else {
+      stack.push(name!);
+    }
+  }
+  if (stack.length > 0) problems.push(`unclosed <${stack.join(">, <")}>`);
+  return problems;
+}
+
+describe("E. evaluation media (the free default)", () => {
+  const auto = readFileSync(join(UNATTEND_DIR, "Autounattend.xml"), "utf8");
+  const generalized = readFileSync(join(UNATTEND_DIR, "Unattend.xml"), "utf8");
+  const bootstrapCm = kindOf(vmDocs, "ConfigMap").find((c) => c.metadata.name === "windows-runner-bootstrap")!;
+  const bootstrap = bootstrapCm.data["bootstrap.ps1"] as string;
+  const watch = bootstrapCm.data["eval-watch.ps1"] as string;
+  const body = stripXmlComments(auto);
+
+  test("both answer files are well-formed XML", () => {
+    expect(xmlProblems(auto)).toEqual([]);
+    expect(xmlProblems(generalized)).toEqual([]);
+  });
+
+  test("it is an EVALUATION install: NO product key, EULA acceptance, an edition index, GPT/UEFI on the virtio disk", () => {
+    expect(body.match(/<ProductKey>/g) ?? []).toEqual([]);
+    expect(body.match(/<Key>[^<]*<\/Key>/g)).toEqual(["<Key>/IMAGE/INDEX</Key>"]);
+    expect(body).toContain("<AcceptEula>true</AcceptEula>");
+    expect(body).toMatch(/<Value>\d+<\/Value>/);
+    for (const t of ["<Type>EFI</Type>", "<Type>MSR</Type>", "<Type>Primary</Type>", "<WillWipeDisk>true</WillWipeDisk>"]) expect(body).toContain(t);
+    // the answer file says, in prose, that the EULA is the OPERATOR's to accept and that the index must be verified
+    expect(auto).toMatch(/YOUR acceptance/);
+    expect(auto).toMatch(/VERIFY on your ISO/);
+  });
+
+  test("it loads the virtio DISK and NETWORK drivers in WinPE, from every drive letter the virtio-win CD could take", () => {
+    const paths = [...body.matchAll(/<Path>([A-Z]):\\(viostor|NetKVM)\\2k22\\amd64<\/Path>/g)].map((m) => `${m[2]}:${m[1]}`);
+    for (const driver of ["viostor", "NetKVM"]) expect(paths.filter((p) => p.startsWith(`${driver}:`)).length).toBeGreaterThanOrEqual(4);
+  });
+
+  test("the Administrator password is a placeholder in git, exactly once, and no literal password is committed", () => {
+    expect(auto.split(PASSWORD_PLACEHOLDER).length - 1).toBe(1);
+    expect(generalized.match(/Password/g) ?? []).toEqual([]); // the generalized path carries no account or password at all
+    expect(body).toMatch(/<Value>@ADMIN_PASSWORD@<\/Value>\s*<PlainText>true<\/PlainText>/);
+  });
+
+  test("it hands off to the same bootstrap as the generalized path: copy off ZETABOOT, schedule at startup", () => {
+    for (const xml of [body, stripXmlComments(generalized)]) {
+      expect(xml).toContain("schtasks /create /f /ru SYSTEM /sc onstart /tn zeta-runner-bootstrap");
+      expect(xml).toContain("bootstrap.ps1");
+    }
+  });
+
+  test("render: the password is filled once, XML-escaped, never re-interpreted, and lands only in the Secret's Autounattend.xml", () => {
+    const out = renderUnattendSecret({ password: "Str0ng&Pa$&ss<>word!", autounattend: auto, unattend: generalized });
+    const secret = parseYaml(out) as Doc;
+    expect(secret.kind).toBe("Secret");
+    expect(secret.metadata).toEqual({ name: SECRET_NAME, namespace: SECRET_NAMESPACE });
+    expect(Object.keys(secret.stringData).sort()).toEqual(["Autounattend.xml", "Unattend.xml"]);
+    expect(secret.stringData["Autounattend.xml"]).toContain("<Value>Str0ng&amp;Pa$&amp;ss&lt;&gt;word!</Value>");
+    expect(secret.stringData["Autounattend.xml"].split(PASSWORD_PLACEHOLDER)).toHaveLength(1);
+    expect(secret.stringData["Unattend.xml"]).toBe(generalized);
+    expect(xmlEscape("a&b<c>d")).toBe("a&amp;b&lt;c&gt;d");
+  });
+
+  for (const [why, password] of [
+    ["too short", "Ab1!"],
+    ["one character class", "alllowercaselettersonly"],
+    ["two character classes", "alllowercase12345678"],
+    ["the account name", "Administrator-Pass-123!"],
+    ["a newline", "Str0ng-Passw0rd!\nx"],
+  ] as const) {
+    test(`render refuses a weak password: ${why}`, () => {
+      expect(passwordProblem(password)).not.toBeNull();
+      expect(() => renderUnattendSecret({ password, autounattend: auto, unattend: generalized })).toThrow(/refused/);
+    });
+  }
+
+  test("render refuses a template without exactly one placeholder (a silently-unfilled password)", () => {
+    const strong = "Str0ng-Passw0rd!x";
+    expect(passwordProblem(strong)).toBeNull();
+    expect(() => renderUnattendSecret({ password: strong, autounattend: auto.replace(PASSWORD_PLACEHOLDER, "x"), unattend: generalized })).toThrow(/exactly once/);
+    expect(() => renderUnattendSecret({ password: strong, autounattend: auto + PASSWORD_PLACEHOLDER, unattend: generalized })).toThrow(/exactly once/);
+    expect(() => renderUnattendSecret({ password: strong, autounattend: auto, unattend: PASSWORD_PLACEHOLDER })).toThrow(/must not carry/);
+  });
+
+  test("the CLI takes the password from the environment only, and refuses without printing a Secret", () => {
+    const script = join(REPO_ROOT, "src/Core.TypeScript/cluster/windows-runner-unattend-secret.ts");
+    const run = (args: string[], password?: string) => {
+      const env: Record<string, string | undefined> = { ...process.env };
+      delete env["WINDOWS_ADMIN_PASSWORD"];
+      if (password !== undefined) env["WINDOWS_ADMIN_PASSWORD"] = password;
+      const r = Bun.spawnSync([process.execPath, script, ...args], { env, stdout: "pipe", stderr: "pipe" });
+      return { code: r.exitCode, out: r.stdout.toString(), err: r.stderr.toString() };
+    };
+    expect(run([]).code).toBe(2); // no password at all
+    const argv = run(["Str0ng-Passw0rd!x"], "Str0ng-Passw0rd!x"); // a password on argv is refused even when the env is fine
+    expect(argv.code).toBe(2);
+    expect(argv.out).toBe("");
+    const weak = run([], "weak");
+    expect(weak.code).toBe(2);
+    expect(weak.out).toBe("");
+    const ok = run([], "Str0ng-Passw0rd!x");
+    expect(ok.code).toBe(0);
+    expect((parseYaml(ok.out) as Doc).metadata.name).toBe(SECRET_NAME);
+    // the refusals never echo the password
+    expect(weak.err.includes("weak")).toBe(false);
+  });
+
+  test("the bootstrap installs the virtio guest tools only when the guest has NO network adapter, from the virtio-win CD", () => {
+    expect(bootstrap).toContain("Get-NetAdapter");
+    expect(bootstrap).toContain("virtio-win*");
+    expect(bootstrap).toContain("virtio-win-gt-x64.msi");
+    // before the download it enables
+    expect(bootstrap.indexOf("virtio-win-gt-x64.msi")).toBeLessThan(bootstrap.indexOf("Invoke-WebRequest"));
+  });
+
+  test("the evaluation watchdog REPORTS and never acts: no rearm, no licensing method call, no shutdown", () => {
+    // Every call-shaped licensing / power action the script could contain, as an EXACT list: empty.
+    expect(watch.match(/Invoke-CimMethod|slmgr(\.vbs)?|\/rearm|ReArmWindows|Stop-Computer|Restart-Computer|shutdown(\.exe)?/gi) ?? []).toEqual([]);
+    // what it does do: log, and one Warning event inside 14 days of expiry
+    expect(watch).toContain("eval-watch.log");
+    expect(watch).toContain("-EntryType Warning");
+    expect(watch).toContain("$days -lt 14");
+    expect(watch).toContain("RemainingWindowsReArmCount");
+  });
+
+  test("the watchdog is installed by the bootstrap, daily, as SYSTEM, BEFORE the already-registered early exit (so it exists on a registered guest)", () => {
+    expect(bootstrap).toContain("zeta-eval-watch");
+    expect(bootstrap).toContain("-Daily");
+    expect(bootstrap.indexOf("zeta-eval-watch")).toBeLessThan(bootstrap.indexOf("runner already registered"));
+  });
+
+  test("a reboot, rearm or expiry shutdown keeps the SAME runner: registration is skipped when config.toml already holds a glrt- token, and the service starts automatically", () => {
+    expect(bootstrap).toContain("token = \"glrt-");
+    expect(bootstrap.indexOf("token = \"glrt-")).toBeLessThan(bootstrap.indexOf("register --non-interactive"));
+    // the token comes from the Secret CD-ROM, not from a freshly minted record: a rebuilt disk registers a manager under the SAME record
+    expect(bootstrap).toContain("Find-Volume 'ZETATOKEN'");
+    expect(bootstrap).toContain("& $exe install");
   });
 });
