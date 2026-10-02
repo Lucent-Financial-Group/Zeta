@@ -123,6 +123,11 @@ import { ZFLASH_ALLOWED_FLAGS } from "./allowed-flags.ts";
 import { firstbootRoleFromFlags } from "./firstboot-role.ts";
 import { planPublicEndpoint, renderPublicEndpointConfLines, type PublicEndpoint } from "../installer/public-endpoint.ts";
 import { planLbPool, renderLbPoolConfLine, type LbPoolSpec } from "../installer/lan-config.ts";
+import {
+  planConsolePasswordPolicy,
+  renderConsolePasswordPolicyConfLine,
+  type ConsolePasswordPolicy,
+} from "../installer/console-password-policy.ts";
 import { planStorageProfile, renderStorageProfileConfLine } from "../installer/storage-profile-selection.ts";
 import {
   planFirstbootConfFileContent,
@@ -852,6 +857,7 @@ async function injectPubkeyToUsb(
   joinTokenSourcePath: string | undefined,
   publicEndpoint: PublicEndpoint | null = null,
   lbPool: LbPoolSpec | null = null,
+  consolePasswordPolicy: ConsolePasswordPolicy | null = null,
   storageProfile: string | null = null,
 ): Promise<void> {
   process.stdout.write(`\niter-4.2: injecting ${pubkeyPath} into freshly-flashed USB ESP ...\n`);
@@ -978,6 +984,7 @@ async function injectPubkeyToUsb(
   const publicEndpointLines =
     (publicEndpoint === null ? "" : renderPublicEndpointConfLines(publicEndpoint)) +
     (lbPool === null ? "" : renderLbPoolConfLine(lbPool)) +
+    (consolePasswordPolicy === null ? "" : renderConsolePasswordPolicyConfLine(consolePasswordPolicy)) +
     // docs/ops/INSTALL-TIME-CONFIG.md row 29: the storage profile rides the SAME conf.
     (storageProfile === null ? "" : renderStorageProfileConfLine(storageProfile));
   if (firstbootRole === undefined && publicEndpointLines.length > 0) {
@@ -996,6 +1003,7 @@ async function injectPubkeyToUsb(
       `install-time config: wrote ${confOnlyTarget}` +
         (publicEndpoint === null ? "" : ` (portal.${publicEndpoint.publicDomain})`) +
         (lbPool === null ? "" : ` (lb-pool ${lbPool.kind === "auto" ? "auto" : `${lbPool.start ?? ""}-${lbPool.stop ?? ""}`})`) +
+        (consolePasswordPolicy === null ? "" : ` (console-password ${consolePasswordPolicy})`) +
         (storageProfile === null ? "" : ` (storage-profile ${storageProfile})`) +
         "\n",
     );
@@ -1130,6 +1138,8 @@ function bakeEspPayloadForLinux(
   pubkeyPath: string | null,
   hostOverride: string | null,
   testMode: boolean,
+  consolePasswordPolicy: ConsolePasswordPolicy | null = null,
+  storageProfile: string | null = null,
 ): string {
   const tools = {
     qemuImg: whichTool("qemu-img"),
@@ -1171,6 +1181,8 @@ function bakeEspPayloadForLinux(
     ...(pubkeyPath === null ? {} : { pubkeyPath }),
     ...(hostOverride === null ? {} : { hostname: hostOverride }),
     ...(testMode ? { testMode: true } : {}),
+    ...(consolePasswordPolicy === null ? {} : { consolePasswordPolicy }),
+    ...(storageProfile === null ? {} : { storageProfile }),
   });
   if (!result.ok) {
     // Includes the 081KZHJPJCF read-back failure: mcopy exited 0 but the file is not on
@@ -1220,6 +1232,7 @@ async function main() {
   let acmeEmailFlag: string | undefined;
   let publicDomainFlag: string | undefined;
   let lbPoolFlag: string | undefined;
+  let consolePasswordFlag: string | undefined;
   let storageProfileFlag: string | undefined;
   let agentMode = false;
   let testMode = false;
@@ -1287,13 +1300,20 @@ async function main() {
       testMode = true;
       continue;
     }
-    if (a === "--acme-email" || a === "--public-domain" || a === "--lb-pool" || a === "--storage-profile") {
+    if (
+      a === "--acme-email" ||
+      a === "--public-domain" ||
+      a === "--lb-pool" ||
+      a === "--console-password" ||
+      a === "--storage-profile"
+    ) {
       const next = argv[i + 1];
       if (next === undefined || next.startsWith("-")) {
         bail(2, `${a} requires an argument`);
       }
       if (a === "--acme-email") acmeEmailFlag = next;
       else if (a === "--lb-pool") lbPoolFlag = next;
+      else if (a === "--console-password") consolePasswordFlag = next;
       else if (a === "--storage-profile") storageProfileFlag = next;
       else publicDomainFlag = next;
       i += 1;
@@ -1447,6 +1467,15 @@ async function main() {
   if (lbPool.value !== null && noInject) {
     bail(2, "--lb-pool requires ESP injection; remove --no-inject");
   }
+  // docs/ops/INSTALL-TIME-CONFIG.md row 19 -- the console-password policy (default|mint); anything
+  // else is refused here, before any download or device work.
+  const consolePassword = planConsolePasswordPolicy(consolePasswordFlag);
+  if (!consolePassword.ok) {
+    bail(2, `console password policy refused: ${consolePassword.error}`);
+  }
+  if (consolePassword.value !== null && noInject) {
+    bail(2, "--console-password requires ESP injection; remove --no-inject");
+  }
   // docs/ops/INSTALL-TIME-CONFIG.md row 29 -- the storage profile. A name that is not a rung is wrong
   // on every machine and is refused here; whether the pool holds it is decided by the installer,
   // which refuses before the wipe.
@@ -1525,6 +1554,11 @@ async function main() {
         "                            the node's LAN, outside the router's DHCP range. 'auto' derives .240-.250 of\n" +
         "                            the node's /24 and the installer refuses if they answer. Omit: the installer\n" +
         "                            asks; with nobody there it is left UNSET (never a default).\n" +
+        "  --console-password <default|mint>\n" +
+        "                            what the zeta CONSOLE password is when none is typed at the installer prompt.\n" +
+        "                            default (also what omitting this means) = the PUBLIC zeta-change-me, with a loud\n" +
+        "                            banner and a login reminder until changed; mint = a random one-time password\n" +
+        "                            shown once. A typed password always wins. SSH password login stays disabled.\n" +
         "  --storage-profile <auto|name>\n" +
         "                            storage profile (minimal, standard, measured, large; k8s/storage-profiles.json).\n" +
         "                            'auto' (default) lets the installer measure the Longhorn pool and pick the LARGEST\n" +
@@ -1784,6 +1818,16 @@ async function main() {
   // flag the Linux arm accepts, so passing the macOS argv would abort every flash at the
   // child's allowlist. `flashUsbLinuxArgv` cannot emit it.
   let flashUsbArgs: string[];
+  if (consolePassword.value !== null && !willInject) {
+    // Dropping the policy silently would leave the operator believing a node would come up with the
+    // password behaviour they chose. Refuse before any device work.
+    bail(2, "--console-password needs the ESP payload, but injection was skipped (no pubkey found); fix the key or drop the flag");
+  }
+  if (storageProfile.value !== null && !willInject) {
+    // Same refusal, same reason as --console-password above: a silently dropped profile would leave the
+    // operator believing the node would install at the profile they chose.
+    bail(2, "--storage-profile needs the ESP payload, but injection was skipped (no pubkey found); fix the key or drop the flag");
+  }
   if (isLinux) {
     if (expectDevice !== null || expectSizeRaw !== null || expectModel !== null) {
       bail(
@@ -1803,7 +1847,7 @@ async function main() {
       bakeCredCount: 0,
     };
     if (linuxBakeIsRequired(bakeRequest)) {
-      effectiveIso = bakeEspPayloadForLinux(isoPath, pubkeyPath, hostOverride, testMode);
+      effectiveIso = bakeEspPayloadForLinux(isoPath, pubkeyPath, hostOverride, testMode, consolePassword.value, storageProfile.value);
     }
     const argv = flashUsbLinuxArgv(flashUsb, effectiveIso, { short: true });
     if (!argv.ok) bail(2, argv.error);
@@ -1950,7 +1994,7 @@ async function main() {
     }
   } else if (willInject) {
     try {
-      await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode, firstbootRole.value, joinTokenPathFlag, publicEndpoint.value, lbPool.value, storageProfile.value);
+      await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode, firstbootRole.value, joinTokenPathFlag, publicEndpoint.value, lbPool.value, consolePassword.value, storageProfile.value);
     } finally {
       // `force: true` already means "no error if absent", so the `existsSync`
       // guard it replaces bought nothing and was itself a check-then-use race

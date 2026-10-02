@@ -21,9 +21,9 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { delimiter, join, resolve } from "node:path";
 import { parse as parseYaml, parseAllDocuments, stringify as stringifyYaml } from "yaml";
 import { readAppSource } from "./crd-provider-consumer-order.ts";
 import { lbPoolObjects } from "./lb-ipam-pool.ts";
@@ -117,6 +117,35 @@ function onPath(bin: string): boolean {
 }
 const HELM = onPath("helm");
 if (!HELM) console.warn("gitlab-exposure.test: helm not on PATH -- the gitlab render half is SKIPPED, not passed");
+
+const BASH = onPath("bash");
+
+/** Run a rendered hook script under bash with a stub `kubectl` whose `get` prints `live` (or fails when `live` is null). */
+function runGate(script: string, live: string | null): { exitCode: number; out: string } {
+  const dir = mkdtempSync(join(tmpdir(), "pin-gate-"));
+  try {
+    const bin = join(dir, "bin");
+    mkdirSync(bin, { recursive: true });
+    const stub = `#!/usr/bin/env bash\nif [ -z "\${STUB_LIVE+x}" ]; then echo "stub: kubectl unreachable" >&2; exit 1; fi\nprintf '%s' "$STUB_LIVE"\n`;
+    writeFileSync(join(bin, "kubectl"), stub, "utf8");
+    chmodSync(join(bin, "kubectl"), 0o755);
+    writeFileSync(join(dir, "script.sh"), script, "utf8");
+    const toPosix = (p: string) => p.replaceAll("\\", "/").replace(/^([A-Za-z]):/, (_m, d: string) => `/${d.toLowerCase()}`);
+    const win = process.platform === "win32";
+    const env: Record<string, string | undefined> = { ...process.env };
+    const inherited = process.env["PATH"] ?? process.env["Path"] ?? "";
+    for (const k of Object.keys(env)) if (k.toLowerCase() === "path") delete env[k];
+    delete env["STUB_LIVE"];
+    const result = Bun.spawnSync(["bash", win ? toPosix(join(dir, "script.sh")) : join(dir, "script.sh")], {
+      stdout: "pipe",
+      stderr: "pipe",
+      env: { ...env, PATH: `${win ? toPosix(bin) : bin}${win ? ":" : delimiter}${inherited}`, HOME: dir, ...(live === null ? {} : { STUB_LIVE: live }) },
+    });
+    return { exitCode: result.exitCode ?? -1, out: result.stdout.toString() + result.stderr.toString() };
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
 
 const cachedRenders = new Map<string, { text: string; docs: unknown[] }>();
 function renderGitlab(valuesPatch?: Record<string, unknown>): { text: string; docs: unknown[] } {
@@ -215,6 +244,88 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
       expect(syncWave(o)).toBeGreaterThan(syncWave(runner));
       expect(syncWave(o)).toBeGreaterThan(syncWave(mint));
     }
+  }, T);
+
+  test("(h) the migrations Job keeps ONE name across values changes, and is replaceable -- so prune:false leaves nothing behind", () => {
+    // MEASURED on the owner's node 20:53 after first boot: `gitlab OutOfSync/Healthy` with two Completed migrations
+    // pods (`-39fcdbd`, `-52e7f78`). The chart names the Job with a hash of EVERY value, the install-time pin re-renders
+    // the Application, `prune: false` keeps the old Job, and ArgoCD reports it "requires pruning" for ever.
+    const migrationsJobName = (r: { docs: unknown[] }): string[] =>
+      ofKind(r.docs, "Job").map(nameOf).filter((n) => n.startsWith("gitlab-migrations-") && n !== "gitlab-migrations-gc");
+    const base = renderGitlab();
+    const pinned = renderGitlab(installTimeValuesPatch("192.168.1.240", "192.168.1.250"));
+    const changed = renderGitlab({ gitlab: { webservice: { maxReplicas: 3 } } });
+    const names = [migrationsJobName(base), migrationsJobName(pinned), migrationsJobName(changed)];
+    expect(names[0]).toHaveLength(1);
+    expect(names[1]).toEqual(names[0]);
+    expect(names[2]).toEqual(names[0]);
+    // A fixed name needs a Job ArgoCD can recreate: pod templates are immutable, so without Force+Replace the next
+    // image or values change is refused with `field is immutable`.
+    const job = ofKind(base.docs, "Job").find((j) => nameOf(j) === names[0]![0]);
+    expect(annotationsOf(job)["argocd.argoproj.io/sync-options"]).toBe("Force=true,Replace=true");
+    // And the chart's sibling hook Jobs stop being renamed too.
+    const hookNames = (r: { docs: unknown[] }): string[] => ofKind(r.docs, "Job").map(nameOf).filter((n) => n.startsWith("gitlab-shared-secrets-")).sort();
+    expect(hookNames(pinned)).toEqual(hookNames(base));
+  }, T);
+
+  test("(h) Job gitlab-migrations-gc removes leftover migrations Jobs, never the current one, with no more RBAC than that", () => {
+    const { docs } = renderGitlab();
+    const current = ofKind(docs, "Job").map(nameOf).find((n) => n.startsWith("gitlab-migrations-") && n !== "gitlab-migrations-gc");
+    const gc = ofKind(docs, "Job").find((j) => nameOf(j) === "gitlab-migrations-gc");
+    expect(gc).toBeDefined();
+    // PostSync: after everything is Healthy; a hook is not part of the Application's comparison, so it cannot itself read OutOfSync.
+    expect(annotationsOf(gc)["argocd.argoproj.io/hook"]).toBe("PostSync");
+    expect(annotationsOf(gc)["argocd.argoproj.io/hook-delete-policy"]).toContain("BeforeHookCreation");
+    const script = JSON.stringify(gc);
+    // The name it keeps IS the name the migrations chart renders -- both read global.job.nameSuffixOverride.
+    expect(script).toContain(`KEEP=\\"${current!}\\"`);
+    expect(script).toContain("-l app=migrations");
+    expect(script).toContain("grep -v");
+    // It cannot fail the sync over a cosmetic.
+    expect(script).toContain("exit 0");
+    const role = ofKind(docs, "Role").find((r) => nameOf(r) === "gitlab-migrations-gc");
+    expect(role?.["rules"]).toEqual([{ apiGroups: ["batch"], resources: ["jobs"], verbs: ["get", "list", "delete"] }]);
+  }, T);
+
+  test("(i) a stale-render gate sits between the runner and the exposure wave, with exactly the RBAC to read this one Application", () => {
+    // MEASURED LIVE, run 36951220893: the operation was rendered with the sentinel before the pin landed, reached
+    // wave 20, created the Gateway with the sentinel and waited on it for 27 minutes with the pin long landed. The
+    // gate fails such an operation so ArgoCD retries it from the current values.
+    const { docs } = renderGitlab();
+    const gate = ofKind(docs, "Job").find((j) => nameOf(j) === "gitlab-pin-fresh");
+    const runner = ofKind(docs, "Deployment").find((d) => nameOf(d) === "gitlab-gitlab-runner");
+    expect(gate).toBeDefined();
+    expect(annotationsOf(gate)["argocd.argoproj.io/hook"]).toBe("Sync");
+    expect(syncWave(gate)).toBeGreaterThan(syncWave(runner));
+    for (const o of [...ofKind(docs, "Gateway"), ...ofKind(docs, "HTTPRoute")]) expect(syncWave(o)).toBeGreaterThan(syncWave(gate));
+    const role = ofKind(docs, "Role").find((r) => nameOf(r) === "gitlab-pin-fresh");
+    expect(role?.["rules"]).toEqual([{ apiGroups: ["argoproj.io"], resources: ["applications"], resourceNames: ["gitlab"], verbs: ["get"] }]);
+    expect(((role?.["metadata"] ?? {}) as Record<string, unknown>)["namespace"]).toBe("argocd");
+    // The Application must retry a failed operation, or a failed gate is a dead end rather than a re-render.
+    const app = parseYaml(readFileSync(GITLAB_APP, "utf8")) as Record<string, any>;
+    const limit = app.spec?.syncPolicy?.retry?.limit as number | undefined;
+    expect(limit === -1 || (limit !== undefined && limit >= 3)).toBe(true); // -1 is ArgoCD's "unbounded"
+  }, T);
+
+  test.skipIf(!BASH)("(i) the gate script, EXECUTED: stale fails, current passes, both-sentinel passes, unreadable does not gate", () => {
+    const scriptOf = (r: { docs: unknown[] }): string => {
+      const gate = ofKind(r.docs, "Job").find((j) => nameOf(j) === "gitlab-pin-fresh") as Record<string, any>;
+      return String(gate.spec.template.spec.containers[0].args[0]);
+    };
+    const sentinel = renderGitlab();
+    const pinned = renderGitlab(installTimeValuesPatch("192.168.1.240", "192.168.1.250"));
+    // An operation rendered with the sentinel while the Application already carries the pin: STALE.
+    const stale = runGate(scriptOf(sentinel), "192.168.1.250");
+    expect(stale.exitCode).toBe(1);
+    expect(stale.out).toContain("STALE SYNC");
+    // The retry, rendered from the pinned values: passes.
+    expect(runGate(scriptOf(pinned), "192.168.1.250").exitCode).toBe(0);
+    // An install with no resolved LB range: sentinel on both sides -- nothing is stale, the run is not held hostage.
+    expect(runGate(scriptOf(sentinel), "192.0.2.250").exitCode).toBe(0);
+    // A read that fails is UNKNOWN, not "stale": it must not turn into an endless retry loop.
+    const unknown = runGate(scriptOf(sentinel), null);
+    expect(unknown.exitCode).toBe(0);
+    expect(unknown.out).toContain("NOT gating");
   }, T);
 
   test("(g) no Deployment needs spare capacity to roll: maxSurge 0 (or Recreate), because the install-time pin rolls every component once", () => {

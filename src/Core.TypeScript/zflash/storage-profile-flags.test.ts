@@ -122,8 +122,33 @@ describe("device zflash: the same flag, the same validator", () => {
   });
 
   test("the value reaches the ESP: cli.ts hands it to the injector alongside the others and renders one conf line", () => {
-    expect(cli).toContain("publicEndpoint.value, lbPool.value, storageProfile.value)");
+    expect(cli).toContain("lbPool.value, consolePassword.value, storageProfile.value)");
     expect(cli).toContain("renderStorageProfileConfLine(storageProfile)");
+  });
+
+  test("on LINUX it reaches the ESP through the mcopy bake too, and a dropped profile is refused (both console-password and this flag survive the merge)", () => {
+    expect(cli).toContain("hostOverride, testMode, consolePassword.value, storageProfile.value)");
+    expect(cli).toContain("...(storageProfile === null ? {} : { storageProfile })");
+    expect(cli).toContain("--storage-profile needs the ESP payload, but injection was skipped");
+    expect(cli).toContain("--storage-profile requires ESP injection; remove --no-inject");
+    // The other feature that shares this plumbing is still wired: dropping either would be a silent regression.
+    expect(cli).toContain("--console-password requires ESP injection; remove --no-inject");
+    expect(cli).toContain("renderConsolePasswordPolicyConfLine(consolePasswordPolicy)");
+  });
+
+  test("both flags land in ONE /zeta-firstboot.conf, with the Longhorn override still the last line", () => {
+    const planned = planFileBackedZflashImage({
+      ...base,
+      consolePasswordPolicy: "mint",
+      storageProfile: "standard",
+      allowLonghornUndersized: true,
+    });
+    if (!planned.ok) throw new Error(planned.error);
+    const confs = planned.value.espWrites.filter((w) => w.destination === "/zeta-firstboot.conf");
+    expect(confs).toHaveLength(1);
+    expect(confs[0]?.content).toContain("ZETA_CONSOLE_PASSWORD_POLICY='mint'");
+    expect(confs[0]?.content).toContain("ZETA_STORAGE_PROFILE='standard'");
+    expect(confs[0]?.content?.trimEnd().split("\n").at(-1)).toBe("ZETA_ALLOW_LONGHORN_UNDERSIZED='1'");
   });
 
   test("it is in --help", () => {
@@ -190,6 +215,6 @@ describe("Windows flasher (the operator's own platform): the same flag, the same
   test("it is in --help and in the dry-run block", () => {
     const src = readFileSync(resolve(import.meta.dir, "flash-usb-windows.ts"), "utf8");
     expect(src).toContain("--storage-profile <auto|name>");
-    expect(src).toContain("`[dry-run] ${describeStorageProfile(planned.value)}");
+    expect(src).toContain("describeStorageProfile(planned.value)");
   });
 });

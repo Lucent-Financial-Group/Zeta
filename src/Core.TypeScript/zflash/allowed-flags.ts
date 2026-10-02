@@ -42,6 +42,10 @@ export const ZFLASH_ALLOWED_FLAGS: ReadonlySet<string> = new Set([
   // (`auto` | `<first-ip>-<last-ip>`), validated by the same `planLbPool` the
   // file-backed image path runs.
   "--lb-pool",
+  // docs/ops/INSTALL-TIME-CONFIG.md row 19: the console-password policy
+  // (`default` | `mint`), validated by the same `planConsolePasswordPolicy` the
+  // file-backed image path runs.
+  "--console-password",
   // docs/ops/INSTALL-TIME-CONFIG.md row 29: the storage profile (`auto` | a profile of
   // k8s/storage-profiles.json), validated by the same `planStorageProfile` the file-backed
   // image path runs.
