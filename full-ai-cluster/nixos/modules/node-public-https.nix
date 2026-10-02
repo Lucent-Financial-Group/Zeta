@@ -6,7 +6,7 @@
 # (`nixos-fw`) had no rule for TCP 443. A home router can port-forward only to a DEVICE, never to a
 # Cilium LoadBalancer address (docs/ops/ROUTER-PORT-FORWARD-AMBIGUITY.md), so the forward lands on the
 # node's own address, and the node's own :443 is served by the `node-lan-hosts` relay
-# (k8s/applications/cluster-hygiene/node-lan-hosts.yaml: a hostNetwork socat on :443 -> the public
+# (k8s/applications/cluster-hygiene/node-lan-hosts.yaml: a hostNetwork relay on :443 -> the public
 # Gateway). The relay listened and the LAN still got no answer, because the firewall dropped the SYN.
 # At runtime the DaemonSet worked around it with `iptables -I nixos-fw 1 -p tcp --dport 443 -j
 # nixos-fw-accept`. This is that rule, declared: `-A nixos-fw -p tcp --dport 443 -j nixos-fw-accept`

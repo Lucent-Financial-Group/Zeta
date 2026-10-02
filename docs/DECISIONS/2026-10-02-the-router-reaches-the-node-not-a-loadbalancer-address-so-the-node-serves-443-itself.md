@@ -28,8 +28,8 @@ router cannot be confused, ship the relay as base GitOps, or both?
 4. The NixOS firewall (`nixos-fw`) had no rule for TCP 443, so even a forward that reached the node's own address
    was dropped. That a :80 forward reached `.250` while the firewall carried no 80 rule is consistent with the eBPF datapath
    answering LoadBalancer addresses before netfilter (an inference from those two facts, not a separate measurement).
-5. Nothing listened on the node's own :443 until the `node-lan-hosts` relay (hostNetwork, `socat`, TLS passthrough
-   to the public Gateway) did. A Service `https-relay` with `externalIPs` = every LoadBalancer address that does not
+5. Nothing listened on the node's own :443 until the `node-lan-hosts` relay (hostNetwork; first a `socat` passthrough, then, in #17872, an SNI-routing haproxy edge whose default
+   backend is that same TLS passthrough to the public Gateway; only the API hostnames are terminated there) did. A Service `https-relay` with `externalIPs` = every LoadBalancer address that does not
    already serve :443 makes `<ip>:443` a Cilium frontend for that relay.
 
 ## Decision

@@ -147,10 +147,14 @@ describe("(c) the relay the loopback names depend on is real, on the host networ
     expect(JSON.stringify(spec["tolerations"])).toContain('"operator":"Exists"');
   });
 
-  test("a container listens on :443 and relays it onward", () => {
+  test("a container listens on :443 and passes every non-API name through to the Gateway unchanged", () => {
     const spec = (ds?.["spec"] as { template: { spec: { containers: { args?: string[] }[] } } }).template.spec;
     const all = spec.containers.flatMap((c) => c.args ?? []).join("\n");
-    expect(all).toMatch(/TCP-LISTEN:443/);
+    // The relay has had two shapes: a socat `TCP-LISTEN:443` passthrough (#17867) and an SNI-routing
+    // haproxy edge whose DEFAULT backend is that same passthrough (#17872). gitlab./registry. are not
+    // API names, so either way they reach the Gateway byte-for-byte; the loopback pin needs exactly that.
+    expect(all).toMatch(/TCP-LISTEN:443|EDGE_PORT:-443/);
+    expect(all).toMatch(/TCP-LISTEN:443|default_backend be_gateway/);
   });
 
   test("it lives in a directory the root Application recurses into, via its own Application", () => {

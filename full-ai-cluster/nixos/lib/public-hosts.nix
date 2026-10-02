@@ -21,8 +21,9 @@
 # for `control-plane`). 127.0.0.1 cannot be wrong: the `node-lan-hosts` DaemonSet
 # (k8s/applications/cluster-hygiene/node-lan-hosts.yaml, hostNetwork, on every node) listens on the
 # node's :443 and relays it to whatever address the Gateway currently has -- discovered at runtime, so
-# it follows a changed address with no edit here. TLS is passed through, SNI intact, and still
-# terminates at the Gateway.
+# it follows a changed address with no edit here. For every name but the API hostnames (which its
+# SNI-routing edge terminates itself) TLS is passed through, SNI intact, and still terminates at the
+# Gateway; gitlab./registry. are not API names.
 #
 # THE COST, STATED: these two names depend on that relay being up. With it absent, the node cannot
 # reach them at all -- where before it could, on a LAN whose router DOES hairpin. The relay ships in the
