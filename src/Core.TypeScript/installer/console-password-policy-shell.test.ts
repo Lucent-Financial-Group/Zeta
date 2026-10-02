@@ -116,7 +116,14 @@ echo "REACHED-END"
 }
 
 const etc = (run: Run, name: string) => join(run.root, "etc/zeta", name);
-const has = (run: Run, name: string) => existsSync(etc(run, name));
+/** Membership in the directory listing: one syscall, no existsSync-then-read pair to race. */
+const has = (run: Run, name: string) => {
+  try {
+    return readdirSync(join(run.root, "etc/zeta")).includes(name);
+  } catch {
+    return false; // the directory was never created (e.g. the install refused before writing anything)
+  }
+};
 const read = (run: Run, name: string) => readFileSync(etc(run, name), "utf8");
 const BANNER = "CONSOLE PASSWORD IS THE PUBLIC DEFAULT zeta-change-me — change it: sudo passwd zeta. SSH password login stays disabled.";
 
