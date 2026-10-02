@@ -361,8 +361,9 @@
   "$comment_acknowledgedComputeShortfall": [
     "EMPTY, and unlike the storage list above it has never carried an entry.",
     "",
-    "The `metal` rung reserves 14347m / 33379Mi across the 52 Applications the",
-    "bootstrap root applies (+275m / +576Mi on 2026-10-01: postgres-shared 250m / 512Mi, the",
+    "The `metal` rung reserves 14367m / 33443Mi across the 53 Applications the",
+    "bootstrap root applies (+20m / +64Mi on 2026-10-02: cluster-hygiene, two CronJobs at 10m / 32Mi",
+    "that exist only while their Job runs, counted at 1 replica each; +275m / +576Mi on 2026-10-01: postgres-shared 250m / 512Mi, the",
     "general-purpose CNPG instance, and the Barman Cloud plugin controller 25m / 64Mi. The",
     "plugin's sidecar in each instance pod, ~10m / 64Mi, is not in the figure: no row can",
     "address an operator-injected container; +50m / +128Mi on 2026-09-30: the oz controller, priced after it",
