@@ -26,7 +26,9 @@ it and every ledger that enumerates the default catalog is untouched (it adds no
 outlives a Job; the databases live on the existing 20 Gi `postgres-shared` volume). It owns:
 
 - namespaces `flowdent-staging` / `flowdent-prod` (`baseline` enforced, `restricted` warned) with
-  ResourceQuota ceilings — an **unmetered** ceiling, not a reservation;
+  ResourceQuota ceilings (cpu, memory, **ephemeral storage**, no PVC) — an **unmetered** ceiling, not a
+  reservation — and two non-preempting PriorityClasses (`flowdent-prod`, `flowdent-staging`; see "The
+  node's disk");
 - two `Database` CRs (`flowdent_staging`, `flowdent_prod`, `databaseReclaimPolicy: retain`) and one
   plain-LOGIN **owner role each** on the shared Cluster — no superuser, `enableSuperuserAccess` stays
   `false`;
@@ -136,6 +138,39 @@ pipeline's `probe-registry` job sees no HTTPS answer and the image is **built bu
 warning; `deploy-staging` then stops at `verify-image.sh` rather than deploying nothing. Set
 `FLOWDENT_PUSH_IMAGE=true` to make an unreachable registry fail the build instead. A node must also be
 able to PULL from the same name, so the same certificates gate the first real deploy.
+
+## The node's disk (measured 2026-10-02, reported by the fleet coordinator)
+
+The single node has ONE disk (root fs ~119 GiB). At 07:53Z several image-heavy pipelines ran at once
+(kaniko builds, the .NET SDK image, test containers), the node crossed the kubelet's DiskPressure
+threshold, tainted itself `NoSchedule`, and the kubelet evicted ~150 pods (mostly crash-looping
+`hindsight` pods); CI job pods sat `Pending` on the untolerated taint, and some jobs ended in
+`runner_system_failure` after the scheduling timeout. The thresholds in force, **as reported and not
+re-measured by this change**: `evictionHard` `imagefs.available<15%` (~19 GiB free) and
+`nodefs.available<10%`; image GC starts at 85% and targets 80%.
+
+What this change does about it, and what it does not:
+
+- **Pods declare ephemeral storage.** The app Deployment requests 64 Mi / limits 512 Mi (its `/tmp`
+  `emptyDir` is capped at 256 Mi), and both app namespaces carry a quota on
+  `requests.ephemeral-storage` / `limits.ephemeral-storage`, so a pod **cannot be created without a
+  request**. Under node pressure the kubelet picks first the pods whose usage exceeds their request of
+  the starved resource; a healthy pod within its request is not in that set.
+- **Priority.** `flowdent-prod` (10000) and `flowdent-staging` (1000), above the default 0 that
+  crash-looping workloads run at, **`preemptionPolicy: Never`**: they rank higher when pods are
+  evicted but never evict a platform pod to get scheduled. `system-cluster-critical` (what
+  `postgres-shared` uses) stays far above them.
+- **Adds no baseline disk.** No PVC (quota `persistentvolumeclaims: 0`), no image, no always-on pod. The
+  two PriorityClasses are cluster objects of a few hundred bytes.
+- **The pipeline serialises its heavy jobs** (one `resource_group` for the test job and both kaniko
+  builds), builds the image automatically only on `main`, tags and merge requests, and uses
+  `postgres:16-alpine` for the test database service.
+- **What it cannot do.** Pod-level settings do not stop *image* pulls from filling `imagefs`, and CI
+  pods outside these namespaces are not governed by this quota. The structural fix is a larger or
+  separate image disk, or a registry mirror/pull-through cache, which is a node decision for a human.
+
+If DiskPressure recurs, the first thing to look at is how many `fd-core-heavy`-group jobs and other
+pipelines ran concurrently, not this tenancy: nothing in it runs until a pipeline deploys.
 
 ## Removing it
 

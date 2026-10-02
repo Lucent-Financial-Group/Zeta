@@ -30,7 +30,7 @@ const SET = { acmeEmail: "ops@zeta-cluster-fixture.net", publicDomain: "zeta-clu
 
 const read = (f: string) => readFileSync(join(DIR, f), "utf8");
 const docs = (f: string) => yamlDocs(read(f));
-const all = () => ["namespaces.yaml", "deployer.yaml", "database.yaml"].flatMap(docs);
+const all = () => ["namespaces.yaml", "priorityclasses.yaml", "deployer.yaml", "database.yaml"].flatMap(docs);
 const meta = (o: K8sObject) => (o["metadata"] ?? {}) as Record<string, any>;
 const name = (o: K8sObject) => String(meta(o)["name"] ?? "");
 const ns = (o: K8sObject) => String(meta(o)["namespace"] ?? "");
@@ -64,9 +64,16 @@ describe("A. opt-in: nothing here exists unless an operator applies Application.
     expect(kinds(all(), "Namespace").map(name).sort()).toEqual(["flowdent-prod", "flowdent-staging"]);
   });
 
-  test("every object is in one of the three namespaces it is allowed to touch (Namespaces themselves excepted)", () => {
+  test("every object is in one of the three namespaces it is allowed to touch (Namespaces and PriorityClasses excepted)", () => {
     const allowed = new Set(["flowdent-staging", "flowdent-prod", "postgres-shared"]);
-    for (const o of all().filter((x) => x["kind"] !== "Namespace")) expect(allowed.has(ns(o))).toBe(true);
+    for (const o of all().filter((x) => x["kind"] !== "Namespace" && x["kind"] !== "PriorityClass")) expect(allowed.has(ns(o))).toBe(true);
+  });
+
+  test("the only cluster-scoped objects are the two Namespaces and the two PriorityClasses", () => {
+    const clusterScoped = all().filter((o) => ns(o) === "");
+    expect(clusterScoped.map((o) => `${String(o["kind"])}/${name(o)}`).sort()).toEqual([
+      "Namespace/flowdent-prod", "Namespace/flowdent-staging", "PriorityClass/flowdent-prod", "PriorityClass/flowdent-staging",
+    ]);
   });
 });
 
@@ -138,6 +145,31 @@ describe("B. isolation: the deployers", () => {
       const hard = (q["spec"] as any).hard as Record<string, string>;
       expect(Object.keys(hard)).toContain("requests.cpu");
       expect(Object.keys(hard)).toContain("requests.memory");
+    }
+  });
+
+  // The node has ONE disk and tainted itself DiskPressure on 2026-10-02 (~150 pods evicted).
+  test("the quota also forces an ephemeral-storage REQUEST and caps the limit, so a pod is never 'over' a request it never made", () => {
+    for (const q of kinds(all(), "ResourceQuota")) {
+      const hard = (q["spec"] as any).hard as Record<string, string>;
+      expect(Object.keys(hard)).toContain("requests.ephemeral-storage");
+      expect(Object.keys(hard)).toContain("limits.ephemeral-storage");
+    }
+  });
+
+  test("no PVC may be claimed in an app namespace (the databases live on postgres-shared's volume)", () => {
+    for (const q of kinds(all(), "ResourceQuota")) expect((q["spec"] as any).hard["persistentvolumeclaims"]).toBe("0");
+  });
+
+  test("PriorityClasses: prod above staging above default, far below the system classes, and NEVER preempting", () => {
+    const pc = Object.fromEntries(kinds(all(), "PriorityClass").map((p) => [name(p), p]));
+    expect(Object.keys(pc).sort()).toEqual(["flowdent-prod", "flowdent-staging"]);
+    expect(pc["flowdent-prod"]!["value"] as number).toBeGreaterThan(pc["flowdent-staging"]!["value"] as number);
+    expect(pc["flowdent-staging"]!["value"] as number).toBeGreaterThan(0);
+    expect(pc["flowdent-prod"]!["value"] as number).toBeLessThan(1_000_000);
+    for (const p of Object.values(pc)) {
+      expect(p["preemptionPolicy"]).toBe("Never");
+      expect(p["globalDefault"]).toBe(false);
     }
   });
 });

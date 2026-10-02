@@ -7,6 +7,11 @@
 # measurement (unmetered): it stops a bad rollout from starving the platform that shares this
 # node. It is NOT a row in the resource ledgers, because nothing here is scheduled until the
 # fd-core pipeline deploys it.
+#
+# EPHEMERAL STORAGE is in the quota because this node has ONE disk: on 2026-10-02 07:53Z it tainted
+# itself DiskPressure and the kubelet evicted ~150 pods. A quota on `requests.ephemeral-storage`
+# makes every pod here DECLARE a request (a pod without one is refused), and a pod within its
+# request is not the one the kubelet picks first. The ceilings cap what a runaway rollout can write.
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -37,6 +42,8 @@ spec:
     requests.cpu: "1"
     requests.memory: 2Gi
     limits.memory: 4Gi
+    requests.ephemeral-storage: 512Mi
+    limits.ephemeral-storage: 2Gi
     pods: "20"
     persistentvolumeclaims: "0"
 ---
@@ -50,5 +57,7 @@ spec:
     requests.cpu: "2"
     requests.memory: 4Gi
     limits.memory: 8Gi
+    requests.ephemeral-storage: 1Gi
+    limits.ephemeral-storage: 4Gi
     pods: "30"
     persistentvolumeclaims: "0"
