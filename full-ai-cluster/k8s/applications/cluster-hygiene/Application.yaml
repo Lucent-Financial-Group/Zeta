@@ -38,7 +38,7 @@ spec:
     path: full-ai-cluster/k8s/applications/cluster-hygiene
     directory:
       # Apply the manifests, NOT this Application.yaml itself (no recursion).
-      include: '{namespace,pod-janitor,hindsight-secret-gate}.yaml'
+      include: '{namespace,pod-janitor,hindsight-secret-gate,node-lan-hosts}.yaml'
   destination:
     server: https://kubernetes.default.svc
     namespace: zeta-hygiene
