@@ -19,7 +19,7 @@
 # THIS MODULE adds the option that makes the stranded state impossible without making root cheaper: with
 # `zeta.operatorSudo.sshAgentAuth = true`, `sudo` accepts a signature from the operator's FORWARDED
 # ssh-agent over the SAME keys that already grant SSH login (pam_ssh_agent_auth, NixOS
-# `security.pam.sshAgentAuth`), and the password prompt remains as the fallback. Nothing is granted
+# `security.pam.sshAgentAuth.enable`), and the password prompt remains as the fallback. Nothing is granted
 # without a key the operator already held; nothing needs a secret to be remembered.
 #
 # WHY IT IS OFF BY DEFAULT -- the judgment call, stated rather than made silently. Enabling it turns
@@ -36,7 +36,13 @@
 #
 # NOT VERIFIED (no nix on the authoring machine, nothing booted): that the PAM stack accepts the key on a
 # real node. nixos/tests/installer-parity-eval-test.nix pins that the option exists, defaults OFF, and when
-# forced on reaches both PAM settings; only a login shows the sudo.
+# forced on reaches `security.pam.sshAgentAuth.enable`; only a login shows the sudo.
+#
+# ONE SWITCH, NOT TWO -- CAUGHT BY THE FIRST CI EVAL, NOT BY READING. nixos/modules/security/sudo.nix sets
+# `security.pam.services.sudo.sshAgentAuth = true` UNCONDITIONALLY; the rule only takes effect when the
+# GLOBAL `security.pam.sshAgentAuth.enable` is also true (pam.nix: `enable = config.security.pam.sshAgentAuth.enable
+# && cfg.sshAgentAuth`). So the global flag is the whole switch, and an earlier draft of this module (and its
+# test) that treated the per-service flag as a second, default-off switch was wrong about stock NixOS.
 
 { config, lib, ... }:
 
@@ -59,7 +65,6 @@ in
   config = lib.mkMerge [
     (lib.mkIf cfg.sshAgentAuth {
       security.pam.sshAgentAuth.enable = true;
-      security.pam.services.sudo.sshAgentAuth = true;
 
       # Enabled with no key to authenticate against it does nothing but look configured.
       warnings = lib.optional (authorizedKeys == [ ])

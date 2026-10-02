@@ -368,7 +368,8 @@ jobs:
                    longhorn-disk-registration longhorn-common-default-disk-eval \
                    cilium-wireguard-preflight gpu-node-label-preflight \
                    k3s-registry-mirrors-model k8s-node-tunables-model \
-                   k3s-etcd-peers-model install-medium-device-eval \n                   installer-parity-model; do
+                   k3s-etcd-peers-model install-medium-device-eval \
+                   installer-parity-model; do
             grep -q "$c" /tmp/aic-flake-check.log || missing="$missing $c"
           done
           if [ -n "$missing" ]; then

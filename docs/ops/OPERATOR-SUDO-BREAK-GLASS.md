@@ -46,7 +46,7 @@ typed or minted password it removes a second factor. That is the owner's call, h
 
 **Not verified:** nothing was booted and nix was not available where this was written; the PAM acceptance of an agent signature is
 unproven until a login shows it. The eval check `installer-parity-model` pins only that the option exists, defaults off and reaches
-`security.pam.sshAgentAuth.enable` + the sudo service when forced on.
+`security.pam.sshAgentAuth.enable` when forced on (the sudo service's own flag is already true on stock NixOS, so the global flag is the whole switch).
 
 ## Rejected: `NOPASSWD` for `wheel` (or for `nixos-rebuild`)
 

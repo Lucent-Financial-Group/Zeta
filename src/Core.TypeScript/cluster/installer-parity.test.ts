@@ -26,7 +26,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse as parseYaml, parseAllDocuments } from "yaml";
 import { renderPublicTlsApplicationText } from "./public-tls.ts";
@@ -128,15 +128,24 @@ describe("(b) the node's own resolver answers the two public names the kubelet p
 
 describe("(c) the relay the loopback names depend on is real, on the host network, and in the base set", () => {
   const FILE = join(CLUSTER, "k8s", "applications", "cluster-hygiene", "node-lan-hosts.yaml");
-  // node-lan-hosts.yaml is PR #17867. Until it is on main this block cannot run, and a skipped
-  // dependency check is the vacuity this repo refuses, so absence FAILS rather than skips.
+  // One syscall, one answer (no exists-then-read window): a missing file is null here and FAILS the
+  // first test below rather than skipping, because a skipped dependency check is the vacuity this repo refuses.
+  const manifest = ((): string | null => {
+    try {
+      return readFileSync(FILE, "utf8");
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code === "ENOENT") return null;
+      throw e;
+    }
+  })();
+
   test("node-lan-hosts.yaml exists on this tree", () => {
-    expect(existsSync(FILE)).toBe(true);
+    expect(manifest).not.toBeNull();
   });
 
   const ds = (() => {
-    if (!existsSync(FILE)) return null;
-    const docs = parseAllDocuments(readFileSync(FILE, "utf8")).map((d) => d.toJSON() as Record<string, unknown>);
+    if (manifest === null) return null;
+    const docs = parseAllDocuments(manifest).map((d) => d.toJSON() as Record<string, unknown>);
     return docs.find((d) => d?.["kind"] === "DaemonSet") ?? null;
   })();
 
@@ -219,8 +228,9 @@ describe("(e) operator sudo: key-based is opt-in, nothing grants passwordless ro
 
   test("the PAM settings are reachable ONLY under the option", () => {
     const guarded = /lib\.mkIf cfg\.sshAgentAuth\s*\{([\s\S]*?)\n\s{4}\}\)/.exec(SUDO)?.[1] ?? "";
+    // ONE switch: nixos sudo.nix already sets the per-service flag true on every host, so the global
+    // `security.pam.sshAgentAuth.enable` is what turns the rule on (found by the first CI eval).
     expect(guarded).toContain("security.pam.sshAgentAuth.enable = true;");
-    expect(guarded).toContain("security.pam.services.sudo.sshAgentAuth = true;");
     const outside = SUDO.replace(guarded, "");
     expect(outside).not.toContain("security.pam.sshAgentAuth.enable = true");
   });
@@ -276,7 +286,7 @@ describe("(g) the router guidance names the NODE, not a LoadBalancer address", (
 
   test("the ADR and the install-time inventory rows exist", () => {
     const adr = join(REPO_ROOT, "docs", "DECISIONS", "2026-10-02-the-router-reaches-the-node-not-a-loadbalancer-address-so-the-node-serves-443-itself.md");
-    expect(existsSync(adr)).toBe(true);
+    expect(readFileSync(adr, "utf8")).toContain("Status:");
     const inv = readFileSync(join(REPO_ROOT, "docs", "ops", "INSTALL-TIME-CONFIG.md"), "utf8");
     for (const row of [30, 31, 32, 33, 34]) expect(inv).toContain(`| ${row} |`);
   });

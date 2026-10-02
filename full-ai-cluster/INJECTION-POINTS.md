@@ -472,7 +472,7 @@ ignores exactly that field). Same shape as GitLab above, a separate Job scoped t
 1. **DNS:** an `A` record `portal.<domain>` → your public IP (and `gitlab.<domain>`,
    `registry.<domain>`, `git.<domain>` → the same IP to publish GitLab / Forgejo).
 2. **Router:** forward TCP **443** to **the node** (its own, DHCP-reserved LAN address) — NOT to the
-   public gateway's LoadBalancer address. A home router forwards to a *device*, and the node answers for
+   public gateway's LoadBalancer address. A home router forwards to a _device_, and the node answers for
    several addresses on one MAC (measured 2026-10-02: the forward was bound to `.250`, the GitLab-only
    gateway, and production vanished). The node serves `:443` itself: `nixos/modules/node-public-https.nix`
    opens it and the `node-lan-hosts` relay passes it to the Gateway. **HTTP-01** additionally needs TCP

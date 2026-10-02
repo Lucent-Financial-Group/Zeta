@@ -17,8 +17,9 @@
 #   3. the merge did not clobber the names other modules put on 127.0.0.1 (`control-plane`);
 #   4. the kubelet is told to start image GC strictly below the eviction line, which is READ from
 #      k3s-kubelet-reservations.sh rather than restated, and container logs are bounded;
-#   5. key-based sudo is OFF by default (no PAM change on a stock host), and forcing it ON reaches both
-#      PAM settings it needs.
+#   5. key-based sudo is OFF by default (no PAM change on a stock host), and forcing it ON reaches the one
+#      switch that activates it (`security.pam.sshAgentAuth.enable`; the sudo service's own flag is already
+#      true on a stock host, nixos/modules/security/sudo.nix).
 #
 # WHAT IT CANNOT TELL YOU
 #   Nothing here boots a node. It does not show that NixOS renders the firewall rule or /etc/hosts line,
@@ -97,10 +98,10 @@ let
       "zeta.operatorSudo.sshAgentAuth must default to false (an opt-in widening of who can become root)"
     && must (nixosConfig.config.security.pam.sshAgentAuth.enable == false)
       "a stock host must not enable pam_ssh_agent_auth"
-    && must (nixosConfig.config.security.pam.services.sudo.sshAgentAuth == false)
-      "a stock host's sudo PAM service must not use the ssh agent"
-    && must (forcedOn.config.security.pam.sshAgentAuth.enable == true && forcedOn.config.security.pam.services.sudo.sshAgentAuth == true)
-      "zeta.operatorSudo.sshAgentAuth = true did not reach security.pam.sshAgentAuth.enable and the sudo service";
+    && must (forcedOn.config.security.pam.sshAgentAuth.enable == true)
+      "zeta.operatorSudo.sshAgentAuth = true did not reach security.pam.sshAgentAuth.enable"
+    && must (forcedOn.config.security.pam.services.sudo.sshAgentAuth == true)
+      "with the global switch on, the sudo PAM service must be using the ssh agent (sudo.nix sets it unconditionally; this fails if that ever changes)";
 in
 {
   status =
@@ -108,6 +109,6 @@ in
       && hostsOk && mergeOk
       && kubeletOk "control-plane" nixosConfig && kubeletOk "worker-gpu" secondHostConfig
       && sudoOk
-    then "installer-parity: 443 open and 80 closed on both hosts, hostsFor pinned on 6 cases, GC starts below the ${toString evictionLineUsedPercent}% eviction line, key-based sudo defaults off and reaches PAM when forced on"
+    then "installer-parity: 443 open and 80 closed on both hosts, hostsFor pinned on 6 cases, GC starts below the ${toString evictionLineUsedPercent}% eviction line, key-based sudo defaults off and flips the one PAM switch when forced on"
     else throw "unreachable: every mismatch above throws";
 }
