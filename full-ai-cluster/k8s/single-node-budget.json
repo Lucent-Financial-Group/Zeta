@@ -382,7 +382,7 @@
     "LOWERED on 2026-09-22 when gitlab's bundled minio subchart was disabled, both its",
     "images having been withdrawn from Docker Hub (see gitlab/Application.yaml).",
     "The smallest registered node measures 16 logical CPUs (16000m) and 62942 MiB, so",
-    "the rung fits with 1653m / 29563Mi of the raw bound unspent. That is a REPORT,",
+    "the rung fits with 1633m / 29499Mi of the raw bound unspent. That is a REPORT,",
     "not a pass: the bound reserves nothing for the kubelet, the control plane,",
     "kube-system or the OS, and 24 of the 49 Applications still render BestEffort pods",
     "that no arithmetic here ever sees.",
