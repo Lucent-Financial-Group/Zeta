@@ -429,6 +429,10 @@ describe.skipIf(!BASH)("hindsight-secret-gate script, executed", () => {
     const secretCalls = out.calls.filter((c) => c.includes("secret"));
     expect(secretCalls).toHaveLength(1);
     expect(secretCalls[0]).toContain("-o name");
-    expect(secretCalls[0]).not.toMatch(/jsonpath|yaml|json|go-template|base64/);
+    // Equality on `.test()`, not `not.toMatch`: R5 counts an absence search
+    // whose SUBJECT names SECRET (`secretCalls`) as one rendering of a leak,
+    // never its absence (`audit-check-arity-nonequality.ts`). `toBe(false)`
+    // is the same claim with arity that can fail. Keep the name-only pin.
+    expect(/jsonpath|yaml|json|go-template|base64/u.test(secretCalls[0])).toBe(false);
   });
 });
