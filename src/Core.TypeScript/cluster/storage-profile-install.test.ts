@@ -50,7 +50,6 @@ import {
   SHELL_DATA_BEGIN,
   SHELL_DATA_END,
   STORAGE_PROFILE_APPLICATION_NAME,
-  STORAGE_PROFILE_CONFIGMAP_NAME,
   STORAGE_PROFILE_KIT_DIR,
   STORAGE_PROFILE_NIX_MODULE,
   STORAGE_PROFILE_TEMPLATE,
@@ -331,7 +330,7 @@ describe("(b) applying a profile's patches to the COMMITTED Application yields e
         const key = `${claim.path}::${claim.sizeField}`;
         const committedSize = String(getIn(applicationDoc(claim.path, claim.docIndex), claim.sizeField));
         // An edit exists exactly when the rung differs from what is committed; otherwise the value is unchanged.
-        expect(bySize.get(key) ?? committedSize).toBe(claim.sizes[rung.name]);
+        expect(bySize.get(key) ?? committedSize).toBe(claim.sizes[rung.name] as string);
       }
     }
   });
@@ -425,7 +424,7 @@ describe("(c) the kit's own parts agree", () => {
       ladder.flatMap((r) => apps.map((a) => `${r.name}--${a.app}.json`)).sort(),
     );
     expect(data["profile"]).toBeUndefined();
-    for (const [key, value] of Object.entries(data)) expect(() => JSON.parse(value)).not.toThrow();
+    for (const value of Object.values(data)) expect(() => JSON.parse(value)).not.toThrow();
   });
 
   test("the RBAC may patch exactly the patched Applications and nothing else", () => {
@@ -471,7 +470,7 @@ describe("(c) the rendered Application, per profile (what the Nix module hands t
       // The profile is in every Job's NAME: a changed profile is a NEW Job, not a completed one nobody re-runs.
       for (const name of names) expect(name).toMatch(new RegExp(`^zeta-storage-profile-.+-${rung.name}$`));
       expect(new Set(names).size).toBe(names.length);
-      for (const name of names) expect(name.length).toBeLessThanOrEqual(63);
+      for (const name of names) expect(String(name).length).toBeLessThanOrEqual(63);
       const dataKeys = new Set(Object.keys(cm["data"] as Record<string, string>));
       for (const job of jobs) {
         const args = ((getIn(job, "spec.template.spec.containers") as Array<Record<string, string[]>>)[0]?.["args"] ?? []) as string[];

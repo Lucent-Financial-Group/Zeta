@@ -72,7 +72,7 @@ describe("it refuses ONLY when even the smallest profile does not fit", () => {
     expect(decision.write).toBe(false);
     // The refusal is reported against the SMALLEST rung: that is the number the remedies are sized from.
     expect(decision.selection).toEqual({ ok: true, profile: "minimal", source: "auto" });
-    expect(decision.demandGib).toBe(STORAGE_PROFILE_LADDER[0]?.demandGib);
+    expect(decision.demandGib).toBe(STORAGE_PROFILE_LADDER[0]?.demandGib ?? null);
   });
 
   it("one GiB under the smallest rung refuses; exactly at it installs", () => {
@@ -106,14 +106,14 @@ describe("boundaries: every rung installs exactly at its demand and not a GiB un
       expect(at).toEqual({ ok: true, profile: rung.name, source: "auto" });
       if (index > 0) {
         const below = selectStorageProfile(rung.demandGib - 1, "", "");
-        expect(below).toEqual({ ok: true, profile: STORAGE_PROFILE_LADDER[index - 1]?.name, source: "auto" });
+        expect(below).toEqual({ ok: true, profile: STORAGE_PROFILE_LADDER[index - 1]?.name ?? "", source: "auto" });
       }
     });
   }
 
   it("a huge pool picks the top rung", () => {
     const top = STORAGE_PROFILE_LADDER.at(-1);
-    expect(selectStorageProfile(1_000_000, "", "")).toEqual({ ok: true, profile: top?.name, source: "auto" });
+    expect(selectStorageProfile(1_000_000, "", "")).toEqual({ ok: true, profile: top?.name ?? "", source: "auto" });
   });
 
   it("selecting the committed rung writes nothing: the committed tree already is it", () => {

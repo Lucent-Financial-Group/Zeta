@@ -23,7 +23,6 @@ import { existsSync, mkdtempSync, readFileSync, statSync, writeFileSync } from "
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { schedulableLonghornGib } from "./longhorn-capacity-preflight.ts";
 import {
   decideStorageProfile,
   selectStorageProfile,
@@ -396,7 +395,7 @@ describe("NEVER SHRINKS, through the real function: a re-install over an existin
 // ---------------------------------------------------------------------------
 
 function writerText(): string {
-  const begin = SRC.indexOf('if [ "${ZETA_STORAGE_PROFILE_WRITE:-0}" = "1" ]; then\n  if [ "$(zeta_storage_profile_rank');
+  const begin = SRC.indexOf('if [ "${ZETA_ROLE:-}" = "joiner" ]; then\n  # The cluster\'s sizes are the FOUNDER\'s');
   const endMarker = "# ── Step 6.65: persist the node ZetaId";
   const end = SRC.indexOf(endMarker);
   if (begin < 0 || end < 0 || end < begin) throw new Error("Step 6.64c writer not found");
@@ -443,5 +442,12 @@ describe("Step 6.64c writes /etc/zeta/storage-profile only for a rung that diffe
     expect(run.status).toBe(1);
     expect(run.stderr).toContain("is not on the ladder");
     expect(existsSync(join(run.dir, "storage-profile"))).toBe(false);
+  });
+
+  it("a JOINER writes nothing: the founder's cluster owns the sizes and the module acts only on a server", () => {
+    const run = runWriter({ ZETA_ROLE: "joiner", ZETA_STORAGE_PROFILE_WRITE: "1", ZETA_STORAGE_PROFILE_CHOSEN: "standard" });
+    expect(run.status).toBe(0);
+    expect(existsSync(join(run.dir, "storage-profile"))).toBe(false);
+    expect(run.stdout).toContain("joiner: the founder's storage profile applies");
   });
 });

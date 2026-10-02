@@ -4377,7 +4377,12 @@ fi
 # committed tree needs no install-time config, and its absence IS that state. One bare rung name,
 # read at evaluation time by nixos/modules/injected-storage-profile.nix. Re-validated against the
 # ladder here, so a value that somehow changed in between is a refusal and not a manifest.
-if [ "${ZETA_STORAGE_PROFILE_WRITE:-0}" = "1" ]; then
+if [ "${ZETA_ROLE:-}" = "joiner" ]; then
+  # The cluster's sizes are the FOUNDER's: the Application that applies them is rendered only on a k3s server,
+  # so a joiner writing a rung would record a decision nothing reads (an inert key that reads like a live one).
+  echo "[storage-profile] joiner: the founder's storage profile applies to the cluster; nothing written"
+  ZETA_STORAGE_PROFILE_WRITE=0
+elif [ "${ZETA_STORAGE_PROFILE_WRITE:-0}" = "1" ]; then
   if [ "$(zeta_storage_profile_rank "$ZETA_STORAGE_PROFILE_CHOSEN")" -eq 0 ]; then
     bail "internal: the chosen storage profile '${ZETA_STORAGE_PROFILE_CHOSEN}' is not on the ladder (${ZETA_STORAGE_PROFILE_LADDER}); refusing to write it to /mnt/etc/zeta/storage-profile."
   fi
