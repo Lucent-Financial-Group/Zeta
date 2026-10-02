@@ -237,12 +237,17 @@ describe("(e) operator sudo: key-based is opt-in, nothing grants passwordless ro
 
   test("common.nix imports it, and the password requirement is not weakened anywhere in the modules", () => {
     expect(COMMON).toMatch(/\.\/operator-sudo\.nix/);
-    expect(COMMON).toMatch(/security\.sudo\.wheelNeedsPassword\s*=\s*lib\.mkDefault true/);
+    // Positive accounting rather than an absence assertion: every assignment of wheelNeedsPassword across
+    // the modules, and a count of NOPASSWD, must equal exactly the one known-good state.
+    const wheel: string[] = [];
+    let nopasswd = 0;
     for (const f of ["common.nix", "k3s-server.nix", "k3s-agent.nix", "operator-sudo.nix", "initial-password.nix"]) {
       const t = nix("nixos", "modules", f);
-      expect(t).not.toMatch(/NOPASSWD/);
-      expect(t).not.toMatch(/wheelNeedsPassword\s*=\s*(lib\.mkForce\s+)?false/);
+      wheel.push(...[...t.matchAll(/wheelNeedsPassword\s*=\s*([^;]+);/g)].map((m) => (m[1] ?? "").trim()));
+      nopasswd += (t.match(/NOPASSWD/g) ?? []).length;
     }
+    expect(wheel).toEqual(["lib.mkDefault true"]);
+    expect(nopasswd).toBe(0);
   });
 
   test("the break-glass runbook exists, warns off the auto-installing USB, and names the no-wipe commands", () => {
