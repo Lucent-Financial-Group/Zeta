@@ -374,11 +374,15 @@ describe("F. the connection budget", () => {
   test("the password is read from the role Secret volume into a memory-backed file, never an argv token, env var or literal", () => {
     expect(tunePod().volumes.find((v: any) => v.name === "work").emptyDir.medium).toBe("Memory");
     for (const c of steps()) {
-      expect(JSON.stringify(c.env ?? [])).not.toMatch(/password/i);
+      // the only env a container carries is the kubectl cache location: no secret can ride in one
+      expect((c.env ?? []).map((e: any) => e.name as string).filter((e: string) => e !== "HOME" && e !== "KUBECACHEDIR")).toEqual([]);
       expect((c.args as string[]).filter((a) => /^--from-literal/.test(a))).toEqual([]);
     }
     expect(composeScript()).toContain('pw=$(cat "/roles/$env/password")');
-    expect(read("database-budget.yaml")).not.toMatch(/Password=[A-Za-z0-9]{8,}/);
+    // every `Password=` in the manifest is the shell variable, never a value
+    const assigned = [...read("database-budget.yaml").matchAll(/Password=([^;\s"]*)/g)].map((m) => m[1]);
+    expect(assigned.length).toBeGreaterThan(0);
+    expect(assigned.every((v) => v === "$pw")).toBe(true);
   });
 
   test("the only shell is `compose`; every container is unprivileged and uses an image the bootstrap seeding already pins", () => {
