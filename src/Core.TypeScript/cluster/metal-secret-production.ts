@@ -87,6 +87,10 @@ export const METAL_NOT_SEEDED: ReadonlyMap<string, string> = new Map([
     "CHART-MINTED: the gitlab chart's shared-secrets Job (a Helm pre-install/pre-upgrade hook, run by every ArgoCD sync) generates it; the dedicated Valkey in gitlab/Application.yaml reads the same password the chart's `global.redis.auth` does.",
   ],
   [
+    "gitlab|gitlab-rails-db-app",
+    "OPERATOR-GENERATED: CloudNativePG mints `<cluster>-app` with the `gitlab` role's password when it creates Cluster gitlab-rails-db -- which is declared in the gitlab release's extraObjects, so collectCnpgClusters (directory-source Applications only) does not see it.",
+  ],
+  [
     "kubevirt|kubevirt-operator-certs",
     "OPERATOR-GENERATED: virt-operator creates its own webhook cert Secret at startup.",
   ],

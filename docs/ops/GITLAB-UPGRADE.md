@@ -124,3 +124,21 @@ Everything below was measured on the owner's node (`node-5b2dfa`, one k3s node, 
   `inert-valuesobject-keys` schema snapshot both follow the pin and are re-done each hop. The chart-render
   determinism check has a latent 1-in-36 flake (its wildcard keeps a shared first character of a random suffix:
   `...test-runner-i*`); a re-run clears it.
+
+### Hop 2 -- 17.8.7 -> 17.11.7 (chart 8.8.7 -> 8.11.8), merged as PR 17871
+
+- Merged 19:3x UTC; ArgoCD synced within ~1 minute of the hard refresh; the migrations Job ran twice (the hop's sync, then the
+  datastore PR's sync, `Replace=true`), the second a no-op; every component Ready in ~3 minutes.
+- `/api/v4/version` = `17.11.7`. 9 projects. `fd-core`'s default branch had moved (owner pushes during the work), so the check is
+  now "the baseline SHA is an ANCESTOR of the head" (GitLab merge_base API), not "equal"; all 9 pass.
+- **Batched background migrations: 9 `active` right after the Job, all `finished`/`finalized` ~25 minutes later** (112 known
+  migrations; the slow ones were `CopyColumnUsingBackgroundMigrationJob` on `merge_request_diffs` and `merge_requests`). The
+  cut-over was not started before that.
+- Chart 8.11 moved the bundled Redis to 7.2.4 in place and gave its exporter a liveness probe with a 50 s kill budget, which
+  `liveness-kill-budget.ts` refused; widened with `redis.metrics.startupProbe` (temporary: the block left at the cut-over).
+- Chart 8.11's upgrade-check script moved its docs URL; `upgrade-only-hook-first-sync.test.ts` pinned the old path.
+- One CI job (`live kind included Synced+Healthy proof`) failed once on this PR with `lane-tree-source: packed tree is 754244
+  bytes, over the 716800-byte budget` and passed on re-run; the same tree packs to 384 KB locally and 388 KB on `main`'s own
+  run, so it is a flake of that lane, not of the change.
+- Same verification as hop 1 (readiness, clone, registry blob + digest, throwaway pipeline): all pass.
+

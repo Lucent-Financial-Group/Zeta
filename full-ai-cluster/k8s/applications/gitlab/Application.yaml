@@ -120,6 +120,24 @@ spec:
             # accounts for 76 GiB) while this one produced nothing at all.
             configureCertmanager: false
             tls: { enabled: false }   # turn on after cert-manager
+          # EXTERNAL DATASTORES -- the CNPG Cluster and Valkey declared in `gitlab-runner.extraObjects` below.
+          # `gitlab-rails-db-app` is the Secret the CNPG operator mints with the `gitlab` role (key `password`);
+          # `gitlab-redis-secret` is the chart's own Redis password (its default key is `secret`).
+          psql:
+            host: gitlab-rails-db-rw.gitlab.svc
+            port: 5432
+            database: gitlabhq_production
+            username: gitlab
+            password:
+              secret: gitlab-rails-db-app
+              key: password
+          redis:
+            host: gitlab-valkey.gitlab.svc
+            port: 6379
+            auth:
+              enabled: true
+              secret: gitlab-redis-secret
+              key: secret
           initialRootPassword:
             secret: gitlab-initial-root-password
             key: password
@@ -1049,113 +1067,21 @@ spec:
             strategy: { type: RollingUpdate, rollingUpdate: { maxSurge: 0, maxUnavailable: 1 } }
             livenessProbe:
               failureThreshold: 20
-        # THE FOUR BUNDLED BITNAMI IMAGES, RE-POINTED AT `bitnamilegacy`.
+        # THE BUNDLED POSTGRESQL AND REDIS ARE OFF -- GITLAB RUNS ON THE DEDICATED CNPG CLUSTER AND VALKEY BELOW.
         #
-        # This Application was the largest entry in the partitioner's CANNOT BE
-        # PRICED quarantine: 16 of its 20 rendered images measure fine, and four
-        # -- all from the bundled `postgresql` and `redis` subcharts -- returned
-        # HTTP 404. Bitnami withdrew its free versioned tags from Docker Hub, and
-        # this is the same withdrawal `forgejo/Application.yaml` already records
-        # (chart 13.0.1 rendering `bitnami/postgresql:17.5.0-debian-12-r18`,
-        # likewise a 404). MEASURED 2026-08-23 rather than assumed:
-        # `docker.io/bitnami/postgresql` and `docker.io/bitnami/redis` still
-        # answer `tags/list`, and every entry is `latest`, `latest-metadata`, or
-        # a cosign `sha256-...`/`.sig`/`.att` artifact -- no versioned tags left.
+        # They were the chart's own subcharts, pinned to `bitnamilegacy` (Bitnami's frozen archive: no updates; four
+        # images -- postgresql 14.8, redis 6.2.16 and two exporters). GitLab 18.0 dropped PostgreSQL 14/15 and 19.0
+        # dropped PostgreSQL 16 and Redis 6, and chart 10.0 deletes both subcharts "with no replacement", so they had
+        # to leave BEFORE the 18.2 stop (docs/ops/GITLAB-UPGRADE.md). `global.psql` / `global.redis` above point at
+        # `gitlab-rails-db` (PostgreSQL 17, CloudNativePG) and `gitlab-valkey` (Valkey 7.2), both declared in
+        # `gitlab-runner.extraObjects`. The data moved by quiesce / pg_dump / restore on 2026-10-02.
         #
-        # Each of the four resolves under `bitnamilegacy` at the SAME tag, so
-        # nothing here is a version change -- only the repository path moves:
-        #
-        #   bitnamilegacy/postgresql:14.8.0                     91,714,366 B
-        #   bitnamilegacy/postgres-exporter:0.12.0-debian-11-r86 41,797,683 B
-        #   bitnamilegacy/redis:6.2.16-debian-12-r1             48,916,895 B
-        #   bitnamilegacy/redis-exporter:1.46.0-debian-11-r8    36,654,360 B
-        #
-        # These four are what a GitLab bring-up would have ImagePullBackOff'd on,
-        # so this is a live fix that happens to also make the app measurable.
-        #
-        # HONEST LIMIT, the same one recorded in redis/Application.yaml:
-        # `bitnamilegacy` is an ARCHIVE. It gets no updates and Bitnami reserves
-        # the right to remove it. Moving GitLab onto an external PostgreSQL/Redis
-        # (`global.psql.host` / `global.redis.host`, the production-documented
-        # path anyway) is the durable answer and is a maintainer decision, not
-        # one to make inside a measurement fix.
+        # `install: false` renders neither StatefulSet; with `prune: false` the old pods keep running until they are
+        # deleted by hand, and their PVCs are kept on purpose as the rollback copy (see the doc).
         postgresql:
-          image:
-            repository: bitnamilegacy/postgresql
-          # STARTUP PROBES -- THIS IS A BITNAMI CHART; BOTH CONTAINERS EXPOSE THE
-          # COORDINATE DIRECTLY. MEASURED (helm pull postgresql --repo
-          # https://charts.bitnami.com/bitnami -- the same subchart gitlab vendors):
-          # `templates/primary/statefulset.yaml` renders `startupProbe` from
-          # `.Values.primary.startupProbe.enabled` / `.Values.metrics.startupProbe.enabled`
-          # (both default false), alongside `customLivenessProbe`/`livenessProbe.enabled`
-          # for the always-on liveness (postgresql container: 80s kill budget; metrics
-          # container: 55s).
-          #
-          # WHY: not individually vetted at WP15's 2026-09-22 catalog audit; postgresql
-          # is a known slow starter (WP18 category b) -- GitLab's embedded Postgres runs
-          # first-boot init/WAL replay before it can answer `pg_isready`.
-          #
-          # Kubelet holds `livenessProbe` off entirely until `startupProbe` first
-          # succeeds. Chart default startupProbe shape (initialDelaySeconds 30,
-          # periodSeconds 10, failureThreshold 15 -> 30+14*10=170s) is widened further
-          # to failureThreshold 30 -> 30+29*10=320s; the chart's own liveness (80s /
-          # 55s) resumes once startup succeeds.
-          primary:
-            priorityClassName: system-cluster-critical   # essential tier (gitaly's note, above): GitLab's database
-            startupProbe:
-              enabled: true
-              failureThreshold: 30
-          metrics:
-            image:
-              repository: bitnamilegacy/postgres-exporter
-            # The exporter rendered `resources: {}`. The pod is Burstable anyway (the postgres
-            # container requests 250m/256Mi), but the exporter's own share was unreserved, so
-            # the scheduler's arithmetic and the budget both undercounted this pod.
-            resources:
-              requests: { cpu: 10m, memory: 16Mi }
-            startupProbe:
-              enabled: true
-              failureThreshold: 30
+          install: false
         redis:
-          image:
-            repository: bitnamilegacy/redis
-          # STARTUP PROBE -- SAME BITNAMI SHAPE AS postgresql ABOVE. MEASURED
-          # (charts/redis/templates/master/application.yaml): `master.startupProbe.enabled`
-          # (default false) exists alongside the always-on `master.livenessProbe`
-          # (chart default -> 40s kill budget). Not individually vetted at WP15's
-          # 2026-09-22 catalog audit; redis is bundled with GitLab's own slow-starter
-          # profile (WP18 category b) -- Sentinel/AOF replay on first boot.
-          #
-          # Kubelet holds `livenessProbe` off until `startupProbe` first succeeds. The
-          # chart's own default `initialDelaySeconds: 20` is left as-is (not zeroed);
-          # periodSeconds 10, failureThreshold 30 -> startup kill budget 20+29*10=310s;
-          # the chart's own 40s liveness resumes once startup succeeds.
-          master:
-            priorityClassName: system-cluster-critical   # essential tier (gitaly's note, above): queues, sessions, cache
-            # REDIS RENDERED BESTEFFORT: both containers (redis, exporter) shipped `resources: {}`,
-            # so the pod requested nothing and was the first thing the kubelet evicts under node
-            # pressure. GitLab keeps its Sidekiq queues, sessions and cache here -- an evicted
-            # Redis is every background job and every logged-in session gone at once, on the one
-            # node that is also running every CI job. Requests only; `maxmemory` is the
-            # chart's own bound, not a pod limit.
-            resources:
-              requests: { cpu: 100m, memory: 128Mi }
-            startupProbe:
-              enabled: true
-              periodSeconds: 10
-              failureThreshold: 30
-          metrics:
-            resources:
-              requests: { cpu: 10m, memory: 16Mi }
-            image:
-              repository: bitnamilegacy/redis-exporter
-            # CHART 8.11 ADDED A LIVENESS PROBE TO THIS EXPORTER (kill budget 50 s, no startupProbe): the same
-            # slow-start exposure the other containers above are widened for. Measured by liveness-kill-budget.ts on
-            # the 17.8 -> 17.11 hop. The bundled Redis leaves with the datastore cut-over, so this is the short-lived
-            # half of the fix; it goes with the block.
-            startupProbe:
-              enabled: true
-              failureThreshold: 30
+          install: false
   destination:
     server: https://kubernetes.default.svc
     namespace: gitlab
