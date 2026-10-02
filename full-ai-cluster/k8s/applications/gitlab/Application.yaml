@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: https://charts.gitlab.io/
     chart: gitlab
-    targetRevision: 8.11.8
+    targetRevision: 10.4.1
     helm:
       releaseName: gitlab
       valuesObject:
@@ -100,6 +100,14 @@ spec:
           # always-on pods. Re-enable together with a route for it.
           kas:
             enabled: false
+          # CHART 10 MAKES GATEWAY API + A BUNDLED ENVOY GATEWAY THE DEFAULT EXPOSURE (NGINX Ingress is off by default). This
+          # cluster exposes GitLab through its own Cilium Gateway `gitlab-lan`, created by the PostSync hook below, so the
+          # chart renders no Gateway, installs no Envoy, and asks cert-manager for nothing. `enabled: false` is what
+          # keeps `gateway-helm` (Envoy Gateway and its CRDs) out of the render.
+          gatewayApi:
+            enabled: false
+            installEnvoy: false
+            configureCertmanager: false
           ingress:
             # NO INGRESS. Nothing serves class `gitlab-nginx`, and an Ingress with no controller
             # never gets an address -- ArgoCD's health check then holds the whole sync at
@@ -200,7 +208,9 @@ spec:
                 secret: zeta-blob-store
                 key: connection
         # Disable bundled components — cluster has its own.
-        certmanager:    { install: false }
+        # `installCertmanager` REPLACES `certmanager.install` from chart 9.3 (the old key makes the chart's own upgrade check
+        # fail, and the schema rejects it from 9.5). Same meaning: this cluster has its own cert-manager.
+        installCertmanager: false
         nginx-ingress:  { enabled: false }
         prometheus:     { install: false }
         # THE CHART'S UPGRADE CHECK IS OFF -- UNDER ARGOCD IT DEADLOCKS EVERY FRESH INSTALL.
@@ -778,6 +788,101 @@ spec:
                             # shellcheck disable=SC2086
                             kubectl -n gitlab delete $stale --wait=false || echo "could not delete a leftover migrations Job; harmless, the Application just reads OutOfSync"
                             exit 0
+            # --- backup object-storage config (chart 10 refuses to render without one) ------------------
+            # Chart 10.0 removed the bundled MinIO, and with it the default s3cmd config `backup-utility` used (it pointed at
+            # that MinIO host: MEASURED on 17.7, the toolbox could not reach any bucket, so there was no working backup path).
+            # The release now renders `gitlab.toolbox.backups.objectStorage.config.secret: gitlab-backup-s3cmd`. This Job
+            # DERIVES that Secret from the one the object store already shares with this namespace (`zeta-blob-store`,
+            # key `connection`), so there is no second credential to mint, seed or commit. Sync hook, wave -1: ahead of the
+            # toolbox (wave 0), which mounts the Secret. It FAILS the sync when it cannot (a toolbox without its Secret sits in
+            # ContainerCreating), unlike the optional token Job below. Idempotent: `kubectl apply` of the same content.
+            - apiVersion: v1
+              kind: ServiceAccount
+              metadata:
+                name: gitlab-backup-s3cmd
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "-3"
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: Role
+              metadata:
+                name: gitlab-backup-s3cmd
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "-3"
+              rules:
+                - apiGroups: [""]
+                  resources: [secrets]
+                  resourceNames: [zeta-blob-store, gitlab-backup-s3cmd]
+                  verbs: [get, patch, update]
+                # `create` cannot be restricted by name; the Job only ever creates the one Secret above.
+                - apiGroups: [""]
+                  resources: [secrets]
+                  verbs: [create]
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: RoleBinding
+              metadata:
+                name: gitlab-backup-s3cmd
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "-3"
+              roleRef:
+                apiGroup: rbac.authorization.k8s.io
+                kind: Role
+                name: gitlab-backup-s3cmd
+              subjects:
+                - kind: ServiceAccount
+                  name: gitlab-backup-s3cmd
+                  namespace: gitlab
+            - apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: gitlab-backup-s3cmd
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/hook: Sync
+                  argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+                  argocd.argoproj.io/sync-wave: "-1"
+              spec:
+                backoffLimit: 2
+                activeDeadlineSeconds: 300
+                template:
+                  spec:
+                    serviceAccountName: gitlab-backup-s3cmd
+                    restartPolicy: Never
+                    securityContext:
+                      runAsNonRoot: true
+                      runAsUser: 65534
+                      seccompProfile: { type: RuntimeDefault }
+                    volumes:
+                      - name: tmp
+                        emptyDir: { medium: Memory }
+                    containers:
+                      - name: derive
+                        image: '{{ include "gitlab.kubectl.image" . }}'
+                        securityContext:
+                          allowPrivilegeEscalation: false
+                          readOnlyRootFilesystem: true
+                          capabilities: { drop: [ALL] }
+                        env:
+                          - { name: HOME, value: /tmp }
+                        volumeMounts:
+                          - { name: tmp, mountPath: /tmp }
+                        resources:
+                          requests: { cpu: 10m, memory: 32Mi }
+                        command: ["/bin/bash", "-c"]
+                        args:
+                          - |
+                            set -uo pipefail
+                            # s3cmd config for GitLab's backup-utility, derived from the Secret the object store already shares with this
+                            # namespace (`zeta-blob-store`, key `connection`). One credential, one source: nothing is minted or stored in git.
+                            CONN=$(kubectl -n gitlab get secret zeta-blob-store -o jsonpath='{.data.connection}' | base64 -d) || { echo "cannot read zeta-blob-store/connection"; exit 1; }
+                            field() { printf '%s\n' "$CONN" | sed -n "s/^$1: *//p" | head -n 1 | tr -d "\"'"; }
+                            ACCESS=$(field aws_access_key_id); KEY=$(field aws_secret_access_key); HOST=$(field host)
+                            if [ -z "$ACCESS" ] || [ -z "$KEY" ] || [ -z "$HOST" ]; then echo "zeta-blob-store/connection lacks aws_access_key_id, aws_secret_access_key or host"; exit 1; fi
+                            CFG=$(printf '[default]\naccess_key = %s\nsecret_key = %s\nhost_base = %s\nhost_bucket = %s\nuse_https = False\nsignature_v2 = False\nenable_multipart = False\n' "$ACCESS" "$KEY" "$HOST" "$HOST")
+                            kubectl -n gitlab create secret generic gitlab-backup-s3cmd --from-literal=config="$CFG" --dry-run=client -o yaml | kubectl apply -f - >/dev/null || { echo "could not apply gitlab-backup-s3cmd"; exit 1; }
+                            echo "gitlab-backup-s3cmd applied (host $HOST)"
             # --- runner authentication token ----------------------------------------------
             # Creates (or finds) ONE instance runner `zeta-cluster` through GitLab's own service
             # object in the toolbox pod -- no admin personal access token is ever minted, so none
@@ -997,6 +1102,14 @@ spec:
         # stall whenever headroom < one pod. maxSurge 0 stops the old pod first, which needs no headroom at all.
         # Falsifier: gitlab-exposure.test.ts (g).
         gitlab:
+          # BACKUPS GO TO SEAWEEDFS. Chart 10 refuses to render without a backup object-storage Secret; Job `gitlab-backup-s3cmd`
+          # (extraObjects) derives it from `zeta-blob-store`.
+          toolbox:
+            backups:
+              objectStorage:
+                config:
+                  secret: gitlab-backup-s3cmd
+                  key: config
           migrations:
             # See `global.job.nameSuffixOverride` above: a fixed Job name needs a Job that can be replaced.
             annotations:
@@ -1067,21 +1180,10 @@ spec:
             strategy: { type: RollingUpdate, rollingUpdate: { maxSurge: 0, maxUnavailable: 1 } }
             livenessProbe:
               failureThreshold: 20
-        # THE BUNDLED POSTGRESQL AND REDIS ARE OFF -- GITLAB RUNS ON THE DEDICATED CNPG CLUSTER AND VALKEY BELOW.
-        #
-        # They were the chart's own subcharts, pinned to `bitnamilegacy` (Bitnami's frozen archive: no updates; four
-        # images -- postgresql 14.8, redis 6.2.16 and two exporters). GitLab 18.0 dropped PostgreSQL 14/15 and 19.0
-        # dropped PostgreSQL 16 and Redis 6, and chart 10.0 deletes both subcharts "with no replacement", so they had
-        # to leave BEFORE the 18.2 stop (docs/ops/GITLAB-UPGRADE.md). `global.psql` / `global.redis` above point at
-        # `gitlab-rails-db` (PostgreSQL 17, CloudNativePG) and `gitlab-valkey` (Valkey 7.2), both declared in
-        # `gitlab-runner.extraObjects`. The data moved by quiesce / pg_dump / restore on 2026-10-02.
-        #
-        # `install: false` renders neither StatefulSet; with `prune: false` the old pods keep running until they are
-        # deleted by hand, and their PVCs are kept on purpose as the rollback copy (see the doc).
-        postgresql:
-          install: false
-        redis:
-          install: false
+        # THE BUNDLED POSTGRESQL, REDIS AND MINIO ARE GONE FROM THE CHART (10.0), and so are their values: GitLab runs on the
+        # dedicated CNPG Cluster (PostgreSQL 17) and Valkey (7.2) declared in `gitlab-runner.extraObjects`, reached through
+        # `global.psql` / `global.redis` above. Before 10.0 these two keys were `install: false` plus four re-pointed
+        # `bitnamilegacy` images (Bitnami's frozen archive); the data moved by quiesce / pg_dump / restore on 2026-10-02.
   destination:
     server: https://kubernetes.default.svc
     namespace: gitlab
