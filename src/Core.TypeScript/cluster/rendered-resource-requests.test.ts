@@ -856,10 +856,10 @@ describe("a rung reaches a raw in-repo manifest", () => {
 describe("unreachable git-path requests", () => {
   const catalogue = loadResourceCatalogue();
 
-  // SEVEN remain, in THREE classes, and the classes are different refusals:
+  // EIGHT remain, in THREE classes, and the classes are different refusals:
   //   - two are `replicas: 0` and CANNOT be governed (`pods >= 1` in the schema)
   //   - two are vendored byte-for-byte and are DELIBERATELY not governed
-  //   - two are the node-lan-hosts DaemonSet, which has NO replica count to key a
+  //   - three are the node-lan-hosts DaemonSet (discover, apply, forward), which has NO replica count to key a
   //     rung on -- node infrastructure, not a rung-scaled workload, so no claim
   //     can express it.
   //
@@ -879,17 +879,18 @@ describe("unreachable git-path requests", () => {
   // CI proved a 50-app one. One root now, one directory, and the second silo is
   // gone by the same deletion that removed the duplicate.
   //
-  // The two cluster-hygiene entries ARRIVED on 2026-10-02 with the node-lan-hosts
+  // The three cluster-hygiene entries ARRIVED on 2026-10-02 with the node-lan-hosts
   // DaemonSet (so the kubelet can resolve the LAN registry); both are acknowledged
   // in the baseline because a DaemonSet is one pod per node with no replica count,
   // which is exactly the shape a per-rung resourceClaim cannot express.
   //
   // The set is asserted whole, so an eighth appearing fails here even if somebody
   // also remembers to baseline it.
-  test("exactly seven remain, in three named classes, all acknowledged", () => {
+  test("exactly eight remain, in three named classes, all acknowledged", () => {
     const open = unreachableGitPathRequests(catalogue);
     expect(open.map((entry) => entry.appId).sort()).toEqual([
       "full-ai-cluster/cdi",
+      "full-ai-cluster/cluster-hygiene",
       "full-ai-cluster/cluster-hygiene",
       "full-ai-cluster/cluster-hygiene",
       "full-ai-cluster/hat-system",
@@ -911,6 +912,7 @@ describe("unreachable git-path requests", () => {
       "full-ai-cluster/cdi",
       "full-ai-cluster/cluster-hygiene",
       "full-ai-cluster/cluster-hygiene",
+      "full-ai-cluster/cluster-hygiene",
       "full-ai-cluster/kubevirt",
     ]);
 
@@ -920,7 +922,7 @@ describe("unreachable git-path requests", () => {
     }
   });
 
-  test("the zero-replica two carry 4100m of LATENT request; the scheduled four cost 130m TODAY", () => {
+  test("the zero-replica two carry 4100m of LATENT request; the scheduled five cost 135m TODAY", () => {
     const open = unreachableGitPathRequests(catalogue);
     // LATENT: schedules nothing while `replicas: 0`. 4000 (vllm) + 100 (hat-system).
     //
@@ -941,9 +943,9 @@ describe("unreachable git-path requests", () => {
 
     // SCHEDULED: the vendored pair plus the node-lan-hosts DaemonSet reserve this
     // today, at every rung, and no rung may move it. 100m (cdi x1) + 10m x 2
-    // replicas (kubevirt) + 5m + 5m (node-lan-hosts discover + apply, x1 per node).
+    // replicas (kubevirt) + 5m + 5m + 5m (node-lan-hosts discover + apply + forward, x1 per node).
     const scheduled = open.filter((entry) => entry.replicas > 0);
-    expect(scheduled.reduce((sum, entry) => sum + entry.cpuMillis * entry.replicas, 0)).toBe(130);
+    expect(scheduled.reduce((sum, entry) => sum + entry.cpuMillis * entry.replicas, 0)).toBe(135);
   });
 
   // THE ACKNOWLEDGEMENT EXPIRES ON ITS OWN. Scaling a zero-replica workload up
