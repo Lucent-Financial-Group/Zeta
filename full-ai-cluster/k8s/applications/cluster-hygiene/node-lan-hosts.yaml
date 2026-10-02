@@ -20,6 +20,13 @@
 #   apply     (busybox)  privileged + hostPID; builds <host /etc/hosts minus our lines> + block, writes it
 #                        to /run/zeta-lan-hosts on the host, bind-mounts it once, then rewrites in place.
 #
+# SECOND JOB, same pod -- `forward`: TCP :443 on the node -> the Gateway's LB address. The owner's AT&T
+# router can only port-forward to a DEVICE (the node, 192.168.1.79), never to the Gateway's LB IP
+# (.240), and MEASURED 2026-10-02 nothing listens on the node's :443 -- only .240 answers
+# (`curl --resolve registry...:443:.240` -> 401, `:.79` -> refused). So the node relays 443 to the
+# gateway; TLS still terminates at the gateway (passthrough), the relay never sees plaintext. Client
+# source addresses are therefore the node's, not the internet's -- the cost of this relay.
+#
 # DELIBERATELY NOT PINNED: api.<domain> and api-staging.<domain>. Until the production cutover those
 # resolve to the Azure container apps; pinning them on the node would silently reroute host-side callers.
 #
@@ -80,6 +87,9 @@ spec:
     spec:
       serviceAccountName: node-lan-hosts
       hostPID: true
+      # `forward` listens on the NODE's :443 (see header), so the pod shares the host network namespace.
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       # Must run through disk-pressure / control-plane taints: it is what lets the node pull images.
       tolerations:
         - { operator: Exists }
@@ -135,7 +145,13 @@ spec:
               # /etc/hosts on NixOS is an ABSOLUTE symlink into /etc/static, which would resolve against
               # THIS container's root through /proc/1/root -- so read it from inside the host mount ns.
               HREAD="${HREAD:-nsenter -t 1 -m -- /run/current-system/sw/bin/cat /etc/hosts}"
+              # The node firewall (NixOS `nixos-fw`) has no rule for :443 -- MEASURED: the relay listened and
+              # the LAN still got no answer. Assert it each tick (idempotent: -C first). Best-effort on
+              # purpose: a host without that chain is not an error here, and the OS-layer fix is
+              # networking.firewall.allowedTCPPorts = [ 443 ] on the next ISO.
+              IPT="${IPT:-nsenter -t 1 -m -n -- /run/current-system/sw/bin/iptables}"
               while :; do
+                $IPT -C nixos-fw -p tcp --dport 443 -j nixos-fw-accept 2>/dev/null                   || $IPT -I nixos-fw 1 -p tcp --dport 443 -j nixos-fw-accept 2>/dev/null || true
                 if [ -s $SHARED/block ]; then
                   $HREAD > $W/cur || { [ -n "$ONCE" ] && exit 0; sleep 30; continue; }
                   grep -vF "$TAG" $W/cur > $W/base
@@ -153,4 +169,32 @@ spec:
                 fi
                 [ -n "$ONCE" ] && exit 0
                 sleep 30
+              done
+        - name: forward
+          image: alpine/socat:1.8.0.0
+          resources:
+            requests: { cpu: 5m, memory: 8Mi }
+            limits: { memory: 64Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            # Binding :443 as non-root needs only this one capability.
+            capabilities: { drop: [ALL], add: [NET_BIND_SERVICE] }
+          volumeMounts:
+            - { name: shared, mountPath: /shared }
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              # Target = the Gateway's LB address as discovered (first field of the shared block).
+              # Restart the relay if that address ever changes; do nothing until it is known.
+              cur=""; pid=""
+              while :; do
+                ip=$(cut -d' ' -f1 /shared/block 2>/dev/null | head -1)
+                if [ -n "$ip" ] && [ "$ip" != "$cur" ]; then
+                  [ -n "$pid" ] && kill "$pid" 2>/dev/null
+                  socat TCP-LISTEN:443,fork,reuseaddr TCP:"$ip":443 &
+                  pid=$!; cur=$ip
+                fi
+                # A dead relay (bind failed, crashed) must fail the container, not sit silently.
+                [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null && exit 1
+                sleep 10
               done

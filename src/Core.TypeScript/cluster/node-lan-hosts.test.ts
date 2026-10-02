@@ -39,6 +39,18 @@ describe("render", () => {
     expect(discover).not.toMatch(/api/);
   });
 
+  test("the 443 relay: node network, :443, target discovered (never hardcoded), one capability", () => {
+    const spec = ((ds["spec"] as Doc)["template"] as Doc)["spec"] as Doc;
+    expect(spec["hostNetwork"]).toBe(true);
+    const fwd = scriptOf("forward");
+    expect(fwd).toContain("TCP-LISTEN:443");
+    expect(fwd).toContain("/shared/block");
+    expect(fwd).not.toMatch(/192\.168\./);
+    const sc = (containers.find((c) => c["name"] === "forward") as Doc)["securityContext"] as Doc;
+    expect(sc["privileged"]).toBeUndefined();
+    expect((sc["capabilities"] as Doc)["add"]).toEqual(["NET_BIND_SERVICE"]);
+  });
+
   test("RBAC is read-only on the one Gateway", () => {
     const role = docs.find((d) => d["kind"] === "Role") as Doc;
     const rule = (role["rules"] as Doc[])[0];
@@ -51,7 +63,7 @@ const BASE = "127.0.0.1 localhost\n::1 localhost\n127.0.0.1 control-plane\n127.0
 const BLOCK = "192.168.1.240 gitlab.x.net # zeta-lan-hosts\n192.168.1.240 registry.x.net # zeta-lan-hosts\n";
 
 describe("apply script, executed", () => {
-  const withRun = (hosts: string, block: string) => {
+  const withRun = (hosts: string, block: string, opts: { hasRule?: boolean } = {}) => {
     const dir = mkdtempSync(join(tmpdir(), "nlh-")).replace(/\\/g, "/");
     mkdirSync(`${dir}/run`);
     writeFileSync(`${dir}/hosts`, hosts);
@@ -60,12 +72,20 @@ describe("apply script, executed", () => {
 echo "$@" > ${dir}/mounts
 `);
     chmodSync(`${dir}/fakemount`, 0o755);
+    // fakeipt: `-C` (is the rule there?) fails unless $dir/has-rule exists; `-I` records the insert.
+    writeFileSync(`${dir}/fakeipt`, `#!/bin/sh
+[ "$1" = "-C" ] && [ -e ${dir}/has-rule ] && exit 0
+[ "$1" = "-C" ] && exit 1
+echo "$@" >> ${dir}/ipt-inserts
+`);
+    chmodSync(`${dir}/fakeipt`, 0o755);
+    if (opts.hasRule) writeFileSync(`${dir}/has-rule`, "");
     const r = Bun.spawnSync(["sh", "-c", scriptOf("apply")], {
-      env: { ...process.env, ONCE: "1", HOST: dir, SHARED: dir, WORK: dir, HREAD: `cat ${dir}/hosts`, MOUNT: `${dir}/fakemount` },
+      env: { ...process.env, ONCE: "1", HOST: dir, SHARED: dir, WORK: dir, HREAD: `cat ${dir}/hosts`, MOUNT: `${dir}/fakemount`, IPT: `${dir}/fakeipt` },
     });
     expect(r.exitCode).toBe(0);
     const f = `${dir}/run/zeta-lan-hosts`;
-    return { state: existsSync(f) ? readFileSync(f, "utf8") : null, mounted: existsSync(`${dir}/mounts`) };
+    return { state: existsSync(f) ? readFileSync(f, "utf8") : null, mounted: existsSync(`${dir}/mounts`), inserts: existsSync(`${dir}/ipt-inserts`) ? readFileSync(`${dir}/ipt-inserts`, "utf8") : "" };
   };
 
   test("fresh host: base lines AND the block are mounted", () => {
@@ -84,6 +104,11 @@ echo "$@" > ${dir}/mounts
     const r = withRun("# nothing readable\n", BLOCK);
     expect(r.state).toBeNull();
     expect(r.mounted).toBe(false);
+  });
+
+  test("firewall: the :443 ACCEPT is inserted first in nixos-fw when absent, and NOT again when present", () => {
+    expect(withRun(BASE, BLOCK).inserts).toBe("-I nixos-fw 1 -p tcp --dport 443 -j nixos-fw-accept\n");
+    expect(withRun(BASE, BLOCK, { hasRule: true }).inserts).toBe("");
   });
 
   test("no block yet (discover has not answered): nothing happens", () => {
