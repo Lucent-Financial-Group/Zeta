@@ -237,7 +237,7 @@ describe("(d) GitLab follows the install-time public domain", () => {
     // assertion used to be an `toEqual` on the whole list, which silently meant "no other input may ever
     // own an ignore"; the narrower statement is the one it was written to make.
     const owned = new Set(["gitlab", "forgejo"]);
-    const ignored = (root.spec.ignoreDifferences as Array<{ name: string }>).filter((entry) => owned.has(entry.name));
+    const ignored: unknown[] = (root.spec.ignoreDifferences as Array<{ name: string }>).filter((entry) => owned.has(entry.name));
     expect(ignored).toEqual([
       {
         group: "argoproj.io",
