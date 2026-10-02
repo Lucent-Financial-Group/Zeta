@@ -418,7 +418,7 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
   test("(c) SET: the advertised host IS the LAN Gateway's address IS the LAST address of the resolved range, inside it", () => {
     const f = lanFacts(installTimeValuesPatch("192.168.1.240", "192.168.1.250"));
     expect(f.pinned).toBe("192.168.1.250");
-    expect(f.urls).toEqual({ gitlabHost: f.pinned, https: false, registryHost: f.pinned });
+    expect(f.urls).toEqual({ gitlabHost: f.pinned!, https: false, registryHost: f.pinned! });
     const pool = { spec: { blocks: [{ start: "192.168.1.240", stop: "192.168.1.250" }] } };
     expect(inPool(f.pinned!, poolRanges(pool))).toBe(true);
     // Every listener is hostname-less: the address alone must be enough to reach it.
