@@ -19,7 +19,7 @@
 
 import { describe, expect, it, setDefaultTimeout } from "bun:test";
 import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { closeSync, existsSync, fstatSync, mkdtempSync, openSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -426,8 +426,14 @@ describe("Step 6.64c writes /etc/zeta/storage-profile only for a rung that diffe
     const run = runWriter({ ZETA_STORAGE_PROFILE_WRITE: "1", ZETA_STORAGE_PROFILE_CHOSEN: "standard", ZETA_STORAGE_PROFILE_SOURCE: "auto" });
     expect(run.status).toBe(0);
     const file = join(run.dir, "storage-profile");
-    expect(readFileSync(file, "utf8")).toBe("standard\n");
-    if (process.platform !== "win32") expect(statSync(file).mode & 0o777).toBe(0o644);
+    // One handle, both answers: the bytes and the mode describe the same file.
+    const fd = openSync(file, "r");
+    try {
+      expect(readFileSync(fd, "utf8")).toBe("standard\n");
+      if (process.platform !== "win32") expect(fstatSync(fd).mode & 0o777).toBe(0o644);
+    } finally {
+      closeSync(fd);
+    }
   });
 
   it("WRITE=0 writes nothing and says the committed profile applies", () => {
