@@ -21,6 +21,7 @@ import {
 import { railFindingsForEspWrites } from "./injection-rail.ts";
 import { planPublicEndpoint, type PublicEndpoint } from "../installer/public-endpoint.ts";
 import { planLbPool, type LbPoolSpec } from "../installer/lan-config.ts";
+import { planStorageProfile } from "../installer/storage-profile-selection.ts";
 import type {
   FileBackedEspWrite,
   FileBackedZflashImageExecution,
@@ -65,6 +66,8 @@ export interface FileBackedZflashCliOptions {
   readonly publicEndpoint?: PublicEndpoint;
   /** docs/ops/INSTALL-TIME-CONFIG.md row 3: `--lb-pool auto|<first-ip>-<last-ip>`, validated. See lib.ts. */
   readonly lbPool?: LbPoolSpec;
+  /** docs/ops/INSTALL-TIME-CONFIG.md row 29: `--storage-profile auto|<profile>`, validated. See lib.ts. */
+  readonly storageProfile?: string;
 }
 
 export type FileBackedZflashCliParseResult =
@@ -143,7 +146,11 @@ const USAGE =
   "  --lb-pool <auto|first-ip-last-ip>  Cilium LoadBalancer range onto /zeta-firstboot.conf, e.g. 192.168.1.240-192.168.1.250.\n" +
   "                               'auto' derives .240-.250 of the node's /24 and refuses if it is in use. The range must be FREE\n" +
   "                               addresses on the node's LAN, outside the router's DHCP range. Omit: the installer asks; if nobody\n" +
-  "                               answers it is left UNSET (Services of type LoadBalancer stay pending) - never a default.\n";
+  "                               answers it is left UNSET (Services of type LoadBalancer stay pending) - never a default.\n" +
+  "  --storage-profile <auto|name>  storage profile (k8s/storage-profiles.json: minimal, standard, measured, large) onto /zeta-firstboot.conf.\n" +
+  "                               'auto' (the default) measures the Longhorn pool the install provisions and picks the LARGEST profile\n" +
+  "                               that fits, refusing only when even 'minimal' does not. A name forces that profile (refused before the\n" +
+  "                               wipe if the pool cannot hold it). It never shrinks a profile an existing install already runs.\n";
 
 function resolveTestInfraPubkeyPath(): string {
   return resolveZetaTestInfraPubkeyFromZflashModule(import.meta.url);
@@ -246,6 +253,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   let acmeEmailFlag: string | undefined;
   let publicDomainFlag: string | undefined;
   let lbPoolFlag: string | undefined;
+  let storageProfileFlag: string | undefined;
 
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]!;
@@ -287,7 +295,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       arg === "--qemu-creds-passphrase-file" ||
       arg === "--acme-email" ||
       arg === "--public-domain" ||
-      arg === "--lb-pool"
+      arg === "--lb-pool" ||
+      arg === "--storage-profile"
     ) {
       const value = requireValue(args, index, arg);
       if (typeof value !== "string") return { kind: "error", error: value.error };
@@ -315,6 +324,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       else if (arg === "--acme-email") acmeEmailFlag = value;
       else if (arg === "--public-domain") publicDomainFlag = value;
       else if (arg === "--lb-pool") lbPoolFlag = value;
+      else if (arg === "--storage-profile") storageProfileFlag = value;
       else inlineStagingDirectory = value;
       index++;
       continue;
@@ -343,6 +353,9 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
 
   const lbPool = planLbPool(lbPoolFlag);
   if (!lbPool.ok) return { kind: "error", error: lbPool.error };
+
+  const storageProfile = planStorageProfile(storageProfileFlag);
+  if (!storageProfile.ok) return { kind: "error", error: storageProfile.error };
 
   const namedArgv: string[] = [];
   if (baoLoadSiteFlag !== undefined) namedArgv.push(`--bao-load-site=${baoLoadSiteFlag}`);
@@ -395,6 +408,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       ...(qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase }),
       ...(publicEndpoint.value === null ? {} : { publicEndpoint: publicEndpoint.value }),
       ...(lbPool.value === null ? {} : { lbPool: lbPool.value }),
+      ...(storageProfile.value === null ? {} : { storageProfile: storageProfile.value }),
     },
   };
 }
@@ -591,6 +605,7 @@ export function runFileBackedZflashCli(
     ...(options.repoPinCommit === undefined ? {} : { repoPinCommit: options.repoPinCommit }),
     ...(options.publicEndpoint === undefined ? {} : { publicEndpoint: options.publicEndpoint }),
     ...(options.lbPool === undefined ? {} : { lbPool: options.lbPool }),
+    ...(options.storageProfile === undefined ? {} : { storageProfile: options.storageProfile }),
   };
   const planned = planFileBackedZflashImage(planInput);
   if (!planned.ok) return { ok: false, error: planned.error };

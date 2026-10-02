@@ -15,6 +15,7 @@ import { isFullGitCommitSha } from "../installer/repo-pin.ts";
 import { LONGHORN_UNDERSIZED_OVERRIDE_ENV } from "../installer/longhorn-capacity-preflight.ts";
 import { planPublicEndpoint, renderPublicEndpointConfLines, type PublicEndpoint } from "../installer/public-endpoint.ts";
 import { LB_POOL_AUTO, planLbPool, renderLbPoolConfLine, type LbPoolSpec } from "../installer/lan-config.ts";
+import { planStorageProfile, renderStorageProfileConfLine } from "../installer/storage-profile-selection.ts";
 
 /**
  * RFC1123 hostname regex.
@@ -309,6 +310,16 @@ export interface FileBackedZflashImagePlanInput {
    * wipe. Omitted -> no line at all, and the installer asks instead.
    */
   readonly lbPool?: LbPoolSpec;
+  /**
+   * docs/ops/INSTALL-TIME-CONFIG.md row 29: the storage profile (zflash `--storage-profile`),
+   * appended to the ESP `/zeta-firstboot.conf` as `ZETA_STORAGE_PROFILE='auto'` or
+   * `ZETA_STORAGE_PROFILE='<profile>'`. `auto` (also what omitting it means) lets the installer measure
+   * the Longhorn pool it provisions and pick the LARGEST profile that fits; a named profile is the owner
+   * forcing one, and the installer refuses before the wipe if the pool cannot hold it. Re-validated here by
+   * the same `planStorageProfile` the CLI runs, so a name that is not a profile is refused even when handed
+   * in without the CLI. Omitted -> no line at all.
+   */
+  readonly storageProfile?: string;
   /**
    * WP21 (081M35C7NJR087G0R002S4R654): when set, writes `/zeta-repo-pin`
    * (`ZETA_ISO_COMMIT='<commit>'`) so the booting node checks out this exact
@@ -710,6 +721,30 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
           return {
             ok: false,
             error: `lbPool cannot append to ${ZETA_FIRSTBOOT_CONF_ESP_DESTINATION}: that ESP write has no inline content`,
+          };
+        }
+        espWrites[existing] = { ...prior, content: prior.content + line };
+      } else {
+        espWrites.push({ content: line, destination: ZETA_FIRSTBOOT_CONF_ESP_DESTINATION });
+      }
+    }
+  }
+
+  // docs/ops/INSTALL-TIME-CONFIG.md row 29 -- the storage profile, appended to the same ONE conf and
+  // validated by the same function the CLI used. `auto` is written explicitly when asked for: an
+  // operator who typed it wants it on the record, and the installer treats it exactly as "".
+  if (input.storageProfile !== undefined) {
+    const sp = planStorageProfile(input.storageProfile);
+    if (!sp.ok) return { ok: false, error: sp.error };
+    if (sp.value !== null) {
+      const line = renderStorageProfileConfLine(sp.value);
+      const existing = espWrites.findIndex((w) => w.destination === ZETA_FIRSTBOOT_CONF_ESP_DESTINATION);
+      if (existing >= 0) {
+        const prior = espWrites[existing];
+        if (prior === undefined || prior.content === undefined) {
+          return {
+            ok: false,
+            error: `storageProfile cannot append to ${ZETA_FIRSTBOOT_CONF_ESP_DESTINATION}: that ESP write has no inline content`,
           };
         }
         espWrites[existing] = { ...prior, content: prior.content + line };

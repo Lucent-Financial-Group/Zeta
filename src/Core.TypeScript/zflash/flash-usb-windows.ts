@@ -49,6 +49,7 @@
  *     --host <name>  --role <r> [--flake-host <h>] [--join-server-url <u>] [--join-token <path>]
  *     --acme-email <addr> --public-domain <domain>   --repo-pin <40-hex>
  *     --lb-pool <auto|first-ip-last-ip>   Cilium LoadBalancer range (checked against the LAN at install)
+ *     --storage-profile <auto|name>       storage profile (auto = the installer picks the largest that fits the Longhorn pool)
  *     -h, --help
  *   iso-path defaults to the newest %USERPROFILE%\Downloads\zeta-installer-*.iso
  *
@@ -83,6 +84,7 @@ import { firstbootRoleFromFlags } from "./firstboot-role.ts";
 import { railFindingsForEspWrites } from "./injection-rail.ts";
 import { planPublicEndpoint } from "../installer/public-endpoint.ts";
 import { planLbPool } from "../installer/lan-config.ts";
+import { planStorageProfile } from "../installer/storage-profile-selection.ts";
 import { readFileBounded } from "../io/safe-io.ts";
 
 // ── Safety-rail constants — shared with every arm, not mirrored ──────
@@ -711,6 +713,7 @@ export interface WindowsFlasherArgs {
   readonly acmeEmail?: string;
   readonly publicDomain?: string;
   readonly lbPool?: string;
+  readonly storageProfile?: string;
   readonly repoPin?: string;
 }
 
@@ -726,6 +729,7 @@ const VALUE_FLAG_FIELDS: Readonly<Record<string, keyof WindowsFlasherArgs>> = {
   "--acme-email": "acmeEmail",
   "--public-domain": "publicDomain",
   "--lb-pool": "lbPool",
+  "--storage-profile": "storageProfile",
   "--repo-pin": "repoPin",
 };
 
@@ -794,12 +798,15 @@ export function planWindowsEspWrites(
   if (!pe.ok) return { ok: false, message: `public TLS refused: ${pe.error}` };
   const lb = planLbPool(args.lbPool);
   if (!lb.ok) return { ok: false, message: `LoadBalancer range refused: ${lb.error}` };
+  const sp = planStorageProfile(args.storageProfile);
+  if (!sp.ok) return { ok: false, message: `storage profile refused: ${sp.error}` };
   const nothingAsked =
     pubkeyContent === undefined &&
     args.host === undefined &&
     role.value === undefined &&
     pe.value === null &&
     lb.value === null &&
+    sp.value === null &&
     args.repoPin === undefined;
   if (nothingAsked) return { ok: true, value: [] };
   const planned = planFileBackedZflashImage({
@@ -812,13 +819,33 @@ export function planWindowsEspWrites(
     ...(args.joinTokenPath === undefined ? {} : { joinTokenSourcePath: args.joinTokenPath }),
     ...(pe.value === null ? {} : { publicEndpoint: pe.value }),
     ...(lb.value === null ? {} : { lbPool: lb.value }),
+    ...(sp.value === null ? {} : { storageProfile: sp.value }),
     ...(args.repoPin === undefined ? {} : { repoPinCommit: args.repoPin }),
   });
   if (!planned.ok) return { ok: false, message: planned.error };
   return { ok: true, value: planned.value.espWrites };
 }
 
-export type EspFilesResult = { readonly ok: true; readonly value: readonly EspFile[] } | { readonly ok: false; readonly message: string };
+/**
+ * What the dry-run says about the storage profile (docs/ops/INSTALL-TIME-CONFIG.md row 29), read back from the
+ * ESP payload that WILL be baked rather than from the flag: the flag is what was asked, the payload is what the
+ * node will see.
+ */
+export function describeStorageProfile(writes: readonly FileBackedEspWrite[]): string {
+  const conf = writes.find((w) => w.destination === "/zeta-firstboot.conf")?.content ?? "";
+  const match = /^ZETA_STORAGE_PROFILE='([^']*)'$/m.exec(conf);
+  if (match === null) {
+    return (
+      "storage profile: not set on the ESP -> `auto` (the installer measures the Longhorn pool it provisions and " +
+      "installs the largest profile that fits, refusing only when even `minimal` does not)"
+    );
+  }
+  return match[1] === "auto"
+    ? "storage profile: ZETA_STORAGE_PROFILE='auto' on /zeta-firstboot.conf (the installer picks the largest profile that fits)"
+    : `storage profile: ZETA_STORAGE_PROFILE='${match[1] ?? ""}' on /zeta-firstboot.conf (FORCED; refused before the wipe if the pool cannot hold it)`;
+}
+
+export type EspFilesResult ={ readonly ok: true; readonly value: readonly EspFile[] } | { readonly ok: false; readonly message: string };
 
 /** Materialise planned writes into (name, bytes). A `sourcePath` is read once, bounded, BEFORE any device work. */
 export function resolveEspFiles(
@@ -1057,6 +1084,7 @@ export const VALUE_FLAGS: readonly string[] = [
   "--acme-email",
   "--public-domain",
   "--lb-pool",
+  "--storage-profile",
   "--repo-pin",
 ];
 
@@ -1120,6 +1148,9 @@ async function main(runner: CommandRunner = realRunner): Promise<void> {
         "    --acme-email <addr> --public-domain <domain>   public TLS pair, appended to /zeta-firstboot.conf\n" +
         "    --lb-pool <auto|first-ip-last-ip>   Cilium LoadBalancer range (FREE addresses on the node's LAN, outside DHCP);\n" +
         "                               appended to /zeta-firstboot.conf; the installer checks it against the LAN\n" +
+        "    --storage-profile <auto|name>   storage profile (minimal, standard, measured, large). auto (default): the installer\n" +
+        "                               measures the Longhorn pool and picks the LARGEST profile that fits, refusing only when\n" +
+        "                               even 'minimal' does not; a name forces that one. Appended to /zeta-firstboot.conf\n" +
         "    --repo-pin <40-hex>        /zeta-repo-pin (pin the installed tree to a commit)\n",
     );
     process.exit(0);
@@ -1222,6 +1253,7 @@ async function main(runner: CommandRunner = realRunner): Promise<void> {
   if (dryRun) {
     process.stdout.write(
       `\n[dry-run] would prompt for: ${phrase}\n` +
+        `[dry-run] ${describeStorageProfile(planned.value)}\n` +
         `[dry-run] would:\n` +
         `  <copy ${isoPath} -> <temp>\\${stageName}, sha256 must equal ${integrity.sha256}>\n` +
         (espFiles.value.length > 0

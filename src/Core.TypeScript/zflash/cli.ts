@@ -123,6 +123,7 @@ import { ZFLASH_ALLOWED_FLAGS } from "./allowed-flags.ts";
 import { firstbootRoleFromFlags } from "./firstboot-role.ts";
 import { planPublicEndpoint, renderPublicEndpointConfLines, type PublicEndpoint } from "../installer/public-endpoint.ts";
 import { planLbPool, renderLbPoolConfLine, type LbPoolSpec } from "../installer/lan-config.ts";
+import { planStorageProfile, renderStorageProfileConfLine } from "../installer/storage-profile-selection.ts";
 import {
   planFirstbootConfFileContent,
   validateJoinTokenMaterial,
@@ -851,6 +852,7 @@ async function injectPubkeyToUsb(
   joinTokenSourcePath: string | undefined,
   publicEndpoint: PublicEndpoint | null = null,
   lbPool: LbPoolSpec | null = null,
+  storageProfile: string | null = null,
 ): Promise<void> {
   process.stdout.write(`\niter-4.2: injecting ${pubkeyPath} into freshly-flashed USB ESP ...\n`);
   if (testMode) {
@@ -975,7 +977,9 @@ async function injectPubkeyToUsb(
   // for the same reason and with the same no-role behaviour.
   const publicEndpointLines =
     (publicEndpoint === null ? "" : renderPublicEndpointConfLines(publicEndpoint)) +
-    (lbPool === null ? "" : renderLbPoolConfLine(lbPool));
+    (lbPool === null ? "" : renderLbPoolConfLine(lbPool)) +
+    // docs/ops/INSTALL-TIME-CONFIG.md row 29: the storage profile rides the SAME conf.
+    (storageProfile === null ? "" : renderStorageProfileConfLine(storageProfile));
   if (firstbootRole === undefined && publicEndpointLines.length > 0) {
     const confOnlyTarget = join(mountPoint, "zeta-firstboot.conf");
     try {
@@ -992,6 +996,7 @@ async function injectPubkeyToUsb(
       `install-time config: wrote ${confOnlyTarget}` +
         (publicEndpoint === null ? "" : ` (portal.${publicEndpoint.publicDomain})`) +
         (lbPool === null ? "" : ` (lb-pool ${lbPool.kind === "auto" ? "auto" : `${lbPool.start ?? ""}-${lbPool.stop ?? ""}`})`) +
+        (storageProfile === null ? "" : ` (storage-profile ${storageProfile})`) +
         "\n",
     );
   }
@@ -1215,6 +1220,7 @@ async function main() {
   let acmeEmailFlag: string | undefined;
   let publicDomainFlag: string | undefined;
   let lbPoolFlag: string | undefined;
+  let storageProfileFlag: string | undefined;
   let agentMode = false;
   let testMode = false;
   const bakeCredArgs: string[] = [];
@@ -1281,13 +1287,14 @@ async function main() {
       testMode = true;
       continue;
     }
-    if (a === "--acme-email" || a === "--public-domain" || a === "--lb-pool") {
+    if (a === "--acme-email" || a === "--public-domain" || a === "--lb-pool" || a === "--storage-profile") {
       const next = argv[i + 1];
       if (next === undefined || next.startsWith("-")) {
         bail(2, `${a} requires an argument`);
       }
       if (a === "--acme-email") acmeEmailFlag = next;
       else if (a === "--lb-pool") lbPoolFlag = next;
+      else if (a === "--storage-profile") storageProfileFlag = next;
       else publicDomainFlag = next;
       i += 1;
       continue;
@@ -1440,6 +1447,16 @@ async function main() {
   if (lbPool.value !== null && noInject) {
     bail(2, "--lb-pool requires ESP injection; remove --no-inject");
   }
+  // docs/ops/INSTALL-TIME-CONFIG.md row 29 -- the storage profile. A name that is not a rung is wrong
+  // on every machine and is refused here; whether the pool holds it is decided by the installer,
+  // which refuses before the wipe.
+  const storageProfile = planStorageProfile(storageProfileFlag);
+  if (!storageProfile.ok) {
+    bail(2, `storage profile refused: ${storageProfile.error}`);
+  }
+  if (storageProfile.value !== null && noInject) {
+    bail(2, "--storage-profile requires ESP injection; remove --no-inject");
+  }
 
   const credBake: CredBakeOptions = {
     bakeCredArgs,
@@ -1508,6 +1525,11 @@ async function main() {
         "                            the node's LAN, outside the router's DHCP range. 'auto' derives .240-.250 of\n" +
         "                            the node's /24 and the installer refuses if they answer. Omit: the installer\n" +
         "                            asks; with nobody there it is left UNSET (never a default).\n" +
+        "  --storage-profile <auto|name>\n" +
+        "                            storage profile (minimal, standard, measured, large; k8s/storage-profiles.json).\n" +
+        "                            'auto' (default) lets the installer measure the Longhorn pool and pick the LARGEST\n" +
+        "                            profile that fits; a name forces that one (refused before the wipe if it cannot fit).\n" +
+        "                            It never shrinks a profile an existing install already runs.\n" +
         "  iso-path                  (optional) explicit ISO; default = newest under ~/Downloads,\n" +
         "                            auto-pulled from CI if origin/main has fresher build\n" +
         "  Run zflash-setup once first to install Touch ID for sudo.\n",
@@ -1928,7 +1950,7 @@ async function main() {
     }
   } else if (willInject) {
     try {
-      await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode, firstbootRole.value, joinTokenPathFlag, publicEndpoint.value, lbPool.value);
+      await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode, firstbootRole.value, joinTokenPathFlag, publicEndpoint.value, lbPool.value, storageProfile.value);
     } finally {
       // `force: true` already means "no error if absent", so the `existsSync`
       // guard it replaces bought nothing and was itself a check-then-use race
