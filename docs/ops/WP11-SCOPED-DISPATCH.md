@@ -32,7 +32,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 ```
 
-`github.ref` is `refs/heads/main` for a **dispatch on main** *and* for **every
+`github.ref` is `refs/heads/main` for a **dispatch on main** _and_ for **every
 push to main**, so they share one group. `cancel-in-progress` is `false` for
 both, which correctly protects a RUNNING run — but GitHub keeps only the
 **newest PENDING run per group** and cancels older queued ones. So a dispatch
@@ -89,7 +89,7 @@ A scoped dispatch must show `skipped` for:
   plane, dirty-disk fail-closed, cluster-online) and the longhorn-volume-binds
   step,
 - `UEFI keyfile restore decrypt`, `wifi ESP acceptance`, `UEFI keyfile
-  install-time write`, `UEFI keyfile picker bind`, scenarios 3 and 4, and each
+install-time write`, `UEFI keyfile picker bind`, scenarios 3 and 4, and each
   of their upload-serial-log siblings.
 
 It still runs the ISO build, the boot discriminator, scenario 1, scenario 2 and
@@ -103,7 +103,7 @@ half **missing**, while its own upload-serial-log sibling three lines below had
 it. Measured on run 36044770870, dispatched with `only_wp11`: every other
 dispatch-only step reported `skipped`, that one ran for 15m 48s, and then its
 log upload skipped — so a scoped probe paid a quarter of an hour for a lane it
-had not asked for *and* the failure it produced could not be read afterwards.
+had not asked for _and_ the failure it produced could not be read afterwards.
 Run 36014672753 did the same thing four hours earlier.
 
 Both halves are fixed. The step list is still the thing to check, because the
@@ -134,8 +134,8 @@ What it does when `true`:
 - The end-of-job copies are skipped (exactly one copy runs, so no
   artifact-name collision).
 - The scenarios still run afterwards and still decide the job's conclusion. The
-  run's step summary carries: *ISO published BEFORE the dispatch-only scenarios
-  ran: treat the run conclusion as the verdict on this ISO.* A published
+  run's step summary carries: _ISO published BEFORE the dispatch-only scenarios
+  ran: treat the run conclusion as the verdict on this ISO._ A published
   artifact on a **red** run has not passed the scenarios.
 - If the early publish itself fails, the scenarios still run (the early steps
   are `continue-on-error`), no second copy is attempted, and the job is failed

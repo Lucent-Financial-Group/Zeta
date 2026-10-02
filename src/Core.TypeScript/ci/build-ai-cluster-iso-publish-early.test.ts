@@ -56,7 +56,14 @@ const byId = (id: string): number => idx((s) => s.id === id, `id ${id}`);
 const byName = (needle: string): number =>
   idx((s) => (s.name ?? "").includes(needle) && !(s.name ?? "").includes("(early publish)"), `name ~ ${needle}`);
 
-const EARLY_IDS = ["iso_early", "cosign_early", "sign_early", "upload_iso_early", "upload_sha_early", "upload_bundle_early"];
+const EARLY_IDS = [
+  "iso_early",
+  "cosign_early",
+  "sign_early",
+  "upload_iso_early",
+  "upload_sha_early",
+  "upload_bundle_early",
+];
 const LATE_PUBLISH_NAMES = [
   "Locate ISO + capture metadata",
   "Install cosign",
