@@ -292,7 +292,7 @@ spec:
             # creates nothing: no Gateway is the honest state, and GitLab stays reachable in-cluster. The
             # operation completes, the pin makes the Application OutOfSync, and ArgoCD's next operation rolls
             # GitLab onto the real hosts; the hook runs again and re-applies the same objects (idempotent).
-            # Falsifier: gitlab-exposure.test.ts (a)(c)(f)(i) -- (i) RUNS the hook script against a stub kubectl.
+            # Falsifier: gitlab-exposure.test.ts (a)(c)(f) -- they RUN the hook script against a stub kubectl.
             #
             # The objects are therefore not tracked by ArgoCD (no tracking annotation, nothing to prune, nothing to
             # read OutOfSync). A node that already carries them from the previous release has them tracked by this
