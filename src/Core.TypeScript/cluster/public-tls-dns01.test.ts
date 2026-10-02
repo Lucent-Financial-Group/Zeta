@@ -18,7 +18,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { appliedObjects, publicTlsObjects, yamlDocs, type K8sObject } from "./public-tls.ts";
 
@@ -152,7 +152,7 @@ describe("nothing committed opts a Certificate in, and no credential is committe
 });
 
 describe("the operator guide exists and carries the load-bearing, measured instructions", () => {
-  const doc = existsSync(join(REPO_ROOT, OPS_DOC)) ? readFileSync(join(REPO_ROOT, OPS_DOC), "utf8") : "";
+  const doc = readFileSync(join(REPO_ROOT, OPS_DOC), "utf8");
 
   test.each([
     ["the Secret is created on the node, never committed", "k3s kubectl -n cert-manager create secret generic cloudflare-api-token"],
