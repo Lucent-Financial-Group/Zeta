@@ -63,7 +63,12 @@ function cleanEnv(extra: Record<string, string>): NodeJS.ProcessEnv {
 }
 
 /** Runs the policy call site then the REAL Step 6.55 text. `root` stands in for /mnt. */
-function runInstall(opts: { policy?: string; prompts?: boolean; stdin?: string; mkpasswdFails?: boolean }): Run {
+function runInstall(opts: {
+  policy?: string | undefined;
+  prompts?: boolean | undefined;
+  stdin?: string | undefined;
+  mkpasswdFails?: boolean | undefined;
+}): Run {
   const root = mkdtempSync(join(workdir, "mnt-"));
   const consoleDevice = fwd(join(root, "console-device"));
   const argvLog = fwd(join(root, "mkpasswd-argv.log"));
@@ -166,10 +171,10 @@ describe("Step 6.55, executed: a TYPED password always wins", () => {
       expect(run.status).toBe(0);
       expect(run.out).toContain("REACHED-END");
       expect(read(run, "initial-hashedpassword").trim()).toBe("$6$stub$hunter2-typed");
-      for (const marker of ["initial-password-default", "initial-password-minted", "console-password-locked"]) {
-        expect(has(run, marker), marker).toBe(false);
-      }
-      expect(run.out).not.toContain("CONSOLE PASSWORD IS THE PUBLIC DEFAULT");
+      // The EXACT set of files: the hash and nothing else, so no default/minted/locked marker exists.
+      expect(readdirSync(join(run.root, "etc/zeta"))).toEqual(["initial-hashedpassword"]);
+      // Zero banner lines, stated as an exact count rather than an absence.
+      expect(run.out.split("\n").filter((l) => l.includes("CONSOLE PASSWORD IS THE PUBLIC DEFAULT"))).toEqual([]);
       expect(existsSync(run.consoleDevice)).toBe(false); // nothing was shown on the console either
     }, T);
   }
@@ -213,7 +218,7 @@ describe("Step 6.55, executed: no password typed, policy `default` (the repo def
     const argv = readFileSync(run.argvLog, "utf8");
     expect(argv).not.toContain("zeta-change-me");
     expect(argv.trim()).toBe("-m sha-512 -s");
-    expect(read(run, "initial-hashedpassword")).not.toContain("\n\n");
+    expect(read(run, "initial-hashedpassword")).toBe("$6$stub$zeta-change-me\n");
   }, T);
 
   test("mkpasswd failing does NOT lock and does NOT mint: the marker is written and the module's build-time fallback (the same public hash) applies", () => {
@@ -239,9 +244,8 @@ describe("Step 6.55, executed: no password typed, policy `mint` (explicit opt-in
   test("a minted one-time password is shown on the console device only; the hash and minted marker are written; NOT the public password", () => {
     const run = runInstall({ policy: "mint" });
     expect(run.status).toBe(0);
-    expect(has(run, "initial-password-minted")).toBe(true);
-    expect(has(run, "initial-password-default")).toBe(false);
-    expect(has(run, "console-password-locked")).toBe(false);
+    // The EXACT set of files: the hash plus the minted marker; no default marker, no lock.
+    expect(readdirSync(join(run.root, "etc/zeta")).sort()).toEqual(["initial-hashedpassword", "initial-password-minted"]);
     const hash = read(run, "initial-hashedpassword").trim();
     expect(hash).toMatch(/^\$6\$stub\$[a-z2-7]{24}$/);
     expect(hash).not.toContain("zeta-change-me");
@@ -249,7 +253,7 @@ describe("Step 6.55, executed: no password typed, policy `mint` (explicit opt-in
     const pw = hash.replace("$6$stub$", "");
     expect(shown).toContain(pw);
     expect(run.out).not.toContain(pw); // never on the tee'd stdout
-    expect(run.out).not.toContain("CONSOLE PASSWORD IS THE PUBLIC DEFAULT");
+    expect(run.out.split("\n").filter((l) => l.includes("CONSOLE PASSWORD IS THE PUBLIC DEFAULT"))).toEqual([]);
   }, T);
 
   test("mint with nowhere to show it LOCKS the account (not defaulted): the safe opt-in keeps its fail-safe", () => {
@@ -317,7 +321,7 @@ describe("the Nix activation + reminder (initial-password.nix) - text only, noth
     expect(branch.startsWith('elif [ -f "${defaultMarker}" ]; then')).toBe(true);
     // the installer writes the default marker ONLY in the no-typed-password branch of Step 6.55
     const typedBranch = STEP_655.slice(STEP_655.indexOf('if [ -n "$INJECTED_PW" ]; then'), STEP_655.indexOf('elif [ "${ZETA_CONSOLE_PASSWORD_POLICY_RESOLVED:-default}" = "default" ]'));
-    expect(typedBranch).not.toContain("initial-password-default");
+    expect(typedBranch.split("\n").filter((l) => l.includes("initial-password-default"))).toEqual([]);
   });
 
   test("the first-boot reminder: a service + timer keep a reminder file while the shadow hash is still the applied one, login shells print it", () => {
@@ -346,8 +350,7 @@ describe("SSH password login stays DISABLED (unchanged by the policy)", () => {
   test("initial-password.nix does not touch sshd at all", () => {
     // Comments may name the setting (to say it is untouched); no CODE line may.
     const code = NIX.split("\n").filter((l) => !l.trim().startsWith("#")).join("\n");
-    expect(code).not.toContain("PasswordAuthentication");
-    expect(code).not.toContain("services.openssh");
+    expect(code.split("\n").filter((l) => l.includes("PasswordAuthentication") || l.includes("services.openssh"))).toEqual([]);
   });
 
   test("no module under full-ai-cluster sets PasswordAuthentication true", () => {
@@ -365,13 +368,13 @@ describe("SSH password login stays DISABLED (unchanged by the policy)", () => {
   });
 
   test("the installer never writes sshd_config or enables password auth", () => {
-    expect(SRC).not.toMatch(/PasswordAuthentication\s+yes/i);
+    expect(SRC.split("\n").filter((l) => /PasswordAuthentication\s+yes/i.test(l))).toEqual([]);
   });
 });
 
 describe("the policy only comes from the owner's ESP / environment; the ISO bakes none", () => {
   test("the ISO's own /etc/zeta-firstboot.conf never sets the policy (so `mint` is never implicit, and `default` is only the installer's own unset-default)", () => {
-    expect(ISO_CONFIG).not.toContain("ZETA_CONSOLE_PASSWORD_POLICY");
+    expect(ISO_CONFIG.split("\n").filter((l) => l.includes("ZETA_CONSOLE_PASSWORD_POLICY"))).toEqual([]);
   });
 
   test("zeta-first-boot.sh passes it through as ${VAR:-} and sets no policy of its own", () => {
