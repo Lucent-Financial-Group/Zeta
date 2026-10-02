@@ -27,6 +27,17 @@
 # gateway; TLS still terminates at the gateway (passthrough), the relay never sees plaintext. Client
 # source addresses are therefore the node's, not the internet's -- the cost of this relay.
 #
+# THIRD JOB -- `relay Service`: the router picks WHICH of the node's addresses gets the :443 forward.
+# MEASURED 2026-10-02: the forward worked at cutover, then outside SYNs began arriving for
+# 192.168.1.250 (the gitlab-lan Gateway, :80 only) and every connection hung -- the node's addresses
+# (.79 and each Cilium LB IP: .240 .241 .242 .250) share ONE MAC, so a MAC-keyed router can bind the
+# rule to any of them and can change its mind. An iptables DNAT cannot help (Cilium's eBPF owns those
+# IPs before netfilter; the rule saw 0 packets). A Service with `externalIPs` can: Cilium (KPR) makes
+# <ip>:443 a frontend for the relay, beside the Gateway's own :80. `discover` therefore keeps ONE Service,
+# `https-relay`, whose externalIPs are EVERY LoadBalancer address in the cluster that does not already
+# serve :443 -- so it follows a new gateway or a changed address with no edit here. A FAILED LISTING
+# KEEPS THE LAST SET (unknown is not "remove"). The public gateway (.240) serves :443 itself and is skipped.
+#
 # DELIBERATELY NOT PINNED: api.<domain> and api-staging.<domain>. Until the production cutover those
 # resolve to the Azure container apps; pinning them on the node would silently reroute host-side callers.
 #
@@ -112,6 +123,14 @@ spec:
           command: ["/bin/bash", "-c"]
           args:
             - |
+              SHARED="${SHARED:-/shared}"
+              # Every LoadBalancer address that does NOT already expose :443 (one per line, sorted).
+              relay_ips() {
+                kubectl get svc -A -o jsonpath='{range .items[*]}{.status.loadBalancer.ingress[*].ip}{"|"}{.spec.ports[*].port}{"\n"}{end}' \
+                  | awk -F'|' '{ n = split($1, a, " "); for (i = 1; i <= n; i++) { seen[a[i]] = 1; if ((" " $2 " ") ~ / 443 /) has[a[i]] = 1 } }
+                               END { for (ip in seen) if (!(ip in has) && ip ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/) print ip }' \
+                  | sort
+              }
               while :; do
                 ip=$(kubectl -n zeta-platform get gateway zeta-public-gateway \
                   -o jsonpath='{.status.addresses[0].value}') || ip=""
@@ -120,9 +139,21 @@ spec:
                 hosts=$(printf '%s\n' "$hosts" | grep -E '^(gitlab|registry)\.' | sort -u)
                 # Only a complete answer replaces the block; anything else keeps the previous one.
                 if [ -n "$ip" ] && [ -n "$hosts" ]; then
-                  printf '%s\n' "$hosts" | sed "s|^|$ip |; s|\$| # zeta-lan-hosts|" > /shared/block.tmp \
-                    && mv /shared/block.tmp /shared/block
+                  printf '%s\n' "$hosts" | sed "s|^|$ip |; s|\$| # zeta-lan-hosts|" > $SHARED/block.tmp \
+                    && mv $SHARED/block.tmp $SHARED/block
                 fi
+                # The relay Service. An empty listing means the probe failed or there is nothing to cover;
+                # only a NON-empty one is applied (a failed probe must never strip the node's reachability).
+                if ips=$(relay_ips) && [ -n "$ips" ]; then
+                  list=$(printf '%s\n' "$ips" | sed 's/.*/"&"/' | paste -sd, -)
+                  {
+                    printf '%s\n' 'apiVersion: v1' 'kind: Service' 'metadata:' '  name: https-relay' \
+                      '  namespace: zeta-node-hosts' '  labels: { app.kubernetes.io/part-of: node-lan-hosts }' \
+                      'spec:' '  type: ClusterIP' '  selector: { app: node-lan-hosts }' "  externalIPs: [$list]" \
+                      '  ports:' '    - { name: https, port: 443, targetPort: 443, protocol: TCP }'
+                  } | kubectl apply --server-side --force-conflicts --field-manager=node-lan-hosts-relay -f - >/dev/null
+                fi
+                [ -n "$ONCE" ] && exit 0
                 sleep 30
               done
         - name: apply
@@ -198,3 +229,56 @@ spec:
                 [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null && exit 1
                 sleep 10
               done
+---
+# Read every Service's LoadBalancer address + ports (cluster-wide, read-only), to find which addresses
+# do not serve :443 yet.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: node-lan-hosts-list-services
+rules:
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: node-lan-hosts-list-services
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: node-lan-hosts-list-services
+subjects:
+  - kind: ServiceAccount
+    name: node-lan-hosts
+    namespace: zeta-node-hosts
+---
+# Write ONLY the one relay Service, in its own namespace.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: node-lan-hosts-relay-service
+  namespace: zeta-node-hosts
+rules:
+  - apiGroups: [""]
+    resources: ["services"]
+    resourceNames: ["https-relay"]
+    verbs: ["get", "patch", "update"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: node-lan-hosts-relay-service
+  namespace: zeta-node-hosts
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: node-lan-hosts-relay-service
+subjects:
+  - kind: ServiceAccount
+    name: node-lan-hosts
+    namespace: zeta-node-hosts

@@ -37,7 +37,7 @@ describe("render", () => {
   test("only gitlab./registry. are pinned -- never api.* (still Azure until the cutover)", () => {
     const discover = scriptOf("discover");
     expect(discover).toContain("(gitlab|registry)");
-    expect(discover).not.toMatch(/api/);
+    expect(discover).not.toMatch(/\bapi[.-]/); // a hostname, not the `apiVersion:` of the relay Service manifest
   });
 
   test("the 443 relay: node network, :443, target discovered (never hardcoded), one capability", () => {
