@@ -122,6 +122,7 @@ at 2 and watch `kubectl describe node` for `DiskPressure` during the first heavy
 ## What is proven and what is unproven
 
 **Proven (offline, in tests that fail without the change):**
+
 - the rendered GitLab release carries `concurrent <= 2`, the four ephemeral-storage keys, a `LimitRange`
   ahead of the pods it defaults, and a worst case under the eviction threshold (`gitlab-runner-bringup.test.ts`);
 - both CronJob scripts behave as specified against a stub `kubectl` (reap-before-mark and failure paths;
@@ -131,6 +132,7 @@ at 2 and watch `kubectl describe node` for `DiskPressure` during the first heavy
 
 **Proven live, on a THROWAWAY `rancher/k3s:v1.35.6-k3s1` container (not the owner's node)** -- the manifests were
 applied and the CronJobs' own scripts run as their ServiceAccounts:
+
 - the janitor's `kubectl label pods --all-namespaces --field-selector=status.phase=Failed ...` is accepted with
   no names; run 1 marked two Failed pods, run 2 deleted exactly those two and marked a new one, and left a
   `Pending` pod untouched;
@@ -141,6 +143,7 @@ applied and the CronJobs' own scripts run as their ServiceAccounts:
   run, and the same ServiceAccount is Forbidden from listing secrets or reading any other one.
 
 **Unproven (no live evidence yet):**
+
 - that ArgoCD leaves a live `/spec/replicas` alone under `RespectIgnoreDifferences` on this chart (no ArgoCD in
   the throwaway cluster);
 - the CronJob pods themselves (restricted PSA admission, the `registry.gitlab.com/.../cng/kubectl:v17.7.0` image

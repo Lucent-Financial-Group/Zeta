@@ -15,3 +15,11 @@ composes_with: []
 <!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081M3XTTWC2087G0R000TDRBMM-*.md` glob. -->
+
+The owner's single node (node-5b2dfa, ~119 GiB root) went into DiskPressure on 2026-10-02 and evicted ~150 pods.
+GitOps half landed in the PR that carries this item: bounded CI job storage, hindsight held at zero replicas
+without its LLM key Secret, and a Failed-pod janitor. Measurements, thresholds and what landed:
+`docs/ops/NODE-DISK-HEADROOM.md`.
+
+**Open, needs the owner (OS change or reinstall, deliberately not done here):** put containerd/kubelet data on a
+dedicated partition, or enlarge root via `LONGHORN1_TAIL` -- the options and the recommendation are in that doc.
