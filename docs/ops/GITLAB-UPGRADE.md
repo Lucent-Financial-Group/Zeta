@@ -141,4 +141,3 @@ Everything below was measured on the owner's node (`node-5b2dfa`, one k3s node, 
   bytes, over the 716800-byte budget` and passed on re-run; the same tree packs to 384 KB locally and 388 KB on `main`'s own
   run, so it is a flake of that lane, not of the change.
 - Same verification as hop 1 (readiness, clone, registry blob + digest, throwaway pipeline): all pass.
-
