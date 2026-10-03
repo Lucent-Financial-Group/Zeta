@@ -98,7 +98,7 @@ Origin certificate: Let's Encrypt (`CN=flowdent.net` and `CN=www.flowdent.net`, 
 cert-manager renews at 2026-12-01), `Certificate flowdent-web-tls` and `flowdent-web-www-tls` in
 `zeta-platform` both `Ready=True`. The browser-facing certificate is Cloudflare's own (Google Trust
 Services). `HTTP -> HTTPS`: at the origin `:80` answers `301 -> https://<host>:443/<path>` (the explicit
-`:443` is Envoy's redirect spelling; harmless); through Cloudflare see the table below.
+`:443` is Envoy's redirect spelling; harmless); through Cloudflare see "Plain HTTP ... is broken" below.
 
 ### Cutover and what the 525 was
 
@@ -156,6 +156,22 @@ specific to the website: the node's own counters are clean (`TcpExtListenOverflo
 origin did not have it. The structural fix is a Cloudflare Tunnel (`cloudflared` dialling *out* from the
 cluster, as `studio.flowdent.net` already does), which removes the inbound port-forward from the path --
 it needs a tunnel credential this work does not hold, so it is recorded here and **not done**.
+
+**Plain HTTP to the public name is broken, and was not on Azure.** `http://flowdent.net/` and
+`http://www.flowdent.net/` go through Cloudflare to the origin's **port 80**, and that lands on whichever of
+the node's addresses the home router bound the rule to (the node's address and each Cilium LB IP share one
+MAC, see the header of `node-lan-hosts.yaml`). Measured 01:5xZ, 30 sequential `curl http://flowdent.net/`:
+**26 returned GitLab's `302 -> http://flowdent.net/users/sign_in`** (the `gitlab-lan` Gateway, `.250`, which
+also answers on `:80`), 2 returned the intended `301 -> https://flowdent.net:443/` (the public Gateway,
+`.240`), 1 returned `200` with another site's page (the Zeta portal's Gateway), and the rest timed out.
+`curl -H 'Host: flowdent.net' http://192.168.1.250/` reproduces the GitLab answer on the LAN. Azure answered
+`301 -> https` here. Browsers that default to `https://` never hit it; a typed `http://`, an old link or a
+crawler does, and gets a GitLab sign-in page under the website's name. The fix is not in this repo and is
+not done: turn on Cloudflare **Always Use HTTPS** (a zone setting; the DNS token used here lacks Zone
+Settings, and changing it is outside this task's scope), or a Redirect Rule, so `:80` never reaches the
+origin. The same MAC-keyed forwarding is the plausible cause of the intermittent `520`/`525` above (SYNs
+arriving at an address that does not serve the port) -- an inference, not a measurement; the `https-relay`
+externalIPs Service exists precisely to absorb it for `:443`.
 
 Azure's own `Requests` metric for the web app is **weak evidence and is not relied on here**: over the 7 days
 to 2026-10-03 it shows a single request in total (even while `www` was still served from Azure), and my own
