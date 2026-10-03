@@ -2,10 +2,10 @@
  * flowdent-web.test.ts - the public flowdent.net website, moved off Azure Container Apps
  * (full-ai-cluster/k8s/flowdent-web/, docs/ops/AZURE-EXIT.md).
  *
- * What these tests can prove with no cluster: the directory is opt-in and self-consistent; the pod
- * satisfies the `restricted` Pod Security profile the namespace ENFORCES (so a rollout cannot be
- * refused at admission); the image is pinned by digest; every container declares the requests the
- * namespace quota requires; and each HTTPRoute attaches to a listener that public-tls really defines,
+ * What these tests can prove with no cluster: the directory is opt-in and self-consistent; the namespace
+ * enforces `restricted` and the quota allows no PVC; NO workload (and no private registry image) is in
+ * the public tree -- the Deployment lives in fd-webclient, because Zeta must not depend on a
+ * Flowdent-private artifact; and each HTTPRoute attaches to a listener that public-tls really defines,
  * for the hostname that listener really carries. What they cannot prove: that a certificate issued or
  * that Cloudflare reaches the origin -- that needs the live node and is recorded in AZURE-EXIT.md.
  */
@@ -48,63 +48,36 @@ describe("A. opt-in: nothing here exists unless an operator applies Application.
   });
 });
 
-describe("B. the pod passes the `restricted` profile the namespace enforces", () => {
+describe("B. the namespace enforces `restricted`, and the public tree carries NO private workload", () => {
   const ns = kinds(docs("namespace.yaml"), "Namespace")[0]!;
-  const dep = kinds(docs("deployment.yaml"), "Deployment")[0] as any;
-  const pod = dep.spec.template.spec;
-  const c = pod.containers[0];
+  const quota = kinds(docs("namespace.yaml"), "ResourceQuota")[0] as any;
 
-  test("the namespace ENFORCES restricted", () => {
+  test("the namespace ENFORCES restricted (the Deployment applied from fd-webclient must satisfy it)", () => {
     expect((ns as any).metadata.labels["pod-security.kubernetes.io/enforce"]).toBe("restricted");
   });
 
-  test("non-root with a numeric uid, RuntimeDefault seccomp, no privilege escalation, all caps dropped, read-only root", () => {
-    expect(pod.securityContext.runAsNonRoot).toBe(true);
-    expect(typeof pod.securityContext.runAsUser).toBe("number");
-    expect(pod.securityContext.runAsUser).toBeGreaterThan(0);
-    expect(pod.securityContext.seccompProfile.type).toBe("RuntimeDefault");
-    expect(c.securityContext.allowPrivilegeEscalation).toBe(false);
-    expect(c.securityContext.capabilities.drop).toEqual(["ALL"]);
-    expect(c.securityContext.readOnlyRootFilesystem).toBe(true);
-    expect(pod.hostNetwork).toBeUndefined();
-    expect(pod.automountServiceAccountToken).toBe(false);
-  });
-
-  test("every volume is an emptyDir with a size limit (no PVC: the site is stateless and the quota allows none)", () => {
-    for (const v of pod.volumes) {
-      expect(v.emptyDir?.sizeLimit).toBeTruthy();
-      expect(v.persistentVolumeClaim).toBeUndefined();
-    }
-    const quota = kinds(docs("namespace.yaml"), "ResourceQuota")[0] as any;
+  test("the quota allows no PVC (the site is stateless) and demands requests/limits, so a pod without them is refused", () => {
     expect(quota.spec.hard.persistentvolumeclaims).toBe("0");
+    expect(Object.keys(quota.spec.hard)).toContain("requests.cpu");
   });
 
-  test("the image is pinned by digest, on the cluster's own registry", () => {
-    expect(c.image).toMatch(/^registry\.flowdent\.net\/flowdent\/fd-webclient\/flowdent-webapp:[0-9a-f]+@sha256:[0-9a-f]{64}$/);
+  test("NO Deployment / workload and NO registry.flowdent.net image is in this directory: the Zeta tree must not depend on a Flowdent-private artifact", () => {
+    for (const f of files()) {
+      for (const o of docs(f)) {
+        expect(["Deployment", "StatefulSet", "DaemonSet", "Job", "CronJob", "Pod"]).not.toContain(o["kind"] as string);
+      }
+      expect(read(f)).not.toMatch(/^\s*image:\s*registry\.flowdent\.net/m);
+    }
   });
 
-  test("requests and limits declared, including ephemeral storage (the quota refuses a pod without them)", () => {
-    expect(c.resources.requests.cpu).toBeTruthy();
-    expect(c.resources.requests.memory).toBeTruthy();
-    expect(c.resources.requests["ephemeral-storage"]).toBeTruthy();
-    expect(c.resources.limits.memory).toBeTruthy();
-    expect(c.resources.limits["ephemeral-storage"]).toBeTruthy();
-  });
-
-  test("two replicas, never fewer than one available, readiness gates traffic", () => {
-    expect(dep.spec.replicas).toBeGreaterThanOrEqual(2);
-    expect(dep.spec.strategy.rollingUpdate.maxUnavailable).toBe(0);
+  test("the PDB and the Service select the same pod label the fd-webclient Deployment carries, and the Service targets the named port `http`", () => {
+    const label = { "app.kubernetes.io/name": "flowdent-web" };
     const pdb = kinds(docs("pdb.yaml"), "PodDisruptionBudget")[0] as any;
     expect(pdb.spec.minAvailable).toBe(1);
-    expect(pdb.spec.selector.matchLabels).toEqual(dep.spec.selector.matchLabels);
-    expect(c.readinessProbe.httpGet.port).toBe("http");
-  });
-
-  test("the Service selects the pods and targets the named port", () => {
+    expect(pdb.spec.selector.matchLabels).toEqual(label);
     const svc = kinds(docs("service.yaml"), "Service")[0] as any;
-    expect(svc.spec.selector).toEqual(dep.spec.selector.matchLabels);
+    expect(svc.spec.selector).toEqual(label);
     expect(svc.spec.ports[0].targetPort).toBe("http");
-    expect(c.ports[0].name).toBe("http");
   });
 });
 

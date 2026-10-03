@@ -51,10 +51,8 @@ function yamlFilesUnder(root: string): string[] {
       // (k8s/flowdent/Application.yaml), outside `applications/`, so a metal install never syncs it.
       // Its ServiceAccount-token Secrets are produced only after that opt-in and are the deployer
       // credentials of one application, not a producer of the catalogue's referenced Secrets.
-      // `flowdent-web/` likewise (k8s/flowdent-web/Application.yaml): its pull Secret `flowdent-registry`
-      // is copied in by the operator and deliberately not in git.
       if (entry.isDirectory()) {
-        if (entry.name !== "examples" && entry.name !== "flowdent" && entry.name !== "flowdent-web") walk(p);
+        if (entry.name !== "examples" && entry.name !== "flowdent") walk(p);
       }
       else if (p.endsWith(".yaml") || p.endsWith(".yml")) out.push(p);
     }

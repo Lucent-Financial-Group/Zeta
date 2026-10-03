@@ -7,9 +7,15 @@
 #
 #     kubectl apply -f full-ai-cluster/k8s/flowdent-web/Application.yaml
 #
+# WHAT IT OWNS: the namespace (Pod Security `restricted`, enforced), its ResourceQuota, the PDB, the Service
+# and the HTTPRoutes. WHAT IT DOES NOT: the Deployment. That references a PRIVATE image on
+# registry.flowdent.net, and the public Zeta tree must not depend on a Flowdent-private artifact (the one-way
+# rule; image-source-provenance.ts refuses it). It is applied from the tenant repo (fd-webclient,
+# k8s/flowdent-web/deployment.yaml) -- the same split as fd-core, whose manifests are not here either.
+#
 # Needs, in this order: the `flowdent-platform` PriorityClass `flowdent-prod`; Gateway listeners 7 and 8
-# of `platform-public-tls` (https-flowdent-web, https-flowdent-web-www); and the pull Secret
-# `flowdent-registry` in namespace flowdent-web (copied by the operator, never committed).
+# of `platform-public-tls` (https-flowdent-web, https-flowdent-web-www); the pull Secret `flowdent-registry`
+# in namespace flowdent-web (copied by the operator, never committed); then the Deployment from fd-webclient.
 # docs/ops/AZURE-EXIT.md.
 apiVersion: argoproj.io/v1alpha1
 kind: Application

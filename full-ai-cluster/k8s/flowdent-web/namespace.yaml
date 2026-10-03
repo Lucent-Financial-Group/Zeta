@@ -1,6 +1,7 @@
 # The public website's namespace. `restricted` is ENFORCED, not warned: this is a stateless Next.js
 # server with no reason to ask for anything the profile forbids, and an enforced profile is what makes
-# that claim checkable (flowdent-web.test.ts renders the pod against it).
+# that claim checkable (the kubelet refuses a pod that does not satisfy it). The Deployment is applied
+# from fd-webclient, not from this tree -- see Application.yaml.
 #
 # The ResourceQuota is a CEILING, not a reservation and not a measurement (unmetered): it stops a bad
 # rollout from starving the platform that shares this node. EPHEMERAL STORAGE is in it for the reason
