@@ -306,7 +306,9 @@ generalized image reads `Unattend.xml` from the same `sysprep` Secret, which sch
 Each guest disk is a Longhorn volume (`zeta-block-replicated`, **one replica**, on one of the two NVMe disks). A **Longhorn snapshot** is
 crash-consistent and lives on the same disk as the volume: it protects against a bad Windows update or a corrupted guest, **not against losing
 the disk**, and it is **not a backup**. No Longhorn backup target is configured (`backuptargets.longhorn.io/default` is not available), and
-the cluster has no CSI `VolumeSnapshotClass`, so KubeVirt's `VirtualMachineSnapshot` is unavailable. A snapshot of a stopped guest's disk:
+the cluster has no CSI `VolumeSnapshotClass`, so KubeVirt's `VirtualMachineSnapshot` is unavailable. Snapshot a guest's disk with Longhorn's own
+object (`createSnapshot: true` is what makes it take one; without it the object only tracks a snapshot that already exists, finds none and is
+removed). Measured: this works on a **stopped** guest's disk too, because Longhorn attaches the volume itself for the snapshot.
 
 ```bash
 PV=$(kubectl -n windows-vms get pvc win11-desktop-root -o jsonpath='{.spec.volumeName}')
@@ -314,16 +316,17 @@ cat <<EOF | kubectl apply -f -
 apiVersion: longhorn.io/v1beta2
 kind: Snapshot
 metadata: { name: win11-desktop-before-update, namespace: longhorn-system }
-spec: { volume: $PV }
+spec: { volume: $PV, createSnapshot: true }
 EOF
-kubectl -n longhorn-system get snapshots.longhorn.io win11-desktop-before-update
+kubectl -n longhorn-system get snapshots.longhorn.io win11-desktop-before-update      # READYTOUSE true
 ```
 
-Stop the guest first for a clean snapshot (a running guest's snapshot is crash-consistent only). To roll back, use the Longhorn UI or revert
-the volume to that snapshot while the guest is stopped. The `win11-iso` claim can be deleted once both guests are installed (they only
-need it to install); the TPM and UEFI state claims (`persistent-state-for-*`, 12Mi, class `longhorn`) hold the BitLocker-relevant TPM state, so
-treat them as part of the VM: deleting the VM deletes its claim, and the `longhorn` class **retains** the volume, so remove an orphaned
-`Released` PV by hand.
+Stop the guest first for a clean snapshot (a running guest's snapshot is crash-consistent only). To roll back, use the Longhorn UI or revert the
+volume to that snapshot while the guest is stopped. **Deleting a snapshot can hang on a volume that has never carried a workload**: measured, the
+object stayed `markRemoved` with a stale "engine is upgrading" error for more than ten minutes even though the volume was attached and healthy,
+and had to be released by removing its finalizer. The `win11-iso` claim can be deleted once both guests are installed (they only need it to
+install); the TPM and UEFI state claims (`persistent-state-for-*`, 12Mi, class `longhorn`) hold the BitLocker-relevant TPM state, so treat them as
+part of the VM: deleting the VM deletes its claim, and the `longhorn` class **retains** the volume, so remove an orphaned `Released` PV by hand.
 
 ## Storage placement: how to prove it
 
@@ -333,8 +336,10 @@ kubectl get pvc -A -o custom-columns=NS:.metadata.namespace,N:.metadata.name,SC:
 kubectl -n longhorn-system get replicas.longhorn.io -o custom-columns=V:.spec.volumeName,DISK:.spec.diskPath | grep <pv>      # /var/lib/longhorn-disk1 or -disk2
 ```
 
-Measured 2026-10-03: `win11-ci-root` on `longhorn-disk2`, `win11-desktop-root` on `longhorn-disk1`, 1 replica each; Longhorn had ~650 GiB
-schedulable after the storage relocation work (both disks 25% reserved).
+Measured 2026-10-03: `win11-ci-root` on `longhorn-disk2`, `win11-desktop-root` on `longhorn-disk1`, 1 replica each. Longhorn reserves ~30% of
+each disk, and with these two disks plus the storage-relocation work (postgres, SeaweedFS, forgejo) scheduled, ~164 GiB (disk1) and ~230 GiB (disk2)
+were still schedulable, ~394 GiB in all. Windows disks are thin, so real use starts small and grows; check
+`kubectl -n longhorn-system get nodes.longhorn.io -o wide` before adding more.
 
 ## What is proven, and what is unproven
 
