@@ -29,7 +29,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parseAllDocuments, parse as parseYaml } from "yaml";
 import { PASSWORD_PLACEHOLDER } from "./windows-runner-unattend-secret.ts";
@@ -74,10 +74,8 @@ const VMS: Doc[] = [vmCi, vmDesktop];
 
 /** Every file under the windows-11 directory, recursively, as [path, text]. */
 function walk(dir: string): string[] {
-  return readdirSync(dir).flatMap((n) => {
-    const p = join(dir, n);
-    return statSync(p).isDirectory() ? walk(p) : [p];
-  });
+  // withFileTypes: the kind comes back with the name, so there is no stat() on a path that may have changed in between.
+  return readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)]));
 }
 const OWN_FILES = [
   ...walk(DIR),
