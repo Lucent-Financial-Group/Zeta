@@ -61,12 +61,20 @@ describe("B. the namespace enforces `restricted`, and the public tree carries NO
     expect(Object.keys(quota.spec.hard)).toContain("requests.cpu");
   });
 
-  test("NO Deployment / workload and NO registry.flowdent.net image is in this directory: the Zeta tree must not depend on a Flowdent-private artifact", () => {
+  test("NO Deployment / workload and NO container image of any kind is in this directory: the Zeta tree must not depend on a Flowdent-private artifact", () => {
+    // An `image` key anywhere in any document would mean a container is declared here. None may be:
+    // the workload names a private registry image and is applied from fd-webclient instead.
+    const hasImageKey = (v: unknown): boolean =>
+      Array.isArray(v)
+        ? v.some(hasImageKey)
+        : v !== null && typeof v === "object"
+          ? Object.entries(v as Record<string, unknown>).some(([k, x]) => k === "image" || hasImageKey(x))
+          : false;
     for (const f of files()) {
       for (const o of docs(f)) {
         expect(["Deployment", "StatefulSet", "DaemonSet", "Job", "CronJob", "Pod"]).not.toContain(o["kind"] as string);
+        expect(hasImageKey(o)).toBe(false);
       }
-      expect(read(f)).not.toMatch(/^\s*image:\s*registry\.flowdent\.net/m);
     }
   });
 
