@@ -138,7 +138,7 @@ export const ROOT_FLOOR_SAFETY_FACTOR = 1.15;
  *   (73 images + 30 OS) x 1.15 = 118.45  ->  120 GiB
  *
  * NOT INCLUDED, AND DELIBERATELY SO: the local-path PVC ceilings that also land
- * on root — `LOCAL_PATH_ADVISORY_GIB` below, 202 GiB today. Reserving them
+ * on root — `LOCAL_PATH_ADVISORY_GIB` below, 186 GiB today. Reserving them
  * would starve the Longhorn pool for bytes nobody has written, because
  * `local-storage.nix` binds `zeta-block-local` `WaitForFirstConsumer` and the
  * local-path provisioner's own helper is `mkdir -m 0777 -p "$VOL_DIR"` — a
@@ -155,10 +155,10 @@ export const ROOT_FLOOR_GIB = 120;
  *
  * MEASURED 2026-09-24 from `rendered-storage-claims.snapshot.json` over the
  * classes bound to `rancher.io/local-path` (`zeta-block-local` plus the cluster
- * default): gitlab 78, dapr 48, loki 20, opensearch 20, openbao 15, temporal-postgres 10,
- * mimir 6, spire 5 = 202 GiB. Was 250 until 2026-10-02: postgres-shared, seaweedfs and
+ * default): gitlab 62, dapr 48, loki 20, opensearch 20, openbao 15, temporal-postgres 10,
+ * mimir 6, spire 5 = 186 GiB. Was 250 until 2026-10-02: postgres-shared, seaweedfs and
  * forgejo (60 GiB) moved onto the Longhorn pool (see COMMITTED_LONGHORN_DEMAND_GIB), and
- * gitlab grew 66 -> 78 (+valkey 2, +rails-db 10) in the re-measured snapshot. Pinned by test
+ * gitlab went 66 -> 62 (+valkey 2, +rails-db 10, -bundled PostgreSQL 8, -bundled Redis 8) in the re-measured snapshot. Pinned by test
  * to that snapshot, so it cannot drift silently any more than the Longhorn demand can.
  *
  * WHERE THESE BYTES LAND (2026-10-02): on every real install, a data disk, not root. The unit
@@ -166,7 +166,7 @@ export const ROOT_FLOOR_GIB = 120;
  * largest mounted /var/lib/longhorn-disk* of at least 200 GiB onto the provisioner's directory
  * before k3s starts. Only a small disk (the QEMU lanes' 1 GiB tail) leaves them on root.
  */
-export const LOCAL_PATH_ADVISORY_GIB = 202;
+export const LOCAL_PATH_ADVISORY_GIB = 186;
 
 /** The ESP, GiB. `sgdisk -n "1:0:+1G"` in zeta-install.sh. */
 export const ESP_GIB = 1;

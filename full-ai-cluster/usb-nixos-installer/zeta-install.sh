@@ -408,11 +408,12 @@ ZETA_LONGHORN_MIN_TAIL_GIB=1
 # Since 2026-10-02 the unit zeta-local-storage-placement bind-mounts the largest
 # /var/lib/longhorn-disk* (>= 200 GiB) onto the provisioner's directory, so on
 # every real install these bytes land on a data disk, not on root; on a small
-# disk (the QEMU lanes) they still land on root. 250 -> 202 the same day:
+# disk (the QEMU lanes) they still land on root. 250 -> 186 the same day:
 # postgres-shared, seaweedfs and forgejo (60 GiB) moved onto the Longhorn pool
-# (counted in ZETA_LONGHORN_DEMAND_GIB instead) and gitlab's valkey + rails-db
-# (12 GiB) entered the re-measured render.
-ZETA_LOCAL_PATH_ADVISORY_GIB=202
+# (counted in ZETA_LONGHORN_DEMAND_GIB instead); gitlab's valkey + rails-db
+# (+12 GiB) entered the re-measured render and its bundled PostgreSQL + Redis
+# (-16 GiB) left it.
+ZETA_LOCAL_PATH_ADVISORY_GIB=186
 
 # The longhorn1 tail for a boot disk of <disk_gib>, under LONGHORN1_TAIL=auto:
 # root takes a computed FLOOR and longhorn1 takes the REST.

@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-10-02",
+  "measuredOn": "2026-10-03",
   "clusterDefaultStorageClass": "zeta-block-local",
   "rendered": [
     {
@@ -70,19 +70,6 @@
     {
       "appId": "full-ai-cluster/gitlab",
       "origin": "volumeClaimTemplate",
-      "name": "data/gitlab-postgresql",
-      "workload": "StatefulSet/gitlab-postgresql",
-      "storageClassName": "",
-      "accessModes": [
-        "ReadWriteOnce"
-      ],
-      "size": "8Gi",
-      "gibibytes": 8,
-      "count": 1
-    },
-    {
-      "appId": "full-ai-cluster/gitlab",
-      "origin": "volumeClaimTemplate",
       "name": "data/gitlab-valkey",
       "workload": "StatefulSet/gitlab-valkey",
       "storageClassName": "zeta-block-local",
@@ -104,19 +91,6 @@
       ],
       "size": "10Gi",
       "gibibytes": 10,
-      "count": 1
-    },
-    {
-      "appId": "full-ai-cluster/gitlab",
-      "origin": "volumeClaimTemplate",
-      "name": "redis-data/gitlab-redis-master",
-      "workload": "StatefulSet/gitlab-redis-master",
-      "storageClassName": "",
-      "accessModes": [
-        "ReadWriteOnce"
-      ],
-      "size": "8Gi",
-      "gibibytes": 8,
       "count": 1
     },
     {

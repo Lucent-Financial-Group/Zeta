@@ -135,7 +135,7 @@
     "    zeta-block-local       62 GiB   (the extractor's reading of our YAML - a",
     "                                 cross-check, and a STRUCTURALLY partial one;",
     "                                 see below)",
-    "    zeta-block-local      202 GiB   (the RENDER, full-ai-cluster tree. Trust this",
+    "    zeta-block-local      186 GiB   (the RENDER, full-ai-cluster tree. Trust this",
     "                                 one for capacity.)",
     "",
     "BOTH zeta-local-path readings fell by exactly 20 GiB on 2026-09-01: `minio` was",

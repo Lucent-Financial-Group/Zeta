@@ -641,10 +641,12 @@ describe("the live catalogue against the measured render", () => {
     // 220 -> 230 on 2026-09-27: temporal-postgres, a CNPG Cluster on node-local
     // storage by design; its operator-created PVC is now read from the CR.
     // 230 -> 250 on 2026-10-01: postgres-shared (20Gi), the shared general-purpose CNPG Cluster.
-    // 250 -> 202 on 2026-10-02: -60 (the old snapshot priced postgres-shared at ONE instance, 20Gi, plus
-    // seaweedfs 20Gi and forgejo 20Gi, all of which left this class) and +12 for the gitlab valkey (2Gi) and
-    // rails-db (10Gi) claims the re-measured snapshot records for the first time. 250 - 60 + 12 = 202.
-    expect(totals.get("zeta-block-local")).toBe(202);
+    // 250 -> 186 on 2026-10-02: -60 (the old snapshot priced postgres-shared at ONE instance, 20Gi, plus
+    // seaweedfs 20Gi and forgejo 20Gi, all of which left this class), +12 for the gitlab valkey (2Gi) and
+    // rails-db (10Gi) claims the re-measured snapshot records for the first time, and -16 when the GitLab
+    // datastore migration (#17880) removed the bundled PostgreSQL (8Gi) and Redis (8Gi) from the render.
+    // 250 - 60 + 12 - 16 = 186.
+    expect(totals.get("zeta-block-local")).toBe(186);
   });
 
   // WAS "the two live inert-values defects are still exactly two apps". Both
