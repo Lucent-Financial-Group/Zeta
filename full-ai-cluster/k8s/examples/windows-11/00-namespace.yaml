@@ -13,8 +13,9 @@
 # any claim on the local-path class: a `persistentvolumeclaims: 0` quota scoped to that StorageClass.
 # So a forgotten `storageClassName` (which silently takes the default) is a rejected claim, not a full
 # root disk. CDI's scratch space and KubeVirt's TPM state claim obey it too: both are created in the
-# VM's own namespace, so each must be pointed at a Longhorn class (cdi-cr.yaml `scratchSpaceStorageClass`,
-# kubevirt-cr.yaml `vmStateStorageClass`) or its import / TPM fails loudly instead of landing on root.
+# VM's own namespace, so each must be pointed at a Longhorn class (the CDI CR's `scratchSpaceStorageClass`, the
+# KubeVirt CR's `vmStateStorageClass`; both set LIVE on this cluster, see the runbook, step 0) or its import / TPM
+# fails loudly instead of landing on root.
 #
 # POD SECURITY. KubeVirt's virt-launcher pod is not `restricted`-compatible (it needs SYS_NICE and the
 # /dev/kvm + /dev/net/tun device plugins), so `restricted` cannot be enforced here. Measured on this

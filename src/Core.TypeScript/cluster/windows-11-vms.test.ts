@@ -160,17 +160,18 @@ describe("A. storage: nothing lands on the node's 120 GB root disk", () => {
     expect(ns.metadata.labels["pod-security.kubernetes.io/enforce"]).toBe("baseline");
   });
 
-  test("the KubeVirt CR names a non-local class for the TPM / UEFI state claim, and the class exists in the tree", () => {
+  test("the TPM / UEFI state class is a LIVE setting the runbook names with its reason, and git does not carry a provider-named class", () => {
+    // The state claim is created by KubeVirt in the VM's namespace on `vmStateStorageClass`; unset, it takes the
+    // default class and the quota above refuses it. It is NOT declared in kubevirt-cr.yaml: the repo names storage
+    // by capability, and a provider literal there made the dev-lane catalog audit drop the kubevirt Application.
     const cr = parseYaml(readFileSync(KUBEVIRT_CR, "utf8")) as Doc;
-    const cls = cr.spec.configuration.vmStateStorageClass as string;
-    expect(cls).toBe("longhorn");
-    expect(cls).not.toBe("zeta-block-local");
-    // KubeVirt asks for ReadWriteMany when the class's CDI StorageProfile has no Filesystem entry, and an RWX
-    // Longhorn volume needs an NFS client on the node that this NixOS node does not have (measured): the
-    // runbook must say why the class is `longhorn` and not `zeta-block-replicated`.
+    expect(cr.spec.configuration.vmStateStorageClass).toBeUndefined();
     const runbook = readFileSync(RUNBOOK, "utf8");
     expect(runbook).toContain("vmStateStorageClass");
+    expect(runbook).toContain("LIVE ONLY");
+    // why `longhorn` and not the capability class: KubeVirt asks for RWX when the profile has no Filesystem entry, and RWX needs NFS
     expect(runbook).toContain("ReadWriteMany");
+    expect(runbook).toContain("kubectl patch kubevirt kubevirt -n kubevirt");
   });
 
   test("the claims are not under k8s/applications/ (nothing syncs them, and no audit prices ~190Gi of VM disk as always-on demand)", () => {

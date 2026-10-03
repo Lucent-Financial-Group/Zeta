@@ -73,7 +73,7 @@ Image storage (containerd) is on the same 120 GB root. The two images the guests
 Two cluster settings these guests depend on, **both already applied live on this cluster** (re-apply if the cluster is ever rebuilt):
 
 ```bash
-kubectl get kubevirt kubevirt -n kubevirt -o jsonpath='{.spec.configuration.vmStateStorageClass}'      # longhorn   (git: kubevirt-cr.yaml)
+kubectl get kubevirt kubevirt -n kubevirt -o jsonpath='{.spec.configuration.vmStateStorageClass}'      # longhorn   (LIVE ONLY, see Known issues 2)
 kubectl get cdi cdi -o jsonpath='{.spec.config.scratchSpaceStorageClass}'                              # zeta-block-replicated   (LIVE ONLY, see Known issues)
 # re-apply:
 kubectl patch kubevirt kubevirt -n kubevirt --type merge -p '{"spec":{"configuration":{"vmStateStorageClass":"longhorn"}}}'
@@ -391,8 +391,11 @@ were still schedulable, ~394 GiB in all. Windows disks are thin, so real use sta
 2. **KubeVirt's TPM / UEFI state claim wants `ReadWriteMany` and the node cannot mount NFS.** With `vmStateStorageClass: zeta-block-replicated`
    KubeVirt created an RWX claim (the class's StorageProfile has no Filesystem entry, so it defaults to RWX); Longhorn serves RWX over NFS and
    the mount failed on this NixOS node (`nsenter: failed to execute mount`). The class `longhorn` (profile: RWO Filesystem) yields an RWO claim
-   and works. `longhorn` is `Retain`, so deleting a VM leaves a ~12Mi `Released` volume to clean up by hand. Live now, and in git
-   (`kubevirt-cr.yaml`).
+   and works. `longhorn` is `Retain`, so deleting a VM leaves a ~12Mi `Released` volume to clean up by hand. **Live only, not in git**: the
+   repo names storage by capability (never a provider class), and a `longhorn` literal in `kubevirt-cr.yaml` made the dev-lane catalog audit
+   (`auditAppliedButUnasserted`) drop the `kubevirt` Application from the dev lane (measured). A tidy fix, not done here: give the
+   `zeta-block-replicated` CDI StorageProfile a `ReadWriteOnce` Filesystem entry, so KubeVirt picks an RWO claim on the capability class and
+   `vmStateStorageClass: zeta-block-replicated` can live in git. `kubectl patch kubevirt ...` (step 0) re-applies the live value after a rebuild.
 3. **Unset `vmStateStorageClass` puts the TPM claim on the default class**: the namespace quota rejected it (`FailedBackendStorageCreate`).
    That was the fence working; it is also why the setting exists.
 4. **CDI creates a scratch claim for an HTTP import, and a "prime" claim of the target's size.** With `zeta-block-local` as the scratch class

@@ -24,7 +24,7 @@
 # WINDOWS 11 NEEDS (each PROVEN to boot on this node with a Linux guest, 2026-10-03; Windows itself NOT yet):
 #   * UEFI + Secure Boot  : firmware.bootloader.efi.secureBoot + features.smm.enabled
 #   * TPM 2.0, persistent : devices.tpm.persistent -- the TPM's state lives in a claim KubeVirt creates on the
-#                           class the KubeVirt CR names (kubevirt-cr.yaml `vmStateStorageClass: longhorn`)
+#                           class the KubeVirt CR names (`vmStateStorageClass: longhorn`, set LIVE; runbook step 0)
 #   * a real CPU model    : cpu.model host-passthrough (a Windows 11 requirement in practice: x86-64-v2)
 #   * Hyper-V enlightenments, a virtio disk and NIC (drivers from the virtio-win CD, see Autounattend.xml)
 #

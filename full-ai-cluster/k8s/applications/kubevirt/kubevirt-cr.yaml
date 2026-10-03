@@ -21,17 +21,6 @@ spec:
   configuration:
     developerConfiguration: {}
     imagePullPolicy: IfNotPresent
-    # WHERE A VM'S TPM / UEFI STATE LIVES (2026-10-03). A VM with `devices.tpm.persistent` or
-    # `firmware.bootloader.efi.persistent` (every Windows 11 guest, docs/ops/WINDOWS-11-VMS.md) gets a ~12Mi
-    # claim that virt-controller creates in the VM's own namespace. Unset, it takes the cluster DEFAULT
-    # class, which is `zeta-block-local` -- a directory on the node's 120 GB root disk. `longhorn` and not
-    # the `zeta-block-replicated` capability, for a measured reason: KubeVirt asks for ReadWriteMany when the
-    # class's CDI StorageProfile has no Filesystem entry (zeta-block-replicated's says Block), Longhorn serves
-    # RWX over NFS, and the NixOS node cannot mount it ("nsenter: failed to execute mount"). `longhorn`'s
-    # profile is RWO Filesystem, so the claim is RWO and mounts. `longhorn` is Retain: deleting a VM leaves its
-    # 12Mi volume `Released` for you to remove. Applied live on node-5b2dfa on the same day, so this Application
-    # stays Synced.
-    vmStateStorageClass: longhorn
   # MEMORY LIMITS FOR THE THREE COMPONENTS THE OPERATOR DEPLOYS (2026-09-30).
   #
   # THE DEFECT. The operator generates virt-api / virt-controller / virt-handler
