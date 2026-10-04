@@ -817,7 +817,6 @@ describe("cutover -- every failure rolls back to the ORIGINAL store", () => {
 
   test("the node never becomes Ready on the new store: unmount, switch BACK to the previous generation, start, uncordon", () => {
     const wd = world({ built: true });
-    writeFileSync(join(wd.w, "unused"), "");
     const r = run(wd, ["cutover", "--yes", D, posix(wd.disk)], { W_NODE_NEVER_READY: "1" });
     afterRollback(wd, r, { switched: true });
     const c = r.calls;
@@ -825,7 +824,6 @@ describe("cutover -- every failure rolls back to the ORIGINAL store", () => {
     const firstSwitch = idx(c, "switch-to-configuration");
     const umount = idx(c, "umount");
     const secondSwitch = idx(c, "switch-to-configuration", firstSwitch + 1);
-    const start = idx(c, "systemctl start", umount);
     expect(bind).toBeGreaterThanOrEqual(0);
     expect(firstSwitch).toBeGreaterThan(bind);
     expect(umount).toBeGreaterThan(firstSwitch);
