@@ -1028,6 +1028,9 @@ function cmdSelftest(argv: string[]): number {
 
     // 6b. (optional) `capture` against a RUNNING stand-in VM with runStrategy Always: the stop, snapshot, clone, state clone, verify and restart path
     if (withVm) {
+      // the namespace allows 12 claims in all and the steps above hold several: free the ones already proven, so this step can run
+      k(["-n", NAMESPACE, "delete", "vm", `${ST}-vm`, "--wait=true", "--ignore-not-found"]);
+      k(["-n", NAMESPACE, "delete", "dv", root2, stateName(golden), restoredStateName(`${ST}-vm`), "--wait=true", "--ignore-not-found"]);
       const capVm = `${ST}-capvm`;
       const capRoot = `${capVm}-root`;
       apply({
