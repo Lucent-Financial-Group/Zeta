@@ -407,7 +407,14 @@ describe("E. the RDP login check never lets the password out", () => {
 
 // ---------------------------------------------------------------------------
 describe("F. the runbooks", () => {
-  const golden = existsSync(GOLDEN_RUNBOOK) ? readFileSync(GOLDEN_RUNBOOK, "utf8") : "";
+  const golden = ((): string => {
+    try {
+      return readFileSync(GOLDEN_RUNBOOK, "utf8");
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code === "ENOENT") return "";
+      throw e;
+    }
+  })();
   const runbook = readFileSync(RUNBOOK, "utf8");
 
   test("the golden-image runbook exists, opens with a carved sentence, and every owner command runs through ssh to the node", () => {
