@@ -447,7 +447,15 @@ function idx(cs: readonly string[], prefix: string, from = 0, also: (l: string) 
   return -1;
 }
 const has = (cs: readonly string[], prefix: string, also: (l: string) => boolean = () => true): boolean => idx(cs, prefix, 0, also) >= 0;
-const state = (wd: World, key: string): string => (existsSync(join(wd.state, key)) ? readFileSync(join(wd.state, key), "utf8").trim() : "");
+const state = (wd: World, key: string): string => {
+  // One syscall, one answer, no check-then-use window: read and interpret ENOENT as "no state yet" (CWE-367).
+  try {
+    return readFileSync(join(wd.state, key), "utf8").trim();
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return "";
+    throw e;
+  }
+};
 const isActive = (wd: World): boolean => existsSync(join(wd.w, "k3s.active"));
 const procs = (wd: World): string => readFileSync(join(wd.w, "procs.txt"), "utf8");
 
@@ -884,6 +892,7 @@ describe("cutover -- every failure rolls back to the ORIGINAL store", () => {
   test("only ONE run at a time: a live lock holder -> exit 4, nothing touched", () => {
     const wd = world({ built: true });
     const script = `mkdir -p "${posix(wd.lock)}"; sleep 20 & echo $! > "${posix(wd.lock)}/pid"; exec bash "${posix(SCRIPT)}" cutover --yes --disk "${posix(wd.disk)}"`;
+    // safe-io-ok: this test's contract IS a compound shell program -- background a sleep as a live lock holder, capture its pid, then exec the script under test -- which an argv vector cannot express; the command line is a constant built from posix()-escaped temp paths, no external data.
     const r = spawnSync("bash", ["-c", script], { env: wd.env, encoding: "utf8" });
     expect(r.status).toBe(4);
     expect(`${r.stdout}${r.stderr}`).toContain("holds");
