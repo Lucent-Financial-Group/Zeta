@@ -100,9 +100,9 @@ DELTA_MIB="${ZETA_MOVE_DELTA_MIB:-512}"
 MAX_PASSES="${ZETA_MOVE_MAX_PASSES:-5}"
 MIN_FREE_PCT_AFTER="${ZETA_MOVE_MIN_FREE_PCT_AFTER:-35}"   # Longhorn refuses replicas below 25% available; +10 margin
 POLL_SECS="${ZETA_MOVE_POLL_SECS:-20}"
-DRAIN_TIMEOUT="${ZETA_MOVE_DRAIN_TIMEOUT:-300}"          # wait for the application pods to be gone
+DRAIN_TIMEOUT="${ZETA_MOVE_DRAIN_TIMEOUT:-420}"          # wait for the application pods to be gone (a Windows VM's virt-launcher has a 330 s grace)
 DETACH_TIMEOUT="${ZETA_MOVE_DETACH_TIMEOUT:-180}"        # then for every Longhorn volume to detach
-APP_GRACE="${ZETA_MOVE_APP_GRACE:-60}"
+APP_GRACE="${ZETA_MOVE_APP_GRACE:-}"                      # empty = each pod's OWN terminationGracePeriodSeconds; set to cap it
 SYSTEM_NAMESPACES="${ZETA_MOVE_SYSTEM_NAMESPACES:-kube-system longhorn-system}"
 DRAIN_FAILURE="${ZETA_MOVE_DRAIN_FAILURE:-abort}"          # abort | continue
 TERM_WAIT="${ZETA_MOVE_TERM_WAIT:-20}"
@@ -288,6 +288,13 @@ preflight() {
   fi
 
   [ "$(state_get state)" = "reclaimed" ] && refuse "the move is already complete (state=reclaimed)"
+
+  # Not refusals (a CI job pod is always bare), but the window deletes them: say so while it is cheap to act.
+  local bare vms
+  bare="$(bare_pods)"
+  vms="$(vm_pods)"
+  [ -z "$bare" ] || log "WARNING: bare pod(s) with no controller will be DELETED and NOT re-created (a running CI job fails): $bare -- pause the GitLab runner first; the cutover refuses unless ZETA_MOVE_ALLOW_BARE_PODS=1"
+  [ -z "$vms" ] || log "WARNING: running VirtualMachineInstance(s) will be shut down with their pod's own grace period: $vms -- stop the VMs gracefully first (docs/ops/CONTAINERD-ON-BIG-DISK.md)"
 
   if [ "$PREFLIGHT_FAILS" -eq 0 ]; then log "PREFLIGHT PASSED"; return 0; fi
   log "PREFLIGHT FAILED: $PREFLIGHT_FAILS check(s)"
@@ -481,11 +488,14 @@ iscsi_cleanup() {
   "$ISCSIADM" -m node -u >/dev/null 2>&1 || log "iscsiadm logout returned non-zero"
 }
 
-# Pods outside the system namespaces that are not DaemonSet-owned (a DaemonSet pod tolerates the cordon and is simply re-created).
-app_pods_left() {
-  kc get pods -A -o custom-columns=NS:.metadata.namespace,KIND:.metadata.ownerReferences[0].kind --no-headers 2>/dev/null \
-    | awk -v sys="$SYSTEM_NAMESPACES" 'BEGIN { n = split(sys, a, " "); for (i = 1; i <= n; i++) s[a[i]] = 1 } NF >= 1 && !($1 in s) && $2 != "DaemonSet" { c++ } END { print c + 0 }'
+# Pods outside the system namespaces, as "<ns> <name> <owner kind>" lines. A DaemonSet pod tolerates the cordon and is
+# simply re-created, so it is not counted; a pod with NO owner (`<none>`) is a bare pod and is never re-created.
+app_pod_lines() {
+  kc get pods -A -o custom-columns=NS:.metadata.namespace,NAME:.metadata.name,KIND:.metadata.ownerReferences[0].kind --no-headers 2>/dev/null     | awk -v sys="$SYSTEM_NAMESPACES" 'BEGIN { n = split(sys, a, " "); for (i = 1; i <= n; i++) s[a[i]] = 1 } NF >= 3 && !($1 in s) && $3 != "DaemonSet" { print }'
 }
+app_pods_left() { app_pod_lines | wc -l | tr -d ' '; }
+bare_pods() { app_pod_lines | awk '$3 == "<none>" { printf "%s/%s ", $1, $2 }'; }
+vm_pods() { app_pod_lines | awk '$3 == "VirtualMachineInstance" { printf "%s/%s ", $1, $2 }'; }
 app_pods_gone() { [ "$(app_pods_left)" = "0" ]; }
 attached_volumes() {
   kc -n longhorn-system get volumes.longhorn.io -o custom-columns=STATE:.status.state --no-headers 2>/dev/null \
@@ -499,8 +509,9 @@ volumes_detached() { [ "$(attached_volumes)" = "0" ]; }
 # its whole timeout and then be a delete anyway, and the delete would take the Longhorn instance-manager down at the
 # same moment as the databases writing through it. What is done instead, in the order that matters:
 #   1. cordon (nothing is re-created here: controllers' new pods stay Pending);
-#   2. delete every pod outside the system namespaces, gracefully (each gets APP_GRACE seconds to flush; CNPG's
-#      postgres pods have a 1800 s terminationGracePeriod, which is the reason for the explicit shorter grace);
+#   2. delete every pod outside the system namespaces, gracefully: each keeps ITS OWN terminationGracePeriodSeconds (a
+#      Windows VM's virt-launcher has 330 s to shut the guest down; overriding that with a short grace would power a
+#      guest off mid-flush). ZETA_MOVE_APP_GRACE caps it if a hung pod must not hold the window;
 #   3. wait until they are gone, THEN until every Longhorn volume is detached (so the engines die idle);
 #   4. only then does the caller stop k3s, which takes the system namespaces (cilium, coredns, Longhorn) with it.
 drain_node() {
@@ -510,10 +521,14 @@ drain_node() {
   DRAINED_NODE="$node"
   STAGE="cordoned"
   mut "${KC[@]}" cordon "$node" || return 1
-  log "stopping the application pods gracefully (grace ${APP_GRACE}s each); system namespaces left running: $SYSTEM_NAMESPACES"
+  log "stopping the application pods gracefully (grace: ${APP_GRACE:-the pods own terminationGracePeriodSeconds}); system namespaces left running: $SYSTEM_NAMESPACES"
   for ns in $(kc get namespaces -o custom-columns=NAME:.metadata.name --no-headers 2>/dev/null); do
     case " $SYSTEM_NAMESPACES " in *" $ns "*) continue ;; esac
-    mut "${KC[@]}" delete pods --all -n "$ns" "--grace-period=$APP_GRACE" --wait=false
+    if [ -n "$APP_GRACE" ]; then
+      mut "${KC[@]}" delete pods --all -n "$ns" "--grace-period=$APP_GRACE" --wait=false
+    else
+      mut "${KC[@]}" delete pods --all -n "$ns" --wait=false
+    fi
   done
   if [ "$DRY_RUN" -eq 1 ]; then
     log "DRY-RUN: wait up to ${DRAIN_TIMEOUT}s for the application pods to be gone, then up to ${DETACH_TIMEOUT}s for every Longhorn volume to detach"
@@ -717,6 +732,9 @@ phase_cutover() {
     fi
   fi
   if old_is_new; then log "already cut over: $OLD is $NEW"; return 0; fi
+  if [ -n "$(bare_pods)" ] && [ "${ZETA_MOVE_ALLOW_BARE_PODS:-}" != "1" ]; then
+    die "bare pods (no controller) would be deleted and never re-created: $(bare_pods). Pause the runner / wait, or set ZETA_MOVE_ALLOW_BARE_PODS=1"
+  fi
   state_set prev-system "$(readlink -f "$CURRENT_SYSTEM" 2>/dev/null || echo none)"
 
   log "---- online top-up before the window (the cluster is still running) ----"
@@ -847,11 +865,15 @@ phase_launch() {
   [ "$DRY_RUN" -eq 1 ] && args+=(--dry-run)
   # A transient unit does not inherit this shell's environment: what the phase needs must travel as flags.
   args+=(--flake "$FLAKE" --host "$FLAKE_HOST")
+  local setenv=() kv
+  while IFS= read -r kv; do
+    case "$kv" in ZETA_MOVE_*=*) setenv+=("--setenv=$kv") ;; esac
+  done < <(env)
   if "$SYSTEMCTL" is-active --quiet "$unit.service" 2>/dev/null; then log "REFUSED: $unit.service is already running"; return 4; fi
   mkdir -p "$STATE_DIR"
   # The script must exist on the HOST. From a privileged pod, pipe it in first (the runbook has the exact command).
   "$SYSTEMD_RUN" "--unit=$unit" --collect "--description=zeta containerd move: $what" \
-    "--setenv=PATH=$PATH" "--setenv=HOME=/root" "--property=StandardOutput=append:$LOG" "--property=StandardError=append:$LOG" \
+    "--setenv=PATH=$PATH" "--setenv=HOME=/root" "${setenv[@]}" "--property=StandardOutput=append:$LOG" "--property=StandardError=append:$LOG" \
     /usr/bin/env bash "$SELF" "$what" "${args[@]}" || return 1
   log "launched $unit.service (detached). Follow:  journalctl -u $unit -f   or   tail -f $LOG"
   return 0

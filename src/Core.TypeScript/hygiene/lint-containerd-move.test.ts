@@ -170,9 +170,12 @@ case "$cmd" in
             echo kube-system; echo longhorn-system; echo flowdent-prod; echo postgres-shared; echo gitlab; exit 0 ;;
           delete*) touch "$W/pods.deleted"; exit 0 ;;
           *"custom-columns=NS:"*)
-            echo "kube-system Deployment"; echo "kube-system DaemonSet"; echo "longhorn-system DaemonSet"
-            echo "monitoring DaemonSet"
-            if [ ! -f "$W/pods.deleted" ] || [ -n "$W_PODS_STUCK" ]; then echo "flowdent-prod ReplicaSet"; echo "postgres-shared Cluster"; echo "gitlab <none>"; fi
+            echo "kube-system coredns-1 ReplicaSet"; echo "kube-system cilium-1 DaemonSet"; echo "longhorn-system manager-1 DaemonSet"
+            echo "monitoring node-exporter-1 DaemonSet"
+            if [ ! -f "$W/pods.deleted" ] || [ -n "$W_PODS_STUCK" ]; then
+              echo "flowdent-prod api-1 ReplicaSet"; echo "postgres-shared pg-1 Cluster"; echo "windows-vms virt-launcher-win11 VirtualMachineInstance"
+            fi
+            if { [ ! -f "$W/pods.deleted" ] || [ -n "$W_PODS_STUCK" ]; } && [ -n "$W_BARE_POD" ]; then echo "gitlab runner-job-1 <none>"; fi
             exit 0 ;;
           *"get volumes.longhorn.io"*)
             if [ -n "$W_VOL_ATTACHED" ]; then echo attached; else echo detached; fi; echo detached; exit 0 ;;
@@ -490,6 +493,16 @@ describe("preflight -- read-only, and it names every reason it refuses", () => {
     });
   }
 
+  test("it WARNS (does not refuse) about what the window will kill: bare pods, and running VMs", () => {
+    const wd = world({ env: { W_BARE_POD: "1" } });
+    const r = run(wd, ["preflight", D, posix(wd.disk)]);
+    expect(r.status).toBe(0);
+    expect(r.out).toContain("WARNING: bare pod(s) with no controller will be DELETED");
+    expect(r.out).toContain("gitlab/runner-job-1");
+    expect(r.out).toContain("WARNING: running VirtualMachineInstance(s)");
+    expect(r.out).toContain("windows-vms/virt-launcher-win11");
+  });
+
   test("an already-bound store (this script's own work, or an install that placed it) is accepted, not re-copied", () => {
     const wd = world({ oldMounted: true });
     const r = run(wd, ["preflight", D, posix(wd.disk)]);
@@ -644,7 +657,7 @@ describe("cutover -- the order of the window", () => {
     const deletes = c.filter((l) => l.startsWith("k3s kubectl delete pods"));
     expect(deletes.length).toBe(3); // flowdent-prod, postgres-shared, gitlab
     for (const d of deletes) {
-      expect(d).toContain("--grace-period=60");
+      expect(d).not.toContain("--grace-period"); // each pod keeps ITS OWN grace (a Windows VM's virt-launcher has 330 s)
       expect(d).toContain("--wait=false");
       expect(d).not.toMatch(/-n (kube-system|longhorn-system)\b/);
     }
@@ -682,6 +695,29 @@ describe("cutover -- the order of the window", () => {
     expect(r.status).toBe(0);
     expect(r.out).toContain("already cut over");
     expect(has(r.calls, "k3s kubectl cordon")).toBe(false);
+  });
+
+  test("a bare pod (a running CI job) would be lost: the cutover REFUSES before cordoning, and names it; the flag accepts the loss", () => {
+    const wd = world({ built: true });
+    const r = run(wd, ["cutover", "--yes", D, posix(wd.disk)], { W_BARE_POD: "1" });
+    expect(r.status).toBe(1);
+    expect(r.out).toContain("gitlab/runner-job-1");
+    expect(r.out).toContain("never re-created");
+    expect(has(r.calls, "k3s kubectl cordon")).toBe(false);
+    expect(has(r.calls, "systemctl stop")).toBe(false);
+    const wd2 = world({ built: true });
+    const ok = run(wd2, ["cutover", "--yes", D, posix(wd2.disk)], { W_BARE_POD: "1", ZETA_MOVE_ALLOW_BARE_PODS: "1" });
+    expect(ok.status).toBe(0);
+    expect(has(ok.calls, "k3s kubectl cordon")).toBe(true);
+  });
+
+  test("ZETA_MOVE_APP_GRACE caps a pod's grace; unset, the pod's own is used", () => {
+    const wd = world({ built: true });
+    const r = run(wd, ["cutover", "--yes", D, posix(wd.disk)], { ZETA_MOVE_APP_GRACE: "45" });
+    expect(r.status).toBe(0);
+    const deletes = r.calls.filter((c) => c.startsWith("k3s kubectl delete pods"));
+    expect(deletes.length).toBe(3);
+    for (const d of deletes) expect(d).toContain("--grace-period=45");
   });
 
   test("slow workloads are NOT a rollback: the node is up on the new store, exit 5, nothing unmounted", () => {
@@ -986,7 +1022,17 @@ describe("manual rollback, launch, status", () => {
     expect(sr).toContain("cutover");
     expect(sr).toContain("--yes");
     expect(sr).toContain(`--disk ${posix(wd.disk)}`);
+    expect(sr).toContain("--setenv=HOME=/root"); // nix needs a HOME under a transient unit
+    expect(sr).toContain("--flake /fake/flake"); // the flake travels as a flag
     expect(r.out).toContain("journalctl -u zeta-containerd-move-cutover");
+  });
+
+  test("launch forwards every ZETA_MOVE_* override into the transient unit (it does not inherit this shell's environment)", () => {
+    const wd = world();
+    const r = run(wd, ["launch", "cutover", "--yes", D, posix(wd.disk)], { ZETA_MOVE_DRAIN_FAILURE: "continue", ZETA_MOVE_APP_GRACE: "45" });
+    const sr = r.calls.find((c) => c.startsWith("systemd-run")) ?? "";
+    expect(sr).toContain("--setenv=ZETA_MOVE_DRAIN_FAILURE=continue");
+    expect(sr).toContain("--setenv=ZETA_MOVE_APP_GRACE=45");
   });
 
   test("launch refuses a phase that is already running, an unknown phase, and a non-root caller", () => {

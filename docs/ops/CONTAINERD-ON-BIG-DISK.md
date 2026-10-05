@@ -32,6 +32,7 @@ and left the images, "the structural fix", as the owner's decision). Read
 | Longhorn | per disk `storageMaximum` 855 / 983 GB, **`storageReserved` 256 / 295 GB (30%)**, scheduled 422 / 453 GB, `storageAvailable` 802 / 872 GB; settings `storage-minimal-available-percentage` 25, `storage-reserved-percentage-for-default-disk` 30, over-provisioning 100, `default-replica-count` 1 |
 | Kubelet thresholds | `eviction-hard=memory.available<500Mi,nodefs.available<10%,imagefs.available<15%,nodefs.inodesFree<5%` |
 | Disruption budgets | `postgres-shared-primary` (allowed **0**), the Longhorn `instance-manager` (allowed **0**), gatekeeper (allowed **0**), `flowdent-api` (min 1 of 2), many others at 1 |
+| Workloads that need care | **2 running Windows 11 VMs** (`windows-vms/win11-ci`, `win11-desktop`; their `virt-launcher` pods have a **330 s** grace period); **1 bare pod** (a GitLab CI job pod, `gitlab/runner-...-project-4-concurrent-0`; a pod with no controller is never re-created); 140 pods outside `kube-system`/`longhorn-system` (78 ReplicaSet, 40 StatefulSet, 13 Job, 5 CNPG `Cluster`, 2 VMI); 39 Longhorn volumes attached; CNPG postgres pods have a 1800 s grace |
 | Backups | CNPG `ScheduledBackup`s `postgres-shared-daily` and `temporal-postgres-daily`, last completed 20 h earlier. **On the same node** |
 
 ## What changes for Longhorn (the question NODE-DISK-HEADROOM option A raised)
@@ -109,6 +110,15 @@ The built generation differs from the running one in exactly: `k3s.service` (+`R
 `ExecStartPre`), the new mount unit, the new prepare unit, and one `.requires/` symlink. The closure delta is four new store
 paths. `systemd-analyze verify` on the three units reported no ordering cycle. Nothing was activated.
 
+**The cut-over script's read-only phases, run as root on the node** (through the privileged-pod route, state in `/tmp`, removed
+afterwards): `preflight` **passed** (k3s discovered from `systemctl cat k3s.service`, `k3s-killall.sh` found next to the binary,
+`DiskPressure=False`, 765 GiB free on `longhorn-disk2` against a 41 GiB store -- `du -sxb` reports 41 GiB apparent where `du -sh`
+says 48 GiB of blocks -- and 79% free after the copy). `cutover --dry-run` printed the whole window and ran a real `rsync
+--dry-run`: **44,567,285,363 bytes (41.5 GiB) to copy**, 21 s per pass for the scan. It also listed what the window will touch:
+140 application pods in 60 namespaces, 39 attached Longhorn volumes, 2 running VirtualMachineInstances, 1 bare CI-job pod. The
+`k3s_pids` rule selected **164** k3s processes (the daemon, the shims, k3s) and excluded Docker's two `containerd`s (pids 1534, 2300).
+Nothing was stopped, mounted or written outside `/tmp`.
+
 ## The live node: what the original plan got wrong
 
 Read these before the procedure; each one changed the design.
@@ -131,8 +141,9 @@ Read these before the procedure; each one changed the design.
    instance-manager and gatekeeper) refuse every eviction because the replacement has nowhere else to go; a drain would sit
    out its whole timeout and then be a delete anyway -- taking the Longhorn instance-manager down at the same moment as the
    databases writing through it. The script instead **cordons, deletes every pod outside `kube-system`/`longhorn-system`
-   gracefully** (`--grace-period=60`; CNPG's own is 1800 s), waits for them to be gone **and for every Longhorn volume to be
-   detached**, and only then stops k3s.
+   gracefully** (each with **its own** grace period: the two Windows VMs need up to 330 s to shut the guest down, and a short override
+   would power them off mid-flush), waits for them to be gone **and for every Longhorn volume to be detached**, and only then stops
+   k3s. The dry run against the live node listed 140 such pods and 39 attached volumes.
 5. **`ionice` does nothing here** (scheduler `none`); the pre-copy is throttled with `rsync --bwlimit` (default 300000 KiB/s).
 6. **`rsync -aHAX` as root is required**, not decorative: overlayfs whiteouts are 249 character devices and opaque directories
    are `trusted.overlay.*` xattrs, which only root copies. `-x` keeps it from crossing into another filesystem.
@@ -150,6 +161,11 @@ as `DRY-RUN: ...` and runs only read-only probes and `rsync --dry-run`.
       Postgres data, Longhorn replicas or local-path volumes, but a hard failure is the moment you want a copy elsewhere.
 * [ ] The owner's `sudo` password to hand (`zeta` is in `wheel`, no passwordless `sudo`) **and console access** (keyboard + screen on
       the node, or the router's/BMC's equivalent). The cluster goes away during the window; so does every route in through it.
+* [ ] **The two Windows VMs stopped gracefully first** (`virtctl stop win11-ci -n windows-vms`, or set `runStrategy: Halted`, and the
+      same for `win11-desktop`; start them again afterwards). The window deletes their pods and relies on the pod's 330 s grace
+      to shut the guest down; stopping them yourself takes that out of the window and out of the risk.
+* [ ] **The GitLab runner paused** (or no job running): a CI job pod is a bare pod, it is killed and **not** re-created, and the
+      cutover refuses while one exists (`ZETA_MOVE_ALLOW_BARE_PODS=1` accepts the loss).
 * [ ] A window announced. Everything is down for the window: `flowdent.net`, `api.flowdent.net`, GitLab, the router's `:443`/`:22`
       relays (they are pods). Running CI jobs are killed. LAN `ssh zeta@192.168.1.79` keeps working (`sshd` is the host's).
 * [ ] `kubectl get nodes` Ready, `DiskPressure=False`, no CI pipeline mid-run (it is the thing that swings root by 20 GiB).
@@ -243,8 +259,10 @@ under the build is not the one the node runs plus this change: stop and find out
 
 1. preflight again; refuse unless a built generation was recorded; a final **online top-up** pass
 2. record the number of images containerd has (`crictl images -q`); record the running system for the rollback
-3. `cordon` the node; delete all application pods gracefully; wait until gone; wait until every Longhorn volume is `detached`
-   (`DRAIN_TIMEOUT` 300 s, `DETACH_TIMEOUT` 180 s; on timeout: refuse and uncordon, unless `ZETA_MOVE_DRAIN_FAILURE=continue`)
+3. `cordon` the node; delete all application pods **with their own grace period** (a Windows VM's `virt-launcher` has 330 s to shut
+   the guest down; `ZETA_MOVE_APP_GRACE` caps it); wait until gone; wait until every Longhorn volume is `detached`
+   (`DRAIN_TIMEOUT` 420 s, `DETACH_TIMEOUT` 180 s; on timeout: refuse and uncordon, unless `ZETA_MOVE_DRAIN_FAILURE=continue`).
+   **Bare pods** (a running CI job) are never re-created: the cutover **refuses** while any exist unless `ZETA_MOVE_ALLOW_BARE_PODS=1`
 4. `systemctl stop k3s`; `k3s-killall.sh`; SIGTERM then SIGKILL for k3s's own leftover processes; unmount anything still
    referencing the store; log out leftover Longhorn iSCSI sessions
 5. **final `rsync --delete`** (containerd is stopped, so the store is consistent), then the copy is **verified**: `rsync
@@ -261,7 +279,7 @@ read of what the node does, not a rehearsal:
 
 | Phase | Estimate | Basis |
 | --- | --- | --- |
-| app pods stop | 1-2 min (cap 5) | 60 s grace each, concurrently; Longhorn detach +30 s. *Estimate* |
+| app pods stop | 1-2 min with the VMs already stopped; **up to ~6 min** otherwise (the 330 s VM grace) | each pod's own grace, concurrently; Longhorn detach +30 s. *Estimate* |
 | stop + killall + unmount ~830 mounts | 1-2 min | 355 + 116 + 280 mounts, 150 netns. *Estimate* |
 | final sync + verify | ~1 min | scan 8.5 s per side; 4 GiB of SHA-256; delta small after the pre-copy. *Part measured* |
 | bind + switch + k3s start to `/readyz` | 1-3 min | build 8.4 s measured; k3s start unmeasured |
@@ -308,7 +326,7 @@ production data when you need one.
 
 | Risk | Why it is real | What bounds it |
 | --- | --- | --- |
-| Postgres / Longhorn see an unclean stop | the pods will not stop in the grace, or a volume stays attached | the window refuses (and uncordons) unless the pods are gone and every volume is detached; `ZETA_MOVE_DRAIN_FAILURE=continue` is an explicit opt-in |
+| Postgres / Longhorn / a Windows guest see an unclean stop | the pods will not stop in their grace, or a volume stays attached; a VM that needs more than its 330 s | the window refuses (and uncordons) unless the pods are gone and every volume is detached; `ZETA_MOVE_DRAIN_FAILURE=continue` is an explicit opt-in |
 | k3s does not come back on the new store | an `rsync` mismatch, xattrs, the unit graph | the copy is verified before the bind; the core checks (API, node, image count) trigger the automatic rollback |
 | `switch-to-configuration` restarts something else | `main` is ahead of the node | step 0 applies only this change; `build` lists the unit delta; the switch is of a prebuilt generation |
 | The `systemd` ordering is wrong on a real boot | never booted | the reboot test (step 6) **before** `reclaim`; the guard refuses rather than falls back |
