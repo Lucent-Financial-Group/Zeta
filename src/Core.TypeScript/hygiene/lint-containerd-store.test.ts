@@ -328,9 +328,26 @@ describe("the Nix wiring (read; the eval test resolves it)", () => {
   });
 
   test("the module never sets `after` on k3s: k3s-wait-for-address.nix mkForce-overrides it and would drop it silently", () => {
-    const k3sBlock = /systemd\.services\.k3s\s*=\s*\{([^}]*(?:\{[^}]*\}[^}]*)*)\};/s.exec(code);
-    expect(k3sBlock).not.toBeNull();
-    expect(k3sBlock?.[1] ?? "").not.toMatch(/\bafter\s*=/);
+    // Brace-matched by hand: a nested-quantifier regex over this text is a ReDoS (CodeQL js/redos), and this is not a parser's job.
+    const marker = "systemd.services.k3s = {";
+    const open = code.indexOf(marker);
+    expect(open).toBeGreaterThanOrEqual(0);
+    let depth = 0;
+    let end = -1;
+    for (let i = open + marker.length - 1; i < code.length; i++) {
+      if (code[i] === "{") depth++;
+      else if (code[i] === "}") {
+        depth--;
+        if (depth === 0) {
+          end = i;
+          break;
+        }
+      }
+    }
+    expect(end).toBeGreaterThan(open);
+    const k3sBlock = code.slice(open, end + 1);
+    expect(k3sBlock).toContain("requires = [ mountUnit ]"); // the block found is the right one
+    expect(k3sBlock).not.toMatch(/\bafter\s*=/);
     const wait = readFileSync(join(REPO_ROOT, "full-ai-cluster/nixos/modules/k3s-wait-for-address.nix"), "utf8");
     expect(wait).toMatch(/after\s*=\s*lib\.mkForce/); // the reason this test exists; if it goes, so can the caveat
   });
