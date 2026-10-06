@@ -481,6 +481,13 @@ pkgs.testers.nixosTest {
     phase("postgres: 3 instances / 3 nodes, 2 streaming, row replicated")
 
     # ── 5. Longhorn 3-replica volume, written on agent1 ──────────────────────
+    # PINNED BY nodeSelector, NEVER nodeName. Every product storage class is
+    # WaitForFirstConsumer, and a PVC on such a class binds only when the
+    # SCHEDULER places its consumer (it writes the selected-node annotation the
+    # provisioner waits for). `nodeName` skips the scheduler, so the PVC stays
+    # Pending forever: run 37497254337 sat 900 s on "PVC is not bound". The HA
+    # sibling gets away with nodeName only because it uses the chart's own
+    # Immediate-binding `longhorn` class, which nothing in the product names.
     def pod_yaml(name, node, script):
         return (
             f"cat >/tmp/{name}.yaml <<'EOF'\n"
@@ -489,7 +496,8 @@ pkgs.testers.nixosTest {
             "metadata:\n"
             f"  name: {name}\n"
             "spec:\n"
-            f"  nodeName: {node}\n"
+            "  nodeSelector:\n"
+            f"    kubernetes.io/hostname: {node}\n"
             "  restartPolicy: Never\n"
             "  terminationGracePeriodSeconds: 0\n"
             "  containers:\n"
