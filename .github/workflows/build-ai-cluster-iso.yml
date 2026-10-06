@@ -1986,12 +1986,24 @@ jobs:
   # a bigger runner. Which HA charts it covers and which it does not is stated,
   # and checked, in full-ai-cluster/nixos/tests/multinode-ha-coverage.json.
   #
-  # TIER: workflow_dispatch ONLY until it has one green run, for the same reason
-  # cluster-ha is: wired on push before it has passed, it would be a standing red
-  # on every full-ai-cluster change. No k3s/etcd timeout is changed to fit it.
+  # MEASURED on ubuntu-24.04 (4 vCPU / 15988 MiB): run 37501573722 GREEN in
+  # 1161 s of test time, host RAM peak 12222 MiB, host load peak 7.13, one k3s
+  # PID throughout, zero `leaderelection lost`. Run 37493039430 is the same lane
+  # WITHOUT the longhorn-disks.nix agent fix: no Longhorn disk on either agent.
+  # Full per-phase table in the test file's header.
+  #
+  # TIER: workflow_dispatch + the daily schedule, NOT push/PR. One green run is
+  # thin evidence, and the runs measured a PRODUCT hazard that can turn it red
+  # on its own: zeta-block-replicated is 1 replica with dataLocality disabled,
+  # so a Postgres instance's disk can land on the node that is killed (two of
+  # the three runs that reached Postgres placed instances off-node). A
+  # scheduled red there is the lane
+  # reporting that, which is its job; a red on every full-ai-cluster PR would be
+  # the same fact as noise. Promote to push once the schedule has a record.
+  # No k3s/etcd timeout is changed to fit it.
   cluster-multinode:
     name: k3s multi-node HA charts (1 server + 2 agents)
-    if: ${{ github.event_name == 'workflow_dispatch' && !inputs.only_wp11 && !inputs.only_cluster_ha }}
+    if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !inputs.only_wp11 && !inputs.only_cluster_ha }}
     runs-on: ubuntu-24.04
     timeout-minutes: 150
     permissions:

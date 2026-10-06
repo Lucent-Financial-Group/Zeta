@@ -107,6 +107,35 @@
 # 16 GiB / 4 vCPU ubuntu-24.04 hosted runner. The CI job samples host memory and
 # prints the peak; every phase prints each live guest's `free -m` and load.
 #
+# MEASURED (all on hosted ubuntu-24.04, 4 vCPU / 15988 MiB, KVM):
+#   run 37493039430  WITHOUT the longhorn-disks.nix agent fix: agents' disk
+#                    annotator exited 1 ("connection to the server
+#                    localhost:8080 was refused" -- no admin kubeconfig on an
+#                    agent), no Longhorn disk on either agent, lane timed out
+#                    at that wait (900 s). Host RAM peak 12130 MiB, load 4.95.
+#   run 37493221268  with the fix: disks on all 3 nodes at 429 s; failed later
+#                    on a harness read (streaming count read once).
+#   run 37497254337  failed on a harness bug (nodeName + WaitForFirstConsumer).
+#   run 37501573722  GREEN in 1161 s. API 53 s, agents joined 68/83 s, 3 Ready
+#                    on Cilium 148 s, Longhorn disks on 3 nodes 341 s, Postgres
+#                    3/3 nodes + primary on agent1 908 s, Longhorn 3 replicas
+#                    on 3 nodes 1001 s, agent1 crashed 1019 s, CNPG failed over
+#                    to server1 + both writes read 1093 s, 32 MiB read back on
+#                    agent2 (degraded) 1116 s. Host RAM peak 12222 / 15988 MiB,
+#                    host load peak 7.13 on 4 vCPUs; server guest load peaked
+#                    ~31 (I/O wait included). One k3s PID for the whole run,
+#                    zero `leaderelection lost`, worst etcd apply 1.6 s.
+#
+# AND WHAT THOSE RUNS SAID ABOUT THE PRODUCT, not the harness: the product
+# `zeta-block-replicated` class is numberOfReplicas "1" on a 3-node cluster,
+# and with dataLocality "disabled" Longhorn placed a Postgres instance's only
+# replica on a DIFFERENT node in two of three runs (37493221268:
+# postgres-shared-2 on server1 -> replica on agent1; 37497254337: all three
+# off-node). Losing one node can therefore take a SURVIVING instance's disk too.
+# The green run happened to place all three locally. Whether to raise the
+# class's replica count or set dataLocality is a product decision this lane
+# measures and does not make.
+#
 # Per `.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md` this
 # test asserts and fails; there is no skip path.
 
