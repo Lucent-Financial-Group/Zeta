@@ -463,6 +463,14 @@ pkgs.testers.nixosTest {
     phase(f"postgres primary on agent1 ({victim_pod})")
 
     wait(f"{pg} exec {victim_pod} -c postgres -- psql -d app -tAc 'select 1'", 300)
+    # WAITED, not read once: after a switchover the demoted primary rejoins as
+    # a replica a little after readyInstances reports 3 (run 37493221268 read
+    # 1 streaming replica at that instant and failed here).
+    wait(
+        f"{pg} exec {victim_pod} -c postgres -- psql -d app -tAc "
+        "\"select count(*) from pg_stat_replication where state = 'streaming'\" | grep -qx 2",
+        600,
+    )
     streaming = psql(victim_pod, "select count(*) from pg_stat_replication where state = 'streaming'")
     assert streaming == "2", f"primary {victim_pod} has {streaming!r} streaming replicas, expected 2"
     token = f"before-crash-{int(time.time())}"
