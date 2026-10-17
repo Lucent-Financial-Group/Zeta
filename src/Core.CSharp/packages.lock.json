@@ -4,9 +4,9 @@
     "net10.0": {
       "Meziantou.Analyzer": {
         "type": "Direct",
-        "requested": "[3.0.296, )",
-        "resolved": "3.0.296",
-        "contentHash": "1Yp/6OK/Ev66hE2YLe9UvIgtJrKOX/xvoGDe0UbdtuG2ZxUoDoyONdEn+HWCDuy02Mu8SmglHEd/9SGPrM1qYg=="
+        "requested": "[3.0.303, )",
+        "resolved": "3.0.303",
+        "contentHash": "IBcDi9Gq15J7F7Akw/KCVrxMsms13e7rgA6ssVhoqn+3BWDvCg3RAhzPMK8foJapDMgz5tG4cDHO/JImrnn1cw=="
       },
       "System.IO.Hashing": {
         "type": "Direct",
@@ -63,7 +63,7 @@
         "dependencies": {
           "Apache.Arrow": "[23.0.0, )",
           "Apache.Arrow.Compression": "[23.0.0, )",
-          "FSharp.Core": "[10.1.401, )",
+          "FSharp.Core": "[10.1.402, )",
           "FsPickler": "[5.3.2, )",
           "MessagePack": "[3.1.11, )",
           "System.IO.Hashing": "[10.0.12, )",
@@ -115,9 +115,9 @@
       },
       "FSharp.Core": {
         "type": "CentralTransitive",
-        "requested": "[10.1.401, )",
-        "resolved": "10.1.401",
-        "contentHash": "/lvOK51KD8IangBYkfDVna3/HrE/r4VUnX3dI01KDspctoYXmind3POeoYkqWKeXHwiKlf6Hc9TxwSnoSCWcjw=="
+        "requested": "[10.1.402, )",
+        "resolved": "10.1.402",
+        "contentHash": "kfttzFL9uArPkhlhvoH99RZOOFpJnxOAZkGLqgfG+Wnc4FO2L+HnwradMgX1ubMjzhajuNzPTTcW1Yk8D1rGEg=="
       },
       "FsPickler": {
         "type": "CentralTransitive",
