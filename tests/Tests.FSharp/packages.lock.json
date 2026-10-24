@@ -34,29 +34,29 @@
       },
       "FsCheck": {
         "type": "Direct",
-        "requested": "[3.4.0, )",
-        "resolved": "3.4.0",
-        "contentHash": "wkWR1DORrKd46W6MEhmS4muo/0kgrtUV/AGW1ohMWemy7WukcRH8T3JjkDpn/daOHk0yVqf0CBvScU17Ab//PA==",
+        "requested": "[3.6.0, )",
+        "resolved": "3.6.0",
+        "contentHash": "XjZ5sWf/QKLqB9aMKG7FvrT/8Ak2fPo0ygRstindBWZWU8P3EcmvYJ5UkX0daIL4+bZeaiD9ThkftGlIx3ZewQ==",
         "dependencies": {
           "FSharp.Core": "5.0.2"
         }
       },
       "FsCheck.Xunit.v3": {
         "type": "Direct",
-        "requested": "[3.4.0, )",
-        "resolved": "3.4.0",
-        "contentHash": "4iaFtN/qCmlf76VVDFH9cJrG3gLWbBQp7G/R7BBSqkxJmFPvm3sI1vkg+v9TupMN5V6K5/AZMgmKwEqgBeePFA==",
+        "requested": "[3.6.0, )",
+        "resolved": "3.6.0",
+        "contentHash": "rIR16Wi63jv4e5tOGkyyCZ9nMyhZc2CRuWLxIdFrBJ22zuvJ6zzAL/F1b2157J1lV6WGdBjOlGeMDryw4ECBSg==",
         "dependencies": {
           "FSharp.Core": "5.0.2",
-          "FsCheck": "[3.4.0]",
+          "FsCheck": "[3.6.0]",
           "xunit.v3.extensibility.core": "[4.0.0, 5.0.0)"
         }
       },
       "FSharp.Core": {
         "type": "Direct",
-        "requested": "[10.1.401, )",
-        "resolved": "10.1.401",
-        "contentHash": "/lvOK51KD8IangBYkfDVna3/HrE/r4VUnX3dI01KDspctoYXmind3POeoYkqWKeXHwiKlf6Hc9TxwSnoSCWcjw=="
+        "requested": "[10.1.402, )",
+        "resolved": "10.1.402",
+        "contentHash": "kfttzFL9uArPkhlhvoH99RZOOFpJnxOAZkGLqgfG+Wnc4FO2L+HnwradMgX1ubMjzhajuNzPTTcW1Yk8D1rGEg=="
       },
       "FsUnit.xUnit": {
         "type": "Direct",
@@ -550,7 +550,7 @@
         "type": "Project",
         "dependencies": {
           "Apache.Arrow": "[23.0.0, )",
-          "FSharp.Core": "[10.1.401, )",
+          "FSharp.Core": "[10.1.402, )",
           "Zeta.Core": "[1.0.0, )"
         }
       },
@@ -562,7 +562,7 @@
         "dependencies": {
           "Apache.Arrow": "[23.0.0, )",
           "Apache.Arrow.Compression": "[23.0.0, )",
-          "FSharp.Core": "[10.1.401, )",
+          "FSharp.Core": "[10.1.402, )",
           "FsPickler": "[5.3.2, )",
           "MessagePack": "[3.1.11, )",
           "System.IO.Hashing": "[10.0.12, )",
@@ -667,7 +667,7 @@
       "zeta.core.telemetry": {
         "type": "Project",
         "dependencies": {
-          "FSharp.Core": "[10.1.401, )",
+          "FSharp.Core": "[10.1.402, )",
           "OpenTelemetry": "[1.19.1, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.19.1, )",
           "Zeta.Core": "[1.0.0, )"

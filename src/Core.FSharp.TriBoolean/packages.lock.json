@@ -51,7 +51,7 @@
         "dependencies": {
           "Apache.Arrow": "[23.0.0, )",
           "Apache.Arrow.Compression": "[23.0.0, )",
-          "FSharp.Core": "[10.1.401, )",
+          "FSharp.Core": "[10.1.402, )",
           "FsPickler": "[5.3.2, )",
           "MessagePack": "[3.1.11, )",
           "System.IO.Hashing": "[10.0.12, )",
@@ -93,9 +93,9 @@
       },
       "FSharp.Core": {
         "type": "CentralTransitive",
-        "requested": "[10.1.401, )",
-        "resolved": "10.1.401",
-        "contentHash": "/lvOK51KD8IangBYkfDVna3/HrE/r4VUnX3dI01KDspctoYXmind3POeoYkqWKeXHwiKlf6Hc9TxwSnoSCWcjw=="
+        "requested": "[10.1.402, )",
+        "resolved": "10.1.402",
+        "contentHash": "kfttzFL9uArPkhlhvoH99RZOOFpJnxOAZkGLqgfG+Wnc4FO2L+HnwradMgX1ubMjzhajuNzPTTcW1Yk8D1rGEg=="
       },
       "FsPickler": {
         "type": "CentralTransitive",
