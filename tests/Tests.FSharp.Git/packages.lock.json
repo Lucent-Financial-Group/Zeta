@@ -10,13 +10,14 @@
       },
       "FsUnit.xUnit": {
         "type": "Direct",
-        "requested": "[7.1.1, )",
-        "resolved": "7.1.1",
-        "contentHash": "3uzGb5xRyF29ns++6AUTCD1ixDhEFtdAYRfr+LBZXKU3pyC3tRep7G3x1+DDXxZ9QT05ONLLmevCFL4av/PFUA==",
+        "requested": "[8.0.0, )",
+        "resolved": "8.0.0",
+        "contentHash": "wTq8crwEMNwEnxPq334JxN0At+QyUfWVGPw5xeXas8ixUQxysBUvsZ4FKHzxUp0Y2+R4CJkOivOnFkRJg/Uk9g==",
         "dependencies": {
-          "FSharp.Core": "5.0.2",
+          "FSharp.Core": "6.0.0",
           "NHamcrest": "4.0.0",
-          "xunit.v3": "1.0.0"
+          "xunit.v3.assert": "4.0.2",
+          "xunit.v3.extensibility.core": "4.0.2"
         }
       },
       "Microsoft.NET.Test.Sdk": {
@@ -242,8 +243,8 @@
           "FSharp.Core": "[10.1.403, )",
           "FsPickler": "[5.3.2, )",
           "MessagePack": "[3.1.12, )",
-          "System.IO.Hashing": "[10.0.12, )",
-          "System.Numerics.Tensors": "[10.0.12, )",
+          "System.IO.Hashing": "[10.0.14, )",
+          "System.Numerics.Tensors": "[10.0.14, )",
           "System.Reactive": "[7.0.0, )",
           "Zeta.Core.Abstractions": "[2.0.0, )",
           "Zeta.Core.FSharp.Yaml": "[1.0.0, )",
@@ -327,15 +328,15 @@
       },
       "System.IO.Hashing": {
         "type": "CentralTransitive",
-        "requested": "[10.0.12, )",
-        "resolved": "10.0.12",
-        "contentHash": "jDix4bBMYnpZdSPcnY+KDV6ik3SRMzpMKby/bZl/XUwIiflwRNAFZ0oOl61R/pSaveIJ8t1gs2BUlrGsPs/bcg=="
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "lVqovhCt3HlZe7ONG5ydaj6BYwYI004gldVfMMkJl/lR5ueeCtWNpW4nejOX75sPmzm8vXCxB69GqwHaYCnyUQ=="
       },
       "System.Numerics.Tensors": {
         "type": "CentralTransitive",
-        "requested": "[10.0.12, )",
-        "resolved": "10.0.12",
-        "contentHash": "17brFrnQHV/XMMazXNqFq4GkvzWy8yzDPo5Gb8TT8zJtMFbUqDycOCyPCp9F+eMc4L75kcCKRZqaeBHMwLCL9Q=="
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "88DUO9lZZ/PfBwO51YKTd5TdVb+Cl31kd6imLKHUZxNXjnPU2V4mHIVT4f8rVK3T+sXXfDbHInzclnOHrK4azw=="
       },
       "System.Reactive": {
         "type": "CentralTransitive",
