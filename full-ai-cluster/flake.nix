@@ -645,6 +645,25 @@
               echo "$status" | tee "$out"
             '';
 
+          # EVAL-ONLY: the k3s container store on a big data disk (081M44HD9T2087G0R000G9NR1N).
+          # Resolves the SHIPPING control-plane host with and without a data disk and asserts that
+          # k3s.service REQUIRES the bind mount (Requires= + RequiresMountsFor= + a first ExecStartPre
+          # assert), that nothing is pulled into local-fs.target, that the module is inert with no
+          # /etc/zeta/containerd-data-disk, and that a disk the host does not declare is refused at
+          # evaluation. It is an EVAL because k3s-wait-for-address.nix mkForce-overrides
+          # `systemd.services.k3s.after`: only the resolved config shows what k3s actually depends on.
+          # No VM; `nix flake check --no-build` evaluates it.
+          containerd-on-data-disk-eval =
+            let
+              report = import ./nixos/tests/containerd-on-data-disk-eval-test.nix {
+                inherit pkgs;
+                nixosConfig = self.nixosConfigurations.control-plane;
+              };
+            in
+            pkgs.runCommand "containerd-on-data-disk-eval" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
           # Hermetic VM of the same default path: a node that only imports
           # common.nix (+ k3s-server) and never sets dataDisks. Proves the
           # annotator unit and the node label exist on disk, not only in
@@ -788,6 +807,18 @@
           k3s-ha-longhorn-cluster =
             import ./nixos/tests/k3s-ha-longhorn-cluster.nix { inherit pkgs; };
 
+          # THE MULTI-NODE LANE FOR HA CHARTS: one server + two AGENTS (no
+          # second apiserver/etcd, so it fits a hosted 4-vCPU runner). Longhorn
+          # and postgres-shared (CNPG, metal rung: 3 instances) DERIVED from the
+          # shipped Application/Cluster files; an agent holding the Postgres
+          # primary + a Longhorn replica is hard-killed; failover + both data
+          # paths asserted. Coverage of every HA chart is stated in
+          # nixos/tests/multinode-ha-coverage.json.
+          # REQUIRES internet -> build with `--option sandbox false`.
+          # See nixos/tests/k3s-multinode-ha-agents.nix.
+          k3s-multinode-ha-agents =
+            import ./nixos/tests/k3s-multinode-ha-agents.nix { inherit pkgs; };
+
           # THE ONLY CHECK THAT APPLIES THE REAL FIRST-BOOT ROSTER. Every
           # other VM test above overrides `services.k3s.manifests` away, so
           # the declared boot sequence had never run anywhere. This one boots
@@ -881,6 +912,23 @@
               };
             in
             pkgs.runCommand "k8s-node-tunables-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
+          # EVAL-ONLY (no VM, no boot): the fixes made at RUNTIME on node-5b2dfa on 2026-10-02
+          # that the next ISO must carry natively (work item 081M3YY6TWX087G0R003HZTVWQ): inbound
+          # TCP 443 open and 80 closed on both real hosts, the pure public-names function, kubelet
+          # image GC starting below the eviction line, and key-based sudo OFF by default.
+          # Reads the REAL control-plane and worker-gpu. See nixos/tests/installer-parity-eval-test.nix.
+          installer-parity-model =
+            let
+              report = import ./nixos/tests/installer-parity-eval-test.nix {
+                inherit pkgs;
+                nixosConfig = self.nixosConfigurations.control-plane;
+                secondHostConfig = self.nixosConfigurations.worker-gpu;
+              };
+            in
+            pkgs.runCommand "installer-parity-model" { inherit (report) status; } ''
               echo "$status" | tee "$out"
             '';
 

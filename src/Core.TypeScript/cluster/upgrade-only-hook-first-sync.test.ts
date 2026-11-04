@@ -159,7 +159,10 @@ describe.skipIf(!HELM)("gitlab Application -- upgrade-check on ArgoCD's first sy
       }
       // First ArgoCD sync: PreSync runs before the Sync phase creates chart-info.
       const fresh = runRuncheckOffline(runcheck, env, null);
-      expect(fresh.stdout).toContain("Please follow the upgrade documentation at https://docs.gitlab.com/ee/update/#upgrade-paths");
+      // The chart's docs link moved on every major along the 17.7 -> 19.4 path (8.7.0: docs.gitlab.com/ee/update/#upgrade-paths,
+      // 8.11.8: docs.gitlab.com/update/#upgrade-paths, 10.4.1: docs.gitlab.com/update/upgrade_paths/), so the sentence is pinned up
+      // to the host -- what proves the script FAILS CLOSED is the refusal and the exit code below, not a path.
+      expect(fresh.stdout).toMatch(/Please follow the upgrade documentation at https:\/\/docs\.gitlab\.com\//);
       expect(fresh.exitCode).toBe(1);
 
       // Control: the same script, with the ConfigMap a completed sync would have created.

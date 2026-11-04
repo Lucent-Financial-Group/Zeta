@@ -552,9 +552,9 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "outlives its artifact goes red instead of reading on. " +
       "[cite: no-unrenderable full-ai-cluster/gitlab] " +
       "[cite: renders full-ai-cluster/gitlab] " +
-      "[cite: pvc-total full-ai-cluster/gitlab 66] " +
-      "[cite: chart-pin full-ai-cluster/gitlab gitlab 8.7.0] " +
-      "[cite: published gitlab 8.7.0] " +
+      "[cite: pvc-total full-ai-cluster/gitlab 62] " +
+      "[cite: chart-pin full-ai-cluster/gitlab gitlab 10.4.1] " +
+      "[cite: published gitlab 10.4.1] " +
       "[cite: path infra/README.md:165] " +
       "[cite: glob-defers gitlab] " +
       "UPDATE 2026-09-23 -- THE CAPACITY HALF IS MEASURED NOW, AND IT IS MEMORY, NOT CPU. At chart defaults " +

@@ -92,7 +92,7 @@ min_version = "2026.6.12"
 # then copy the clean runtime payload into a newly-created version directory so
 # every dylib receives a new vnode. Do NOT revert the pin on either signature;
 # the SDK payload is fine and the local vnode cache is stale.
-dotnet = "10.0.401"
+dotnet = "10.0.403"
 go = "1.26.4"
 golangci-lint = "2.13.1"
 # Rust stable. Edition 2024 requires >=1.85. The mise `core:rust`
@@ -289,7 +289,7 @@ node = "24"
 #
 # Keep the version in sync with `devDependencies.markdownlint-cli2` in package.json
 # (audit-tool-pin-agreement.test.ts enforces it, table form included).
-"npm:markdownlint-cli2" = { version = "0.23.3", trust_policy_excludes = ["fastq@1.20.2"] }
+"npm:markdownlint-cli2" = { version = "0.24.0", trust_policy_excludes = ["fastq@1.20.2"] }
 # semgrep: SAST linter (the 14 rules in `.semgrep.yml`). Pinned
 # here per the three-way-parity invariant (GOVERNANCE §24) — dev
 # laptops + CI runners + devcontainers all get the same semgrep

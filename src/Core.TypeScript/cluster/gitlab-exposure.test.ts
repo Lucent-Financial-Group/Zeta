@@ -438,10 +438,80 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
     const dups = duplicateEnvNames(renderGitlab().docs);
     const app = parseYaml(readFileSync(GITLAB_APP, "utf8")) as Record<string, any>;
     const options: string[] = app.spec?.syncPolicy?.syncOptions ?? [];
-    // The chart's gitaly container emits TZ twice (charts/gitlab/charts/gitaly/templates/
-    // _statefulset_spec.yaml includes gitlab.timeZone.env at both ends of `env`). SSA refuses
-    // that object outright, so gitaly was never created on a live node.
-    expect(dups).toContain("StatefulSet/gitlab-gitaly gitaly: TZ");
+    // Chart 8.7.0's gitaly container emitted TZ twice (charts/gitlab/charts/gitaly/templates/
+    // _statefulset_spec.yaml included gitlab.timeZone.env at both ends of `env`). SSA refuses
+    // that object outright, so gitaly was never created on a live node. Chart 8.8.7 no longer
+    // renders the duplicate (MEASURED 2026-10-02 on the 17.7 -> 19.4 upgrade path), which is why
+    // this no longer pins the defect itself: a chart bump that fixes the render must not turn it
+    // red. The analyzer's own proof that it finds a repeated key is the synthetic test in section A.
+    // SSA stays OFF regardless of the duplicate (Application.yaml's second reason: the SSA
+    // volumeClaimTemplates drift, argo-cd#11143), so the second assertion is unconditional.
+    if (dups.length > 0) expect(options).not.toContain("ServerSideApply=true");
     expect(options).not.toContain("ServerSideApply=true");
+  }, T);
+
+  test("(i) the registry streams blobs itself -- its rendered config disables the storage redirect", () => {
+    // MEASURED LIVE: every pull from outside the cluster failed (kubelet ErrImagePull DeadlineExceeded; Docker
+    // `unexpected status from GET request to http://blob-store-seaweedfs-all-in-one.object-store.svc:8333/gitlab-...`).
+    // The registry's default is a 307 to a presigned URL on the S3 endpoint, an in-cluster name no outside client resolves.
+    const cm = ofKind(renderGitlab().docs, "ConfigMap").find((c) => nameOf(c) === "gitlab-registry");
+    expect(cm).toBeDefined();
+    const tpl = (cm!["data"] as Record<string, string>)["config.yml.tpl"];
+    expect(tpl).toBeDefined();
+    const storage = (parseYaml(tpl!) as { storage?: { redirect?: { disable?: unknown } } }).storage;
+    expect(storage?.redirect?.disable).toBe(true);
+  }, T);
+
+  test("(i) every GitLab object-store download is proxied by Workhorse, never a presigned redirect to the in-cluster S3 name", () => {
+    // The Application pins it (the chart default is already true, so only the pin protects a chart bump) ...
+    const values = readAppSource(readFileSync(GITLAB_APP, "utf8")).valuesObject as Record<string, any>;
+    expect(values.global?.appConfig?.object_store?.proxy_download).toBe(true);
+    // ... and the render carries it for the consolidated block plus artifacts / lfs / uploads / packages, never `false`.
+    const { text } = renderGitlab();
+    const flags = [...text.matchAll(/^\s*proxy_download:\s*(\S+)\s*$/gm)].map((m) => m[1]);
+    expect(flags.length).toBeGreaterThanOrEqual(5);
+    expect(flags.filter((f) => f !== "true")).toEqual([]);
+  }, T);
+
+  test("(j) GitLab advertises the SSH port the LAN serves it on (2222), and says so everywhere the chart renders it", () => {
+    // MEASURED: the chart default (22) put `git@<host>:` clone URLs in the UI that reach the NODE's sshd, never GitLab. The
+    // one coordinate in chart 10.4.1 is global.shell.port; it feeds gitlab.yml `ssh_port` of webservice, sidekiq and toolbox.
+    const values = readAppSource(readFileSync(GITLAB_APP, "utf8")).valuesObject as Record<string, any>;
+    expect(values.global?.shell?.port).toBe(2222);
+    const { docs, text } = renderGitlab();
+    const ports = [...text.matchAll(/^\s*ssh_port:\s*(\S+)\s*$/gm)].map((m) => m[1]);
+    expect(ports.length).toBeGreaterThanOrEqual(3); // webservice, sidekiq, toolbox
+    expect(ports.filter((p) => p !== "2222")).toEqual([]);
+    // The chart's own ClusterIP Service follows (port 2222 -> the pod's 2222), and its selector is what `gitlab-shell-lan` copies.
+    const shell = ofKind(docs, "Service").find((s) => nameOf(s) === "gitlab-gitlab-shell");
+    expect(shell).toBeDefined();
+    const spec = shell!["spec"] as { ports: Array<Record<string, unknown>>; selector: Record<string, string> };
+    expect(spec.ports.map((p) => [p["port"], p["targetPort"]])).toEqual([[2222, 2222]]);
+    expect(spec.selector).toEqual({ app: "gitlab-shell", release: "gitlab" });
+    // ...and the pods the selector picks really do listen on that targetPort.
+    const dep = ofKind(docs, "Deployment").find((d) => nameOf(d) === "gitlab-gitlab-shell") as Record<string, any>;
+    expect(dep.spec.template.metadata.labels).toMatchObject({ app: "gitlab-shell", release: "gitlab" });
+    const containerPorts = (dep.spec.template.spec.containers as Array<Record<string, any>>).flatMap((c) => (c["ports"] ?? []) as Array<Record<string, unknown>>);
+    expect(containerPorts.map((p) => p["containerPort"])).toContain(2222);
+  }, T);
+
+  test("(j) the discover loop may write Service gitlab-shell-lan in namespace gitlab -- and nothing else there", () => {
+    // `gitlab-shell-lan` is applied by node-lan-hosts' `discover` (cluster-hygiene, wave 20, ServiceAccount node-lan-hosts in
+    // zeta-node-hosts) over every LB address. Its Role is declared HERE: namespace gitlab does not exist when cluster-hygiene
+    // syncs, and a Role in a missing namespace would hold that wave.
+    const { docs } = renderGitlab();
+    const role = ofKind(docs, "Role").find((r) => nameOf(r) === "node-lan-hosts-gitlab-shell-lan");
+    expect(role).toBeDefined();
+    expect((role!["metadata"] as Record<string, unknown>)["namespace"]).toBe("gitlab");
+    expect(role!["rules"]).toEqual([
+      { apiGroups: [""], resources: ["services"], resourceNames: ["gitlab-shell-lan"], verbs: ["get", "patch", "update"] },
+      { apiGroups: [""], resources: ["services"], verbs: ["create"] },
+    ]);
+    const binding = ofKind(docs, "RoleBinding").find((r) => nameOf(r) === "node-lan-hosts-gitlab-shell-lan") as Record<string, any> | undefined;
+    expect(binding?.roleRef).toMatchObject({ kind: "Role", name: "node-lan-hosts-gitlab-shell-lan" });
+    expect(binding?.subjects).toEqual([{ kind: "ServiceAccount", name: "node-lan-hosts", namespace: "zeta-node-hosts" }]);
+    // The Service itself is NOT rendered by this release: its addresses are per-network and are never in git.
+    expect(ofKind(docs, "Service").map(nameOf)).not.toContain("gitlab-shell-lan");
+    expect(renderGitlab().text).not.toMatch(/externalIPs/);
   }, T);
 });

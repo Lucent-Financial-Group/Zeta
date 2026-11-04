@@ -283,17 +283,18 @@ assert_boot_disk_large_enough() {
 ZETA_LONGHORN_USABLE_PERCENT=75
 
 # The committed roster's driver.longhorn.io-class demand, GiB. Measured
-# 2026-09-24; see COMMITTED_LONGHORN_DEMAND_GIB in the TS oracle for the
+# 2026-09-24, re-measured 2026-10-02 (943 -> 1043: postgres-shared, seaweedfs and
+# forgejo moved onto the pool); see COMMITTED_LONGHORN_DEMAND_GIB in the TS oracle for the
 # derivation. Recomputed from the render snapshot on every run of
 # src/Core.TypeScript/cluster/single-node-readiness.ts, which REFUSES when the
 # roster has moved past this number — so it cannot go stale quietly.
-ZETA_LONGHORN_DEMAND_GIB=943
+ZETA_LONGHORN_DEMAND_GIB=1043
 
 # What the installer actually REFUSES at: the demand the CURRENTLY REGISTERED
 # fleet could ever be asked for, GiB. 081M397QHX8087G0R003DQSY0B.
 #
 # Equal to the declared total today, and that is the point rather than an
-# oversight. 400 GiB of the 943 belongs to ollama and vllm, both
+# oversight. 400 GiB of the 1043 belongs to ollama and vllm, both
 # `nodeSelector: zeta.io/gpu: nvidia`, and every checked-in ClusterNode records
 # an Intel adapter -- but under the old `lspci ... | head -1` capture those
 # records establish what IS present and never what is NOT, so the exclusion is
@@ -306,7 +307,7 @@ ZETA_LONGHORN_DEMAND_GIB=943
 #
 # BOTH are printed. Convicting on one while showing only the other is how a
 # number stops meaning what its reader thinks it means.
-ZETA_LONGHORN_SCHEDULABLE_GIB=943
+ZETA_LONGHORN_SCHEDULABLE_GIB=1043
 
 # A positive whole number, or 0. Negative, fractional and non-numeric all
 # collapse to 0 so both sides of the parity refuse junk identically.
@@ -399,14 +400,20 @@ ZETA_ESP_GIB=1
 # there is one minimum in this file rather than two that agree by coincidence.
 ZETA_LONGHORN_MIN_TAIL_GIB=1
 
-# Declared local-path PVC capacity that also lands on ROOT. ADVISORY, NOT
-# RESERVED, and not part of the root floor: local-storage.nix binds
-# zeta-block-local WaitForFirstConsumer and the provisioner's helper is
-# `mkdir -m 0777 -p "$VOL_DIR"` -- a directory with no quota -- so a PVC there
-# consumes the bytes WRITTEN and nothing more. Reserving it would starve the
-# Longhorn pool for bytes nobody has written. It is PRINTED because it is
-# still the first thing that fills root.
-ZETA_LOCAL_PATH_ADVISORY_GIB=250
+# Declared local-path PVC capacity. ADVISORY, NOT RESERVED, and not part of the
+# root floor: local-storage.nix binds zeta-block-local WaitForFirstConsumer and
+# the provisioner's helper is `mkdir -m 0777 -p "$VOL_DIR"` -- a directory with
+# no quota -- so a PVC there consumes the bytes WRITTEN and nothing more.
+# Reserving it would starve the Longhorn pool for bytes nobody has written.
+# Since 2026-10-02 the unit zeta-local-storage-placement bind-mounts the largest
+# /var/lib/longhorn-disk* (>= 200 GiB) onto the provisioner's directory, so on
+# every real install these bytes land on a data disk, not on root; on a small
+# disk (the QEMU lanes) they still land on root. 250 -> 186 the same day:
+# postgres-shared, seaweedfs and forgejo (60 GiB) moved onto the Longhorn pool
+# (counted in ZETA_LONGHORN_DEMAND_GIB instead); gitlab's valkey + rails-db
+# (+12 GiB) entered the re-measured render and its bundled PostgreSQL + Redis
+# (-16 GiB) left it.
+ZETA_LOCAL_PATH_ADVISORY_GIB=186
 
 # The longhorn1 tail for a boot disk of <disk_gib>, under LONGHORN1_TAIL=auto:
 # root takes a computed FLOOR and longhorn1 takes the REST.
@@ -459,12 +466,12 @@ zeta_auto_longhorn1_tail_gib() {
 # ZETA_STORAGE_PROFILE_CHANGES_<rung> is what choosing that rung changes against the committed one.
 # ZETA-STORAGE-PROFILE-DATA-BEGIN
 ZETA_STORAGE_PROFILE_COMMITTED="measured"
-ZETA_STORAGE_PROFILE_LADDER="minimal:204 standard:571 measured:943 large:1561"
-ZETA_STORAGE_PROFILE_CHANGES_minimal="cockroachdb/data 48Gi->32Gi; cockroachdb/data pods 3->1; hindsight/postgres 10Gi->8Gi; kube-prometheus-stack/alertmanager 5Gi->2Gi; kube-prometheus-stack/grafana 5Gi->2Gi; kube-prometheus-stack/prometheus 32Gi->16Gi; kube-prometheus-stack/prometheus retentionSize 24GiB->12GiB; mimir/compactor 16Gi->8Gi; mimir/ingester 16Gi->8Gi; mimir/store-gateway 16Gi->8Gi; nats/jetstream 10Gi->4Gi; nats/jetstream pods 3->1; ollama/models 200Gi->10Gi; oz/data 3Gi->2Gi; redis 8Gi->4Gi; redis pods 3->2; tempo/traces 20Gi->8Gi; vllm/hf-cache 200Gi->10Gi; weaviate/data 32Gi->12Gi"
+ZETA_STORAGE_PROFILE_LADDER="minimal:279 standard:671 measured:1043 large:1701"
+ZETA_STORAGE_PROFILE_CHANGES_minimal="cockroachdb/data 48Gi->32Gi; cockroachdb/data pods 3->1; forgejo/data 20Gi->5Gi; hindsight/postgres 10Gi->8Gi; kube-prometheus-stack/alertmanager 5Gi->2Gi; kube-prometheus-stack/grafana 5Gi->2Gi; kube-prometheus-stack/prometheus 32Gi->16Gi; kube-prometheus-stack/prometheus retentionSize 24GiB->12GiB; mimir/compactor 16Gi->8Gi; mimir/ingester 16Gi->8Gi; mimir/store-gateway 16Gi->8Gi; nats/jetstream 10Gi->4Gi; nats/jetstream pods 3->1; ollama/models 200Gi->10Gi; oz/data 3Gi->2Gi; redis 8Gi->4Gi; redis pods 3->2; seaweedfs/data 20Gi->10Gi; tempo/traces 20Gi->8Gi; vllm/hf-cache 200Gi->10Gi; weaviate/data 32Gi->12Gi"
 ZETA_STORAGE_PROFILE_CHANGES_standard="ollama/models 200Gi->48Gi; vllm/hf-cache 200Gi->48Gi"
 ZETA_STORAGE_PROFILE_CHANGES_measured=""
-ZETA_STORAGE_PROFILE_CHANGES_large="cockroachdb/data 48Gi->100Gi; hindsight/postgres 10Gi->20Gi; kube-prometheus-stack/alertmanager 5Gi->10Gi; kube-prometheus-stack/grafana 5Gi->10Gi; kube-prometheus-stack/prometheus 32Gi->100Gi; kube-prometheus-stack/prometheus retentionSize 24GiB->75GiB; mimir/compactor 16Gi->50Gi; mimir/ingester 16Gi->50Gi; mimir/store-gateway 16Gi->50Gi; nats/jetstream 10Gi->20Gi; oz/data 3Gi->5Gi; redis 8Gi->10Gi; tempo/traces 20Gi->50Gi; weaviate/data 32Gi->100Gi"
-ZETA_STORAGE_PROFILE_KEPT="agent-memory/memory 8Gi; game-hosting-gmod/data 10Gi; headscale/data 3Gi; platform/portal 5Gi"
+ZETA_STORAGE_PROFILE_CHANGES_large="cockroachdb/data 48Gi->100Gi; forgejo/data 20Gi->40Gi; hindsight/postgres 10Gi->20Gi; kube-prometheus-stack/alertmanager 5Gi->10Gi; kube-prometheus-stack/grafana 5Gi->10Gi; kube-prometheus-stack/prometheus 32Gi->100Gi; kube-prometheus-stack/prometheus retentionSize 24GiB->75GiB; mimir/compactor 16Gi->50Gi; mimir/ingester 16Gi->50Gi; mimir/store-gateway 16Gi->50Gi; nats/jetstream 10Gi->20Gi; oz/data 3Gi->5Gi; redis 8Gi->10Gi; seaweedfs/data 20Gi->40Gi; tempo/traces 20Gi->50Gi; weaviate/data 32Gi->100Gi"
+ZETA_STORAGE_PROFILE_KEPT="agent-memory/memory 8Gi; game-hosting-gmod/data 10Gi; headscale/data 3Gi; platform/portal 5Gi; postgres-shared/data 20Gi"
 # ZETA-STORAGE-PROFILE-DATA-END
 
 # Demand of a named rung in GiB, or nothing when it is not on the ladder.
@@ -571,6 +578,50 @@ zeta_storage_profile_decide() {
   echo "$verdict $profile $demand $write $source $second"
 }
 # ZETA-STORAGE-PROFILE-END ---------------------------------------
+
+# ZETA-CONTAINERD-DISK-BEGIN -------------------------------------
+# 081M44HD9T2087G0R000G9NR1N -- which data disk holds k3s's container store. Pure, no I/O; the
+# call site (Step 6.64d) reads the sizes. Executed by src/Core.TypeScript/hygiene/lint-containerd-store.test.ts.
+#
+# THE DEFECT: nothing here ever chose. The installer gave root a computed 120 GiB floor and left
+# /var/lib/rancher/k3s/agent/containerd on it, so on the measured node (2026-10-05) 48 GiB of images and
+# snapshots sat on a root that the kubelet evicts pods from at ~17.7 GiB free, while the two Longhorn data
+# disks (797 + 916 GiB) were 88% free. The fix is nixos/modules/containerd-on-data-disk.nix; THIS decides
+# which disk, by the rule nixos/modules/local-storage-placement.sh already uses for local-path volumes:
+# the LARGEST mounted /var/lib/longhorn-disk* filesystem, ties to the lowest number, and only if it is at
+# least ZETA_CONTAINERD_MIN_GIB. Below that the store stays on root -- a QEMU lane's 1 GiB tail cannot hold
+# 73 GiB of images, and a 200 GiB disk's 25% Longhorn slack (the part Longhorn never schedules) is 50 GiB,
+# so 200 is where the store stops fitting inside space Longhorn was already not going to use.
+# The write is the whole interface: absent file = the module is inert = root keeps the store.
+ZETA_CONTAINERD_MIN_GIB=200
+
+# zeta_containerd_disk_pick <min_gib> [<mountpoint>:<bytes> ...]
+# Prints the chosen mount point, or NOTHING. Entries are considered in the order given (the caller passes
+# them disk1, disk2, ...), and only a STRICTLY larger one displaces the current best, so a tie keeps the
+# lowest number. A junk size is skipped, never trusted: a bad reading must not choose a disk.
+zeta_containerd_disk_pick() {
+  local min_gib="$1" min_bytes best="" best_bytes=0 entry mp bytes
+  shift
+  case "$min_gib" in
+    '' | *[!0-9]*) return 0 ;;
+  esac
+  min_bytes=$(( min_gib * 1073741824 ))
+  for entry in "$@"; do
+    mp="${entry%:*}"
+    bytes="${entry##*:}"
+    case "$mp" in /*) ;; *) continue ;; esac
+    case "$bytes" in '' | *[!0-9]*) continue ;; esac
+    if [ "$bytes" -gt "$best_bytes" ]; then
+      best="$mp"
+      best_bytes="$bytes"
+    fi
+  done
+  if [ -n "$best" ] && [ "$best_bytes" -ge "$min_bytes" ]; then
+    echo "$best"
+  fi
+  return 0
+}
+# ZETA-CONTAINERD-DISK-END ---------------------------------------
 
 # ZETA-PUBLIC-TLS-BEGIN ------------------------------------------
 # 081M3JG74G0087G0R001XJC837 — the two public-TLS settings, resolved at the START
@@ -1395,7 +1446,7 @@ if [[ -z "$LONGHORN1_TAIL_BYTES" ]]; then
   echo "  - ESP                             ${ZETA_ESP_GIB} GiB"
   echo "  - root floor                      ${ZETA_ROOT_FLOOR_GIB} GiB   (73 GiB images all-cohort + 30 GiB OS, x1.15)"
   echo "  = longhorn1                       ${auto_tail_gib} GiB"
-  echo "  local-path PVC ceilings on root   ${ZETA_LOCAL_PATH_ADVISORY_GIB} GiB   ADVISORY, NOT RESERVED — the first thing that fills root"
+  echo "  local-path PVC ceilings           ${ZETA_LOCAL_PATH_ADVISORY_GIB} GiB   ADVISORY, NOT RESERVED — placed on the largest data disk (>= 200 GiB) at first boot, else on root"
   echo "  Set LONGHORN1_TAIL=<size> to override (>=1G, <=1T); root then takes what is left."
 fi
 
@@ -4474,6 +4525,29 @@ else
   echo "[storage-profile] the committed '${ZETA_STORAGE_PROFILE_COMMITTED}' profile applies — no /mnt/etc/zeta/storage-profile written"
 fi
 
+# ── Step 6.64d: put the container store on a data disk (081M44HD9T2087G0R000G9NR1N) ──
+# nixos/modules/containerd-on-data-disk.nix binds <disk>/containerd onto /var/lib/rancher/k3s/agent/containerd
+# and makes k3s REFUSE to start if that mount is missing. This step is its only input: one bare mount-point
+# path, chosen by zeta_containerd_disk_pick from what Step 5 actually mounted (sizes measured with df on the
+# mounted filesystems, not restated). Written ONLY when a data disk of >= ZETA_CONTAINERD_MIN_GIB exists; its
+# absence IS the "store stays on root" state, so nothing is written for a small disk. EVERY role gets it
+# (a joiner's k3s agent has a containerd too), unlike the storage profile, which is the founder's.
+ZETA_CONTAINERD_ENTRIES=()
+for mp in "${LONGHORN_MOUNTS[@]}"; do
+  # `|| bytes=0`: under pipefail a failing df must read as "unknown size" (skipped), never abort the install.
+  bytes="$(df -P -B1 "/mnt${mp}" 2>/dev/null | awk 'NR==2 {print $2}')" || bytes=0
+  ZETA_CONTAINERD_ENTRIES+=("${mp}:${bytes:-0}")
+done
+ZETA_CONTAINERD_DISK="$(zeta_containerd_disk_pick "$ZETA_CONTAINERD_MIN_GIB" "${ZETA_CONTAINERD_ENTRIES[@]}")"
+if [ -n "$ZETA_CONTAINERD_DISK" ]; then
+  sudo mkdir -p /mnt/etc/zeta
+  printf '%s\n' "$ZETA_CONTAINERD_DISK" | sudo tee /mnt/etc/zeta/containerd-data-disk >/dev/null
+  sudo chmod 0644 /mnt/etc/zeta/containerd-data-disk
+  echo "[containerd-store] wrote /mnt/etc/zeta/containerd-data-disk (${ZETA_CONTAINERD_DISK}): k3s's container store will live on that disk, not the root filesystem"
+else
+  echo "[containerd-store] no mounted /var/lib/longhorn-disk* of >= ${ZETA_CONTAINERD_MIN_GIB} GiB — the container store stays on the root filesystem (nothing written)"
+fi
+
 # ── Step 6.65: persist the node ZetaId (2026-08-23) ───────────────
 #
 # Aaron 2026-08-22: "yes we should move this to a zetaid."
@@ -5218,6 +5292,9 @@ maybe_symlink /mnt/etc/zeta/lb-pool /etc/zeta/lb-pool
 # storage-profile Application would silently not render and the committed (larger) PVC sizes
 # would apply to a pool that cannot hold them.
 maybe_symlink /mnt/etc/zeta/storage-profile /etc/zeta/storage-profile
+# containerd-on-data-disk.nix readFile's this at evaluation time; without the symlink the bind mount
+# would silently not be declared and k3s would put its container store on the root filesystem.
+maybe_symlink /mnt/etc/zeta/containerd-data-disk /etc/zeta/containerd-data-disk
 
 # 081KSNY2Z0008QG0R0008PN7RQ QEMU phase-3: non-interactive CI installs enable boot-time first-session
 # demo (systemd oneshot tees markers to ttyS0; qemu-full-install-test asserts them).
@@ -6152,11 +6229,17 @@ echo
 # 081M3JG74G0087G0R001XJC837 — the public-TLS operator step, only when SET.
 if [ "${ZETA_PUBLIC_TLS_SOURCE:-unset}" != "unset" ]; then
   echo "  PUBLIC TLS: portal.${ZETA_PUBLIC_TLS_DOMAIN} (ACME contact ${ZETA_PUBLIC_TLS_EMAIL})"
-  echo "    The certificate CANNOT issue until you do both of these:"
+  echo "    The certificate CANNOT issue (HTTP-01, the default) until you do both of these:"
   echo "      1. DNS: an A record  portal.${ZETA_PUBLIC_TLS_DOMAIN}  ->  your public IP"
   echo "         (and gitlab.${ZETA_PUBLIC_TLS_DOMAIN}, registry.${ZETA_PUBLIC_TLS_DOMAIN}, git.${ZETA_PUBLIC_TLS_DOMAIN} -> the same IP to publish GitLab / Forgejo)"
-  echo "      2. Router: forward TCP 80 and 443 to the public gateway's LoadBalancer IP:"
+  echo "      2. Router: forward TCP 443 (HTTPS) to THIS NODE -- its own LAN address, DHCP-reserved -- not to a"
+  echo "         LoadBalancer address. A home router forwards to a DEVICE, and this node answers for several"
+  echo "         addresses on one MAC, so a forward aimed at one of them can land on another. The node serves :443"
+  echo "         itself (firewall rule + the node-lan-hosts relay)."
+  echo "         HTTP-01 also needs TCP 80 to reach the public gateway:"
   echo "           sudo k3s kubectl -n zeta-platform get gateway zeta-public-gateway -o jsonpath='{.status.addresses[0].value}'"
+  echo "         a device-keyed router can send it to the wrong address; DNS-01 needs no inbound port"
+  echo "         (docs/ops/CLOUDFLARE-DNS01-CERTS.md)."
   echo "    Until then 'platform-public-tls' reads Progressing; the rest of the platform"
   echo "    is unaffected (it is a separate Application). Watch it with:"
   echo "      sudo k3s kubectl -n zeta-platform get certificate portal-tls"

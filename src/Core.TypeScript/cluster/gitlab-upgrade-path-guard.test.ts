@@ -34,6 +34,7 @@ import {
   evaluateUpgrade,
   GITLAB_APPLICATION_PATH,
   pinsDiffer,
+  readExecutedLivePath,
   readGitlabPin,
   renderUpgradeCheck,
   runRuncheckOffline,
@@ -41,7 +42,20 @@ import {
 } from "./gitlab-upgrade-path-guard.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
-const APP_TEXT = readFileSync(resolve(REPO_ROOT, GITLAB_APPLICATION_PATH), "utf8");
+const SHIPPED_TEXT = readFileSync(resolve(REPO_ROOT, GITLAB_APPLICATION_PATH), "utf8");
+
+/**
+ * THE FIXTURE BASE IS FROZEN AT 8.7.0, NOT AT WHATEVER THE APPLICATION SHIPS TODAY.
+ *
+ * Every fixture below is "the real Application with only `targetRevision` rewritten", and its
+ * verdicts (8.7.0 -> 8.11.0 skips a stop, 8.7.0 -> 8.6.0 is a downgrade, ...) are statements about
+ * a FROM-pin. They used to read that pin from the Application itself, so the first real upgrade
+ * (the 17.7 -> 19.4 path, one chart bump per required stop) turned four of them red for a reason
+ * that has nothing to do with the guard: the base moved. The Application's VALUES are still the
+ * real ones; only the starting revision is pinned.
+ */
+const FIXTURE_BASE_REVISION = "8.7.0";
+const APP_TEXT = SHIPPED_TEXT.replace(/targetRevision:\s*\S+/, `targetRevision: ${FIXTURE_BASE_REVISION}`);
 const SHIPPED_REVISION = /targetRevision:\s*(\S+)/.exec(APP_TEXT)?.[1] ?? "";
 
 function withRevision(revision: string): string {
@@ -104,8 +118,9 @@ const HELM = onPath("helm");
 if (!HELM) console.warn("gitlab-upgrade-path-guard.test: helm not on PATH -- the chart-script half is SKIPPED, not passed");
 
 describe.skipIf(!HELM)("gitlab upgrade path -- the chart's own runcheck decides", () => {
-  test("the fixtures start from the shipped pin (8.7.0); if it moves, re-pick the fixture versions", () => {
+  test("the fixtures start from the frozen base pin (8.7.0), whatever the Application ships today", () => {
     expect(SHIPPED_REVISION).toBe("8.7.0");
+    expect(/targetRevision:\s*(\S+)/.exec(SHIPPED_TEXT)?.[1]).toMatch(/^\d+\.\d+\.\d+$/);
   });
 
   test(
@@ -154,6 +169,37 @@ describe.skipIf(!HELM)("gitlab upgrade path -- the chart's own runcheck decides"
   );
 
   test(
+    "(e) a jump that skips a stop is refused even with an attestation that LEAVES THE STOP OUT; naming the stop makes every step pass",
+    () => {
+      // 8.7.0 -> 8.11.0 skips 17.8 (case a). An attestation with an empty `via` cannot launder it ...
+      const bad = readExecutedLivePath(JSON.stringify({ from: "8.7.0", to: "8.11.0", via: [], evidence: "test" }));
+      const refused = evaluateUpgrade(APP_TEXT, withRevision("8.11.0"), { executedLive: bad });
+      expect(refused.state).toBe("failed");
+      expect(refused.detail).toContain("It is required to upgrade to the latest 8.8.x version first");
+      // ... naming the stop the cluster really passed through makes each step the chart's own check accepts.
+      const good = readExecutedLivePath(JSON.stringify({ from: "8.7.0", to: "8.11.0", via: ["8.8.7"], evidence: "test" }));
+      const ok = evaluateUpgrade(APP_TEXT, withRevision("8.11.0"), { executedLive: good });
+      expect({ state: ok.state, detail: ok.detail }).toMatchObject({ state: "passed" });
+      expect(ok.detail).toContain("8.7.0 -> 8.8.7: accepted");
+      expect(ok.detail).toContain("8.8.7 -> 8.11.0: accepted");
+    },
+    { timeout: 240_000 },
+  );
+
+  test(
+    "(f) an attestation for a DIFFERENT jump, or a path that does not increase, never passes",
+    () => {
+      const other = readExecutedLivePath(JSON.stringify({ from: "8.8.0", to: "8.11.0", via: [], evidence: "test" }));
+      expect(evaluateUpgrade(APP_TEXT, withRevision("8.11.0"), { executedLive: other }).state).toBe("failed");
+      const backwards = readExecutedLivePath(JSON.stringify({ from: "8.7.0", to: "8.11.0", via: ["8.8.7", "8.8.0"], evidence: "test" }));
+      const v = evaluateUpgrade(APP_TEXT, withRevision("8.11.0"), { executedLive: backwards });
+      expect(v.state).toBe("failed");
+      expect(v.detail).toContain("not strictly increasing");
+    },
+    { timeout: 240_000 },
+  );
+
+  test(
     "control: the new chart's runcheck with NO chart-info fails closed (it is a real check, not a no-op)",
     () => {
       const side = renderUpgradeCheck(readGitlabPin(withRevision("8.8.0"))!);
@@ -177,6 +223,6 @@ describe("CI wiring", () => {
     expect(charts).toContain("bun test src/Core.TypeScript/cluster/gitlab-upgrade-path-guard.test.ts");
   });
   test("the Application's comment points at this guard instead of a manual caveat", () => {
-    expect(APP_TEXT).toContain("gitlab-upgrade-path-guard.ts");
+    expect(SHIPPED_TEXT).toContain("gitlab-upgrade-path-guard.ts");
   });
 });

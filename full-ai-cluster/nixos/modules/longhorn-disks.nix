@@ -195,9 +195,35 @@ in
         Restart = "on-failure";
         RestartSec = "10s";
       };
+      # WHICH CREDENTIAL, BY ROLE (081M48Z020C087G0R001E6M83V). The admin
+      # kubeconfig /etc/rancher/k3s/k3s.yaml exists ONLY on a k3s server; an
+      # agent never writes it. With that path hardcoded an agent's annotator
+      # cannot succeed, the node keeps `create-default-disk=config` with no
+      # disks annotation, and Longhorn registers NO disk on any worker --
+      # replicated storage stays single-node however many agents join. No test
+      # ran this module on an agent until the multi-node lane
+      # (k3s-multinode-ha-agents.nix); its run on the unfixed module is the
+      # measurement (see the PR that carries this change).
+      # On an agent the kubelet's OWN kubeconfig is used: the Node authorizer
+      # lets a kubelet get and patch its own Node object (NodeRestriction
+      # limits it to that one object and to non-restricted labels;
+      # annotations are allowed), which is exactly and only what this needs.
+      #
+      # `or "server"` is load-bearing. This module is imported from common.nix
+      # and from the registration eval stub, both of which can expose
+      # `services.k3s.extraFlags` without ever importing nixpkgs' k3s module,
+      # so `config.services.k3s.role` does not exist. #17922 read `.role`
+      # directly; scheduled `nix flake check --all-systems` on eb6879f0 then
+      # died with `attribute 'role' missing` at this interpolation. Missing
+      # role keeps the server path, which is what this unit used before that
+      # PR. Do not lengthen WP11.
       script = ''
         set -euo pipefail
-        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        export KUBECONFIG=${
+          if (config.services.k3s.role or "server") == "agent"
+          then "/var/lib/rancher/k3s/agent/kubelet.kubeconfig"
+          else "/etc/rancher/k3s/k3s.yaml"
+        }
         node="${config.networking.hostName}"
 
         # Wait for our own Node object to exist before patching it.
