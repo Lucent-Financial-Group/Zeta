@@ -36,6 +36,12 @@ import {
   routeAccepted,
   runnerOnline,
   runnerTokenPrefix,
+  ADMIN_TOKEN_MARKER,
+  ADMIN_TOKEN_NAME,
+  REVOKE_ADMIN_TOKENS_RUBY,
+  stayedSynced,
+  adminTokenFromRailsOutput,
+  MINT_ADMIN_TOKEN_RUBY,
   totalRestarts,
   tracePodName,
   traceShowsKubernetesExecutor,
@@ -420,5 +426,79 @@ describe("wiring", () => {
     expect(wf).toContain("workflow_dispatch");
     expect(wf).toContain("src/Core.TypeScript/cluster/gitlab-live-proof.test.ts");
     expect(wf).toContain("src/Core.TypeScript/cluster/gitlab-live-proof.ts");
+  });
+});
+
+describe("(b) root admin API access -- minted through the toolbox, never through the removed OAuth password grant", () => {
+  // GitLab 19.4 answered `POST /oauth/token grant_type=password` with 400 `unsupported_grant_type` (gitlab-live-proof,
+  // 2026-11-25): the password flow is gone, so (b) can no longer be a login. The proof only needs an admin credential.
+  const routable = "glpat-AbC_dEf-123.01.2k0n3x9qz";
+
+  test("the token is read from the marker line, dots included, and from nothing else", () => {
+    expect(adminTokenFromRailsOutput(`DEPRECATION noise\n\n${ADMIN_TOKEN_MARKER}${routable}\n`)).toBe(routable);
+    expect(adminTokenFromRailsOutput(`${ADMIN_TOKEN_MARKER}first\nnoise\n${ADMIN_TOKEN_MARKER}${routable}`)).toBe(routable);
+  });
+
+  test("no marker, an empty value or a non-token value is null, never a guess", () => {
+    expect(adminTokenFromRailsOutput("")).toBeNull();
+    expect(adminTokenFromRailsOutput(`noise ${routable} with no marker`)).toBeNull();
+    expect(adminTokenFromRailsOutput(`${ADMIN_TOKEN_MARKER}`)).toBeNull();
+    expect(adminTokenFromRailsOutput(`${ADMIN_TOKEN_MARKER}has space and junk`)).toBeNull();
+  });
+
+  test("the Ruby mints a short-lived api-scope PAT for root and prints it behind the marker", () => {
+    expect(MINT_ADMIN_TOKEN_RUBY).toContain("User.find_by_username('root')");
+    expect(MINT_ADMIN_TOKEN_RUBY).toContain("personal_access_tokens.create!");
+    expect(MINT_ADMIN_TOKEN_RUBY).toContain("scopes: [:api]");
+    expect(MINT_ADMIN_TOKEN_RUBY).toContain("expires_at:");
+    expect(MINT_ADMIN_TOKEN_RUBY).toContain(ADMIN_TOKEN_MARKER);
+  });
+
+  test("one owner for the token's name: minting sweeps earlier tokens of that name, and a separate script revokes them all", () => {
+    expect(MINT_ADMIN_TOKEN_RUBY).toContain(`name: '${ADMIN_TOKEN_NAME}'`);
+    // minting first revokes any earlier token of the name, so a retained (`--existing`) cluster never accumulates live ones
+    expect(MINT_ADMIN_TOKEN_RUBY.indexOf("revoke!")).toBeGreaterThanOrEqual(0);
+    expect(MINT_ADMIN_TOKEN_RUBY.indexOf("revoke!")).toBeLessThan(MINT_ADMIN_TOKEN_RUBY.indexOf("create!"));
+    expect(REVOKE_ADMIN_TOKENS_RUBY).toContain(`where(name: '${ADMIN_TOKEN_NAME}')`);
+    expect(REVOKE_ADMIN_TOKENS_RUBY).toContain("revoke!");
+    expect(REVOKE_ADMIN_TOKENS_RUBY).not.toContain("create!");
+  });
+
+  test("the proof revokes the token on every way out of runProof, not only when it passes", () => {
+    const source = readFileSync(join(resolve(import.meta.dir, "../../.."), "src/Core.TypeScript/cluster/gitlab-live-proof.ts"), "utf8");
+    expect(source).toMatch(/async function runProof\([^)]*\)[^{]*\{\s*try \{\s*await runChecks\(opts, report\);\s*\} finally \{\s*revokeAdminTokens\(\);/);
+  });
+
+  test("the lane no longer asks for an OAuth password grant", () => {
+    const source = readFileSync(join(resolve(import.meta.dir, "../../.."), "src/Core.TypeScript/cluster/gitlab-live-proof.ts"), "utf8");
+    expect(source).not.toContain('grant_type: "password"');
+  });
+});
+
+describe("(a+) a second sync STAYS synced -- a rollout in progress is not a flap", () => {
+  // Run 45655574372 (2026-11-25): the second sync made the CPU-hot single node scale sidekiq 1 -> 2 (HPA max 2), so
+  // the Application read Progressing for a while and then Healthy. The old judge failed on ANY non-Healthy poll.
+  const synced = (health: string) => ({ sync: "Synced", health });
+
+  test("Synced and Healthy throughout stays synced", () => {
+    expect(stayedSynced([synced("Healthy"), synced("Healthy")])).toBeNull();
+  });
+
+  test("a transient Progressing that ends Healthy is a rollout, not a flap", () => {
+    expect(stayedSynced([synced("Healthy"), synced("Progressing"), synced("Progressing"), synced("Healthy")])).toBeNull();
+  });
+
+  test("leaving Synced at any poll is a flap, even when it came back", () => {
+    const flap = stayedSynced([synced("Healthy"), { sync: "OutOfSync", health: "Healthy" }, synced("Healthy")]);
+    expect(flap).toContain("OutOfSync");
+  });
+
+  test("ending anything but Healthy is not settled", () => {
+    expect(stayedSynced([synced("Healthy"), synced("Progressing")])).toContain("Progressing");
+    expect(stayedSynced([synced("Healthy"), synced("Degraded")])).toContain("Degraded");
+  });
+
+  test("no samples is unknown, never a pass", () => {
+    expect(stayedSynced([])).not.toBeNull();
   });
 });

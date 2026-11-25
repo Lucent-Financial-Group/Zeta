@@ -11,7 +11,8 @@
 //
 // WHAT IT ASSERTS -- each a separately named check that ends `passed`, `failed` or `did-not-run`:
 //   (a) webservice / sidekiq / gitaly / registry / shell are each Ready;
-//   (b) the root admin can log in (OAuth password flow against the live API, then `GET /user`);
+//   (b) root has admin API access (a short-lived api-scope token minted through the toolbox, then `GET /user`;
+//       GitLab 19 removed the OAuth password grant this used to log in with);
 //   (c) Job `gitlab-runner-token` completed AND Secret `gitlab-gitlab-runner-secret` holds a glrt- token
 //       (the Job exits 0 on its own failure by design, so `Complete` alone proves nothing);
 //   (d) the runner pod is Running, has NOT restarted, and `GET /runners/all` reports it `online`;
@@ -58,7 +59,51 @@ export const INSTALL_TIME_LB_APPLICATION_PATH = "full-ai-cluster/k8s/lb-ipam/arg
 export const GITLAB_NAMESPACE = "gitlab";
 export const RUNNER_SECRET = "gitlab-gitlab-runner-secret";
 export const RUNNER_TOKEN_JOB = "gitlab-runner-token";
-export const ROOT_PASSWORD_SECRET = "gitlab-initial-root-password";
+export const TOOLBOX_DEPLOYMENT = "deploy/gitlab-toolbox";
+export const TOOLBOX_CONTAINER = "toolbox";
+/** Prefixes the one line of `gitlab-rails runner` output that carries the admin token, so noise around it never parses. */
+export const ADMIN_TOKEN_MARKER = "ZETA-PROOF-ADMIN-TOKEN=";
+/**
+ * Mints the credential the proof drives the API with: a one-day `api` personal access token for root, on the throwaway
+ * lane cluster only. The OAuth password grant used to provide this and is gone in GitLab 19 (`400 unsupported_grant_type`).
+ */
+export const ADMIN_TOKEN_NAME = "zeta-live-proof";
+const ROOT_USER_RUBY = "root = User.find_by_username('root') || raise('no root user')";
+/** Revokes every token of the proof's name: the mint script starts with it, and the proof ends with it. */
+const REVOKE_NAMED_TOKENS_RUBY = `root.personal_access_tokens.where(name: '${ADMIN_TOKEN_NAME}').each(&:revoke!)`;
+export const MINT_ADMIN_TOKEN_RUBY = [
+  ROOT_USER_RUBY,
+  REVOKE_NAMED_TOKENS_RUBY,
+  `pat = root.personal_access_tokens.create!(name: '${ADMIN_TOKEN_NAME}', scopes: [:api], expires_at: 1.day.from_now)`,
+  `print "\\n${ADMIN_TOKEN_MARKER}" + pat.token.to_s`,
+].join("\n");
+export const REVOKE_ADMIN_TOKENS_RUBY = [ROOT_USER_RUBY, REVOKE_NAMED_TOKENS_RUBY].join("\n");
+
+export interface AppSample {
+  readonly sync: string;
+  readonly health: string;
+}
+
+/**
+ * Did the Application STAY synced across these polls? null when it did, else why not. The Application must be Synced at
+ * EVERY poll (leaving Synced is the flap this check exists for: a stale Job "requiring pruning") and must END Healthy.
+ * A Progressing poll between is a workload rollout -- on the one CPU-hot lane node the HPAs scale sidekiq 1 -> 2 right
+ * after a sync (run 45655574372) -- not the Application flapping, so it is not judged on its own.
+ */
+export function stayedSynced(samples: readonly AppSample[]): string | null {
+  if (samples.length === 0) return "no polls were taken, so nothing is known";
+  const left = samples.findIndex((x) => x.sync !== "Synced");
+  if (left >= 0) return `sync=${samples[left]!.sync} at poll ${String(left + 1)} of ${String(samples.length)}`;
+  const last = samples[samples.length - 1]!;
+  return last.health === "Healthy" ? null : `ended health=${last.health} after ${String(samples.length)} polls`;
+}
+
+/** The admin token from `gitlab-rails runner` stdout: the LAST marker line's value, or null (never a guess). Dots are part of a routable token. */
+export function adminTokenFromRailsOutput(stdout: string): string | null {
+  const line = stdout.split("\n").map((l) => l.trim()).reverse().find((l) => l.startsWith(ADMIN_TOKEN_MARKER));
+  const value = line?.slice(ADMIN_TOKEN_MARKER.length) ?? "";
+  return /^[A-Za-z0-9_.-]{8,}$/.test(value) ? value : null;
+}
 export const RUNNER_DESCRIPTION = "zeta-cluster";
 /**
  * The roster the lane's ROOT catalogue applies: GitLab's object store, and the CloudNativePG operator that reconciles the
@@ -100,8 +145,8 @@ export const CHECKS: readonly CheckSpec[] = [
   { id: "a4-registry-ready", name: "(a) registry Ready", dependsOn: ["a0-lane-up"], blocking: true },
   { id: "a5-shell-ready", name: "(a) gitlab-shell Ready", dependsOn: ["a0-lane-up"], blocking: true },
   { id: "a6-argocd-application", name: "(a+) ArgoCD Application gitlab reaches Synced AND Healthy after the pin's re-render (judged last)", dependsOn: ["a0-lane-up"], blocking: true },
-  { id: "a7-resync-stays-synced", name: "(a+) a second sync that changes the migrations Job's spec still syncs (no immutable-field error), leaves no stale Job, and STAYS Synced+Healthy", dependsOn: ["a6-argocd-application"], blocking: true },
-  { id: "b1-root-login", name: "(b) root admin login (OAuth password flow) and GET /user is_admin", dependsOn: ["a1-webservice-ready"], blocking: true },
+  { id: "a7-resync-stays-synced", name: "(a+) a second sync that changes the migrations Job's spec still syncs (no immutable-field error), leaves no stale Job, and STAYS Synced (ends Healthy)", dependsOn: ["a6-argocd-application"], blocking: true },
+  { id: "b1-root-login", name: "(b) root admin API access (token minted through the toolbox) and GET /user is_admin", dependsOn: ["a1-webservice-ready"], blocking: true },
   { id: "c1-token-job-complete", name: "(c) Job gitlab-runner-token completed", dependsOn: ["a1-webservice-ready"], blocking: true },
   { id: "c2-runner-secret-token", name: "(c) Secret gitlab-gitlab-runner-secret holds a glrt- token", dependsOn: ["c1-token-job-complete"], blocking: true },
   { id: "d1-runner-pod-running", name: "(d) runner pod Running and Ready", dependsOn: ["c2-runner-secret-token"], blocking: true },
@@ -758,7 +803,22 @@ function liveAddressLeaves(): readonly (string | undefined)[] {
   });
 }
 
+/** Revokes the admin tokens the proof minted. A failure is logged, never silent: a live root credential must not be left unannounced. */
+function revokeAdminTokens(): void {
+  const r = kubectl(["exec", "-n", GITLAB_NAMESPACE, TOOLBOX_DEPLOYMENT, "-c", TOOLBOX_CONTAINER, "--", "gitlab-rails", "runner", REVOKE_ADMIN_TOKENS_RUBY], { timeoutMs: 150_000 });
+  log(r.code === 0 ? `revoked the proof's admin tokens (${ADMIN_TOKEN_NAME})` : `COULD NOT revoke the proof's admin tokens (exit ${String(r.code)}): ${r.stderr.slice(-200)}`);
+}
+
+/** The proof, and on every way out of it the revocation of the credential it minted. */
 async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> {
+  try {
+    await runChecks(opts, report);
+  } finally {
+    revokeAdminTokens();
+  }
+}
+
+async function runChecks(opts: ProofOptions, report: ProofReport): Promise<void> {
   const range = kindPoolRange(readFileSync(join(REPO_ROOT, KIND_LB_POOL_MANIFEST_PATH), "utf8"));
   const address = range.stop;
   const committedApplication = readFileSync(join(REPO_ROOT, GITLAB_APPLICATION_PATH), "utf8");
@@ -939,26 +999,25 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
     }
     if (forwardError !== null) report.record("b1-root-login", "failed", `no route to the GitLab API from the runner host: ${forwardError}`);
 
-    // ---- (b) root login ----------------------------------------------------------------------
+    // ---- (b) root admin API access -----------------------------------------------------------
     if (report.statusOf("b1-root-login") === "unrecorded" && report.blockedBy("b1-root-login") === null) {
-      const secret = kubectlJson<{ data?: Record<string, string> }>(["get", "secret", ROOT_PASSWORD_SECRET, "-n", GITLAB_NAMESPACE]);
-      const pw = secret?.data?.["password"] === undefined ? null : Buffer.from(secret.data["password"], "base64").toString("utf8");
-      if (pw === null) {
-        report.record("b1-root-login", "failed", `Secret ${ROOT_PASSWORD_SECRET} is missing or has no password key`);
-      } else {
-        const r = await pollUntil(Date.now() + opts.phaseSec * 1000, 15_000, async () => {
-          const t = await proxy.request("POST", "/oauth/token", { form: { grant_type: "password", username: "root", password: pw } });
-          const token = (t.json as { access_token?: string } | null)?.access_token;
-          if (t.status !== 200 || token === undefined) return { done: false, detail: `POST /oauth/token -> ${String(t.status)} ${t.text.slice(0, 160)}` };
-          const u = await proxy.request("GET", "/api/v4/user", { token });
-          const me = u.json as { username?: string; is_admin?: boolean; admin?: boolean } | null;
-          if (u.status !== 200 || me?.username !== "root") return { done: false, detail: `GET /api/v4/user -> ${String(u.status)} ${u.text.slice(0, 160)}` };
-          if (me.is_admin !== true && me.admin !== true) return { done: false, detail: "logged in as root but the account is not an administrator" };
-          accessToken = token;
-          return { done: true, detail: "OAuth password grant accepted; GET /api/v4/user => root, is_admin" };
-        });
-        report.record("b1-root-login", r.done ? "passed" : "failed", r.detail);
-      }
+      // Minted ONCE per run: a retry re-asks GitLab about the same token, it never mints another.
+      let minted: string | null = null;
+      const r = await pollUntil(Date.now() + opts.phaseSec * 1000, 15_000, async () => {
+        if (minted === null) {
+          const out = kubectl(["exec", "-n", GITLAB_NAMESPACE, TOOLBOX_DEPLOYMENT, "-c", TOOLBOX_CONTAINER, "--", "gitlab-rails", "runner", MINT_ADMIN_TOKEN_RUBY], { timeoutMs: 150_000 });
+          minted = adminTokenFromRailsOutput(out.stdout);
+          if (minted === null) return { done: false, detail: `no admin token from ${TOOLBOX_DEPLOYMENT} (exit ${String(out.code)}): ${out.stderr.replace(/glpat-\S+/g, "glpat-<redacted>").slice(-200)}` };
+        }
+        const token = minted;
+        const u = await proxy.request("GET", "/api/v4/user", { token });
+        const me = u.json as { username?: string; is_admin?: boolean; admin?: boolean } | null;
+        if (u.status !== 200 || me?.username !== "root") return { done: false, detail: `GET /api/v4/user -> ${String(u.status)} ${u.text.slice(0, 160)}` };
+        if (me.is_admin !== true && me.admin !== true) return { done: false, detail: "token belongs to root but the account is not an administrator" };
+        accessToken = token;
+        return { done: true, detail: "admin token minted through the toolbox; GET /api/v4/user => root, is_admin" };
+      });
+      report.record("b1-root-login", r.done ? "passed" : "failed", r.detail);
     }
 
     // ---- (c) token job + secret --------------------------------------------------------------
@@ -1201,14 +1260,16 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
         dumpArgoState();
         report.record("a7-resync-stays-synced", "failed", r.detail);
       } else {
-        // STAYS: a sync that is Synced for one poll and flaps afterwards is not Synced.
-        let flapped: string | null = null;
-        for (let i = 0; i < 8 && flapped === null; i++) {
+        // STAYS: Synced at every poll of a 120s window, and Healthy at the end -- the window extends (up to 5 minutes) while a
+        // rollout the sync triggered (HPA scale-up) is still Progressing. See stayedSynced.
+        const samples: AppSample[] = [];
+        for (let i = 0; i < 8 || (i < 28 && samples[samples.length - 1]?.health !== "Healthy" && samples[samples.length - 1]?.sync === "Synced"); i++) {
           await sleep(15_000);
           const snap = argoSnapshot();
-          if (snap.sync !== "Synced" || snap.health !== "Healthy") flapped = `sync=${snap.sync} health=${snap.health} after ${String((i + 1) * 15)}s`;
+          samples.push({ sync: snap.sync, health: snap.health });
         }
-        report.record("a7-resync-stays-synced", flapped === null ? "passed" : "failed", flapped === null ? `${r.detail}; stayed Synced+Healthy for 120s` : `Synced, then left it: ${flapped}`);
+        const flapped = stayedSynced(samples);
+        report.record("a7-resync-stays-synced", flapped === null ? "passed" : "failed", flapped === null ? `${r.detail}; stayed Synced and ended Healthy (${String(samples.length)} polls)` : `Synced, then left it: ${flapped}`);
       }
     }
   }
